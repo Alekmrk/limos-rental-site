@@ -13,7 +13,7 @@ const BannerSection = () => {
         high-end vehicles
       </p>
       <Link to={"/vehicles"}>
-        <Button>Open Fleet</Button>
+        <Button variant="secondary">Open Fleet</Button>
       </Link>
 
       <ReservationCard />

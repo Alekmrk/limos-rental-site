@@ -13,38 +13,51 @@
   body,
   html {
     min-height: 100vh;
+    @apply bg-zinc-900 text-white;
   }
 
   .reservation input {
-    @apply block w-full py-2 px-4 mb-3 font-thin placeholder:text-neutral-600 rounded-[0.6rem] bg-gray-100;
-
+    @apply block w-full py-2 px-4 mb-3 font-thin placeholder:text-neutral-400 rounded-[0.6rem] bg-zinc-800/30 border border-zinc-700/50 text-white transition-all duration-200;
+    &:focus {
+      outline: none;
+      border-color: rgba(212, 175, 55, 0.5);
+      box-shadow: 0 0 0 1px rgba(212, 175, 55, 0.5);
+    }
   }
 
   .nav-link {
-    @apply font-normal text-base text-neutral-500 hover:text-black transition;
+    @apply font-normal text-base text-neutral-400 transition;
+    &:hover {
+      color: #D4AF37;
+    }
     &.active {
-      @apply text-black;
+      color: #D4AF37;
     }
   }
 
   .banner {
-    background-image: url('./assets/banner-image.jpg');
+    background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), url('./assets/banner-image.jpg');
     background-size: cover;
     background-position: bottom;
     background-repeat: no-repeat;
     height: 660px;
+    @apply border border-zinc-900 shadow-2xl;
   }
 
   .service-card button {
     width: 150px;
   }
 
-  .tabs button{
-    @apply py-2 px-3 md:px-5 md:mx-2 rounded-[0.5rem] transition-colors duration-200 ease-in-out;
+  .tabs button {
+    @apply py-2 px-3 md:px-5 md:mx-2 rounded-[0.5rem] transition-colors duration-200 ease-in-out text-neutral-400;
+    &:hover {
+      color: #D4AF37;
+    }
   }
   
   button.active {
-    @apply bg-accent;
+    background-color: #D4AF37;
+    color: black;
   }
 
   .slider-card:hover .car {
@@ -54,21 +67,21 @@
   }
 
   ::-webkit-scrollbar {
-      width: 0.6em;
+    width: 0.6em;
 
-      &-track {
-        @apply bg-neutral-400 rounded-full;
+    &-track {
+      @apply bg-zinc-900 rounded-full;
+    }
+
+    &-thumb {
+      background-color: #D4AF37;
+      border-radius: 9999px;
+
+      &:hover {
+        opacity: 0.8;
       }
-
-      &-thumb {
-        @apply bg-neutral-700 rounded-full;
-
-        &:hover {
-          @apply bg-zinc-800;
-        }
-      }
+    }
   }
-
 
   /* Utility Classes */
   .container-default {
@@ -87,8 +100,17 @@
   }
 
   .shadow-default {
-    box-shadow: 0px 2px 19px 1px rgba(0,0,0,0.1);
-    -webkit-box-shadow: 0px 2px 19px 1px rgba(0,0,0,0.1);
-    -moz-box-shadow: 0px 2px 19px 1px rgba(0,0,0,0.1);
+    box-shadow: 0px 2px 19px 1px rgba(0,0,0,0.3);
+    -webkit-box-shadow: 0px 2px 19px 1px rgba(0,0,0,0.3);
+    -moz-box-shadow: 0px 2px 19px 1px rgba(0,0,0,0.3);
+  }
+
+  /* Luxury Elements */
+  .luxury-card {
+    @apply bg-zinc-900 border border-zinc-800 shadow-xl;
+  }
+
+  .luxury-text {
+    color: #D4AF37;
   }
 }

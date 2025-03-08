@@ -123,7 +123,7 @@ const Reservation = ({ scrollUp, selectedVehicle }) => {
       </div>
       <div className="flex flex-col sm:flex-row gap-4 justify-between px-8">
         <Link to={"/vehicles"}>
-          <Button>
+          <Button variant="secondary">
             <FontAwesomeIcon icon={faArrowLeft} className="text-white mr-4" />
             Select Vehicle
           </Button>
@@ -135,7 +135,7 @@ const Reservation = ({ scrollUp, selectedVehicle }) => {
               : "/reservation"
           }
         >
-          <Button>Reserve Now</Button>
+          <Button variant="secondary">Reserve Now</Button>
         </Link>
       </div>
     </div>

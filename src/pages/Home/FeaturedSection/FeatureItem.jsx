@@ -4,8 +4,8 @@ import { faCheck } from "@fortawesome/free-solid-svg-icons";
 const FeatureItem = ({ text }) => {
   return (
     <li>
-      <FontAwesomeIcon icon={faCheck} style={{ color: "#000000" }} />
-      <span className="ml-3">{text}</span>
+      <FontAwesomeIcon icon={faCheck} className="text-gold" />
+      <span className="ml-3 text-neutral-300">{text}</span>
     </li>
   );
 };

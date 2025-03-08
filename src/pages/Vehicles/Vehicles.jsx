@@ -42,7 +42,7 @@ const Vehicles = ({ scrollUp, selectedVehicle, setSelectedVehicle }) => {
             Seats: <span className="font-medium">{selectedVehicle.seats}</span>
           </p>
           <Link to={"/reservation"}>
-            <Button>
+            <Button variant="secondary">
               Book Now
               <FontAwesomeIcon
                 icon={faArrowRight}

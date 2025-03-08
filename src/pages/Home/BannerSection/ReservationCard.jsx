@@ -16,14 +16,14 @@ const ReservationCard = () => {
   console.log(reservationInfo);
 
   return (
-    <form className="reservation reserve-card w-[320px] p-8 pt-[4.5rem] mx-auto md:mx-0 md:absolute md:bottom-8 md:right-16 shadow-lg bg-white rounded-[1.5rem] text-left text-[15px]">
+    <form className="reservation reserve-card w-[320px] p-8 pt-[4.5rem] mx-auto md:mx-0 md:absolute md:bottom-8 md:right-16 shadow-xl bg-zinc-800/80 backdrop-blur-md border border-zinc-700/50 rounded-[1.5rem] text-left text-[15px]">
       <div className="text-sm absolute px-3 right-0 left-0 top-4 flex justify-center gap-4">
         <button
           onClick={(e) => handleClick(e, 1)}
           className={
             activeMethod === 1
               ? "py-2 px-4 h-full rounded-[0.6rem] active"
-              : "py-2 px-4 h-full rounded-[0.6rem]"
+              : "py-2 px-4 h-full rounded-[0.6rem] text-neutral-400 hover:text-gold"
           }
         >
           Distance
@@ -33,20 +33,10 @@ const ReservationCard = () => {
           className={
             activeMethod === 2
               ? "py-2 px-4 h-full rounded-[0.6rem] active"
-              : "py-2 px-4 h-full rounded-[0.6rem]"
+              : "py-2 px-4 h-full rounded-[0.6rem] text-neutral-400 hover:text-gold"
           }
         >
           Hourly
-        </button>
-        <button
-          onClick={(e) => handleClick(e, 3)}
-          className={
-            activeMethod === 3
-              ? "py-2 px-4 h-full rounded-[0.6rem] active"
-              : "py-2 px-4 h-full rounded-[0.6rem]"
-          }
-        >
-          Flat Rate
         </button>
       </div>
       <input
@@ -64,7 +54,7 @@ const ReservationCard = () => {
         type="text"
       />
       <select
-        className="bg-gray-100 mb-3 rounded-[0.6rem] py-2 px-4 w-full"
+        className="bg-zinc-800/30 mb-3 rounded-[0.6rem] py-2 px-4 w-full border border-zinc-700/50 text-white"
         style={{ appearance: "none" }}
         disabled
         name=""
@@ -78,8 +68,8 @@ const ReservationCard = () => {
         name="date"
         type="date"
       />
-      <div className="flex space-x-4 items-center">
-        <label className="text-gray-700 w-5/6 mb-3" htmlFor="time">
+      <div className="flex items-center space-x-2">
+        <label className="text-neutral-400 w-5/6 mb-3 pl-2" htmlFor="time">
           Pick Up Time
         </label>
         <input
@@ -90,9 +80,11 @@ const ReservationCard = () => {
           id="time"
         />
       </div>
-      <Link to={"/vehicles"}>
-        <Button>Reserve Now</Button>
-      </Link>
+      <div className="flex justify-center mt-4">
+        <Link to={"/vehicles"}>
+          <Button variant="secondary">Reserve Now</Button>
+        </Link>
+      </div>
     </form>
   );
 };
