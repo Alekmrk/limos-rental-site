@@ -4,6 +4,7 @@ import { useContext, useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import ReservationContext from "../../contexts/ReservationContext";
+import AddressInput from "../../components/AddressInput";
 
 const Reservation = ({ scrollUp, selectedVehicle }) => {
   useEffect(() => scrollUp(), []);
@@ -33,17 +34,15 @@ const Reservation = ({ scrollUp, selectedVehicle }) => {
               <span className="text-red-600">This field is required</span>
             )}
           </label>
-          <input
-            onChange={(e) => handleInput(e)}
+          <AddressInput
+            value={reservationInfo.pickup}
+            onChange={handleInput}
             onBlur={() => {
               if (reservationInfo.pickup === "") setValidPickup(false);
               else setValidPickup(true);
             }}
-            value={reservationInfo.pickup}
-            placeholder="Pick Up Address"
-            type="text"
             name="pickup"
-            id="pick-up"
+            placeholder="Pick Up Address"
           />
           <label
             className="mb-1 flex justify-between font-medium"
@@ -54,17 +53,15 @@ const Reservation = ({ scrollUp, selectedVehicle }) => {
               <span className="text-red-600">This field is required</span>
             )}
           </label>
-          <input
-            onChange={(e) => handleInput(e)}
+          <AddressInput
+            value={reservationInfo.dropoff}
+            onChange={handleInput}
             onBlur={() => {
               if (reservationInfo.dropoff === "") setValidDropoff(false);
               else setValidDropoff(true);
             }}
-            value={reservationInfo.dropoff}
-            placeholder="Drop Off Address"
-            type="text"
             name="dropoff"
-            id="drop-off"
+            placeholder="Drop Off Address"
           />
           <label className="mb-1 block font-medium" htmlFor="one-way">
             One/Two way:
@@ -88,7 +85,7 @@ const Reservation = ({ scrollUp, selectedVehicle }) => {
             )}
           </label>
           <input
-            onChange={(e) => handleInput(e)}
+            onChange={handleInput}
             onBlur={() => {
               if (reservationInfo.date === "") setValidDate(false);
               else setValidDate(true);
@@ -97,6 +94,7 @@ const Reservation = ({ scrollUp, selectedVehicle }) => {
             type="date"
             name="date"
             id="date"
+            className="bg-gray-100 mb-3 rounded-[0.6rem] py-2 px-4 w-full"
           />
           <label
             className="mb-1 flex justify-between font-medium"
@@ -108,16 +106,16 @@ const Reservation = ({ scrollUp, selectedVehicle }) => {
             )}
           </label>
           <input
-            onChange={(e) => handleInput(e)}
+            onChange={handleInput}
             onBlur={() => {
               if (reservationInfo.time === "") setValidTime(false);
               else setValidTime(true);
             }}
             value={reservationInfo.time}
-            className=""
             type="time"
             name="time"
             id="time"
+            className="bg-gray-100 mb-3 rounded-[0.6rem] py-2 px-4 w-full"
           />
         </form>
       </div>

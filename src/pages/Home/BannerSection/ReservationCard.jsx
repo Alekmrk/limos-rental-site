@@ -2,6 +2,7 @@ import { useState, useContext } from "react";
 import Button from "../../../components/Button";
 import { Link } from "react-router-dom";
 import ReservationContext from "../../../contexts/ReservationContext";
+import AddressInput from "../../../components/AddressInput";
 
 const ReservationCard = () => {
   const [activeMethod, setActiveMethod] = useState(1);
@@ -39,19 +40,17 @@ const ReservationCard = () => {
           Hourly
         </button>
       </div>
-      <input
-        onChange={(e) => handleInput(e)}
+      <AddressInput
         value={reservationInfo.pickup}
+        onChange={handleInput}
         name="pickup"
         placeholder="Pick Up Address"
-        type="text"
       />
-      <input
-        onChange={(e) => handleInput(e)}
+      <AddressInput
         value={reservationInfo.dropoff}
+        onChange={handleInput}
         name="dropoff"
         placeholder="Drop Off Address"
-        type="text"
       />
       <select
         className="bg-zinc-800/30 mb-3 rounded-[0.6rem] py-2 px-4 w-full border border-zinc-700/50 text-white"
@@ -63,21 +62,23 @@ const ReservationCard = () => {
         <option value="one_way">One Way</option>
       </select>
       <input
-        onChange={(e) => handleInput(e)}
+        onChange={handleInput}
         value={reservationInfo.date}
         name="date"
         type="date"
+        className="bg-zinc-800/30 mb-3 rounded-[0.6rem] py-2 px-4 w-full border border-zinc-700/50 text-white"
       />
       <div className="flex items-center space-x-2">
         <label className="text-neutral-400 w-5/6 mb-3 pl-2" htmlFor="time">
           Pick Up Time
         </label>
         <input
-          onChange={(e) => handleInput(e)}
+          onChange={handleInput}
           value={reservationInfo.time}
           name="time"
           type="time"
           id="time"
+          className="bg-zinc-800/30 mb-3 rounded-[0.6rem] py-2 px-4 w-full border border-zinc-700/50 text-white"
         />
       </div>
       <div className="flex justify-center mt-4">
