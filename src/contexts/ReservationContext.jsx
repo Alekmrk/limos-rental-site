@@ -8,14 +8,29 @@ export const ReservationContextProvider = ({ children }) => {
     dropoff: "",
     date: "",
     time: "",
+    passengers: 1,
+    bags: 0,
+    flightNumber: "",
+    childSeats: 0,
+    babySeats: 0,
+    skiEquipment: 0,
+    additionalRequests: "",
+    email: "",
+    phone: "",
+    selectedVehicle: null
   });
 
   const handleInput = (e) => {
-    setReservationInfo({ ...reservationInfo, [e.target.name]: e.target.value });
+    const value = e.target.type === 'number' ? parseInt(e.target.value) : e.target.value;
+    setReservationInfo({ ...reservationInfo, [e.target.name]: value });
+  };
+
+  const setSelectedVehicle = (vehicle) => {
+    setReservationInfo({ ...reservationInfo, selectedVehicle: vehicle });
   };
 
   return (
-    <ReservationContext.Provider value={{ reservationInfo, handleInput }}>
+    <ReservationContext.Provider value={{ reservationInfo, handleInput, setSelectedVehicle }}>
       {children}
     </ReservationContext.Provider>
   );

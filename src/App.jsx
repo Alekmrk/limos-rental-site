@@ -5,7 +5,8 @@ import Header from "./components/Header/Header";
 import Home from "./pages/Home/Home";
 import NotFound from "./pages/NotFound/NotFound";
 import Vehicles from "./pages/Vehicles/Vehicles";
-import Reservation from "./pages/Reservation/Reservation";
+import VehicleSelection from "./pages/VehicleSelection/VehicleSelection";
+import CustomerDetails from "./pages/CustomerDetails/CustomerDetails";
 import ThankYou from "./pages/ThankYou/ThankYou";
 import ServicesPage from "./pages/ServicesPage/ServicesPage";
 import BackToTopButton from "./components/BackToTopButton";
@@ -53,13 +54,12 @@ function App() {
             }
           />
           <Route
-            path="/reservation"
-            element={
-              <Reservation
-                scrollUp={scrollUp}
-                selectedVehicle={selectedVehicle}
-              />
-            }
+            path="/vehicle-selection"
+            element={<VehicleSelection scrollUp={scrollUp} />}
+          />
+          <Route
+            path="/customer-details"
+            element={<CustomerDetails scrollUp={scrollUp} />}
           />
           <Route path="/thankyou" element={<ThankYou scrollUp={scrollUp} />} />
           <Route path="*" element={<NotFound scrollUp={scrollUp} />} />
