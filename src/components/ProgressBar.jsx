@@ -19,7 +19,7 @@ const ProgressBar = () => {
   };
 
   return (
-    <div className="w-full max-w-3xl mx-auto mb-12">
+    <div className="w-full max-w-6xl mx-auto mb-12">
       <div className="flex justify-between relative">
         {/* Progress Line */}
         <div className="absolute top-5 left-0 right-0 h-[2px] bg-zinc-700">

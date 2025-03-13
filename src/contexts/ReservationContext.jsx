@@ -6,6 +6,7 @@ export const ReservationContextProvider = ({ children }) => {
   const [reservationInfo, setReservationInfo] = useState({
     pickup: "",
     dropoff: "",
+    extraStops: [],
     date: "",
     time: "",
     passengers: 1,
@@ -29,8 +30,42 @@ export const ReservationContextProvider = ({ children }) => {
     setReservationInfo({ ...reservationInfo, selectedVehicle: vehicle });
   };
 
+  const addExtraStop = () => {
+    if (reservationInfo.extraStops.length < 10) {
+      setReservationInfo({
+        ...reservationInfo,
+        extraStops: [...reservationInfo.extraStops, ""]
+      });
+    }
+  };
+
+  const removeExtraStop = (index) => {
+    const newStops = [...reservationInfo.extraStops];
+    newStops.splice(index, 1);
+    setReservationInfo({
+      ...reservationInfo,
+      extraStops: newStops
+    });
+  };
+
+  const updateExtraStop = (index, value) => {
+    const newStops = [...reservationInfo.extraStops];
+    newStops[index] = value;
+    setReservationInfo({
+      ...reservationInfo,
+      extraStops: newStops
+    });
+  };
+
   return (
-    <ReservationContext.Provider value={{ reservationInfo, handleInput, setSelectedVehicle }}>
+    <ReservationContext.Provider value={{ 
+      reservationInfo, 
+      handleInput, 
+      setSelectedVehicle,
+      addExtraStop,
+      removeExtraStop,
+      updateExtraStop
+    }}>
       {children}
     </ReservationContext.Provider>
   );
