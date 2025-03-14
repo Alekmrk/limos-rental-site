@@ -37,11 +37,15 @@ const VehicleSelection = ({ scrollUp }) => {
       
       if (!isCurrentVehicleAvailable) {
         setSelectedVehicle(null);
+        // Only update errors if user has attempted to submit
+        if (hasAttemptedSubmit) {
+          validateFormErrors();
+        }
       }
     }
   }, [reservationInfo.passengers, reservationInfo.bags, reservationInfo.selectedVehicle, setSelectedVehicle]);
 
-  const validateForm = () => {
+  const validateFormErrors = () => {
     const newErrors = {};
     const passengerCount = reservationInfo.passengers === '' ? 0 : reservationInfo.passengers;
     const bagCount = reservationInfo.bags === '' ? 0 : reservationInfo.bags;
@@ -66,9 +70,16 @@ const VehicleSelection = ({ scrollUp }) => {
     return Object.keys(newErrors).length === 0;
   };
 
+  const validateForm = () => {
+    const isValid = validateFormErrors();
+    if (!isValid) {
+      setHasAttemptedSubmit(true);
+    }
+    return isValid;
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    setHasAttemptedSubmit(true);
     if (validateForm()) {
       navigate('/customer-details');
     }
@@ -82,7 +93,7 @@ const VehicleSelection = ({ scrollUp }) => {
     removeExtraStop(index);
     // Only validate if user has attempted to submit
     if (hasAttemptedSubmit) {
-      setTimeout(validateForm, 0);
+      setTimeout(validateFormErrors, 0);
     }
   };
 
@@ -97,7 +108,16 @@ const VehicleSelection = ({ scrollUp }) => {
     updateExtraStop(index, value);
     // Only validate if user has attempted to submit
     if (hasAttemptedSubmit) {
-      setTimeout(validateForm, 0);
+      setTimeout(validateFormErrors, 0);
+    }
+  };
+
+  // Add handler for vehicle selection to update errors
+  const handleVehicleSelect = (vehicle) => {
+    setSelectedVehicle(vehicle);
+    // Only validate if user has attempted to submit
+    if (hasAttemptedSubmit) {
+      setTimeout(validateFormErrors, 0);
     }
   };
 
@@ -275,7 +295,7 @@ const VehicleSelection = ({ scrollUp }) => {
               {availableVehicles.map((vehicle) => (
                 <div
                   key={vehicle.id}
-                  onClick={() => setSelectedVehicle(vehicle)}
+                  onClick={() => handleVehicleSelect(vehicle)}
                   className={`p-6 rounded-lg cursor-pointer transition-all ${
                     reservationInfo.selectedVehicle?.id === vehicle.id
                       ? "bg-gold/20 border-2 border-gold"
