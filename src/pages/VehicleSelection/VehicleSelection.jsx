@@ -17,6 +17,7 @@ const VehicleSelection = ({ scrollUp }) => {
     updateExtraStop
   } = useContext(ReservationContext);
   const [errors, setErrors] = useState({});
+  const [hasAttemptedSubmit, setHasAttemptedSubmit] = useState(false);
 
   // Check if we have the required data from the previous step
   useEffect(() => {
@@ -67,6 +68,7 @@ const VehicleSelection = ({ scrollUp }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    setHasAttemptedSubmit(true);
     if (validateForm()) {
       navigate('/customer-details');
     }
@@ -78,14 +80,11 @@ const VehicleSelection = ({ scrollUp }) => {
 
   const handleRemoveExtraStop = (index) => {
     removeExtraStop(index);
-    // After removing a stop, validate the form in the next tick
-    setTimeout(validateForm, 0);
+    // Only validate if user has attempted to submit
+    if (hasAttemptedSubmit) {
+      setTimeout(validateForm, 0);
+    }
   };
-
-  // Add effect to validate form when stops are updated
-  useEffect(() => {
-    validateForm();
-  }, [reservationInfo.extraStops]);
 
   // Filter vehicles based on passenger count and bags (handle empty inputs)
   const availableVehicles = cars.filter(car => {
@@ -96,7 +95,10 @@ const VehicleSelection = ({ scrollUp }) => {
 
   const updateStop = (index, value) => {
     updateExtraStop(index, value);
-    setTimeout(validateForm, 0);
+    // Only validate if user has attempted to submit
+    if (hasAttemptedSubmit) {
+      setTimeout(validateForm, 0);
+    }
   };
 
   return (
@@ -304,9 +306,9 @@ const VehicleSelection = ({ scrollUp }) => {
               >
                 Back
               </Button>
-              <div className="flex flex-col items-end gap-2">
-                {(errors.vehicle || errors.extraStops) && (
-                  <div className="text-red-500 text-sm bg-red-500/10 px-3 py-1.5 rounded border border-red-500/20">
+              <div className="flex flex-col items-end gap-1">
+                {hasAttemptedSubmit && (errors.vehicle || errors.extraStops) && (
+                  <div className="text-red-500 text-sm bg-red-500/10 px-3 py-1.5 rounded border border-red-500/20 mb-1">
                     <svg className="w-4 h-4 inline-block mr-1" viewBox="0 0 24 24" fill="currentColor">
                       <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
                     </svg>
