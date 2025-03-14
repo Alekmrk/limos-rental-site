@@ -22,7 +22,9 @@ export const ReservationContextProvider = ({ children }) => {
   });
 
   const handleInput = (e) => {
-    const value = e.target.type === 'number' ? parseInt(e.target.value) : e.target.value;
+    let value = e.target.type === 'number' ? 
+      (e.target.value === '' ? 0 : parseInt(e.target.value)) : 
+      e.target.value;
     setReservationInfo({ ...reservationInfo, [e.target.name]: value });
   };
 

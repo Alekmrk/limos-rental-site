@@ -25,6 +25,21 @@ const VehicleSelection = ({ scrollUp }) => {
     }
   }, [reservationInfo, navigate]);
 
+  // Effect to handle vehicle unselection when it becomes unavailable
+  useEffect(() => {
+    if (reservationInfo.selectedVehicle) {
+      const isCurrentVehicleAvailable = cars.some(car => 
+        car.id === reservationInfo.selectedVehicle.id && 
+        car.seats >= (reservationInfo.passengers || 0) && 
+        car.luggage >= (reservationInfo.bags || 0)
+      );
+      
+      if (!isCurrentVehicleAvailable) {
+        setSelectedVehicle(null);
+      }
+    }
+  }, [reservationInfo.passengers, reservationInfo.bags, reservationInfo.selectedVehicle, setSelectedVehicle]);
+
   const validateForm = () => {
     const newErrors = {};
     if (!reservationInfo.passengers || reservationInfo.passengers < 1) {
@@ -36,7 +51,7 @@ const VehicleSelection = ({ scrollUp }) => {
     if (!reservationInfo.selectedVehicle) {
       newErrors.vehicle = "Please select a vehicle";
     }
-    if (reservationInfo.extraStops.some(stop => !stop)) {
+    if (reservationInfo.extraStops.some(stop => !stop.trim())) {
       newErrors.extraStops = "All extra stops must be filled";
     }
     setErrors(newErrors);
@@ -52,6 +67,14 @@ const VehicleSelection = ({ scrollUp }) => {
 
   const handleBack = () => {
     navigate('/');
+  };
+
+  const handleRemoveExtraStop = (index) => {
+    removeExtraStop(index);
+    // After removing a stop, validate the form to update error states
+    setTimeout(() => {
+      validateForm();
+    }, 0);
   };
 
   // Filter vehicles based on passenger count and bags
@@ -115,7 +138,7 @@ const VehicleSelection = ({ scrollUp }) => {
                     />
                     <button
                       type="button"
-                      onClick={() => removeExtraStop(index)}
+                      onClick={() => handleRemoveExtraStop(index)}
                       className="text-zinc-400 hover:text-white transition-colors p-2"
                       title="Remove this stop"
                     >
