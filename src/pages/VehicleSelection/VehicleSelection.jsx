@@ -113,9 +113,6 @@ const VehicleSelection = ({ scrollUp }) => {
                       placeholder="Enter extra stop location"
                       className={`${!stop.trim() && errors.extraStops ? 'border-red-500' : ''}`}
                     />
-                    {errors.extraStops && !stop.trim() && (
-                      <span className="text-red-500 text-sm block mt-1">Please enter a location or remove this stop</span>
-                    )}
                     <button
                       type="button"
                       onClick={() => removeExtraStop(index)}
@@ -126,6 +123,9 @@ const VehicleSelection = ({ scrollUp }) => {
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                       </svg>
                     </button>
+                    {errors.extraStops && !stop.trim() && (
+                      <span className="text-red-500 text-sm whitespace-nowrap">Empty stop</span>
+                    )}
                   </div>
                 </div>
               </div>
@@ -237,9 +237,6 @@ const VehicleSelection = ({ scrollUp }) => {
 
           <div className="mb-8">
             <h2 className="text-2xl font-medium mb-4">Available Vehicles</h2>
-            {errors.vehicle && (
-              <span className="text-red-500 text-sm block mb-2">{errors.vehicle}</span>
-            )}
             <div className="grid md:grid-cols-3 gap-6">
               {availableVehicles.map((vehicle) => (
                 <div
@@ -266,17 +263,27 @@ const VehicleSelection = ({ scrollUp }) => {
             </div>
           </div>
 
-          <div className="flex justify-between">
-            <Button
-              type="button"
-              variant="secondary"
-              onClick={handleBack}
-            >
-              Back
-            </Button>
-            <Button type="submit" variant="secondary">
-              Continue
-            </Button>
+          <div className="flex flex-col gap-4">
+            {(errors.vehicle || errors.extraStops) && (
+              <div className="text-red-500 text-sm bg-red-500/10 p-2 rounded border border-red-500/20">
+                <svg className="w-4 h-4 inline-block mr-1" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
+                </svg>
+                {errors.vehicle || "Please fill in or remove empty stops"}
+              </div>
+            )}
+            <div className="flex justify-between">
+              <Button
+                type="button"
+                variant="secondary"
+                onClick={handleBack}
+              >
+                Back
+              </Button>
+              <Button type="submit" variant="secondary">
+                Continue
+              </Button>
+            </div>
           </div>
         </form>
       </div>
