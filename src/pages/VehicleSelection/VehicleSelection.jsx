@@ -66,6 +66,7 @@ const VehicleSelection = ({ scrollUp }) => {
       newErrors.extraStops = "All extra stops must be filled";
     }
 
+    // Update the errors state
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -91,10 +92,20 @@ const VehicleSelection = ({ scrollUp }) => {
 
   const handleRemoveExtraStop = (index) => {
     removeExtraStop(index);
-    // Only validate if user has attempted to submit
-    if (hasAttemptedSubmit) {
-      setTimeout(validateFormErrors, 0);
-    }
+    // After removing a stop, check if we still have empty stops
+    // We need to do this in the next tick after the state has updated
+    setTimeout(() => {
+      // If there are no more empty stops and no vehicle error, clear all errors
+      if (!reservationInfo.extraStops.some(stop => !stop.trim())) {
+        if (reservationInfo.selectedVehicle) {
+          setErrors({});
+        } else {
+          setErrors({ vehicle: "Please select a vehicle" });
+        }
+      } else {
+        validateFormErrors();
+      }
+    }, 0);
   };
 
   // Filter vehicles based on passenger count and bags (handle empty inputs)
@@ -106,19 +117,31 @@ const VehicleSelection = ({ scrollUp }) => {
 
   const updateStop = (index, value) => {
     updateExtraStop(index, value);
-    // Only validate if user has attempted to submit
-    if (hasAttemptedSubmit) {
-      setTimeout(validateFormErrors, 0);
-    }
+    // After updating a stop, check all stops
+    setTimeout(() => {
+      const hasEmptyStops = reservationInfo.extraStops.some(stop => !stop.trim());
+      if (!hasEmptyStops && reservationInfo.selectedVehicle) {
+        setErrors({});
+      } else if (!hasEmptyStops) {
+        setErrors({ vehicle: "Please select a vehicle" });
+      } else if (hasAttemptedSubmit) {
+        validateFormErrors();
+      }
+    }, 0);
   };
 
   // Add handler for vehicle selection to update errors
   const handleVehicleSelect = (vehicle) => {
     setSelectedVehicle(vehicle);
-    // Only validate if user has attempted to submit
-    if (hasAttemptedSubmit) {
-      setTimeout(validateFormErrors, 0);
-    }
+    // After selecting a vehicle, update errors immediately
+    setTimeout(() => {
+      const hasEmptyStops = reservationInfo.extraStops.some(stop => !stop.trim());
+      if (hasEmptyStops) {
+        setErrors({ extraStops: "All extra stops must be filled" });
+      } else {
+        setErrors({});
+      }
+    }, 0);
   };
 
   return (
