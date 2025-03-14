@@ -13,6 +13,8 @@
 - [ ] 🔴 Implement billing flow and payment processing
 - [ ] 🟡 Update website content (images and text)
 - [ ] 🟢 Migrate location services from current API to Google Places API
+- [ ] 🟢 Do crypto billing, check crytpo transfer
+
 
 ## Completed ✅
 - [ ] 
