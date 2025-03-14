@@ -71,7 +71,7 @@ const AIRPORT_KEYWORDS = [
   { partial: 'aeroport', full: 'aeroport' }
 ];
 
-const AddressInput = ({ value, onChange, name, placeholder, onBlur }) => {
+const AddressInput = ({ value, onChange, name, placeholder, onBlur, className }) => {
   const [suggestions, setSuggestions] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [error, setError] = useState(null);
@@ -278,7 +278,7 @@ const AddressInput = ({ value, onChange, name, placeholder, onBlur }) => {
         onBlur={onBlur}
         name={name}
         placeholder={placeholder || "Enter an address in Switzerland"}
-        className="bg-zinc-800/30 mb-3 rounded-[0.6rem] py-2 px-4 w-full border border-zinc-700/50 text-white"
+        className={`bg-zinc-800/30 mb-3 rounded-[0.6rem] py-2 px-4 w-full border border-zinc-700/50 text-white ${className || ''}`}
         autoComplete="off"
       />
       {error && (
@@ -308,4 +308,4 @@ const AddressInput = ({ value, onChange, name, placeholder, onBlur }) => {
   );
 };
 
-export default AddressInput; 
+export default AddressInput;
