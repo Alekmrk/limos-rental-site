@@ -1,4 +1,4 @@
-import { useContext, useState, useEffect } from "react";
+import { useContext, useState, useEffect, useRef, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import ReservationContext from "../../contexts/ReservationContext";
 import Button from "../../components/Button";
@@ -18,6 +18,11 @@ const VehicleSelection = ({ scrollUp }) => {
   } = useContext(ReservationContext);
   const [errors, setErrors] = useState({});
   const [hasAttemptedSubmit, setHasAttemptedSubmit] = useState(false);
+  const latestStopsRef = useRef(reservationInfo.extraStops);
+
+  useEffect(() => {
+    latestStopsRef.current = reservationInfo.extraStops;
+  }, [reservationInfo.extraStops]);
 
   // Check if we have the required data from the previous step
   useEffect(() => {
@@ -26,26 +31,11 @@ const VehicleSelection = ({ scrollUp }) => {
     }
   }, [reservationInfo, navigate]);
 
-  // Effect to handle vehicle unselection when it becomes unavailable
-  useEffect(() => {
-    if (reservationInfo.selectedVehicle) {
-      const isCurrentVehicleAvailable = cars.some(car => 
-        car.id === reservationInfo.selectedVehicle.id && 
-        car.seats >= (reservationInfo.passengers || 0) && 
-        car.luggage >= (reservationInfo.bags || 0)
-      );
-      
-      if (!isCurrentVehicleAvailable) {
-        setSelectedVehicle(null);
-        // Only update errors if user has attempted to submit
-        if (hasAttemptedSubmit) {
-          validateFormErrors();
-        }
-      }
-    }
-  }, [reservationInfo.passengers, reservationInfo.bags, reservationInfo.selectedVehicle, setSelectedVehicle]);
+  const hasEmptyStops = useMemo(() => {
+    return reservationInfo.extraStops.some(stop => !stop.trim());
+  }, [reservationInfo.extraStops]);
 
-  const validateFormErrors = () => {
+  const validateFormErrors = (stops = reservationInfo.extraStops) => {
     const newErrors = {};
     const passengerCount = reservationInfo.passengers === '' ? 0 : reservationInfo.passengers;
     const bagCount = reservationInfo.bags === '' ? 0 : reservationInfo.bags;
@@ -60,23 +50,36 @@ const VehicleSelection = ({ scrollUp }) => {
       newErrors.vehicle = "Please select a vehicle";
     }
     
-    // Only add extraStops error if there are any empty stops
-    const hasEmptyStops = reservationInfo.extraStops.some(stop => !stop.trim());
-    if (hasEmptyStops) {
-      newErrors.extraStops = "All extra stops must be filled";
+    // Use memoized empty stops check if using current stops
+    if (stops === reservationInfo.extraStops) {
+      if (hasEmptyStops) {
+        newErrors.extraStops = "All extra stops must be filled";
+      }
+    } else {
+      // For predicted state, check the provided stops
+      const predictedHasEmptyStops = stops.some(stop => !stop.trim());
+      if (predictedHasEmptyStops) {
+        newErrors.extraStops = "All extra stops must be filled";
+      }
     }
 
-    // Update the errors state
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+    return newErrors;
+  };
+
+  const updateErrors = (newErrors) => {
+    if (hasAttemptedSubmit) {
+      setErrors(newErrors);
+    }
   };
 
   const validateForm = () => {
-    const isValid = validateFormErrors();
-    if (!isValid) {
+    const newErrors = validateFormErrors();
+    setErrors(newErrors);
+    if (Object.keys(newErrors).length > 0) {
       setHasAttemptedSubmit(true);
+      return false;
     }
-    return isValid;
+    return true;
   };
 
   const handleSubmit = (e) => {
@@ -91,58 +94,61 @@ const VehicleSelection = ({ scrollUp }) => {
   };
 
   const handleRemoveExtraStop = (index) => {
+    const newStops = [...latestStopsRef.current];
+    newStops.splice(index, 1);
     removeExtraStop(index);
-    // After removing a stop, check if we still have empty stops
-    // We need to do this in the next tick after the state has updated
-    setTimeout(() => {
-      // If there are no more empty stops and no vehicle error, clear all errors
-      if (!reservationInfo.extraStops.some(stop => !stop.trim())) {
-        if (reservationInfo.selectedVehicle) {
-          setErrors({});
-        } else {
-          setErrors({ vehicle: "Please select a vehicle" });
-        }
-      } else {
-        validateFormErrors();
-      }
-    }, 0);
+    
+    // Only validate if user has attempted to submit
+    if (hasAttemptedSubmit) {
+      updateErrors(validateFormErrors(newStops));
+    }
   };
-
-  // Filter vehicles based on passenger count and bags (handle empty inputs)
-  const availableVehicles = cars.filter(car => {
-    const passengerCount = reservationInfo.passengers === '' ? 0 : reservationInfo.passengers;
-    const bagCount = reservationInfo.bags === '' ? 0 : reservationInfo.bags;
-    return car.seats >= passengerCount && car.luggage >= bagCount;
-  });
 
   const updateStop = (index, value) => {
+    const newStops = [...reservationInfo.extraStops];
+    newStops[index] = value;
     updateExtraStop(index, value);
-    // After updating a stop, check all stops
-    setTimeout(() => {
-      const hasEmptyStops = reservationInfo.extraStops.some(stop => !stop.trim());
-      if (!hasEmptyStops && reservationInfo.selectedVehicle) {
-        setErrors({});
-      } else if (!hasEmptyStops) {
-        setErrors({ vehicle: "Please select a vehicle" });
-      } else if (hasAttemptedSubmit) {
-        validateFormErrors();
-      }
-    }, 0);
+
+    if (hasAttemptedSubmit) {
+      updateErrors(validateFormErrors(newStops));
+    }
   };
 
-  // Add handler for vehicle selection to update errors
   const handleVehicleSelect = (vehicle) => {
     setSelectedVehicle(vehicle);
-    // After selecting a vehicle, update errors immediately
-    setTimeout(() => {
-      const hasEmptyStops = reservationInfo.extraStops.some(stop => !stop.trim());
-      if (hasEmptyStops) {
-        setErrors({ extraStops: "All extra stops must be filled" });
-      } else {
-        setErrors({});
-      }
-    }, 0);
+    if (hasAttemptedSubmit) {
+      const newErrors = validateFormErrors();
+      // Clear vehicle error when vehicle is selected
+      delete newErrors.vehicle;
+      updateErrors(newErrors);
+    }
   };
+
+  // Memoize available vehicles to prevent recalculation on every render
+  const availableVehicles = useMemo(() => {
+    const passengerCount = reservationInfo.passengers === '' ? 0 : reservationInfo.passengers;
+    const bagCount = reservationInfo.bags === '' ? 0 : reservationInfo.bags;
+    return cars.filter(car => 
+      car.seats >= passengerCount && 
+      car.luggage >= bagCount
+    );
+  }, [reservationInfo.passengers, reservationInfo.bags]);
+
+  // Effect to handle vehicle unselection when it becomes unavailable
+  useEffect(() => {
+    if (reservationInfo.selectedVehicle) {
+      const isCurrentVehicleAvailable = availableVehicles.some(car => 
+        car.id === reservationInfo.selectedVehicle.id
+      );
+      
+      if (!isCurrentVehicleAvailable) {
+        setSelectedVehicle(null);
+        if (hasAttemptedSubmit) {
+          updateErrors(validateFormErrors());
+        }
+      }
+    }
+  }, [availableVehicles, reservationInfo.selectedVehicle]);
 
   return (
     <div className="container-default mt-28">
@@ -185,7 +191,7 @@ const VehicleSelection = ({ scrollUp }) => {
                 <div className="flex items-start gap-2">
                   <div className="flex flex-col items-center">
                     <svg className="w-5 h-5 mt-0.5 shrink-0" viewBox="0 0 24 24" fill="currentColor">
-                      <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                      <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 010-5 2.5 2.5 0 010 5z"/>
                     </svg>
                     <div className="h-8 w-[1px] bg-zinc-600"></div>
                   </div>
