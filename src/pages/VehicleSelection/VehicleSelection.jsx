@@ -124,7 +124,9 @@ const VehicleSelection = ({ scrollUp }) => {
                       </svg>
                     </button>
                     {errors.extraStops && !stop.trim() && (
-                      <span className="text-red-500 text-sm whitespace-nowrap">Empty stop</span>
+                      <svg className="w-5 h-5 text-red-500" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
+                      </svg>
                     )}
                   </div>
                 </div>
@@ -161,15 +163,6 @@ const VehicleSelection = ({ scrollUp }) => {
               </div>
             </div>
           </div>
-
-          {errors.extraStops && (
-            <div className="pl-4 text-red-500 text-sm mb-2 bg-red-500/10 p-2 rounded border border-red-500/20">
-              <svg className="w-4 h-4 inline-block mr-1" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
-              </svg>
-              {errors.extraStops}
-            </div>
-          )}
 
           <div className="flex gap-4 text-sm">
             <div className="flex items-center gap-1">
@@ -264,15 +257,7 @@ const VehicleSelection = ({ scrollUp }) => {
           </div>
 
           <div className="flex flex-col gap-4">
-            {(errors.vehicle || errors.extraStops) && (
-              <div className="text-red-500 text-sm bg-red-500/10 p-2 rounded border border-red-500/20">
-                <svg className="w-4 h-4 inline-block mr-1" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
-                </svg>
-                {errors.vehicle || "Please fill in or remove empty stops"}
-              </div>
-            )}
-            <div className="flex justify-between">
+            <div className="flex justify-between items-start">
               <Button
                 type="button"
                 variant="secondary"
@@ -280,9 +265,19 @@ const VehicleSelection = ({ scrollUp }) => {
               >
                 Back
               </Button>
-              <Button type="submit" variant="secondary">
-                Continue
-              </Button>
+              <div className="flex flex-col items-end gap-2">
+                {(errors.vehicle || errors.extraStops) && (
+                  <div className="text-red-500 text-sm bg-red-500/10 px-3 py-1.5 rounded border border-red-500/20">
+                    <svg className="w-4 h-4 inline-block mr-1" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
+                    </svg>
+                    {errors.vehicle || "Please fill in or remove empty stops"}
+                  </div>
+                )}
+                <Button type="submit" variant="secondary">
+                  Continue
+                </Button>
+              </div>
             </div>
           </div>
         </form>
