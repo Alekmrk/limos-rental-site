@@ -22,10 +22,15 @@ export const ReservationContextProvider = ({ children }) => {
   });
 
   const handleInput = (e) => {
-    let value = e.target.type === 'number' ? 
-      (e.target.value === '' ? 0 : parseInt(e.target.value)) : 
-      e.target.value;
-    setReservationInfo({ ...reservationInfo, [e.target.name]: value });
+    let value = e.target.type === 'number' 
+      ? (e.target.value === '' ? '' : parseInt(e.target.value)) 
+      : e.target.value;
+    setReservationInfo({ 
+      ...reservationInfo, 
+      [e.target.name]: value,
+      // When setting a number field to empty, also store the numerical value as 0
+      ...(e.target.type === 'number' && value === '' ? { [`${e.target.name}Value`]: 0 } : {})
+    });
   };
 
   const setSelectedVehicle = (vehicle) => {

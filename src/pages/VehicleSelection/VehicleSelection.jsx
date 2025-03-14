@@ -42,18 +42,25 @@ const VehicleSelection = ({ scrollUp }) => {
 
   const validateForm = () => {
     const newErrors = {};
-    if (!reservationInfo.passengers || reservationInfo.passengers < 1) {
+    const passengerCount = reservationInfo.passengers === '' ? 0 : reservationInfo.passengers;
+    const bagCount = reservationInfo.bags === '' ? 0 : reservationInfo.bags;
+    
+    if (passengerCount < 1) {
       newErrors.passengers = "At least 1 passenger is required";
     }
-    if (reservationInfo.bags === undefined || reservationInfo.bags < 0) {
+    if (bagCount < 0) {
       newErrors.bags = "Number of bags cannot be negative";
     }
     if (!reservationInfo.selectedVehicle) {
       newErrors.vehicle = "Please select a vehicle";
     }
-    if (reservationInfo.extraStops.some(stop => !stop.trim())) {
+    
+    // Only add extraStops error if there are any empty stops
+    const hasEmptyStops = reservationInfo.extraStops.some(stop => !stop.trim());
+    if (hasEmptyStops) {
       newErrors.extraStops = "All extra stops must be filled";
     }
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -71,17 +78,26 @@ const VehicleSelection = ({ scrollUp }) => {
 
   const handleRemoveExtraStop = (index) => {
     removeExtraStop(index);
-    // After removing a stop, validate the form to update error states
-    setTimeout(() => {
-      validateForm();
-    }, 0);
+    // After removing a stop, validate the form in the next tick
+    setTimeout(validateForm, 0);
   };
 
-  // Filter vehicles based on passenger count and bags
-  const availableVehicles = cars.filter(car => 
-    car.seats >= reservationInfo.passengers && 
-    car.luggage >= (reservationInfo.bags || 0)
-  );
+  // Add effect to validate form when stops are updated
+  useEffect(() => {
+    validateForm();
+  }, [reservationInfo.extraStops]);
+
+  // Filter vehicles based on passenger count and bags (handle empty inputs)
+  const availableVehicles = cars.filter(car => {
+    const passengerCount = reservationInfo.passengers === '' ? 0 : reservationInfo.passengers;
+    const bagCount = reservationInfo.bags === '' ? 0 : reservationInfo.bags;
+    return car.seats >= passengerCount && car.luggage >= bagCount;
+  });
+
+  const updateStop = (index, value) => {
+    updateExtraStop(index, value);
+    setTimeout(validateForm, 0);
+  };
 
   return (
     <div className="container-default mt-28">
@@ -132,7 +148,7 @@ const VehicleSelection = ({ scrollUp }) => {
                     <AddressInput
                       name={`extraStop-${index}`}
                       value={stop}
-                      onChange={(e) => updateExtraStop(index, e.target.value)}
+                      onChange={(e) => updateStop(index, e.target.value)}
                       placeholder="Enter extra stop location"
                       className={`${!stop.trim() && errors.extraStops ? 'border-red-500' : ''}`}
                     />
