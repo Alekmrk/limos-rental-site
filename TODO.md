@@ -13,6 +13,7 @@
 - [ ] 🔴 Implement billing flow and payment processing
 - [ ] 🟡 Update website content (images and text)
 - [ ] 🟢 Migrate location services from current API to Google Places API
+- [ ] 🟢 Add validation to ensure pickup OR drop-off location is within Switzerland
 - [ ] 🟢 Do crypto billing, check crytpo transfer
 
 
@@ -32,4 +33,4 @@
 - [ ] Content refresh and visual updates
 
 ---
-Last updated: [Current Date] 
+Last updated: [Current Date]
