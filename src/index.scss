@@ -42,8 +42,15 @@
     background-size: cover;
     background-position: bottom;
     background-repeat: no-repeat;
-    height: 660px;
+    min-height: 660px;
+    height: auto;
+    padding-bottom: 24rem;
     @apply border border-zinc-900 shadow-2xl;
+
+    @media (min-width: 768px) {
+      height: 660px;
+      padding-bottom: 0;
+    }
   }
 
   .service-card button {
