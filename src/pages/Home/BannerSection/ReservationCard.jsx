@@ -35,7 +35,7 @@ const ReservationCard = () => {
 
   return (
     <form onSubmit={handleSubmit} className="reservation reserve-card w-[90%] max-w-[380px] p-6 sm:p-8 mx-auto md:mx-0 md:absolute md:bottom-12 md:right-8 lg:right-16 shadow-2xl bg-zinc-800/70 backdrop-blur-md border border-zinc-700/30 rounded-[2rem] text-left text-[14px] transition-all hover:shadow-[0_20px_50px_rgba(0,0,0,0.5)] hover:border-zinc-600/40">
-      <div className="flex justify-center gap-5 pb-6 relative">
+      <div className="flex justify-center gap-5 pb-2 relative">
         <button
           type="button"
           onClick={(e) => handleClick(e, 1)}
@@ -61,7 +61,7 @@ const ReservationCard = () => {
         <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-zinc-600/30 to-transparent"></div>
       </div>
       
-      <div className="space-y-4 pt-2">
+      <div className="space-y-4 -mt-1">
         <div className="relative">
           <AddressInput
             value={reservationInfo.pickup}
