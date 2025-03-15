@@ -61,7 +61,7 @@ const ReservationCard = () => {
         <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-zinc-600/30 to-transparent"></div>
       </div>
       
-      <div className="space-y-4 mt-1">
+      <div className="space-y-6 mt-1">
         <div className="relative">
           <AddressInput
             value={reservationInfo.pickup}
