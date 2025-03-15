@@ -278,7 +278,7 @@ const AddressInput = ({ value, onChange, name, placeholder, onBlur, className })
         onBlur={onBlur}
         name={name}
         placeholder={placeholder || "Enter an address in Switzerland"}
-        className={`bg-zinc-800/30 mb-3 rounded-[0.6rem] py-2 px-4 w-full border ${className || ''} ${error ? 'border-red-500' : 'border-zinc-700/50'} text-white`}
+        className={`bg-zinc-800/30 mb-3 rounded-[0.6rem] py-2 px-4 w-full border text-white transition-colors ${className || 'border-zinc-700/50'}`}
         autoComplete="off"
       />
       {error && (

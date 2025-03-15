@@ -124,6 +124,14 @@ const VehicleSelection = ({ scrollUp }) => {
     }
   };
 
+  const handleAddExtraStop = () => {
+    addExtraStop();
+    if (hasAttemptedSubmit) {
+      const newStops = [...reservationInfo.extraStops, ""];
+      updateErrors(validateFormErrors(newStops));
+    }
+  };
+
   // Memoize available vehicles to prevent recalculation on every render
   const availableVehicles = useMemo(() => {
     const passengerCount = reservationInfo.passengers === '' ? 0 : reservationInfo.passengers;
@@ -201,7 +209,7 @@ const VehicleSelection = ({ scrollUp }) => {
                       value={stop}
                       onChange={(e) => updateStop(index, e.target.value)}
                       placeholder="Enter extra stop location"
-                      className={!stop.trim() && errors.extraStops ? 'border-red-500' : ''}
+                      className={hasAttemptedSubmit && !stop.trim() && errors.extraStops ? 'border-red-500' : ''}
                     />
                     <button
                       type="button"
@@ -226,7 +234,7 @@ const VehicleSelection = ({ scrollUp }) => {
             <div className="pl-4">
               <button 
                 type="button"
-                onClick={addExtraStop}
+                onClick={handleAddExtraStop}
                 className="text-sm text-zinc-400 hover:text-white transition-colors my-2 flex items-center gap-1"
                 disabled={reservationInfo.extraStops.length >= 10}
               >
