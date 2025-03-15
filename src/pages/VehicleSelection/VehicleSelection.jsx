@@ -201,7 +201,7 @@ const VehicleSelection = ({ scrollUp }) => {
                       value={stop}
                       onChange={(e) => updateStop(index, e.target.value)}
                       placeholder="Enter extra stop location"
-                      className={`${!stop.trim() && errors.extraStops ? 'border-red-500' : ''}`}
+                      className={!stop.trim() && errors.extraStops ? 'border-red-500' : ''}
                     />
                     <button
                       type="button"
