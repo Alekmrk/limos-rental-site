@@ -58,10 +58,10 @@ const ReservationCard = () => {
         >
           Hourly
         </button>
-        <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-zinc-600/30 to-transparent"></div>
+        <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-gradient-to-r"></div>
       </div>
       
-      <div className="space-y-6 mt-1">
+      <div className="space-y-5 mt-2">
         <div className="relative">
           <AddressInput
             value={reservationInfo.pickup}
@@ -84,15 +84,17 @@ const ReservationCard = () => {
           {errors.dropoff && <span className="text-red-500 text-sm absolute -bottom-5">{errors.dropoff}</span>}
         </div>
 
-        <select
-          className="bg-zinc-800/30 rounded-xl py-3 px-4 w-full border border-zinc-700/50 text-white transition-all duration-200 hover:border-zinc-600"
-          style={{ appearance: "none" }}
-          disabled
-          name=""
-          id=""
-        >
-          <option value="one_way">One Way</option>
-        </select>
+        <div className="relative">
+          <select
+            className="bg-zinc-800/30 rounded-xl py-3 px-4 w-full border border-zinc-700/50 text-white transition-all duration-200 hover:border-zinc-600"
+            style={{ appearance: "none" }}
+            disabled
+            name=""
+            id=""
+          >
+            <option value="one_way">One Way</option>
+          </select>
+        </div>
 
         <div className="relative">
           <input
