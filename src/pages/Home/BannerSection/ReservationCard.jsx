@@ -34,15 +34,15 @@ const ReservationCard = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="reservation reserve-card w-[90%] max-w-[380px] p-6 sm:p-10 pt-[4.5rem] mx-auto md:mx-0 md:absolute md:bottom-12 md:right-8 lg:right-16 shadow-2xl bg-zinc-800/70 backdrop-blur-md border border-zinc-700/30 rounded-[2rem] text-left text-[14px] transition-all hover:shadow-[0_20px_50px_rgba(0,0,0,0.5)] hover:border-zinc-600/40">
-      <div className="text-sm absolute px-3 sm:px-5 right-0 left-0 top-5 flex justify-center gap-5">
+    <form onSubmit={handleSubmit} className="reservation reserve-card w-[90%] max-w-[380px] p-6 sm:p-8 pt-14 mx-auto md:mx-0 md:absolute md:bottom-12 md:right-8 lg:right-16 shadow-2xl bg-zinc-800/70 backdrop-blur-md border border-zinc-700/30 rounded-[2rem] text-left text-[14px] transition-all hover:shadow-[0_20px_50px_rgba(0,0,0,0.5)] hover:border-zinc-600/40">
+      <div className="text-sm absolute px-5 right-0 left-0 top-3 flex justify-center gap-5">
         <button
           type="button"
           onClick={(e) => handleClick(e, 1)}
           className={
             activeMethod === 1
-              ? "py-2.5 px-6 h-full rounded-xl active shadow-lg transform transition-all duration-200"
-              : "py-2.5 px-6 h-full rounded-xl text-neutral-400 hover:text-gold transition-all duration-200 hover:bg-zinc-800/50"
+              ? "py-2.5 px-5 h-full rounded-xl active shadow-lg transform transition-all duration-200"
+              : "py-2.5 px-5 h-full rounded-xl text-neutral-400 hover:text-gold transition-all duration-200 hover:bg-zinc-800/50"
           }
         >
           Distance
@@ -52,8 +52,8 @@ const ReservationCard = () => {
           onClick={(e) => handleClick(e, 2)}
           className={
             activeMethod === 2
-              ? "py-2.5 px-6 h-full rounded-xl active shadow-lg transform transition-all duration-200"
-              : "py-2.5 px-6 h-full rounded-xl text-neutral-400 hover:text-gold transition-all duration-200 hover:bg-zinc-800/50"
+              ? "py-2.5 px-5 h-full rounded-xl active shadow-lg transform transition-all duration-200"
+              : "py-2.5 px-5 h-full rounded-xl text-neutral-400 hover:text-gold transition-all duration-200 hover:bg-zinc-800/50"
           }
         >
           Hourly
@@ -62,7 +62,7 @@ const ReservationCard = () => {
       
       <div className="relative">
         <div className="absolute -top-4 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-zinc-600/30 to-transparent"></div>
-        <div className="space-y-4 mt-8">
+        <div className="space-y-4 mt-4">
           <div className="relative">
             <AddressInput
               value={reservationInfo.pickup}
