@@ -34,8 +34,8 @@ const ReservationCard = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="reservation reserve-card w-[90%] max-w-[380px] p-6 sm:p-10 pt-16 sm:pt-24 mx-auto md:mx-0 md:absolute md:bottom-12 md:right-8 lg:right-16 shadow-2xl bg-zinc-800/70 backdrop-blur-md border border-zinc-700/30 rounded-[2rem] text-left text-[14px] transition-all hover:shadow-[0_20px_50px_rgba(0,0,0,0.5)] hover:border-zinc-600/40">
-      <div className="text-sm absolute px-3 sm:px-5 right-0 left-0 top-4 sm:top-10 flex justify-center gap-3 sm:gap-5">
+    <form onSubmit={handleSubmit} className="reservation reserve-card w-[90%] max-w-[380px] p-6 sm:p-10 pt-12 mx-auto md:mx-0 md:absolute md:bottom-12 md:right-8 lg:right-16 shadow-2xl bg-zinc-800/70 backdrop-blur-md border border-zinc-700/30 rounded-[2rem] text-left text-[14px] transition-all hover:shadow-[0_20px_50px_rgba(0,0,0,0.5)] hover:border-zinc-600/40">
+      <div className="text-sm absolute px-3 sm:px-5 right-0 left-0 top-2 sm:top-3 flex justify-center gap-3 sm:gap-5">
         <button
           type="button"
           onClick={(e) => handleClick(e, 1)}
@@ -60,7 +60,7 @@ const ReservationCard = () => {
         </button>
       </div>
       
-      <div className="space-y-4 mt-6 sm:mt-8">
+      <div className="space-y-4 mt-2">
         <div className="relative">
           <AddressInput
             value={reservationInfo.pickup}
