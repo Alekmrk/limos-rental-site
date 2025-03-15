@@ -34,7 +34,7 @@ const ReservationCard = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="reservation reserve-card w-[320px] p-8 pt-[4.5rem] mx-auto md:mx-0 md:absolute md:bottom-8 md:right-16 shadow-xl bg-zinc-800/80 backdrop-blur-md border border-zinc-700/50 rounded-[1.5rem] text-left text-[15px]">
+    <form onSubmit={handleSubmit} className="reservation reserve-card w-[400px] p-10 pt-[4.5rem] mx-auto md:mx-0 md:absolute md:bottom-8 md:right-[15%] shadow-xl bg-zinc-800/80 backdrop-blur-md border border-zinc-700/50 rounded-[1.5rem] text-left text-[15px]">
       <div className="text-sm absolute px-3 right-0 left-0 top-4 flex justify-center gap-4">
         <button
           type="button"
