@@ -3,6 +3,7 @@ import Button from "../../../components/Button";
 import { Link, useNavigate } from "react-router-dom";
 import ReservationContext from "../../../contexts/ReservationContext";
 import AddressInput from "../../../components/AddressInput";
+import TimeInput from "../../../components/TimeInput";
 
 const ReservationCard = () => {
   const [activeMethod, setActiveMethod] = useState(1);
@@ -112,11 +113,10 @@ const ReservationCard = () => {
             <label className="text-neutral-400 w-5/12 pl-2" htmlFor="time">
               Pick Up Time
             </label>
-            <input
-              onChange={handleInput}
+            <TimeInput
               value={reservationInfo.time}
+              onChange={handleInput}
               name="time"
-              type="time"
               id="time"
               className="bg-zinc-800/30 rounded-xl py-3 px-4 w-7/12 border border-zinc-700/50 text-white transition-all duration-200 hover:border-zinc-600 focus:border-gold/50 focus:shadow-[0_0_15px_rgba(212,175,55,0.1)]"
             />

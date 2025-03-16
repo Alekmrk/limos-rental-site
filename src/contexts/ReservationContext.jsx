@@ -22,13 +22,23 @@ export const ReservationContextProvider = ({ children }) => {
   });
 
   const handleInput = (e) => {
-    let value = e.target.type === 'number' 
-      ? (e.target.value === '' ? '' : parseInt(e.target.value)) 
-      : e.target.value;
+    let value = e.target.value;
+    
+    if (e.target.type === 'time') {
+      // Force 24-hour format and validate
+      const [hours, minutes] = value.split(':').map(Number);
+      if (hours >= 0 && hours < 24 && minutes >= 0 && minutes < 60) {
+        value = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+      } else {
+        return; // Invalid time
+      }
+    } else if (e.target.type === 'number') {
+      value = value === '' ? '' : parseInt(value);
+    }
+    
     setReservationInfo({ 
       ...reservationInfo, 
       [e.target.name]: value,
-      // When setting a number field to empty, also store the numerical value as 0
       ...(e.target.type === 'number' && value === '' ? { [`${e.target.name}Value`]: 0 } : {})
     });
   };

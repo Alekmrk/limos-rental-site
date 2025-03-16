@@ -91,6 +91,27 @@
     }
   }
 
+  /* Force 24-hour time input format */
+  input[type="time"].hour24::-webkit-datetime-edit-ampm-field {
+    display: none;
+  }
+
+  input[type="time"].hour24 {
+    &::-webkit-calendar-picker-indicator {
+      background: none;
+    }
+    
+    &::-webkit-datetime-edit-hour-field,
+    &::-webkit-datetime-edit-minute-field {
+      color: white;
+    }
+    
+    &::-webkit-datetime-edit-text {
+      color: white;
+      padding: 0 0.3em;
+    }
+  }
+
   /* Utility Classes */
   .container-default {
     width: min(1200px, 100vw - 2rem);
