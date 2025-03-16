@@ -9,6 +9,7 @@ import VehicleSelection from "./pages/VehicleSelection/VehicleSelection";
 import CustomerDetails from "./pages/CustomerDetails/CustomerDetails";
 import ThankYou from "./pages/ThankYou/ThankYou";
 import ServicesPage from "./pages/ServicesPage/ServicesPage";
+import PaymentPage from "./pages/Payment/PaymentPage";
 import BackToTopButton from "./components/BackToTopButton";
 import { useState } from "react";
 import cars from "./data/cars";
@@ -60,6 +61,10 @@ function App() {
           <Route
             path="/customer-details"
             element={<CustomerDetails scrollUp={scrollUp} />}
+          />
+          <Route
+            path="/payment"
+            element={<PaymentPage scrollUp={scrollUp} />}
           />
           <Route path="/thankyou" element={<ThankYou scrollUp={scrollUp} />} />
           <Route path="*" element={<NotFound scrollUp={scrollUp} />} />

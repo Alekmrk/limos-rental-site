@@ -33,7 +33,7 @@ const CustomerDetails = ({ scrollUp }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (validateForm()) {
-      navigate('/thankyou');
+      navigate('/payment');
     }
   };
 
@@ -179,4 +179,4 @@ const CustomerDetails = ({ scrollUp }) => {
   );
 };
 
-export default CustomerDetails; 
+export default CustomerDetails;

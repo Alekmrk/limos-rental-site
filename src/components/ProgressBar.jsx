@@ -6,6 +6,7 @@ const ProgressBar = () => {
   const steps = [
     { path: "/vehicle-selection", label: "Vehicle Selection" },
     { path: "/customer-details", label: "Customer Details" },
+    { path: "/payment", label: "Payment" },
     { path: "/thankyou", label: "Confirmation" }
   ];
 
@@ -68,4 +69,4 @@ const ProgressBar = () => {
   );
 };
 
-export default ProgressBar; 
+export default ProgressBar;
