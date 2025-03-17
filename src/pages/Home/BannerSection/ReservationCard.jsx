@@ -86,18 +86,6 @@ const ReservationCard = () => {
         </div>
 
         <div className="relative">
-          <select
-            className="bg-zinc-800/30 rounded-xl py-3 px-4 w-full border border-zinc-700/50 text-white transition-all duration-200 hover:border-zinc-600"
-            style={{ appearance: "none" }}
-            disabled
-            name=""
-            id=""
-          >
-            <option value="one_way">One Way</option>
-          </select>
-        </div>
-
-        <div className="relative">
           <input
             onChange={handleInput}
             value={reservationInfo.date}
