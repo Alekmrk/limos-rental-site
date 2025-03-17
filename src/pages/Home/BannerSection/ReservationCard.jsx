@@ -1,27 +1,33 @@
 import { useState, useContext } from "react";
 import Button from "../../../components/Button";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import ReservationContext from "../../../contexts/ReservationContext";
 import AddressInput from "../../../components/AddressInput";
 import TimeInput from "../../../components/TimeInput";
 
 const ReservationCard = () => {
-  const [activeMethod, setActiveMethod] = useState(1);
   const navigate = useNavigate();
-  const { reservationInfo, handleInput } = useContext(ReservationContext);
+  const { reservationInfo, handleInput, setIsHourly } = useContext(ReservationContext);
   const [errors, setErrors] = useState({});
 
-  const handleClick = (e, method) => {
-    setActiveMethod(method);
-    e.preventDefault();
+  const handleModeChange = (isHourlyMode) => {
+    setIsHourly(isHourlyMode);
   };
 
   const validateForm = () => {
     const newErrors = {};
     if (!reservationInfo.pickup) newErrors.pickup = "Pick up location is required";
-    if (!reservationInfo.dropoff) newErrors.dropoff = "Drop off location is required";
     if (!reservationInfo.date) newErrors.date = "Date is required";
     if (!reservationInfo.time) newErrors.time = "Time is required";
+    
+    if (!reservationInfo.isHourly) {
+      if (!reservationInfo.dropoff) newErrors.dropoff = "Drop off location is required";
+    } else {
+      const hours = parseInt(reservationInfo.hours) || 0;
+      if (hours < 2 || hours > 24) {
+        newErrors.hours = "Hours must be between 2 and 24";
+      }
+    }
     
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -39,9 +45,9 @@ const ReservationCard = () => {
       <div className="flex justify-center gap-5 pb-4 relative">
         <button
           type="button"
-          onClick={(e) => handleClick(e, 1)}
+          onClick={() => handleModeChange(false)}
           className={
-            activeMethod === 1
+            !reservationInfo.isHourly
               ? "py-2.5 px-5 rounded-xl active shadow-lg transform transition-all duration-200"
               : "py-2.5 px-5 rounded-xl text-neutral-400 hover:text-gold transition-all duration-200 hover:bg-zinc-800/50"
           }
@@ -50,9 +56,9 @@ const ReservationCard = () => {
         </button>
         <button
           type="button"
-          onClick={(e) => handleClick(e, 2)}
+          onClick={() => handleModeChange(true)}
           className={
-            activeMethod === 2
+            reservationInfo.isHourly
               ? "py-2.5 px-5 rounded-xl active shadow-lg transform transition-all duration-200"
               : "py-2.5 px-5 rounded-xl text-neutral-400 hover:text-gold transition-all duration-200 hover:bg-zinc-800/50"
           }
@@ -74,16 +80,34 @@ const ReservationCard = () => {
           {errors.pickup && <span className="text-red-500 text-sm absolute -bottom-5">{errors.pickup}</span>}
         </div>
 
-        <div className="relative">
-          <AddressInput
-            value={reservationInfo.dropoff}
-            onChange={handleInput}
-            name="dropoff"
-            placeholder="Drop Off Address"
-            className="transition-all duration-200 hover:border-zinc-600 focus:border-gold/50 focus:shadow-[0_0_15px_rgba(212,175,55,0.1)]"
-          />
-          {errors.dropoff && <span className="text-red-500 text-sm absolute -bottom-5">{errors.dropoff}</span>}
-        </div>
+        {!reservationInfo.isHourly && (
+          <div className="relative">
+            <AddressInput
+              value={reservationInfo.dropoff}
+              onChange={handleInput}
+              name="dropoff"
+              placeholder="Drop Off Address"
+              className="transition-all duration-200 hover:border-zinc-600 focus:border-gold/50 focus:shadow-[0_0_15px_rgba(212,175,55,0.1)]"
+            />
+            {errors.dropoff && <span className="text-red-500 text-sm absolute -bottom-5">{errors.dropoff}</span>}
+          </div>
+        )}
+
+        {reservationInfo.isHourly && (
+          <div className="relative">
+            <input
+              type="number"
+              min="2"
+              max="24"
+              name="hours"
+              value={reservationInfo.hours || ''}
+              onChange={handleInput}
+              className="bg-zinc-800/30 rounded-xl py-3 px-4 w-full border border-zinc-700/50 text-white transition-all duration-200 hover:border-zinc-600 focus:border-gold/50 focus:shadow-[0_0_15px_rgba(212,175,55,0.1)]"
+              placeholder="Enter hours (2-24)"
+            />
+            {errors.hours && <span className="text-red-500 text-sm absolute -bottom-5">{errors.hours}</span>}
+          </div>
+        )}
 
         <div className="relative">
           <input

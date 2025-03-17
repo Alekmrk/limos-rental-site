@@ -11,7 +11,12 @@ const CustomerDetails = ({ scrollUp }) => {
 
   // Check if we have the required data from previous steps
   useEffect(() => {
-    if (!reservationInfo.pickup || !reservationInfo.dropoff || !reservationInfo.date || !reservationInfo.time) {
+    if (!reservationInfo.pickup || 
+        (!reservationInfo.isHourly && !reservationInfo.dropoff) || 
+        !reservationInfo.date || 
+        !reservationInfo.time || 
+        (reservationInfo.isHourly && (!reservationInfo.hours || reservationInfo.hours < 2 || reservationInfo.hours > 24))
+    ) {
       navigate('/');
     } else if (!reservationInfo.selectedVehicle || !reservationInfo.passengers || reservationInfo.passengers < 1) {
       navigate('/vehicle-selection');
@@ -24,6 +29,10 @@ const CustomerDetails = ({ scrollUp }) => {
       newErrors.email = "Email is required";
     } else if (!/\S+@\S+\.\S+/.test(reservationInfo.email)) {
       newErrors.email = "Please enter a valid email address";
+    }
+
+    if (reservationInfo.isHourly && !reservationInfo.plannedActivities?.trim()) {
+      newErrors.plannedActivities = "Please describe your planned activities";
     }
     
     setErrors(newErrors);
@@ -82,6 +91,28 @@ const CustomerDetails = ({ scrollUp }) => {
               />
             </div>
           </div>
+
+          {reservationInfo.isHourly && (
+            <div className="mb-8">
+              <label className="block text-sm font-medium mb-2" htmlFor="plannedActivities">
+                Planned Activities *
+              </label>
+              <textarea
+                id="plannedActivities"
+                name="plannedActivities"
+                value={reservationInfo.plannedActivities}
+                onChange={handleInput}
+                rows="4"
+                className={`bg-zinc-800/30 rounded-lg py-2 px-4 w-full border ${
+                  errors.plannedActivities ? 'border-red-500' : 'border-zinc-700/50'
+                }`}
+                placeholder="Please describe your planned activities during the rental period..."
+              ></textarea>
+              {errors.plannedActivities && (
+                <span className="text-red-500 text-sm">{errors.plannedActivities}</span>
+              )}
+            </div>
+          )}
 
           <div className="grid md:grid-cols-2 gap-6 mb-8">
             <div>

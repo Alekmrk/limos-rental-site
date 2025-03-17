@@ -15,8 +15,15 @@ const PaymentPage = ({ scrollUp }) => {
 
   // Check if we have the required data from previous steps
   useEffect(() => {
-    if (!reservationInfo.email || !reservationInfo.pickup || !reservationInfo.dropoff || 
-        !reservationInfo.date || !reservationInfo.time || !reservationInfo.selectedVehicle) {
+    if (!reservationInfo.email || 
+        !reservationInfo.pickup || 
+        (!reservationInfo.isHourly && !reservationInfo.dropoff) || 
+        !reservationInfo.date || 
+        !reservationInfo.time || 
+        !reservationInfo.selectedVehicle ||
+        (reservationInfo.isHourly && (!reservationInfo.hours || reservationInfo.hours < 2 || reservationInfo.hours > 24)) ||
+        (reservationInfo.isHourly && !reservationInfo.plannedActivities?.trim())
+    ) {
       navigate('/customer-details');
     }
   }, [reservationInfo, navigate]);
@@ -28,7 +35,9 @@ const PaymentPage = ({ scrollUp }) => {
         reservationInfo.distance || 46.5, // Default distance if not set
         reservationInfo.duration || 36, // Default duration if not set
         reservationInfo.selectedVehicle.name,
-        reservationInfo.extraStops?.length || 0
+        reservationInfo.extraStops?.length || 0,
+        reservationInfo.isHourly,
+        reservationInfo.isHourly ? parseInt(reservationInfo.hours) : 0
       );
       setPrice(calculatedPrice);
     }
@@ -71,6 +80,11 @@ const PaymentPage = ({ scrollUp }) => {
                 <p>Vehicle: {reservationInfo.selectedVehicle?.name}</p>
                 <p>Date: {reservationInfo.date}</p>
                 <p>Time: {reservationInfo.time}</p>
+                {reservationInfo.isHourly ? (
+                  <p>Duration: {reservationInfo.hours} hours</p>
+                ) : (
+                  <p>Distance: {reservationInfo.distance || '46.5'} km</p>
+                )}
                 <hr className="border-zinc-700/50 my-4" />
                 <div className="flex justify-between font-medium">
                   <span>Total Amount:</span>
@@ -207,7 +221,7 @@ const PaymentPage = ({ scrollUp }) => {
                 <p className="text-zinc-400">Pick-up Location</p>
                 <p>{reservationInfo.pickup}</p>
               </div>
-              {reservationInfo.extraStops.length > 0 && (
+              {!reservationInfo.isHourly && reservationInfo.extraStops.length > 0 && (
                 <div>
                   <p className="text-zinc-400">Extra Stops</p>
                   {reservationInfo.extraStops.map((stop, index) => (
@@ -215,14 +229,25 @@ const PaymentPage = ({ scrollUp }) => {
                   ))}
                 </div>
               )}
-              <div>
-                <p className="text-zinc-400">Drop-off Location</p>
-                <p>{reservationInfo.dropoff}</p>
-              </div>
+              {!reservationInfo.isHourly && (
+                <div>
+                  <p className="text-zinc-400">Drop-off Location</p>
+                  <p>{reservationInfo.dropoff}</p>
+                </div>
+              )}
               <div>
                 <p className="text-zinc-400">Date & Time</p>
                 <p>{reservationInfo.date} at {reservationInfo.time}</p>
+                {reservationInfo.isHourly && (
+                  <p>Duration: {reservationInfo.hours} hours</p>
+                )}
               </div>
+              {reservationInfo.isHourly && (
+                <div>
+                  <p className="text-zinc-400">Planned Activities</p>
+                  <p>{reservationInfo.plannedActivities}</p>
+                </div>
+              )}
               <div>
                 <p className="text-zinc-400">Vehicle</p>
                 <p>{reservationInfo.selectedVehicle?.name}</p>
