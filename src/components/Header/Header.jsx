@@ -36,7 +36,7 @@ const Header = () => {
 
   return (
     <header
-      className={`py-6 fixed z-10 bg-zinc-900/95 backdrop-blur-sm border-b border-zinc-800 left-0 right-0 top-0 ${
+      className={`py-6 fixed z-50 bg-zinc-900/95 backdrop-blur-sm border-b border-zinc-800 left-0 right-0 top-0 ${
         shadowVisible && "shadow-default"
       }`}
     >
