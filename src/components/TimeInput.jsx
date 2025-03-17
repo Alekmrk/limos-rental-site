@@ -40,8 +40,9 @@ const TimeInput = ({ value, onChange, name, id, className }) => {
       maxLength={5}
       name={name}
       id={id}
-      className={className}
+      className={`${className || ''} appearance-none`.trim()}
       pattern="[0-2][0-9]:[0-5][0-9]"
+      autoComplete="off"
     />
   );
 };
