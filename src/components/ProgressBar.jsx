@@ -30,7 +30,7 @@ const ProgressBar = () => {
               {/* Connecting lines */}
               {index > 0 && (
                 <div 
-                  className={`absolute h-[2px] left-[-50%] w-full top-[14px] md:top-[18px] transition-colors duration-300 ${
+                  className={`absolute h-[2px] left-[-50%] w-full top-[20px] md:top-[24px] transition-colors duration-300 ${
                     index <= currentStepIndex ? 'bg-gold' : 'bg-zinc-700'
                   }`}
                 />
@@ -39,7 +39,7 @@ const ProgressBar = () => {
               <button
                 onClick={() => handleStepClick(index)}
                 disabled={index >= currentStepIndex}
-                className={`w-7 h-7 md:w-10 md:h-10 rounded-full flex items-center justify-center z-10 transition-all duration-300 text-xs md:text-base ${
+                className={`w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center z-10 transition-all duration-300 text-sm md:text-base ${
                   index <= currentStepIndex 
                     ? "bg-gold text-black" 
                     : "bg-zinc-700 text-zinc-400"
@@ -52,7 +52,7 @@ const ProgressBar = () => {
                 {index + 1}
               </button>
               <span 
-                className={`mt-1 text-[8px] md:text-sm transition-colors duration-300 text-center whitespace-nowrap ${
+                className={`mt-1 text-[10px] md:text-sm transition-colors duration-300 text-center whitespace-nowrap ${
                   index <= currentStepIndex 
                     ? "text-gold" 
                     : "text-zinc-400"
