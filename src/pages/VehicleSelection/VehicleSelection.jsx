@@ -192,103 +192,124 @@ const VehicleSelection = ({ scrollUp }) => {
                 <svg className="w-5 h-5 mt-0.5 shrink-0" viewBox="0 0 24 24" fill="currentColor">
                   <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
                 </svg>
-                <div className="h-8 w-[1px] bg-zinc-600"></div>
+                {!reservationInfo.isHourly && (
+                  <div className="h-8 w-[1px] bg-zinc-600"></div>
+                )}
               </div>
               <div>
                 <p>{reservationInfo.pickup || 'ZÜRICH,'}</p>
+                {reservationInfo.isHourly && (
+                  <p className="text-sm text-zinc-400 mt-1">Service area coverage: Within Switzerland</p>
+                )}
               </div>
             </div>
             
-            {!reservationInfo.isHourly && reservationInfo.extraStops.map((stop, index) => (
-              <div key={index} className="pl-4">
+            {!reservationInfo.isHourly ? (
+              <>
+                {reservationInfo.extraStops.map((stop, index) => (
+                  <div key={index} className="pl-4">
+                    <div className="flex items-start gap-2">
+                      <div className="flex flex-col items-center">
+                        <svg className="w-5 h-5 mt-0.5 shrink-0" viewBox="0 0 24 24" fill="currentColor">
+                          <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 010-5 2.5 2.5 0 010 5z"/>
+                        </svg>
+                        <div className="h-8 w-[1px] bg-zinc-600"></div>
+                      </div>
+                      <div className="w-1/2 flex gap-2 items-start">
+                        <AddressInput
+                          name={`extraStop-${index}`}
+                          value={stop}
+                          onChange={(e) => updateStop(index, e.target.value)}
+                          placeholder="Enter extra stop location"
+                          className={hasAttemptedSubmit && !stop.trim() && errors.extraStops ? 'border-red-500' : ''}
+                        />
+                        <button
+                          type="button"
+                          onClick={() => handleRemoveExtraStop(index)}
+                          className="text-zinc-400 hover:text-white transition-colors p-2"
+                          title="Remove this stop"
+                        >
+                          <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                          </svg>
+                        </button>
+                        {errors.extraStops && !stop.trim() && (
+                          <svg className="w-5 h-5 text-red-500" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
+                          </svg>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+
+                <div className="pl-4">
+                  <button 
+                    type="button"
+                    onClick={handleAddExtraStop}
+                    className="text-sm text-zinc-400 hover:text-white transition-colors my-2 flex items-center gap-1"
+                    disabled={reservationInfo.extraStops.length >= 10}
+                  >
+                    <div className="w-5 flex justify-center">
+                      <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <circle cx="12" cy="12" r="10" strokeWidth="2"/>
+                        <path d="M12 8v8m-4-4h8" strokeWidth="2"/>
+                      </svg>
+                    </div>
+                    <span>
+                      ADD EXTRA STOP {reservationInfo.extraStops.length < 10 ? '(' + (10 - reservationInfo.extraStops.length) + ' REMAINING)' : '(MAX REACHED)'}
+                    </span>
+                  </button>
+                </div>
+
                 <div className="flex items-start gap-2">
                   <div className="flex flex-col items-center">
                     <svg className="w-5 h-5 mt-0.5 shrink-0" viewBox="0 0 24 24" fill="currentColor">
                       <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 010-5 2.5 2.5 0 010 5z"/>
                     </svg>
-                    <div className="h-8 w-[1px] bg-zinc-600"></div>
                   </div>
-                  <div className="w-1/2 flex gap-2 items-start">
-                    <AddressInput
-                      name={`extraStop-${index}`}
-                      value={stop}
-                      onChange={(e) => updateStop(index, e.target.value)}
-                      placeholder="Enter extra stop location"
-                      className={hasAttemptedSubmit && !stop.trim() && errors.extraStops ? 'border-red-500' : ''}
-                    />
-                    <button
-                      type="button"
-                      onClick={() => handleRemoveExtraStop(index)}
-                      className="text-zinc-400 hover:text-white transition-colors p-2"
-                      title="Remove this stop"
-                    >
-                      <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                      </svg>
-                    </button>
-                    {errors.extraStops && !stop.trim() && (
-                      <svg className="w-5 h-5 text-red-500" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
-                      </svg>
-                    )}
+                  <div>
+                    <p>{reservationInfo.dropoff || 'AARAU,'}</p>
                   </div>
                 </div>
-              </div>
-            ))}
-
-            {!reservationInfo.isHourly && (
-              <div className="pl-4">
-                <button 
-                  type="button"
-                  onClick={handleAddExtraStop}
-                  className="text-sm text-zinc-400 hover:text-white transition-colors my-2 flex items-center gap-1"
-                  disabled={reservationInfo.extraStops.length >= 10}
-                >
-                  <div className="w-5 flex justify-center">
-                    <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                      <circle cx="12" cy="12" r="10" strokeWidth="2"/>
-                      <path d="M12 8v8m-4-4h8" strokeWidth="2"/>
-                    </svg>
-                  </div>
-                  <span>
-                    ADD EXTRA STOP {reservationInfo.extraStops.length < 10 ? '(' + (10 - reservationInfo.extraStops.length) + ' REMAINING)' : '(MAX REACHED)'}
-                  </span>
-                </button>
+              </>
+            ) : (
+              <div className="mt-4 bg-black/20 rounded-lg p-4">
+                <div className="flex items-center gap-2">
+                  <svg className="w-5 h-5 text-gold" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/>
+                  </svg>
+                  <span className="text-sm text-zinc-300">Duration: {reservationInfo.hours || 2} hours</span>
+                </div>
+                <p className="text-xs text-zinc-500 mt-2">
+                  * For hourly bookings, the vehicle and chauffeur will remain at your disposal throughout the duration, starting from the pickup location.
+                </p>
               </div>
             )}
+          </div>
 
-            <div className="flex items-start gap-2">
-              <div className="flex flex-col items-center">
-                <svg className="w-5 h-5 mt-0.5 shrink-0" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 010-5 2.5 2.5 0 010 5z"/>
+          {!reservationInfo.isHourly && (
+            <div className="flex gap-4 text-sm">
+              <div className="flex items-center gap-1">
+                <span>TOTAL DISTANCE</span>
+                <span>•</span>
+                <span>{reservationInfo.distance || '46.5'} km</span>
+                <svg className="w-4 h-4 ml-1" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <circle cx="12" cy="12" r="10" strokeWidth="2"/>
+                  <path d="M12 8v8M8 12h8" strokeWidth="2"/>
                 </svg>
               </div>
-              <div>
-                <p>{reservationInfo.dropoff || 'AARAU,'}</p>
+              <div className="flex items-center gap-1">
+                <span>TOTAL DURATION</span>
+                <span>•</span>
+                <span>{reservationInfo.duration || '36'} minutes</span>
+                <svg className="w-4 h-4 ml-1" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <circle cx="12" cy="12" r="10" strokeWidth="2"/>
+                  <path d="M12 8v8M8 12h8" strokeWidth="2"/>
+                </svg>
               </div>
             </div>
-          </div>
-
-          <div className="flex gap-4 text-sm">
-            <div className="flex items-center gap-1">
-              <span>TOTAL DISTANCE</span>
-              <span>•</span>
-              <span>{reservationInfo.distance || '46.5'} km</span>
-              <svg className="w-4 h-4 ml-1" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                <circle cx="12" cy="12" r="10" strokeWidth="2"/>
-                <path d="M12 8v8M8 12h8" strokeWidth="2"/>
-              </svg>
-            </div>
-            <div className="flex items-center gap-1">
-              <span>TOTAL DURATION</span>
-              <span>•</span>
-              <span>{reservationInfo.duration || '36'} minutes</span>
-              <svg className="w-4 h-4 ml-1" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                <circle cx="12" cy="12" r="10" strokeWidth="2"/>
-                <path d="M12 8v8M8 12h8" strokeWidth="2"/>
-              </svg>
-            </div>
-          </div>
+          )}
         </div>
 
         <form onSubmit={handleSubmit}>
