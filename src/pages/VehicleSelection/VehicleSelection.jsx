@@ -289,25 +289,24 @@ const VehicleSelection = ({ scrollUp }) => {
           </div>
 
           {!reservationInfo.isHourly && (
-            <div className="flex gap-4 text-sm">
-              <div className="flex items-center gap-1">
-                <span>TOTAL DISTANCE</span>
-                <span>•</span>
-                <span>{reservationInfo.distance || '46.5'} km</span>
-                <svg className="w-4 h-4 ml-1" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                  <circle cx="12" cy="12" r="10" strokeWidth="2"/>
-                  <path d="M12 8v8M8 12h8" strokeWidth="2"/>
-                </svg>
+            <div className="mt-4 bg-black/20 rounded-lg p-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div className="flex items-center gap-2">
+                  <svg className="w-5 h-5 text-gold" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                  </svg>
+                  <span className="text-sm text-zinc-300">Total Distance: {reservationInfo.distance || '46.5'} km</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <svg className="w-5 h-5 text-gold" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/>
+                  </svg>
+                  <span className="text-sm text-zinc-300">Total Duration: {reservationInfo.duration || '36'} minutes</span>
+                </div>
               </div>
-              <div className="flex items-center gap-1">
-                <span>TOTAL DURATION</span>
-                <span>•</span>
-                <span>{reservationInfo.duration || '36'} minutes</span>
-                <svg className="w-4 h-4 ml-1" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                  <circle cx="12" cy="12" r="10" strokeWidth="2"/>
-                  <path d="M12 8v8M8 12h8" strokeWidth="2"/>
-                </svg>
-              </div>
+              <p className="text-xs text-zinc-500 mt-3">
+                * Total duration includes estimated traffic and processing time at each stop.
+              </p>
             </div>
           )}
         </div>
