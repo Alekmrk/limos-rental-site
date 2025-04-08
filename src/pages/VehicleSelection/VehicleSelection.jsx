@@ -199,7 +199,7 @@ const VehicleSelection = ({ scrollUp }) => {
               </div>
             </div>
             
-            {reservationInfo.extraStops.map((stop, index) => (
+            {!reservationInfo.isHourly && reservationInfo.extraStops.map((stop, index) => (
               <div key={index} className="pl-4">
                 <div className="flex items-start gap-2">
                   <div className="flex flex-col items-center">
@@ -236,24 +236,26 @@ const VehicleSelection = ({ scrollUp }) => {
               </div>
             ))}
 
-            <div className="pl-4">
-              <button 
-                type="button"
-                onClick={handleAddExtraStop}
-                className="text-sm text-zinc-400 hover:text-white transition-colors my-2 flex items-center gap-1"
-                disabled={reservationInfo.extraStops.length >= 10}
-              >
-                <div className="w-5 flex justify-center">
-                  <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                    <circle cx="12" cy="12" r="10" strokeWidth="2"/>
-                    <path d="M12 8v8m-4-4h8" strokeWidth="2"/>
-                  </svg>
-                </div>
-                <span>
-                  ADD EXTRA STOP {reservationInfo.extraStops.length < 10 ? '(' + (10 - reservationInfo.extraStops.length) + ' REMAINING)' : '(MAX REACHED)'}
-                </span>
-              </button>
-            </div>
+            {!reservationInfo.isHourly && (
+              <div className="pl-4">
+                <button 
+                  type="button"
+                  onClick={handleAddExtraStop}
+                  className="text-sm text-zinc-400 hover:text-white transition-colors my-2 flex items-center gap-1"
+                  disabled={reservationInfo.extraStops.length >= 10}
+                >
+                  <div className="w-5 flex justify-center">
+                    <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                      <circle cx="12" cy="12" r="10" strokeWidth="2"/>
+                      <path d="M12 8v8m-4-4h8" strokeWidth="2"/>
+                    </svg>
+                  </div>
+                  <span>
+                    ADD EXTRA STOP {reservationInfo.extraStops.length < 10 ? '(' + (10 - reservationInfo.extraStops.length) + ' REMAINING)' : '(MAX REACHED)'}
+                  </span>
+                </button>
+              </div>
+            )}
 
             <div className="flex items-start gap-2">
               <div className="flex flex-col items-center">

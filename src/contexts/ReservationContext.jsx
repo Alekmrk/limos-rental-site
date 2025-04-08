@@ -55,11 +55,11 @@ export const ReservationContextProvider = ({ children }) => {
     setReservationInfo(prev => ({ 
       ...prev, 
       isHourly,
-      // Clear or preserve fields based on mode
+      // Clear fields that don't apply to hourly mode
       dropoff: isHourly ? '' : prev.dropoff,
-      hours: isHourly ? prev.hours : '',
+      hours: isHourly ? '2' : '',  // Set default of 2 hours for hourly mode
       plannedActivities: isHourly ? prev.plannedActivities : '',
-      extraStops: isHourly ? [] : prev.extraStops,
+      extraStops: [],  // Always clear extra stops for hourly mode
       // Reset distance and duration for hourly mode
       distance: isHourly ? 0 : (prev.distance || 46.5),
       duration: isHourly ? 0 : (prev.duration || 36)
