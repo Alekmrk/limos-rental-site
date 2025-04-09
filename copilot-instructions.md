@@ -36,3 +36,29 @@ Follow these rules when you write code:
 - Maintain consistency with the existing codebase
 - Use the established error handling patterns
 - Follow the existing responsive design approach
+
+### Additional Guidelines
+
+#### Testing
+- Write unit tests for all new components and functions using Jest or React Testing Library.
+- Ensure tests cover edge cases and have at least 80% code coverage.
+- Use descriptive test names and organize tests logically.
+
+#### Performance Considerations
+- Optimize critical paths for performance while maintaining readability.
+- Avoid unnecessary re-renders by using React.memo or useCallback where appropriate.
+- Use lazy loading for components and images to improve initial load time.
+
+#### Documentation
+- Add comments for complex logic or non-obvious code sections.
+- Update README.md or other relevant documentation when introducing new features or changes.
+- Ensure all components have clear and concise prop type definitions.
+
+#### Dependency Management
+- Avoid adding unnecessary dependencies; ensure they align with project goals.
+- Regularly review and update dependencies to avoid security vulnerabilities.
+
+#### Code Review Standards
+- Write meaningful commit messages that describe the changes clearly.
+- Ensure all code is peer-reviewed before merging into the main branch.
+- Address all review comments before marking a pull request as ready to merge.
