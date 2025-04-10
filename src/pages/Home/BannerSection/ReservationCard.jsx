@@ -94,7 +94,7 @@ const ReservationCard = () => {
         <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-gradient-to-r"></div>
       </div>
       
-      <div className="space-y-5 mt-2">
+      <div className="space-y-5 mt-2 min-h-[250px]">
         {!reservationInfo.isSpecialRequest ? (
           <>
             <div className="relative">
@@ -138,14 +138,9 @@ const ReservationCard = () => {
             )}
           </>
         ) : (
-          <div className="mb-4 text-neutral-400 text-sm border border-gold/20 rounded-xl p-4 bg-gold/5">
-            <p>Tell us about your special requirements in the next step. This could be:</p>
-            <ul className="list-disc ml-5 mt-2 space-y-1">
-              <li>Wedding transportation</li>
-              <li>Corporate event</li>
-              <li>Airport VIP service</li>
-              <li>Custom tour packages</li>
-            </ul>
+          <div className="mb-4 text-neutral-400 text-sm border border-gold/20 rounded-xl p-4 bg-gold/5 min-h-[116px] flex flex-col justify-center">
+            <p>Enter your preferred date and time.</p>
+            <p>We'll discuss your requirements in the next step.</p>
           </div>
         )}
 
