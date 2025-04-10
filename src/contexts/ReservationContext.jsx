@@ -20,8 +20,10 @@ export const ReservationContextProvider = ({ children }) => {
     phone: "",
     selectedVehicle: null,
     isHourly: false,
+    isSpecialRequest: false,
     hours: "",
     plannedActivities: "",
+    specialRequestDetails: "",
     distance: 0,
     duration: 0
   });
@@ -55,6 +57,7 @@ export const ReservationContextProvider = ({ children }) => {
     setReservationInfo(prev => ({ 
       ...prev, 
       isHourly,
+      isSpecialRequest: false,
       // Clear fields that don't apply to hourly mode
       dropoff: isHourly ? '' : prev.dropoff,
       hours: isHourly ? '2' : '',  // Set default of 2 hours for hourly mode
@@ -66,8 +69,24 @@ export const ReservationContextProvider = ({ children }) => {
     }));
   };
 
+  const setIsSpecialRequest = (isSpecial) => {
+    setReservationInfo(prev => ({
+      ...prev,
+      isSpecialRequest: isSpecial,
+      isHourly: false,
+      // Clear other fields when switching to special request
+      dropoff: '',
+      hours: '',
+      plannedActivities: '',
+      extraStops: [],
+      distance: 0,
+      duration: 0,
+      specialRequestDetails: isSpecial ? 'Special transportation request' : ''
+    }));
+  };
+
   const addExtraStop = () => {
-    if (!reservationInfo.isHourly && reservationInfo.extraStops.length < 10) {
+    if (!reservationInfo.isHourly && !reservationInfo.isSpecialRequest && reservationInfo.extraStops.length < 10) {
       setReservationInfo(prev => ({
         ...prev,
         extraStops: [...prev.extraStops, ""]
@@ -95,6 +114,7 @@ export const ReservationContextProvider = ({ children }) => {
       handleInput, 
       setSelectedVehicle,
       setIsHourly,
+      setIsSpecialRequest,
       addExtraStop,
       removeExtraStop,
       updateExtraStop

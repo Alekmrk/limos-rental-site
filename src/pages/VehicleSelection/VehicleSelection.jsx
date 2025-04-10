@@ -26,6 +26,13 @@ const VehicleSelection = ({ scrollUp }) => {
 
   // Check if we have the required data from the previous step
   useEffect(() => {
+    // For special requests, skip vehicle selection
+    if (reservationInfo.isSpecialRequest) {
+      navigate('/customer-details');
+      return;
+    }
+
+    // Normal validation for other booking types
     if (!reservationInfo.pickup || 
         (!reservationInfo.isHourly && !reservationInfo.dropoff) || 
         !reservationInfo.date || 

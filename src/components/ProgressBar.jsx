@@ -1,14 +1,25 @@
 import { useLocation, useNavigate } from "react-router-dom";
+import { useContext } from "react";
+import ReservationContext from "../contexts/ReservationContext";
 
 const ProgressBar = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const steps = [
+  const { reservationInfo } = useContext(ReservationContext);
+  
+  const regularSteps = [
     { path: "/vehicle-selection", label: "Vehicle Selection" },
     { path: "/customer-details", label: "Customer Details" },
     { path: "/payment", label: "Payment" },
     { path: "/thankyou", label: "Confirmation" }
   ];
+
+  const specialSteps = [
+    { path: "/customer-details", label: "Contact Details" },
+    { path: "/thankyou", label: "Confirmation" }
+  ];
+
+  const steps = reservationInfo.isSpecialRequest ? specialSteps : regularSteps;
 
   const currentStepIndex = steps.findIndex(step => step.path === location.pathname);
 
