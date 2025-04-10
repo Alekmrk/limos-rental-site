@@ -1,8 +1,7 @@
 import { useState, useEffect, useRef } from "react";
+import { isHotel } from "../services/GoogleMapsService";
 
-const API_KEY = process.env.REACT_APP_HERE_API_KEY;
-
-// Swiss airports data
+// Swiss airports data remains the same
 const SWISS_AIRPORTS = [
   {
     name: 'Zürich Airport',
@@ -55,223 +54,165 @@ const SWISS_AIRPORTS = [
   }
 ];
 
-// Keywords that indicate an airport search (from shortest to longest)
 const AIRPORT_KEYWORDS = [
   { partial: 'air', full: 'airport' },
   { partial: 'airp', full: 'airport' },
-  { partial: 'airpo', full: 'airport' },
-  { partial: 'airport', full: 'airport' },
-  { partial: 'flu', full: 'flughafen' },
   { partial: 'flug', full: 'flughafen' },
-  { partial: 'flugh', full: 'flughafen' },
-  { partial: 'flughafen', full: 'flughafen' },
-  { partial: 'aer', full: 'aeroport' },
-  { partial: 'aero', full: 'aeroport' },
-  { partial: 'aerop', full: 'aeroport' },
-  { partial: 'aeroport', full: 'aeroport' }
+  { partial: 'aero', full: 'aeroport' }
 ];
 
-const AddressInput = ({ value, onChange, name, placeholder, onBlur, className }) => {
-  const [suggestions, setSuggestions] = useState([]);
-  const [showSuggestions, setShowSuggestions] = useState(false);
-  const [error, setError] = useState(null);
-  const wrapperRef = useRef(null);
-  const debounceTimeout = useRef(null);
+// Common hotel chains in Switzerland for better suggestions
+const HOTEL_CHAINS = [
+  'hilton', 'marriott', 'sheraton', 'hyatt', 'radisson', 
+  'novotel', 'swissotel', 'movenpick', 'four seasons'
+];
 
+const AddressInput = ({ value, onChange, name, placeholder, onBlur, className, onPlaceSelected }) => {
+  const [showAirports, setShowAirports] = useState(false);
+  const [airportSuggestions, setAirportSuggestions] = useState([]);
+  const [placeDetails, setPlaceDetails] = useState(null);
+  const inputRef = useRef(null);
+  const wrapperRef = useRef(null);
+  const autocompleteRef = useRef(null);
+
+  // Initialize Google Maps Autocomplete when the component mounts
   useEffect(() => {
-    function handleClickOutside(event) {
-      if (wrapperRef.current && !wrapperRef.current.contains(event.target)) {
-        setShowSuggestions(false);
+    if (!window.google) return;
+    
+    const options = {
+      types: ["establishment", "geocode"],
+      componentRestrictions: { country: "ch" },
+      fields: ["formatted_address", "geometry", "place_id", "types", "name"]
+    };
+
+    autocompleteRef.current = new window.google.maps.places.Autocomplete(inputRef.current, options);
+
+    const listener = autocompleteRef.current.addListener("place_changed", () => {
+      const place = autocompleteRef.current.getPlace();
+      if (place) {
+        const detectedHotel = isHotel(place.types || []);
+        const placeInfo = {
+          formattedAddress: place.formatted_address,
+          location: place.geometry?.location ? {
+            lat: place.geometry.location.lat(),
+            lng: place.geometry.location.lng()
+          } : null,
+          placeId: place.place_id,
+          isHotel: detectedHotel,
+          name: place.name
+        };
+
+        setPlaceDetails(placeInfo);
+        onChange({
+          target: {
+            name,
+            value: detectedHotel ? `${place.name}, ${place.formatted_address}` : place.formatted_address
+          }
+        });
+
+        if (onPlaceSelected) {
+          onPlaceSelected(placeInfo);
+        }
+
+        setShowAirports(false);
       }
-    }
+    });
+
+    return () => {
+      if (window.google && listener) {
+        window.google.maps.event.removeListener(listener);
+      }
+    };
+  }, [name, onChange, onPlaceSelected]);
+
+  // Handle clicks outside the component to close the suggestions
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (wrapperRef.current && !wrapperRef.current.contains(event.target)) {
+        setShowAirports(false);
+      }
+    };
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  // Check if the input is an airport search
   const isAirportSearch = (query) => {
-    const lowercaseQuery = query.toLowerCase().trim();
-    
-    // Check for airport keywords
+    const lowercaseQuery = query?.toLowerCase().trim() || '';
     return AIRPORT_KEYWORDS.some(keyword => 
-      lowercaseQuery.includes(keyword.partial) ||
-      SWISS_AIRPORTS.some(airport => lowercaseQuery.includes(airport.code.toLowerCase()))
+      lowercaseQuery.includes(keyword.partial)
+    ) || SWISS_AIRPORTS.some(airport => 
+      lowercaseQuery.includes(airport.code.toLowerCase())
     );
   };
 
+  // Get airport suggestions based on the input
   const getAirportSuggestions = (query) => {
-    const lowercaseQuery = query.toLowerCase().trim();
+    if (!query) return [];
     
-    // If it's just an airport keyword, show all airports
-    const isJustAirportKeyword = AIRPORT_KEYWORDS.some(keyword => 
-      lowercaseQuery === keyword.partial || lowercaseQuery === keyword.full
-    );
-
-    if (isJustAirportKeyword) {
-      return SWISS_AIRPORTS.map(airport => ({
-        display: airport.display,
-        full: airport.display,
-        type: 'airport',
-        importance: 1,
-        code: airport.code
-      }));
-    }
-
-    // Remove airport keywords from the search term
-    let searchTerm = lowercaseQuery;
-    AIRPORT_KEYWORDS.forEach(keyword => {
-      searchTerm = searchTerm.replace(keyword.partial, '').replace(keyword.full, '');
+    const lowercaseQuery = query.toLowerCase().trim();
+    return SWISS_AIRPORTS.filter(airport => {
+      return airport.keywords.some(keyword => keyword.includes(lowercaseQuery)) ||
+             airport.code.toLowerCase().includes(lowercaseQuery) ||
+             airport.city.toLowerCase().includes(lowercaseQuery);
     });
-    searchTerm = searchTerm.trim();
-
-    return SWISS_AIRPORTS
-      .filter(airport => {
-        if (!searchTerm) {
-          return true; // Show all airports if only airport keyword is present
-        }
-        return airport.keywords.some(keyword => keyword.includes(searchTerm)) ||
-               airport.code.toLowerCase().includes(searchTerm) ||
-               airport.city.toLowerCase().includes(searchTerm) ||
-               searchTerm.includes(airport.code.toLowerCase());
-      })
-      .map(airport => ({
-        display: airport.display,
-        full: airport.display,
-        type: 'airport',
-        importance: 1,
-        code: airport.code
-      }));
   };
 
-  const fetchSuggestions = async (query) => {
-    if (!query || query.length < 2) {
-      setSuggestions([]);
-      return;
-    }
-
-    try {
-      setError(null);
-
-      // Check if this is an airport search
-      const airportSearchCheck = isAirportSearch(query);
-      
-      // Get airport suggestions
-      const airportResults = getAirportSuggestions(query);
-
-      // If it's an airport search and we have results, only show airports
-      if (airportSearchCheck && airportResults.length > 0) {
-        setSuggestions(airportResults);
-        return;
-      }
-
-      // Otherwise, fetch general location suggestions from HERE API
-      const baseUrl = 'https://geocode.search.hereapi.com/v1/geocode';
-      const params = new URLSearchParams({
-        q: `${query} Switzerland`,
-        apiKey: API_KEY,
-        limit: 10,
-        lang: 'en'
-      });
-
-      const response = await fetch(`${baseUrl}?${params}`);
-
-      if (!response.ok) {
-        const errorText = await response.text();
-        console.error('API Error:', errorText);
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const data = await response.json();
-      
-      if (!data.items || !Array.isArray(data.items)) {
-        console.error("Invalid response format:", data);
-        setSuggestions(airportResults);
-        return;
-      }
-
-      const locationSuggestions = data.items
-        .filter(item => item.address && item.address.countryCode === 'CHE')
-        .map(item => {
-          const address = item.address;
-          const parts = [];
-
-          if (address.street) parts.push(address.street);
-          if (address.houseNumber) parts.push(address.houseNumber);
-          if (address.city) parts.push(address.city);
-          if (address.postalCode) parts.push(address.postalCode);
-          parts.push('Switzerland');
-
-          return {
-            display: parts.filter(Boolean).join(', '),
-            full: address.label,
-            type: 'location',
-            importance: 0.9
-          };
-        });
-
-      // Combine and sort all suggestions
-      const allSuggestions = [...airportResults, ...locationSuggestions];
-      
-      // Sort results
-      allSuggestions.sort((a, b) => {
-        // Always prioritize exact airport code matches
-        const isExactAirportCodeMatch = (suggestion, q) => 
-          suggestion.type === 'airport' && 
-          suggestion.code?.toLowerCase() === q.toLowerCase();
-
-        if (isExactAirportCodeMatch(a, query)) return -1;
-        if (isExactAirportCodeMatch(b, query)) return 1;
-
-        // Then prioritize exact matches
-        const aStartMatch = a.display.toLowerCase().startsWith(query.toLowerCase());
-        const bStartMatch = b.display.toLowerCase().startsWith(query.toLowerCase());
-        if (aStartMatch && !bStartMatch) return -1;
-        if (!aStartMatch && bStartMatch) return 1;
-        
-        // Then prioritize airports if searching for airports
-        if (airportSearchCheck) {
-          if (a.type === 'airport' && b.type !== 'airport') return -1;
-          if (a.type !== 'airport' && b.type === 'airport') return 1;
-        }
-        
-        return b.importance - a.importance;
-      });
-
-      setSuggestions(allSuggestions.slice(0, 5));
-    } catch (error) {
-      console.error("Error fetching suggestions:", error);
-      setError("Failed to fetch address suggestions");
-      setSuggestions(getAirportSuggestions(query));
-    }
-  };
-
+  // Handle input changes
   const handleInputChange = (e) => {
     const value = e.target.value;
     onChange(e);
-    setShowSuggestions(true);
-    
-    if (debounceTimeout.current) {
-      clearTimeout(debounceTimeout.current);
+    setPlaceDetails(null);
+
+    // Check for airports or hotels
+    const lowercaseValue = value.toLowerCase();
+    if (isAirportSearch(lowercaseValue)) {
+      const suggestions = getAirportSuggestions(lowercaseValue);
+      setAirportSuggestions(suggestions);
+      setShowAirports(suggestions.length > 0);
+    } else {
+      setShowAirports(false);
     }
-    debounceTimeout.current = setTimeout(() => {
-      fetchSuggestions(value);
-    }, 300);
+
+    // Bias autocomplete to hotels when hotel-related keywords are typed
+    if (HOTEL_CHAINS.some(chain => lowercaseValue.includes(chain)) || 
+        lowercaseValue.includes('hotel')) {
+      if (autocompleteRef.current) {
+        autocompleteRef.current.setTypes(['lodging']);
+      }
+    } else {
+      if (autocompleteRef.current) {
+        autocompleteRef.current.setTypes(['establishment', 'geocode']);
+      }
+    }
   };
 
-  const handleSuggestionClick = (suggestion) => {
-    const syntheticEvent = {
+  // Handle airport selection
+  const handleAirportSelect = (airport) => {
+    const airportInfo = {
+      formattedAddress: airport.display,
+      isAirport: true,
+      code: airport.code
+    };
+    
+    onChange({
       target: {
         name,
-        value: suggestion.full
+        value: airport.display
       }
-    };
-    onChange(syntheticEvent);
-    setShowSuggestions(false);
-    setSuggestions([]);
+    });
+    
+    if (onPlaceSelected) {
+      onPlaceSelected(airportInfo);
+    }
+    
+    setShowAirports(false);
   };
 
   return (
     <div className="relative" ref={wrapperRef}>
       <input
+        ref={inputRef}
         type="text"
         value={value}
         onChange={handleInputChange}
@@ -281,28 +222,27 @@ const AddressInput = ({ value, onChange, name, placeholder, onBlur, className })
         className={`bg-zinc-800/30 mb-3 rounded-[0.6rem] py-2 px-4 w-full border text-white transition-colors ${className || 'border-zinc-700/50'}`}
         autoComplete="off"
       />
-      {error && (
-        <div className="text-red-500 text-sm mb-2">
-          {error}
-        </div>
-      )}
-      {!API_KEY && (
-        <div className="text-red-500 text-sm mb-2">
-          HERE API key is missing
-        </div>
-      )}
-      {showSuggestions && suggestions.length > 0 && (
+
+      {showAirports && airportSuggestions.length > 0 && (
         <ul className="absolute z-50 w-full bg-zinc-800 border border-zinc-700/50 rounded-[0.6rem] mt-[-10px] max-h-60 overflow-y-auto">
-          {suggestions.map((suggestion, index) => (
+          {airportSuggestions.map((airport, index) => (
             <li
               key={index}
               className="px-4 py-2 hover:bg-zinc-700 cursor-pointer text-white text-sm border-b border-zinc-700/50 last:border-b-0"
-              onClick={() => handleSuggestionClick(suggestion)}
+              onClick={() => handleAirportSelect(airport)}
             >
-              {suggestion.display}
+              {airport.display}
             </li>
           ))}
         </ul>
+      )}
+
+      {placeDetails?.isHotel && (
+        <div className="absolute right-3 top-2">
+          <span className="text-gold text-sm bg-gold/10 px-2 py-1 rounded-full">
+            Hotel
+          </span>
+        </div>
       )}
     </div>
   );

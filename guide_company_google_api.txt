@@ -1,0 +1,47 @@
+I'll help you set up the Google Maps API keys for your company. Let me guide you through the process step by step:
+
+First, you need to create an Organization in Google Cloud Console:
+Go to https://console.cloud.google.com/
+Click on "Create Organization" or use an existing one if you have it
+You'll need to verify your company's domain ownership:
+This typically involves adding a DNS record or uploading an HTML file to your website
+Have your domain administrator credentials ready
+Create a Project:
+Once your organization is set up, create a new project
+Give it a business-appropriate name like "Limos-Rental-Maps"
+This project will be linked to your organization
+Set up Billing:
+Click "Billing" in the left sidebar
+Set up a business billing account
+Add your company's payment method
+You can set budgets and alerts to monitor costs
+Consider enabling billing reports for accounting
+Enable the Required APIs:
+Go to "APIs & Services" → "Library"
+Search for and enable these APIs:
+Maps JavaScript API
+Places API
+Geocoding API
+Distance Matrix API
+Create API Key with Restrictions:
+Go to "APIs & Services" → "Credentials"
+Click "Create Credentials" → "API Key"
+After creating, click the key to edit it
+Set these restrictions:
+Application restrictions:
+Select "HTTP referrers (web sites)"
+Add your production domain
+Add your development domains (localhost:5173 for Vite development)
+API restrictions:
+Select "Restrict key"
+Choose only the APIs you enabled
+Quotas:
+Set up quotas for each API to control costs
+Once you have the API key, I'll help you implement it securely in your codebase. There are two approaches we can use:
+A. Using Environment Variables (Recommended for security): Let me set this up for you:
+
+Run command in terminal
+
+Creating .env file for environment variables
+
+echo VITE_GOOGLE_MAPS_API_KEY=your_api_key_here > .env

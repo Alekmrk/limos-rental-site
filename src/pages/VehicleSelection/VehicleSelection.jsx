@@ -5,6 +5,8 @@ import Button from "../../components/Button";
 import ProgressBar from "../../components/ProgressBar";
 import AddressInput from "../../components/AddressInput";
 import cars from "../../data/cars";
+import MapPreview from "../../components/MapPreview";
+import { calculatePriceByDistance, addSurcharges } from "../../services/PriceCalculationService";
 
 const VehicleSelection = ({ scrollUp }) => {
   const navigate = useNavigate();
@@ -19,6 +21,7 @@ const VehicleSelection = ({ scrollUp }) => {
   const [errors, setErrors] = useState({});
   const [hasAttemptedSubmit, setHasAttemptedSubmit] = useState(false);
   const latestStopsRef = useRef(reservationInfo.extraStops);
+  const [prices, setPrices] = useState({});
 
   useEffect(() => {
     latestStopsRef.current = reservationInfo.extraStops;
@@ -170,6 +173,42 @@ const VehicleSelection = ({ scrollUp }) => {
     }
   }, [availableVehicles, reservationInfo.selectedVehicle]);
 
+  useEffect(() => {
+    if (reservationInfo.routeInfo) {
+      // Calculate prices for each vehicle category
+      const newPrices = {};
+      availableVehicles.forEach(vehicle => {
+        const basePrice = calculatePriceByDistance(
+          reservationInfo.routeInfo.distanceValue,
+          vehicle.category,
+          reservationInfo.routeInfo.durationValue
+        );
+        
+        // Check if pickup or dropoff is at an airport
+        const isAirport = reservationInfo.pickupDetails?.isAirport || 
+                         reservationInfo.dropoffDetails?.isAirport;
+        
+        // Check if it's night time (between 22:00 and 06:00)
+        const time = reservationInfo.time;
+        const hour = parseInt(time.split(':')[0]);
+        const isNightTime = hour >= 22 || hour < 6;
+        
+        // Check if it's weekend
+        const date = new Date(reservationInfo.date);
+        const isWeekend = date.getDay() === 0 || date.getDay() === 6;
+        
+        const finalPrice = addSurcharges(basePrice, {
+          isAirport,
+          isNightTime,
+          isWeekend
+        });
+        
+        newPrices[vehicle.id] = finalPrice;
+      });
+      setPrices(newPrices);
+    }
+  }, [reservationInfo.routeInfo, availableVehicles, reservationInfo.time, reservationInfo.date]);
+
   return (
     <div className="container-default mt-28">
       <div className="max-w-6xl mx-auto">
@@ -316,6 +355,77 @@ const VehicleSelection = ({ scrollUp }) => {
               </p>
             </div>
           )}
+        </div>
+
+        <div className="grid lg:grid-cols-2 gap-8 mb-8">
+          <div>
+            {reservationInfo.pickup && reservationInfo.dropoff && (
+              <MapPreview
+                origin={reservationInfo.pickup}
+                destination={reservationInfo.dropoff}
+              />
+            )}
+            
+            {reservationInfo.routeInfo && (
+              <div className="mt-4 bg-zinc-800/30 rounded-xl p-6 border border-zinc-700/50">
+                <h3 className="text-xl font-medium mb-4">Journey Details</h3>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <p className="text-neutral-400">Pick-up</p>
+                    <p className="font-medium">{reservationInfo.pickup}</p>
+                  </div>
+                  <div>
+                    <p className="text-neutral-400">Drop-off</p>
+                    <p className="font-medium">{reservationInfo.dropoff}</p>
+                  </div>
+                  <div>
+                    <p className="text-neutral-400">Distance</p>
+                    <p className="font-medium">{reservationInfo.routeInfo.distance}</p>
+                  </div>
+                  <div>
+                    <p className="text-neutral-400">Duration</p>
+                    <p className="font-medium">{reservationInfo.routeInfo.duration}</p>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+
+          <div className="space-y-6">
+            {availableVehicles.map((vehicle) => (
+              <div
+                key={vehicle.id}
+                className="bg-zinc-800/30 rounded-xl p-6 border border-zinc-700/50 hover:border-gold/50 transition-all cursor-pointer"
+                onClick={() => handleVehicleSelect(vehicle)}
+              >
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-xl font-medium">{vehicle.name}</h3>
+                  {prices[vehicle.id] && (
+                    <p className="text-gold text-xl font-medium">
+                      CHF {prices[vehicle.id]}
+                    </p>
+                  )}
+                </div>
+                
+                <div className="grid grid-cols-2 gap-4 mb-4">
+                  <div>
+                    <p className="text-neutral-400">Capacity</p>
+                    <p>{vehicle.seats} passengers</p>
+                  </div>
+                  <div>
+                    <p className="text-neutral-400">Luggage</p>
+                    <p>{vehicle.luggage} pieces</p>
+                  </div>
+                </div>
+
+                <img
+                  src={vehicle.image}
+                  alt={vehicle.name}
+                  className="w-full h-48 object-contain"
+                />
+              </div>
+            ))}
+          </div>
         </div>
 
         <form onSubmit={handleSubmit}>

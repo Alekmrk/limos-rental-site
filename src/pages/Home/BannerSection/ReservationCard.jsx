@@ -4,11 +4,13 @@ import { useNavigate } from "react-router-dom";
 import ReservationContext from "../../../contexts/ReservationContext";
 import AddressInput from "../../../components/AddressInput";
 import TimeInput from "../../../components/TimeInput";
+import { validateAddresses } from "../../../services/GoogleMapsService";
 
 const ReservationCard = () => {
   const navigate = useNavigate();
   const { reservationInfo, handleInput, setIsHourly, setIsSpecialRequest } = useContext(ReservationContext);
   const [errors, setErrors] = useState({});
+  const [isValidating, setIsValidating] = useState(false);
 
   const handleModeChange = (mode) => {
     if (mode === 'hourly') {
@@ -21,7 +23,7 @@ const ReservationCard = () => {
     }
   };
 
-  const validateForm = () => {
+  const validateForm = async () => {
     const newErrors = {};
     if (!reservationInfo.date) newErrors.date = "Date is required";
     if (!reservationInfo.time) newErrors.time = "Time is required";
@@ -38,15 +40,38 @@ const ReservationCard = () => {
           newErrors.hours = "Hours must be between 2 and 24";
         }
       }
+
+      // Validate Swiss location requirement
+      if (reservationInfo.pickup) {
+        try {
+          const validation = await validateAddresses(
+            reservationInfo.pickup,
+            reservationInfo.dropoff
+          );
+          if (!validation.isValid) {
+            newErrors.pickup = validation.error;
+            newErrors.dropoff = validation.error;
+          }
+        } catch (error) {
+          console.error("Location validation error:", error);
+          newErrors.pickup = "Failed to validate location";
+        }
+      }
     }
     
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (validateForm()) {
+    if (isValidating) return;
+
+    setIsValidating(true);
+    const isValid = await validateForm();
+    setIsValidating(false);
+
+    if (isValid) {
       if (reservationInfo.isSpecialRequest) {
         navigate('/customer-details');
       } else {
@@ -103,7 +128,9 @@ const ReservationCard = () => {
                 onChange={handleInput}
                 name="pickup"
                 placeholder="Pick Up Address"
-                className="transition-all duration-200 hover:border-zinc-600 focus:border-gold/50 focus:shadow-[0_0_15px_rgba(212,175,55,0.1)]"
+                className={`transition-all duration-200 hover:border-zinc-600 focus:border-gold/50 focus:shadow-[0_0_15px_rgba(212,175,55,0.1)] ${
+                  errors.pickup ? 'border-red-500' : ''
+                }`}
               />
               {errors.pickup && <span className="text-red-500 text-sm absolute -bottom-5">{errors.pickup}</span>}
             </div>
@@ -115,7 +142,9 @@ const ReservationCard = () => {
                   onChange={handleInput}
                   name="dropoff"
                   placeholder="Drop Off Address"
-                  className="transition-all duration-200 hover:border-zinc-600 focus:border-gold/50 focus:shadow-[0_0_15px_rgba(212,175,55,0.1)]"
+                  className={`transition-all duration-200 hover:border-zinc-600 focus:border-gold/50 focus:shadow-[0_0_15px_rgba(212,175,55,0.1)] ${
+                    errors.dropoff ? 'border-red-500' : ''
+                  }`}
                 />
                 {errors.dropoff && <span className="text-red-500 text-sm absolute -bottom-5">{errors.dropoff}</span>}
               </div>
@@ -172,8 +201,13 @@ const ReservationCard = () => {
         </div>
 
         <div className="flex justify-center mt-8">
-          <Button type="submit" variant="secondary" className="w-full py-4 text-base font-medium tracking-wide transition-all duration-200 hover:shadow-[0_0_20px_rgba(212,175,55,0.15)]">
-            {reservationInfo.isSpecialRequest ? "Continue to Request Details" : "Reserve Now"}
+          <Button 
+            type="submit" 
+            variant="secondary" 
+            className="w-full py-4 text-base font-medium tracking-wide transition-all duration-200 hover:shadow-[0_0_20px_rgba(212,175,55,0.15)]"
+            disabled={isValidating}
+          >
+            {isValidating ? "Validating..." : (reservationInfo.isSpecialRequest ? "Continue to Request Details" : "Reserve Now")}
           </Button>
         </div>
       </div>

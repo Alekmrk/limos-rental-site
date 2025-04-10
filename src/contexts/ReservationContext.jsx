@@ -1,4 +1,5 @@
 import { createContext, useState } from "react";
+import { calculateRoute, getPlaceDetails } from "../services/GoogleMapsService";
 
 export const ReservationContext = createContext(null);
 
@@ -24,28 +25,94 @@ export const ReservationContextProvider = ({ children }) => {
     hours: "",
     plannedActivities: "",
     specialRequestDetails: "",
-    distance: 0,
-    duration: 0
+    // Enhanced route-related fields
+    pickupDetails: null,
+    dropoffDetails: null,
+    extraStopDetails: [],
+    routeInfo: null,
+    optimizedWaypoints: null,
+    totalDistance: 0,
+    totalDuration: 0,
   });
 
-  const handleInput = (e) => {
-    let value = e.target.value;
-    
-    if (e.target.type === 'time') {
-      // Force 24-hour format and validate
-      const [hours, minutes] = value.split(':').map(Number);
-      if (hours >= 0 && hours < 24 && minutes >= 0 && minutes < 60) {
-        value = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
-      } else {
-        return; // Invalid time
-      }
-    } else if (e.target.type === 'number') {
-      value = value === '' ? '' : parseInt(value);
+  const handleInput = async (e) => {
+    const { name, value } = e.target;
+    setReservationInfo(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handlePlaceSelection = async (type, placeInfo) => {
+    if (type === 'route') {
+      // Update route information
+      setReservationInfo(prev => ({
+        ...prev,
+        routeInfo: placeInfo.routeInfo,
+        optimizedWaypoints: placeInfo.routeInfo?.waypoints || null,
+        totalDistance: placeInfo.routeInfo?.distanceValue || 0,
+        totalDuration: placeInfo.routeInfo?.durationValue || 0
+      }));
+      return;
     }
-    
-    setReservationInfo(prev => ({ 
-      ...prev, 
-      [e.target.name]: value
+
+    // Handle pickup, dropoff, or extra stop selection
+    setReservationInfo(prev => ({
+      ...prev,
+      [`${type}Details`]: placeInfo
+    }));
+
+    // If we have both pickup and dropoff locations and any extra stops, allow the route to be calculated
+    const updatedInfo = {
+      ...reservationInfo,
+      [`${type}Details`]: placeInfo
+    };
+
+    if (!updatedInfo.isHourly && updatedInfo.pickupDetails && updatedInfo.dropoffDetails) {
+      try {
+        const route = await calculateRoute(
+          updatedInfo.pickupDetails.formattedAddress,
+          updatedInfo.dropoffDetails.formattedAddress,
+          updatedInfo.extraStops
+        );
+        
+        setReservationInfo(prev => ({
+          ...prev,
+          [`${type}Details`]: placeInfo,
+          routeInfo: route,
+          totalDistance: route.distanceValue,
+          totalDuration: route.durationValue,
+          optimizedWaypoints: route.waypoints
+        }));
+      } catch (error) {
+        console.error('Error calculating route:', error);
+      }
+    }
+  };
+
+  const addExtraStop = () => {
+    if (!reservationInfo.isHourly && !reservationInfo.isSpecialRequest && reservationInfo.extraStops.length < 10) {
+      setReservationInfo(prev => ({
+        ...prev,
+        extraStops: [...prev.extraStops, ""],
+        extraStopDetails: [...prev.extraStopDetails, null]
+      }));
+    }
+  };
+
+  const removeExtraStop = (index) => {
+    setReservationInfo(prev => ({
+      ...prev,
+      extraStops: prev.extraStops.filter((_, i) => i !== index),
+      extraStopDetails: prev.extraStopDetails.filter((_, i) => i !== index)
+    }));
+  };
+
+  const updateExtraStop = (index, value, details = null) => {
+    setReservationInfo(prev => ({
+      ...prev,
+      extraStops: prev.extraStops.map((stop, i) => i === index ? value : stop),
+      extraStopDetails: prev.extraStopDetails.map((detail, i) => i === index ? (details || detail) : detail)
     }));
   };
 
@@ -58,14 +125,15 @@ export const ReservationContextProvider = ({ children }) => {
       ...prev, 
       isHourly,
       isSpecialRequest: false,
-      // Clear fields that don't apply to hourly mode
       dropoff: isHourly ? '' : prev.dropoff,
-      hours: isHourly ? '2' : '',  // Set default of 2 hours for hourly mode
+      hours: isHourly ? '2' : '',
       plannedActivities: isHourly ? prev.plannedActivities : '',
-      extraStops: [],  // Always clear extra stops for hourly mode
-      // Reset distance and duration for hourly mode
-      distance: isHourly ? 0 : (prev.distance || 46.5),
-      duration: isHourly ? 0 : (prev.duration || 36)
+      extraStops: [],
+      extraStopDetails: [],
+      routeInfo: null,
+      optimizedWaypoints: null,
+      totalDistance: 0,
+      totalDuration: 0
     }));
   };
 
@@ -74,44 +142,24 @@ export const ReservationContextProvider = ({ children }) => {
       ...prev,
       isSpecialRequest: isSpecial,
       isHourly: false,
-      // Clear other fields when switching to special request
       dropoff: '',
       hours: '',
       plannedActivities: '',
       extraStops: [],
-      distance: 0,
-      duration: 0,
+      extraStopDetails: [],
+      routeInfo: null,
+      optimizedWaypoints: null,
+      totalDistance: 0,
+      totalDuration: 0,
       specialRequestDetails: isSpecial ? 'Special transportation request' : ''
-    }));
-  };
-
-  const addExtraStop = () => {
-    if (!reservationInfo.isHourly && !reservationInfo.isSpecialRequest && reservationInfo.extraStops.length < 10) {
-      setReservationInfo(prev => ({
-        ...prev,
-        extraStops: [...prev.extraStops, ""]
-      }));
-    }
-  };
-
-  const removeExtraStop = (index) => {
-    setReservationInfo(prev => ({
-      ...prev,
-      extraStops: prev.extraStops.filter((_, i) => i !== index)
-    }));
-  };
-
-  const updateExtraStop = (index, value) => {
-    setReservationInfo(prev => ({
-      ...prev,
-      extraStops: prev.extraStops.map((stop, i) => i === index ? value : stop)
     }));
   };
 
   return (
     <ReservationContext.Provider value={{ 
       reservationInfo, 
-      handleInput, 
+      handleInput,
+      handlePlaceSelection,
       setSelectedVehicle,
       setIsHourly,
       setIsSpecialRequest,
