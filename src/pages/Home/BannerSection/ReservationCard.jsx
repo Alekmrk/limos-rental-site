@@ -8,7 +8,13 @@ import { validateAddresses } from "../../../services/GoogleMapsService";
 
 const ReservationCard = () => {
   const navigate = useNavigate();
-  const { reservationInfo, handleInput, setIsHourly, setIsSpecialRequest } = useContext(ReservationContext);
+  const { 
+    reservationInfo, 
+    handleInput, 
+    setIsHourly, 
+    setIsSpecialRequest,
+    handlePlaceSelection 
+  } = useContext(ReservationContext);
   const [errors, setErrors] = useState({});
   const [isValidating, setIsValidating] = useState(false);
 
@@ -45,8 +51,8 @@ const ReservationCard = () => {
       if (reservationInfo.pickup) {
         try {
           const validation = await validateAddresses(
-            reservationInfo.pickup,
-            reservationInfo.dropoff
+            reservationInfo.pickupPlaceInfo,
+            reservationInfo.dropoffPlaceInfo
           );
           if (!validation.isValid) {
             newErrors.pickup = validation.error;
@@ -126,6 +132,7 @@ const ReservationCard = () => {
               <AddressInput
                 value={reservationInfo.pickup}
                 onChange={handleInput}
+                onPlaceSelected={(placeInfo) => handlePlaceSelection('pickup', placeInfo)}
                 name="pickup"
                 placeholder="Pick Up Address"
                 className={`transition-all duration-200 hover:border-zinc-600 focus:border-gold/50 focus:shadow-[0_0_15px_rgba(212,175,55,0.1)] ${
@@ -140,6 +147,7 @@ const ReservationCard = () => {
                 <AddressInput
                   value={reservationInfo.dropoff}
                   onChange={handleInput}
+                  onPlaceSelected={(placeInfo) => handlePlaceSelection('dropoff', placeInfo)}
                   name="dropoff"
                   placeholder="Drop Off Address"
                   className={`transition-all duration-200 hover:border-zinc-600 focus:border-gold/50 focus:shadow-[0_0_15px_rgba(212,175,55,0.1)] ${

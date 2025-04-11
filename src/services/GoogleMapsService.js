@@ -156,8 +156,8 @@ export const getPlaceDetails = async (address) => {
 // Validate if addresses are in Switzerland
 export const validateAddresses = async (pickup, dropoff) => {
   try {
-    const pickupInSwitzerland = await isAddressInSwitzerland(pickup);
-    const dropoffInSwitzerland = dropoff ? await isAddressInSwitzerland(dropoff) : true;
+    const pickupInSwitzerland = pickup ? await isAddressInSwitzerland(pickup) : false;
+    const dropoffInSwitzerland = dropoff ? await isAddressInSwitzerland(dropoff) : false;
 
     if (!pickupInSwitzerland && !dropoffInSwitzerland) {
       return {
@@ -185,40 +185,26 @@ export const isHotel = (placeTypes) => {
   return placeTypes.some(type => hotelTypes.includes(type));
 };
 
-// Client-side Swiss address validation
-export const isAddressInSwitzerland = async (address) => {
-  if (!address) return false;
-  
-  const lowercaseAddress = address.toLowerCase();
-  
-  // Static checks first to avoid API calls
-  const swissIndicators = [
-    'switzerland', 'schweiz', 'suisse', 'svizzera',
-    'ch-', ', ch', /\b[1-9][0-9]{3}\b/ // Swiss postal code pattern
-  ];
-  
-  if (swissIndicators.some(indicator => {
-    if (typeof indicator === 'string') {
-      return lowercaseAddress.includes(indicator);
-    }
-    return indicator.test(lowercaseAddress);
-  })) {
+// Check if place is in Switzerland using both address components and coordinates
+export const isAddressInSwitzerland = async (placeInfo) => {
+  if (!placeInfo) return false;
+
+  // If we have address components, check the country code
+  if (placeInfo.isSwiss) {
     return true;
   }
 
-  // Check cache before making API call
-  const cachedResult = cacheService.getCachedGeocode(address);
-  if (cachedResult) {
-    return cachedResult.types.includes('country') && 
-           cachedResult.formattedAddress.toLowerCase().includes('switzerland');
-  }
+  // Fallback to coordinate-based check using bounding box of Switzerland
+  const switzerlandBounds = {
+    north: 47.8084,
+    south: 45.8179,
+    west: 5.9566,
+    east: 10.4915
+  };
 
-  try {
-    const details = await getPlaceDetails(address);
-    return details.types.includes('country') && 
-           details.formattedAddress.toLowerCase().includes('switzerland');
-  } catch (error) {
-    console.error('Error validating Swiss address:', error);
-    return false;
-  }
+  const { lat, lng } = placeInfo.location;
+  return lat >= switzerlandBounds.south &&
+         lat <= switzerlandBounds.north &&
+         lng >= switzerlandBounds.west &&
+         lng <= switzerlandBounds.east;
 };

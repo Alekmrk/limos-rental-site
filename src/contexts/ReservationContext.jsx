@@ -1,13 +1,16 @@
-import { createContext, useState } from "react";
-import { calculateRoute, getPlaceDetails } from "../services/GoogleMapsService";
+import { createContext, useState, useCallback } from "react";
+import { calculateRoute, getPlaceDetails, validateAddresses } from "../services/GoogleMapsService";
 
 export const ReservationContext = createContext(null);
 
 export const ReservationContextProvider = ({ children }) => {
   const [reservationInfo, setReservationInfo] = useState({
     pickup: "",
+    pickupPlaceInfo: null,
     dropoff: "",
+    dropoffPlaceInfo: null,
     extraStops: [],
+    extraStopsPlaceInfo: [],
     date: "",
     time: "",
     passengers: 1,
@@ -22,7 +25,7 @@ export const ReservationContextProvider = ({ children }) => {
     selectedVehicle: null,
     isHourly: false,
     isSpecialRequest: false,
-    hours: "",
+    hours: 2,
     plannedActivities: "",
     specialRequestDetails: "",
     // Enhanced route-related fields
@@ -44,6 +47,36 @@ export const ReservationContextProvider = ({ children }) => {
   };
 
   const handlePlaceSelection = async (type, placeInfo) => {
+    let newReservationInfo = { ...reservationInfo };
+
+    switch (type) {
+      case 'pickup':
+        newReservationInfo.pickup = placeInfo.formattedAddress;
+        newReservationInfo.pickupPlaceInfo = placeInfo;
+        break;
+      case 'dropoff':
+        newReservationInfo.dropoff = placeInfo.formattedAddress;
+        newReservationInfo.dropoffPlaceInfo = placeInfo;
+        break;
+      default:
+        break;
+    }
+
+    // Validate Switzerland location requirement
+    if (newReservationInfo.pickupPlaceInfo || newReservationInfo.dropoffPlaceInfo) {
+      const validation = await validateAddresses(
+        newReservationInfo.pickupPlaceInfo,
+        newReservationInfo.dropoffPlaceInfo
+      );
+
+      // Only update state if validation passes
+      if (validation.isValid) {
+        setReservationInfo(newReservationInfo);
+      } else {
+        throw new Error(validation.error);
+      }
+    }
+
     if (type === 'route') {
       // Update route information
       setReservationInfo(prev => ({
@@ -88,6 +121,22 @@ export const ReservationContextProvider = ({ children }) => {
         console.error('Error calculating route:', error);
       }
     }
+  };
+
+  const handleExtraStopSelection = (index, placeInfo) => {
+    setReservationInfo(prev => {
+      const newExtraStops = [...prev.extraStops];
+      const newExtraStopsPlaceInfo = [...prev.extraStopsPlaceInfo];
+      
+      newExtraStops[index] = placeInfo.formattedAddress;
+      newExtraStopsPlaceInfo[index] = placeInfo;
+
+      return {
+        ...prev,
+        extraStops: newExtraStops,
+        extraStopsPlaceInfo: newExtraStopsPlaceInfo,
+      };
+    });
   };
 
   const addExtraStop = () => {
@@ -160,6 +209,7 @@ export const ReservationContextProvider = ({ children }) => {
       reservationInfo, 
       handleInput,
       handlePlaceSelection,
+      handleExtraStopSelection,
       setSelectedVehicle,
       setIsHourly,
       setIsSpecialRequest,

@@ -337,13 +337,13 @@ const VehicleSelection = ({ scrollUp }) => {
                   <svg className="w-5 h-5 text-gold" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/>
                   </svg>
-                  <span className="text-sm text-zinc-300">Total Distance: {reservationInfo.distance || '46.5'} km</span>
+                  <span className="text-sm text-zinc-300">Total Distance: {reservationInfo.routeInfo?.distance || '46.5 km'}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <svg className="w-5 h-5 text-gold" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/>
                   </svg>
-                  <span className="text-sm text-zinc-300">Total Duration: {reservationInfo.duration || '36'} minutes</span>
+                  <span className="text-sm text-zinc-300">Total Duration: {reservationInfo.routeInfo?.duration || '36 min'}</span>
                 </div>
               </div>
               <p className="text-xs text-zinc-500 mt-3">
@@ -366,131 +366,64 @@ const VehicleSelection = ({ scrollUp }) => {
         </div>
 
         <div>
-          {reservationInfo.routeInfo && (
-            <div className="mt-4 bg-zinc-800/30 rounded-xl p-6 border border-zinc-700/50 md:max-w-2xl">
-              <h3 className="text-xl font-medium mb-4">Journey Details</h3>
-              <div className="flex flex-col gap-4">
-                <div>
-                  <p className="text-neutral-400">Pick-up</p>
-                  <p className="font-medium">{reservationInfo.pickup}</p>
-                </div>
-                <div>
-                  <p className="text-neutral-400">Drop-off</p>
-                  <p className="font-medium">{reservationInfo.dropoff}</p>
-                </div>
-                <div>
-                  <p className="text-neutral-400">Distance</p>
-                  <p className="font-medium">{reservationInfo.routeInfo.distance}</p>
-                </div>
-                <div>
-                  <p className="text-neutral-400">Duration</p>
-                  <p className="font-medium">{reservationInfo.routeInfo.duration}</p>
-                </div>
-              </div>
-            </div>
-          )}
-
-          <div className="grid md:grid-cols-2 gap-6">
-            <div>
-              <label className="block text-sm font-medium mb-2" htmlFor="passengers">
-                Number of Passengers *
-              </label>
-              <input
-                type="number"
-                id="passengers"
-                name="passengers"
-                min="1"
-                max="8"
-                value={reservationInfo.passengers}
-                onChange={handleInput}
-                className="bg-zinc-800/30 rounded-lg py-2 px-4 w-full border border-zinc-700/50"
-                required
-              />
-              {errors.passengers && (
-                <span className="text-red-500 text-sm">{errors.passengers}</span>
-              )}
-            </div>
-            
-            <div>
-              <label className="block text-sm font-medium mb-2" htmlFor="bags">
-                Number of Bags
-              </label>
-              <input
-                type="number"
-                id="bags"
-                name="bags"
-                min="0"
-                max="8"
-                value={reservationInfo.bags}
-                onChange={handleInput}
-                className="bg-zinc-800/30 rounded-lg py-2 px-4 w-full border border-zinc-700/50"
-              />
-              {errors.bags && (
-                <span className="text-red-500 text-sm">{errors.bags}</span>
-              )}
-            </div>
-          </div>
-
-          <div>
-            <h2 className="text-2xl font-medium mb-4">Available Vehicles</h2>
-            <div className="grid md:grid-cols-3 gap-6">
-              {availableVehicles.map((vehicle) => (
-                <div
-                  key={vehicle.id}
-                  onClick={() => handleVehicleSelect(vehicle)}
-                  className={`p-6 rounded-lg cursor-pointer transition-all ${
-                    reservationInfo.selectedVehicle?.id === vehicle.id
-                      ? "bg-gold/20 border-2 border-gold"
-                      : "bg-zinc-800/30 border border-zinc-700/50 hover:border-gold/50"
-                  }`}
-                >
-                  <img
-                    src={vehicle.image}
-                    alt={vehicle.name}
-                    className="w-full h-48 object-contain mb-4"
-                  />
-                  <h3 className="text-xl font-medium mb-2">{vehicle.name}</h3>
-                  <div className="text-sm text-zinc-400">
-                    <p>Seats: {vehicle.seats}</p>
-                    <p>Luggage: {vehicle.luggage}</p>
-                    {prices[vehicle.id] && (
-                      <p className="text-gold font-medium mt-2">
-                        CHF {prices[vehicle.id]}
-                      </p>
-                    )}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <form onSubmit={handleSubmit}>
-            <div className="flex flex-col gap-4">
-              <div className="flex justify-between items-start">
-                <Button
-                  type="button"
-                  variant="secondary"
-                  onClick={handleBack}
-                >
-                  Back
-                </Button>
-                <div className="flex flex-col items-end gap-1">
-                  {hasAttemptedSubmit && (errors.vehicle || errors.extraStops) && (
-                    <div className="text-red-500 text-sm bg-red-500/10 px-3 py-1.5 rounded border border-red-500/20 mb-1">
-                      <svg className="w-4 h-4 inline-block mr-1" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
-                      </svg>
-                      {errors.vehicle || "Please fill in or remove empty stops"}
-                    </div>
+          <h2 className="text-2xl font-medium mb-4">Available Vehicles</h2>
+          <div className="grid md:grid-cols-3 gap-6">
+            {availableVehicles.map((vehicle) => (
+              <div
+                key={vehicle.id}
+                onClick={() => handleVehicleSelect(vehicle)}
+                className={`p-6 rounded-lg cursor-pointer transition-all ${
+                  reservationInfo.selectedVehicle?.id === vehicle.id
+                    ? "bg-gold/20 border-2 border-gold"
+                    : "bg-zinc-800/30 border border-zinc-700/50 hover:border-gold/50"
+                }`}
+              >
+                <img
+                  src={vehicle.image}
+                  alt={vehicle.name}
+                  className="w-full h-48 object-contain mb-4"
+                />
+                <h3 className="text-xl font-medium mb-2">{vehicle.name}</h3>
+                <div className="text-sm text-zinc-400">
+                  <p>Seats: {vehicle.seats}</p>
+                  <p>Luggage: {vehicle.luggage}</p>
+                  {prices[vehicle.id] && (
+                    <p className="text-gold font-medium mt-2">
+                      CHF {prices[vehicle.id]}
+                    </p>
                   )}
-                  <Button type="submit" variant="secondary">
-                    Continue
-                  </Button>
                 </div>
               </div>
-            </div>
-          </form>
+            ))}
+          </div>
         </div>
+
+        <form onSubmit={handleSubmit}>
+          <div className="flex flex-col gap-4">
+            <div className="flex justify-between items-start">
+              <Button
+                type="button"
+                variant="secondary"
+                onClick={handleBack}
+              >
+                Back
+              </Button>
+              <div className="flex flex-col items-end gap-1">
+                {hasAttemptedSubmit && (errors.vehicle || errors.extraStops) && (
+                  <div className="text-red-500 text-sm bg-red-500/10 px-3 py-1.5 rounded border border-red-500/20 mb-1">
+                    <svg className="w-4 h-4 inline-block mr-1" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
+                    </svg>
+                    {errors.vehicle || "Please fill in or remove empty stops"}
+                  </div>
+                )}
+                <Button type="submit" variant="secondary">
+                  Continue
+                </Button>
+              </div>
+            </div>
+          </div>
+        </form>
       </div>
     </div>
   );
