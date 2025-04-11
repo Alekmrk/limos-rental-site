@@ -23,7 +23,7 @@ const MapPreview = ({ origin, destination, extraStops = [], onRouteCalculated })
   }, [isLoaded]);
 
   useEffect(() => {
-    if (!isLoaded || !directionsServiceAvailable || !origin || !destination) {
+    if (!isLoaded || !directionsServiceAvailable || !origin) {
       return;
     }
 
@@ -42,15 +42,42 @@ const MapPreview = ({ origin, destination, extraStops = [], onRouteCalculated })
       });
       setMap(newMap);
 
-      const newDirectionsRenderer = new window.google.maps.DirectionsRenderer({
-        suppressMarkers: false,
-        polylineOptions: {
-          strokeColor: '#D4AF37', // Gold color for the route
-          strokeWeight: 4
+      // Only set up directionsRenderer if we have a destination
+      if (destination) {
+        const newDirectionsRenderer = new window.google.maps.DirectionsRenderer({
+          suppressMarkers: false,
+          polylineOptions: {
+            strokeColor: '#D4AF37', // Gold color for the route
+            strokeWeight: 4
+          }
+        });
+        newDirectionsRenderer.setMap(newMap);
+        setDirectionsRenderer(newDirectionsRenderer);
+      }
+    }
+
+    // For hourly mode (no destination), just show a marker at the pickup location
+    if (!destination && map) {
+      const geocoder = new window.google.maps.Geocoder();
+      geocoder.geocode({ address: origin }, (results, status) => {
+        if (status === 'OK') {
+          const marker = new window.google.maps.Marker({
+            map: map,
+            position: results[0].geometry.location,
+            icon: {
+              path: window.google.maps.SymbolPath.CIRCLE,
+              fillColor: '#D4AF37',
+              fillOpacity: 1,
+              strokeColor: '#D4AF37',
+              strokeWeight: 2,
+              scale: 7,
+            }
+          });
+          
+          map.setCenter(results[0].geometry.location);
+          map.setZoom(15);
         }
       });
-      newDirectionsRenderer.setMap(newMap);
-      setDirectionsRenderer(newDirectionsRenderer);
     }
   }, [map, origin, destination, isLoaded, directionsServiceAvailable]);
 

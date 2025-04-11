@@ -216,17 +216,15 @@ const VehicleSelection = ({ scrollUp }) => {
         
         <ProgressBar />
 
-        {!reservationInfo.isHourly && (
-          <div className="h-[500px] md:h-[600px] w-full">
-            {reservationInfo.pickup && reservationInfo.dropoff && (
-              <MapPreview
-                origin={reservationInfo.pickup}
-                destination={reservationInfo.dropoff}
-                extraStops={reservationInfo.extraStops}
-              />
-            )}
-          </div>
-        )}
+        <div className="h-[500px] md:h-[600px] w-full">
+          {reservationInfo.pickup && (
+            <MapPreview
+              origin={reservationInfo.pickup}
+              destination={!reservationInfo.isHourly ? reservationInfo.dropoff : null}
+              extraStops={!reservationInfo.isHourly ? reservationInfo.extraStops : []}
+            />
+          )}
+        </div>
         
         <div className="bg-zinc-800/30 p-6 rounded-lg border border-zinc-700/50">
           <div className="mb-4">
