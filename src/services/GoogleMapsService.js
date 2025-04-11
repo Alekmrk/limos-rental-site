@@ -91,12 +91,31 @@ export const calculateRoute = async (origin, destination, extraStops = []) => {
         });
       });
 
+      // Calculate total distance and duration across all legs
+      const totalDistance = result.routes[0].legs.reduce((acc, leg) => acc + leg.distance.value, 0);
+      const totalDuration = result.routes[0].legs.reduce((acc, leg) => acc + leg.duration.value, 0);
+
+      // Format the total distance and duration
+      const formatDistance = (meters) => {
+        const km = meters / 1000;
+        return `${km.toFixed(1)} km`;
+      };
+
+      const formatDuration = (seconds) => {
+        const hours = Math.floor(seconds / 3600);
+        const minutes = Math.floor((seconds % 3600) / 60);
+        if (hours > 0) {
+          return `${hours} hr ${minutes} min`;
+        }
+        return `${minutes} min`;
+      };
+
       const routeInfo = {
         route: result.routes[0],
-        distance: result.routes[0].legs[0].distance.text,
-        duration: result.routes[0].legs[0].duration.text,
-        distanceValue: result.routes[0].legs[0].distance.value,
-        durationValue: result.routes[0].legs[0].duration.value,
+        distance: formatDistance(totalDistance),
+        duration: formatDuration(totalDuration),
+        distanceValue: totalDistance,
+        durationValue: totalDuration,
         waypoints: result.routes[0].waypoint_order,
       };
 

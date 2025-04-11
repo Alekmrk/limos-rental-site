@@ -104,11 +104,8 @@ const MapPreview = ({ origin, destination, extraStops = [], onRouteCalculated })
 
       if (onRouteCalculated) {
         onRouteCalculated({
-          distance: routeInfo.distance,
-          duration: routeInfo.duration,
-          distanceValue: routeInfo.distanceValue,
-          durationValue: routeInfo.durationValue,
-          waypoints: routeInfo.waypoints
+          ...routeInfo,
+          optimizedWaypoints: routeInfo.waypoints
         });
       }
 

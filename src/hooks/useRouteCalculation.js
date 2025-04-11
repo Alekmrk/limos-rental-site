@@ -17,7 +17,6 @@ export const useRouteCalculation = (origin, destination, extraStops = []) => {
     extraStops: []
   });
 
-  // Clear debounce timer on unmount
   useEffect(() => {
     return () => {
       if (debounceTimer.current) {
@@ -28,14 +27,14 @@ export const useRouteCalculation = (origin, destination, extraStops = []) => {
 
   useEffect(() => {
     const calculateFullRoute = async () => {
-      if (!isLoaded || !origin || !destination) return;
+      if (!isLoaded || !origin || (destination && !destination.trim())) return;
 
       // Check if this is the same calculation as last time
       const sameOrigin = origin === lastCalculation.current.origin;
       const sameDestination = destination === lastCalculation.current.destination;
       const sameStops = JSON.stringify(extraStops) === JSON.stringify(lastCalculation.current.extraStops);
       
-      if (sameOrigin && sameDestination && sameStops) {
+      if (sameOrigin && sameDestination && sameStops && routeInfo) {
         return;
       }
 
@@ -57,6 +56,22 @@ export const useRouteCalculation = (origin, destination, extraStops = []) => {
         setError(null);
 
         try {
+          // For hourly bookings (no destination), just validate the origin
+          if (!destination) {
+            const route = {
+              distance: '0 km',
+              duration: '0 mins',
+              distanceValue: 0,
+              durationValue: 0,
+              route: null,
+              waypoints: []
+            };
+            setRouteInfo(route);
+            setIsCalculating(false);
+            return;
+          }
+
+          // Check cache first
           const cachedResult = cacheService.getCachedRoute(origin, destination, extraStops);
           if (cachedResult) {
             setRouteInfo(cachedResult);
@@ -68,6 +83,7 @@ export const useRouteCalculation = (origin, destination, extraStops = []) => {
           setRouteInfo(result);
         } catch (err) {
           setError(err.message);
+          setRouteInfo(null);
         } finally {
           setIsCalculating(false);
         }

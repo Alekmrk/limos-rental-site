@@ -52,31 +52,47 @@ export const ReservationContextProvider = ({ children }) => {
       case 'pickup':
         newReservationInfo.pickup = placeInfo.formattedAddress;
         newReservationInfo.pickupPlaceInfo = placeInfo;
+        newReservationInfo.pickupDetails = placeInfo;
         break;
       case 'dropoff':
         newReservationInfo.dropoff = placeInfo.formattedAddress;
         newReservationInfo.dropoffPlaceInfo = placeInfo;
+        newReservationInfo.dropoffDetails = placeInfo;
         break;
+      case 'route':
+        // Just update route info without recalculating
+        setReservationInfo(prev => ({
+          ...prev,
+          routeInfo: placeInfo.routeInfo,
+          distance: placeInfo.routeInfo?.distance || '',
+          duration: placeInfo.routeInfo?.duration || '',
+          optimizedWaypoints: placeInfo.routeInfo?.waypoints || null,
+          totalDistance: placeInfo.routeInfo?.distanceValue || 0,
+          totalDuration: placeInfo.routeInfo?.durationValue || 0
+        }));
+        return;
       default:
         break;
     }
 
-    // Update state without validation
+    // Update state
     setReservationInfo(newReservationInfo);
 
     // Calculate route if we have both pickup and dropoff
-    if (!reservationInfo.isHourly && newReservationInfo.pickupDetails && newReservationInfo.dropoffDetails) {
+    if (!reservationInfo.isHourly && newReservationInfo.pickup && newReservationInfo.dropoff) {
       try {
         const route = await calculateRoute(
-          newReservationInfo.pickupDetails.formattedAddress,
-          newReservationInfo.dropoffDetails.formattedAddress,
-          newReservationInfo.extraStops
+          newReservationInfo.pickup,
+          newReservationInfo.dropoff,
+          newReservationInfo.extraStops || []
         );
         
         setReservationInfo(prev => ({
           ...prev,
           [`${type}Details`]: placeInfo,
           routeInfo: route,
+          distance: route.distance,
+          duration: route.duration,
           totalDistance: route.distanceValue,
           totalDuration: route.durationValue,
           optimizedWaypoints: route.waypoints
@@ -103,7 +119,7 @@ export const ReservationContextProvider = ({ children }) => {
     });
   };
 
-  const addExtraStop = () => {
+  const addExtraStop = async () => {
     if (!reservationInfo.isHourly && !reservationInfo.isSpecialRequest && reservationInfo.extraStops.length < 10) {
       setReservationInfo(prev => ({
         ...prev,
@@ -113,20 +129,78 @@ export const ReservationContextProvider = ({ children }) => {
     }
   };
 
-  const removeExtraStop = (index) => {
+  const removeExtraStop = async (index) => {
+    // Get current stops without the removed one
+    const newExtraStops = reservationInfo.extraStops.filter((_, i) => i !== index);
+    const newExtraStopDetails = reservationInfo.extraStopDetails.filter((_, i) => i !== index);
+
     setReservationInfo(prev => ({
       ...prev,
-      extraStops: prev.extraStops.filter((_, i) => i !== index),
-      extraStopDetails: prev.extraStopDetails.filter((_, i) => i !== index)
+      extraStops: newExtraStops,
+      extraStopDetails: newExtraStopDetails
     }));
+
+    // Recalculate route if we have both pickup and dropoff
+    if (!reservationInfo.isHourly && reservationInfo.pickup && reservationInfo.dropoff) {
+      try {
+        const route = await calculateRoute(
+          reservationInfo.pickup,
+          reservationInfo.dropoff,
+          newExtraStops.filter(stop => stop.trim()) // Only include non-empty stops
+        );
+        
+        setReservationInfo(prev => ({
+          ...prev,
+          extraStops: newExtraStops,
+          extraStopDetails: newExtraStopDetails,
+          routeInfo: route,
+          distance: route.distance,
+          duration: route.duration,
+          totalDistance: route.distanceValue,
+          totalDuration: route.durationValue,
+          optimizedWaypoints: route.waypoints
+        }));
+      } catch (error) {
+        console.error('Error recalculating route:', error);
+      }
+    }
   };
 
-  const updateExtraStop = (index, value, details = null) => {
+  const updateExtraStop = async (index, value, details = null) => {
+    const newExtraStops = [...reservationInfo.extraStops];
+    const newExtraStopDetails = [...reservationInfo.extraStopDetails];
+    
+    newExtraStops[index] = value;
+    newExtraStopDetails[index] = details || newExtraStopDetails[index];
+
     setReservationInfo(prev => ({
       ...prev,
-      extraStops: prev.extraStops.map((stop, i) => i === index ? value : stop),
-      extraStopDetails: prev.extraStopDetails.map((detail, i) => i === index ? (details || detail) : detail)
+      extraStops: newExtraStops,
+      extraStopDetails: newExtraStopDetails
     }));
+
+    // Only recalculate if the stop is fully entered (not empty) and we have pickup/dropoff
+    if (value.trim() && !reservationInfo.isHourly && reservationInfo.pickup && reservationInfo.dropoff) {
+      try {
+        const route = await calculateRoute(
+          reservationInfo.pickup,
+          reservationInfo.dropoff,
+          newExtraStops.filter(stop => stop.trim()) // Only include non-empty stops
+        );
+        
+        setReservationInfo(prev => ({
+          ...prev,
+          routeInfo: route,
+          distance: route.distance,
+          duration: route.duration,
+          totalDistance: route.distanceValue,
+          totalDuration: route.durationValue,
+          optimizedWaypoints: route.waypoints
+        }));
+      } catch (error) {
+        console.error('Error recalculating route:', error);
+      }
+    }
   };
 
   const setSelectedVehicle = (vehicle) => {
