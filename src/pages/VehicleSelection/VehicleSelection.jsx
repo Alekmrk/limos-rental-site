@@ -215,8 +215,20 @@ const VehicleSelection = ({ scrollUp }) => {
         <h1 className="text-5xl md:text-7xl font-semibold mb-8">Select Vehicle</h1>
         
         <ProgressBar />
+
+        {!reservationInfo.isHourly && (
+          <div className="h-[500px] md:h-[600px] w-full">
+            {reservationInfo.pickup && reservationInfo.dropoff && (
+              <MapPreview
+                origin={reservationInfo.pickup}
+                destination={reservationInfo.dropoff}
+                extraStops={reservationInfo.extraStops}
+              />
+            )}
+          </div>
+        )}
         
-        <div className="bg-zinc-800/30 p-6 rounded-lg border border-zinc-700/50 mb-8">
+        <div className="bg-zinc-800/30 p-6 rounded-lg border border-zinc-700/50">
           <div className="mb-4">
             <p className="text-sm">{reservationInfo.date}</p>
             <p className="text-sm">{reservationInfo.time} (CET/CEST)</p>
@@ -232,114 +244,100 @@ const VehicleSelection = ({ scrollUp }) => {
             </div>
           </div>
 
-          <div className="flex flex-col gap-2 mb-4">
-            <div className="flex items-start gap-2">
-              <div className="flex flex-col items-center">
-                <svg className="w-5 h-5 mt-0.5 shrink-0" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
-                </svg>
-                {!reservationInfo.isHourly && (
-                  <div className="h-8 w-[1px] bg-zinc-600"></div>
-                )}
+          <div className="grid md:grid-cols-2 gap-6 items-start">
+            <div className="flex flex-col gap-2">
+              <div className="flex items-start gap-2">
+                <div className="flex flex-col items-center">
+                  <svg className="w-5 h-5 mt-0.5 shrink-0" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                  </svg>
+                  {!reservationInfo.isHourly && (
+                    <div className="h-8 w-[1px] bg-zinc-600"></div>
+                  )}
+                </div>
+                <div>
+                  <p>{reservationInfo.pickup || 'ZÜRICH,'}</p>
+                  {reservationInfo.isHourly && (
+                    <p className="text-sm text-zinc-400 mt-1">Service area coverage: Within Switzerland</p>
+                  )}
+                </div>
               </div>
-              <div>
-                <p>{reservationInfo.pickup || 'ZÜRICH,'}</p>
-                {reservationInfo.isHourly && (
-                  <p className="text-sm text-zinc-400 mt-1">Service area coverage: Within Switzerland</p>
-                )}
-              </div>
-            </div>
-            
-            {!reservationInfo.isHourly ? (
-              <>
-                {reservationInfo.extraStops.map((stop, index) => (
-                  <div key={index} className="pl-4">
-                    <div className="flex items-start gap-2">
-                      <div className="flex flex-col items-center">
-                        <svg className="w-5 h-5 mt-0.5 shrink-0" viewBox="0 0 24 24" fill="currentColor">
-                          <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 010-5 2.5 2.5 0 010 5z"/>
-                        </svg>
-                        <div className="h-8 w-[1px] bg-zinc-600"></div>
-                      </div>
-                      <div className="w-1/2 flex gap-2 items-start">
-                        <AddressInput
-                          name={`extraStop-${index}`}
-                          value={stop}
-                          onChange={(e) => updateStop(index, e.target.value)}
-                          placeholder="Enter extra stop location"
-                          className={hasAttemptedSubmit && !stop.trim() && errors.extraStops ? 'border-red-500' : ''}
-                        />
-                        <button
-                          type="button"
-                          onClick={() => handleRemoveExtraStop(index)}
-                          className="text-zinc-400 hover:text-white transition-colors p-2"
-                          title="Remove this stop"
-                        >
-                          <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+
+              {!reservationInfo.isHourly && (
+                <>
+                  {reservationInfo.extraStops.map((stop, index) => (
+                    <div key={index} className="pl-4">
+                      <div className="flex items-start gap-2">
+                        <div className="flex flex-col items-center">
+                          <svg className="w-5 h-5 mt-0.5 shrink-0" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 010-5 2.5 2.5 0 010 5z"/>
                           </svg>
-                        </button>
-                        {errors.extraStops && !stop.trim() && (
-                          <svg className="w-5 h-5 text-red-500" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
-                          </svg>
-                        )}
+                          <div className="h-8 w-[1px] bg-zinc-600"></div>
+                        </div>
+                        <div className="w-full flex gap-2 items-start">
+                          <AddressInput
+                            name={`extraStop-${index}`}
+                            value={stop}
+                            onChange={(e) => updateStop(index, e.target.value)}
+                            placeholder="Enter extra stop location"
+                            className={hasAttemptedSubmit && !stop.trim() && errors.extraStops ? 'border-red-500' : ''}
+                          />
+                          <button
+                            type="button"
+                            onClick={() => handleRemoveExtraStop(index)}
+                            className="text-zinc-400 hover:text-white transition-colors p-2"
+                            title="Remove this stop"
+                          >
+                            <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                            </svg>
+                          </button>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  ))}
 
-                <div className="pl-4">
-                  <button 
-                    type="button"
-                    onClick={handleAddExtraStop}
-                    className="text-sm text-zinc-400 hover:text-white transition-colors my-2 flex items-center gap-1"
-                    disabled={reservationInfo.extraStops.length >= 10}
-                  >
-                    <div className="w-5 flex justify-center">
-                      <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                        <circle cx="12" cy="12" r="10" strokeWidth="2"/>
-                        <path d="M12 8v8m-4-4h8" strokeWidth="2"/>
+                  <div className="pl-4">
+                    <button 
+                      type="button"
+                      onClick={handleAddExtraStop}
+                      className="text-sm text-zinc-400 hover:text-white transition-colors my-2 flex items-center gap-1"
+                      disabled={reservationInfo.extraStops.length >= 10}
+                    >
+                      <div className="w-5 flex justify-center">
+                        <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                          <circle cx="12" cy="12" r="10" strokeWidth="2"/>
+                          <path d="M12 8v8m-4-4h8" strokeWidth="2"/>
+                        </svg>
+                      </div>
+                      <span>
+                        ADD EXTRA STOP {reservationInfo.extraStops.length < 10 ? '(' + (10 - reservationInfo.extraStops.length) + ' REMAINING)' : '(MAX REACHED)'}
+                      </span>
+                    </button>
+                  </div>
+
+                  <div className="flex items-start gap-2">
+                    <div className="flex flex-col items-center">
+                      <svg className="w-5 h-5 mt-0.5 shrink-0" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 010-5 2.5 2.5 0 010 5z"/>
                       </svg>
                     </div>
-                    <span>
-                      ADD EXTRA STOP {reservationInfo.extraStops.length < 10 ? '(' + (10 - reservationInfo.extraStops.length) + ' REMAINING)' : '(MAX REACHED)'}
-                    </span>
-                  </button>
-                </div>
+                    <div>
+                      <p>{reservationInfo.dropoff}</p>
+                    </div>
+                  </div>
+                </>
+              )}
+            </div>
 
-                <div className="flex items-start gap-2">
-                  <div className="flex flex-col items-center">
-                    <svg className="w-5 h-5 mt-0.5 shrink-0" viewBox="0 0 24 24" fill="currentColor">
-                      <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 010-5 2.5 2.5 0 010 5z"/>
-                    </svg>
-                  </div>
-                  <div>
-                    <p>{reservationInfo.dropoff || 'AARAU,'}</p>
-                  </div>
-                </div>
-              </>
-            ) : (
-              <div className="mt-4 bg-black/20 rounded-lg p-4">
+          </div>
+
+          {!reservationInfo.isHourly ? (
+            <div className="mt-4 bg-black/20 rounded-lg p-4 md:max-w-2xl">
+              <div className="flex flex-col gap-3">
                 <div className="flex items-center gap-2">
                   <svg className="w-5 h-5 text-gold" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/>
-                  </svg>
-                  <span className="text-sm text-zinc-300">Duration: {reservationInfo.hours || 2} hours</span>
-                </div>
-                <p className="text-xs text-zinc-500 mt-2">
-                  * For hourly bookings, the vehicle and chauffeur will remain at your disposal throughout the duration, starting from the pickup location.
-                </p>
-              </div>
-            )}
-          </div>
-
-          {!reservationInfo.isHourly && (
-            <div className="mt-4 bg-black/20 rounded-lg p-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                <div className="flex items-center gap-2">
-                  <svg className="w-5 h-5 text-gold" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
                   </svg>
                   <span className="text-sm text-zinc-300">Total Distance: {reservationInfo.distance || '46.5'} km</span>
                 </div>
@@ -354,82 +352,47 @@ const VehicleSelection = ({ scrollUp }) => {
                 * Total duration includes estimated traffic and processing time at each stop.
               </p>
             </div>
+          ) : (
+            <div className="mt-4 bg-black/20 rounded-lg p-4">
+              <div className="flex items-center gap-2">
+                <svg className="w-5 h-5 text-gold" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/>
+                </svg>
+                <span className="text-sm text-zinc-300">Duration: {reservationInfo.hours || 2} hours</span>
+              </div>
+              <p className="text-xs text-zinc-500 mt-2">
+                * For hourly bookings, the vehicle and chauffeur will remain at your disposal throughout the duration, starting from the pickup location.
+              </p>
+            </div>
           )}
         </div>
 
-        <div className="grid lg:grid-cols-2 gap-8 mb-8">
-          <div>
-            {reservationInfo.pickup && reservationInfo.dropoff && (
-              <MapPreview
-                origin={reservationInfo.pickup}
-                destination={reservationInfo.dropoff}
-              />
-            )}
-            
-            {reservationInfo.routeInfo && (
-              <div className="mt-4 bg-zinc-800/30 rounded-xl p-6 border border-zinc-700/50">
-                <h3 className="text-xl font-medium mb-4">Journey Details</h3>
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <p className="text-neutral-400">Pick-up</p>
-                    <p className="font-medium">{reservationInfo.pickup}</p>
-                  </div>
-                  <div>
-                    <p className="text-neutral-400">Drop-off</p>
-                    <p className="font-medium">{reservationInfo.dropoff}</p>
-                  </div>
-                  <div>
-                    <p className="text-neutral-400">Distance</p>
-                    <p className="font-medium">{reservationInfo.routeInfo.distance}</p>
-                  </div>
-                  <div>
-                    <p className="text-neutral-400">Duration</p>
-                    <p className="font-medium">{reservationInfo.routeInfo.duration}</p>
-                  </div>
+        <div>
+          {reservationInfo.routeInfo && (
+            <div className="mt-4 bg-zinc-800/30 rounded-xl p-6 border border-zinc-700/50 md:max-w-2xl">
+              <h3 className="text-xl font-medium mb-4">Journey Details</h3>
+              <div className="flex flex-col gap-4">
+                <div>
+                  <p className="text-neutral-400">Pick-up</p>
+                  <p className="font-medium">{reservationInfo.pickup}</p>
+                </div>
+                <div>
+                  <p className="text-neutral-400">Drop-off</p>
+                  <p className="font-medium">{reservationInfo.dropoff}</p>
+                </div>
+                <div>
+                  <p className="text-neutral-400">Distance</p>
+                  <p className="font-medium">{reservationInfo.routeInfo.distance}</p>
+                </div>
+                <div>
+                  <p className="text-neutral-400">Duration</p>
+                  <p className="font-medium">{reservationInfo.routeInfo.duration}</p>
                 </div>
               </div>
-            )}
-          </div>
+            </div>
+          )}
 
-          <div className="space-y-6">
-            {availableVehicles.map((vehicle) => (
-              <div
-                key={vehicle.id}
-                className="bg-zinc-800/30 rounded-xl p-6 border border-zinc-700/50 hover:border-gold/50 transition-all cursor-pointer"
-                onClick={() => handleVehicleSelect(vehicle)}
-              >
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-xl font-medium">{vehicle.name}</h3>
-                  {prices[vehicle.id] && (
-                    <p className="text-gold text-xl font-medium">
-                      CHF {prices[vehicle.id]}
-                    </p>
-                  )}
-                </div>
-                
-                <div className="grid grid-cols-2 gap-4 mb-4">
-                  <div>
-                    <p className="text-neutral-400">Capacity</p>
-                    <p>{vehicle.seats} passengers</p>
-                  </div>
-                  <div>
-                    <p className="text-neutral-400">Luggage</p>
-                    <p>{vehicle.luggage} pieces</p>
-                  </div>
-                </div>
-
-                <img
-                  src={vehicle.image}
-                  alt={vehicle.name}
-                  className="w-full h-48 object-contain"
-                />
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <form onSubmit={handleSubmit}>
-          <div className="grid md:grid-cols-2 gap-6 mb-8">
+          <div className="grid md:grid-cols-2 gap-6">
             <div>
               <label className="block text-sm font-medium mb-2" htmlFor="passengers">
                 Number of Passengers *
@@ -470,7 +433,7 @@ const VehicleSelection = ({ scrollUp }) => {
             </div>
           </div>
 
-          <div className="mb-8">
+          <div>
             <h2 className="text-2xl font-medium mb-4">Available Vehicles</h2>
             <div className="grid md:grid-cols-3 gap-6">
               {availableVehicles.map((vehicle) => (
@@ -492,37 +455,44 @@ const VehicleSelection = ({ scrollUp }) => {
                   <div className="text-sm text-zinc-400">
                     <p>Seats: {vehicle.seats}</p>
                     <p>Luggage: {vehicle.luggage}</p>
+                    {prices[vehicle.id] && (
+                      <p className="text-gold font-medium mt-2">
+                        CHF {prices[vehicle.id]}
+                      </p>
+                    )}
                   </div>
                 </div>
               ))}
             </div>
           </div>
 
-          <div className="flex flex-col gap-4">
-            <div className="flex justify-between items-start">
-              <Button
-                type="button"
-                variant="secondary"
-                onClick={handleBack}
-              >
-                Back
-              </Button>
-              <div className="flex flex-col items-end gap-1">
-                {hasAttemptedSubmit && (errors.vehicle || errors.extraStops) && (
-                  <div className="text-red-500 text-sm bg-red-500/10 px-3 py-1.5 rounded border border-red-500/20 mb-1">
-                    <svg className="w-4 h-4 inline-block mr-1" viewBox="0 0 24 24" fill="currentColor">
-                      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
-                    </svg>
-                    {errors.vehicle || "Please fill in or remove empty stops"}
-                  </div>
-                )}
-                <Button type="submit" variant="secondary">
-                  Continue
+          <form onSubmit={handleSubmit}>
+            <div className="flex flex-col gap-4">
+              <div className="flex justify-between items-start">
+                <Button
+                  type="button"
+                  variant="secondary"
+                  onClick={handleBack}
+                >
+                  Back
                 </Button>
+                <div className="flex flex-col items-end gap-1">
+                  {hasAttemptedSubmit && (errors.vehicle || errors.extraStops) && (
+                    <div className="text-red-500 text-sm bg-red-500/10 px-3 py-1.5 rounded border border-red-500/20 mb-1">
+                      <svg className="w-4 h-4 inline-block mr-1" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
+                      </svg>
+                      {errors.vehicle || "Please fill in or remove empty stops"}
+                    </div>
+                  )}
+                  <Button type="submit" variant="secondary">
+                    Continue
+                  </Button>
+                </div>
               </div>
             </div>
-          </div>
-        </form>
+          </form>
+        </div>
       </div>
     </div>
   );
