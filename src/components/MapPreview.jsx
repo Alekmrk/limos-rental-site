@@ -34,9 +34,54 @@ const MapPreview = ({ origin, destination, extraStops = [], onRouteCalculated })
         center: { lat: 46.8182, lng: 8.2275 }, // Switzerland center
         styles: [
           {
-            featureType: 'all',
-            elementType: 'all',
-            stylers: [{ saturation: -100 }]
+            featureType: 'water',
+            elementType: 'geometry',
+            stylers: [{ color: '#0288d1' }]
+          },
+          {
+            featureType: 'landscape',
+            elementType: 'geometry',
+            stylers: [{ color: '#81c784' }]
+          },
+          {
+            featureType: 'road',
+            elementType: 'geometry',
+            stylers: [{ color: '#455a64' }]
+          },
+          {
+            featureType: 'poi',
+            elementType: 'geometry',
+            stylers: [{ color: '#66bb6a' }]
+          },
+          {
+            featureType: 'transit',
+            elementType: 'geometry',
+            stylers: [{ color: '#546e7a' }]
+          },
+          {
+            featureType: 'administrative',
+            elementType: 'geometry',
+            stylers: [{ color: '#37474f' }]
+          },
+          {
+            featureType: 'poi.park',
+            elementType: 'geometry',
+            stylers: [{ color: '#43a047' }]
+          },
+          {
+            featureType: 'road',
+            elementType: 'labels',
+            stylers: [{ color: '#ffffff' }]
+          },
+          {
+            featureType: 'road',
+            elementType: 'labels.text.stroke',
+            stylers: [{ color: '#263238' }, { weight: 3 }]
+          },
+          {
+            featureType: 'water',
+            elementType: 'labels.text.fill',
+            stylers: [{ color: '#ffffff' }]
           }
         ]
       });
