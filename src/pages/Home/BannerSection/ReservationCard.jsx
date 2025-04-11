@@ -1,10 +1,10 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useRef, useEffect } from "react";
 import Button from "../../../components/Button";
 import { useNavigate } from "react-router-dom";
 import ReservationContext from "../../../contexts/ReservationContext";
-import AddressInput from "../../../components/AddressInput";
 import TimeInput from "../../../components/TimeInput";
 import { validateAddresses } from "../../../services/GoogleMapsService";
+import { useGoogleMapsApi } from "../../../hooks/useGoogleMapsApi";
 
 const ReservationCard = () => {
   const navigate = useNavigate();
@@ -15,8 +15,86 @@ const ReservationCard = () => {
     setIsSpecialRequest,
     handlePlaceSelection 
   } = useContext(ReservationContext);
+  const { isLoaded } = useGoogleMapsApi();
   const [errors, setErrors] = useState({});
   const [isValidating, setIsValidating] = useState(false);
+  
+  const pickupRef = useRef(null);
+  const dropoffRef = useRef(null);
+  const pickupAutocomplete = useRef(null);
+  const dropoffAutocomplete = useRef(null);
+
+  useEffect(() => {
+    if (!isLoaded || !window.google) return;
+
+    // Swiss bounds
+    const switzerlandBounds = {
+      north: 47.8084,
+      south: 45.8179,
+      west: 5.9566,
+      east: 10.4915
+    };
+
+    const bounds = new window.google.maps.LatLngBounds(
+      { lat: switzerlandBounds.south, lng: switzerlandBounds.west },
+      { lat: switzerlandBounds.north, lng: switzerlandBounds.east }
+    );
+
+    const setupAutocomplete = (inputRef, autocompleteRef, type) => {
+      if (autocompleteRef.current) {
+        window.google.maps.event.clearInstanceListeners(autocompleteRef.current);
+      }
+
+      const options = {
+        bounds,
+        fields: ["formatted_address", "geometry", "place_id", "address_components"],
+        strictBounds: false
+      };
+
+      autocompleteRef.current = new window.google.maps.places.Autocomplete(inputRef.current, options);
+      autocompleteRef.current.addListener("place_changed", () => {
+        const place = autocompleteRef.current.getPlace();
+        if (place.geometry) {
+          const countryComponent = place.address_components?.find(
+            component => component.types.includes("country")
+          );
+          const adminArea = place.address_components?.find(
+            component => component.types.includes("administrative_area_level_1")
+          );
+
+          const isSwiss = countryComponent?.short_name === "CH";
+          const canton = adminArea?.short_name;
+
+          handlePlaceSelection(type, {
+            formattedAddress: place.formatted_address,
+            location: {
+              lat: place.geometry.location.lat(),
+              lng: place.geometry.location.lng()
+            },
+            placeId: place.place_id,
+            isSwiss,
+            canton
+          });
+          // Update input value manually
+          inputRef.current.value = place.formatted_address;
+        }
+      });
+    };
+
+    setupAutocomplete(pickupRef, pickupAutocomplete, 'pickup');
+    setupAutocomplete(dropoffRef, dropoffAutocomplete, 'dropoff');
+
+    return () => {
+      if (window.google) {
+        if (pickupAutocomplete.current) {
+          window.google.maps.event.clearInstanceListeners(pickupAutocomplete.current);
+        }
+        if (dropoffAutocomplete.current) {
+          window.google.maps.event.clearInstanceListeners(dropoffAutocomplete.current);
+        }
+      }
+    };
+  }, [isLoaded, handlePlaceSelection]);
 
   const handleModeChange = (mode) => {
     if (mode === 'hourly') {
@@ -34,10 +112,9 @@ const ReservationCard = () => {
     if (!reservationInfo.date) newErrors.date = "Date is required";
     if (!reservationInfo.time) newErrors.time = "Time is required";
 
-    // Only validate other fields if not a special request
     if (!reservationInfo.isSpecialRequest) {
-      if (!reservationInfo.pickup) newErrors.pickup = "Pick up location is required";
-      if (!reservationInfo.isHourly && !reservationInfo.dropoff) {
+      if (!pickupRef.current.value) newErrors.pickup = "Pick up location is required";
+      if (!reservationInfo.isHourly && !dropoffRef.current.value) {
         newErrors.dropoff = "Drop off location is required";
       }
       if (reservationInfo.isHourly) {
@@ -47,8 +124,8 @@ const ReservationCard = () => {
         }
       }
 
-      // Validate Swiss location requirement
-      if (reservationInfo.pickup) {
+      // Validate Switzerland location requirement only if addresses are provided
+      if (!Object.keys(newErrors).length && reservationInfo.pickupPlaceInfo) {
         try {
           const validation = await validateAddresses(
             reservationInfo.pickupPlaceInfo,
@@ -56,11 +133,10 @@ const ReservationCard = () => {
           );
           if (!validation.isValid) {
             newErrors.pickup = validation.error;
-            newErrors.dropoff = validation.error;
           }
         } catch (error) {
-          console.error("Location validation error:", error);
-          newErrors.pickup = "Failed to validate location";
+          console.error('Error validating addresses:', error);
+          newErrors.pickup = "Error validating addresses. Please try again.";
         }
       }
     }
@@ -85,6 +161,10 @@ const ReservationCard = () => {
       }
     }
   };
+
+  if (!isLoaded) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <form onSubmit={handleSubmit} className="reservation reserve-card w-[90%] max-w-[420px] p-8 sm:p-8 mx-auto md:mx-0 md:absolute md:bottom-12 md:right-8 lg:right-16 shadow-2xl bg-zinc-800/70 backdrop-blur-md border border-zinc-700/30 rounded-[2rem] text-left text-[14px] transition-all hover:shadow-[0_20px_50px_rgba(0,0,0,0.5)] hover:border-zinc-600/40">
@@ -129,30 +209,32 @@ const ReservationCard = () => {
         {!reservationInfo.isSpecialRequest ? (
           <>
             <div className="relative">
-              <AddressInput
-                value={reservationInfo.pickup}
-                onChange={handleInput}
-                onPlaceSelected={(placeInfo) => handlePlaceSelection('pickup', placeInfo)}
-                name="pickup"
+              <input
+                ref={pickupRef}
+                type="text"
                 placeholder="Pick Up Address"
-                className={`transition-all duration-200 hover:border-zinc-600 focus:border-gold/50 focus:shadow-[0_0_15px_rgba(212,175,55,0.1)] ${
-                  errors.pickup ? 'border-red-500' : ''
+                name="pickup"
+                defaultValue={reservationInfo.pickup}
+                className={`bg-zinc-800/30 rounded-xl py-3 px-4 w-full border text-white transition-all duration-200 hover:border-zinc-600 focus:border-gold/50 focus:shadow-[0_0_15px_rgba(212,175,55,0.1)] ${
+                  errors.pickup ? 'border-red-500' : 'border-zinc-700/50'
                 }`}
+                autoComplete="off"
               />
               {errors.pickup && <span className="text-red-500 text-sm absolute -bottom-5">{errors.pickup}</span>}
             </div>
 
             {!reservationInfo.isHourly && (
               <div className="relative">
-                <AddressInput
-                  value={reservationInfo.dropoff}
-                  onChange={handleInput}
-                  onPlaceSelected={(placeInfo) => handlePlaceSelection('dropoff', placeInfo)}
-                  name="dropoff"
+                <input
+                  ref={dropoffRef}
+                  type="text"
                   placeholder="Drop Off Address"
-                  className={`transition-all duration-200 hover:border-zinc-600 focus:border-gold/50 focus:shadow-[0_0_15px_rgba(212,175,55,0.1)] ${
-                    errors.dropoff ? 'border-red-500' : ''
+                  name="dropoff"
+                  defaultValue={reservationInfo.dropoff}
+                  className={`bg-zinc-800/30 rounded-xl py-3 px-4 w-full border text-white transition-all duration-200 hover:border-zinc-600 focus:border-gold/50 focus:shadow-[0_0_15px_rgba(212,175,55,0.1)] ${
+                    errors.dropoff ? 'border-red-500' : 'border-zinc-700/50'
                   }`}
+                  autoComplete="off"
                 />
                 {errors.dropoff && <span className="text-red-500 text-sm absolute -bottom-5">{errors.dropoff}</span>}
               </div>

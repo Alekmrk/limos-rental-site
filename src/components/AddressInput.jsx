@@ -5,7 +5,8 @@ const AddressInput = ({ value, onChange, name, placeholder, onPlaceSelected, cla
   const inputRef = useRef(null);
   const autocompleteRef = useRef(null);
   const sessionTokenRef = useRef(null);
-  const lastSelectedRef = useRef(value); // Initialize with current value
+  const lastSelectedRef = useRef(value);
+  const isSelectingRef = useRef(false);
 
   useEffect(() => {
     if (!window.google) return;
@@ -38,10 +39,12 @@ const AddressInput = ({ value, onChange, name, placeholder, onPlaceSelected, cla
 
     const listener = autocompleteRef.current.addListener("place_changed", () => {
       const place = autocompleteRef.current.getPlace();
+      isSelectingRef.current = true;
       setError(null);
 
       if (!place.geometry) {
         setError("Please select a location from the suggestions");
+        isSelectingRef.current = false;
         return;
       }
 
@@ -66,10 +69,8 @@ const AddressInput = ({ value, onChange, name, placeholder, onPlaceSelected, cla
         canton
       };
 
-      // Store the last selected value
       lastSelectedRef.current = place.formatted_address;
 
-      // Update input value through parent component
       onChange({
         target: {
           name,
@@ -83,6 +84,7 @@ const AddressInput = ({ value, onChange, name, placeholder, onPlaceSelected, cla
 
       // Create a new session token for the next search
       sessionTokenRef.current = new window.google.maps.places.AutocompleteSessionToken();
+      isSelectingRef.current = false;
     });
 
     return () => {
@@ -92,21 +94,25 @@ const AddressInput = ({ value, onChange, name, placeholder, onPlaceSelected, cla
     };
   }, [name, onChange, onPlaceSelected]);
 
-  // Update lastSelectedRef when value prop changes from parent
   useEffect(() => {
-    lastSelectedRef.current = value;
+    if (!isSelectingRef.current) {
+      lastSelectedRef.current = value;
+    }
   }, [value]);
 
   const handleInputChange = (e) => {
     const newValue = e.target.value;
     
     // If user is typing or clearing the input, allow changes
-    onChange(e);
-    setError(null);
+    if (!isSelectingRef.current) {
+      onChange(e);
+      setError(null);
+    }
 
     // Reinitialize autocomplete if input is cleared
     if (!newValue) {
       lastSelectedRef.current = null;
+      isSelectingRef.current = false;
     }
   };
 

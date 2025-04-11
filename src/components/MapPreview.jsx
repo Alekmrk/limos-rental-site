@@ -9,6 +9,7 @@ const MapPreview = ({ origin, destination, extraStops = [], onRouteCalculated })
   const { isLoaded } = useGoogleMapsApi();
   const [directionsServiceAvailable, setDirectionsServiceAvailable] = useState(false);
   const { routeInfo, isCalculating, error } = useRouteCalculation(origin, destination, extraStops);
+  const mapInitializedRef = useRef(false);
 
   // Check for DirectionsService availability
   useEffect(() => {
@@ -22,77 +23,39 @@ const MapPreview = ({ origin, destination, extraStops = [], onRouteCalculated })
     }
   }, [isLoaded]);
 
+  // Initialize map only when we have all required data
   useEffect(() => {
-    if (!isLoaded || !directionsServiceAvailable || !origin) {
+    if (!isLoaded || !directionsServiceAvailable || !origin || mapInitializedRef.current) {
       return;
     }
 
     // Initialize map if not already done
-    if (!map) {
+    if (!map && mapRef.current) {
       const newMap = new window.google.maps.Map(mapRef.current, {
         zoom: 8,
         center: { lat: 46.8182, lng: 8.2275 }, // Switzerland center
+        // Minimal styles for better performance
         styles: [
-          {
-            featureType: 'water',
-            elementType: 'geometry',
-            stylers: [{ color: '#0288d1' }]
-          },
-          {
-            featureType: 'landscape',
-            elementType: 'geometry',
-            stylers: [{ color: '#81c784' }]
-          },
           {
             featureType: 'road',
             elementType: 'geometry',
             stylers: [{ color: '#455a64' }]
           },
           {
-            featureType: 'poi',
-            elementType: 'geometry',
-            stylers: [{ color: '#66bb6a' }]
-          },
-          {
-            featureType: 'transit',
-            elementType: 'geometry',
-            stylers: [{ color: '#546e7a' }]
-          },
-          {
-            featureType: 'administrative',
-            elementType: 'geometry',
-            stylers: [{ color: '#37474f' }]
-          },
-          {
-            featureType: 'poi.park',
-            elementType: 'geometry',
-            stylers: [{ color: '#43a047' }]
-          },
-          {
             featureType: 'road',
-            elementType: 'labels',
-            stylers: [{ color: '#ffffff' }]
-          },
-          {
-            featureType: 'road',
-            elementType: 'labels.text.stroke',
-            stylers: [{ color: '#263238' }, { weight: 3 }]
-          },
-          {
-            featureType: 'water',
             elementType: 'labels.text.fill',
             stylers: [{ color: '#ffffff' }]
           }
         ]
       });
       setMap(newMap);
+      mapInitializedRef.current = true;
 
-      // Only set up directionsRenderer if we have a destination
       if (destination) {
         const newDirectionsRenderer = new window.google.maps.DirectionsRenderer({
           suppressMarkers: false,
           polylineOptions: {
-            strokeColor: '#D4AF37', // Gold color for the route
+            strokeColor: '#D4AF37',
             strokeWeight: 4
           }
         });
@@ -106,7 +69,7 @@ const MapPreview = ({ origin, destination, extraStops = [], onRouteCalculated })
       const geocoder = new window.google.maps.Geocoder();
       geocoder.geocode({ address: origin }, (results, status) => {
         if (status === 'OK') {
-          const marker = new window.google.maps.Marker({
+          new window.google.maps.Marker({
             map: map,
             position: results[0].geometry.location,
             icon: {
@@ -128,7 +91,7 @@ const MapPreview = ({ origin, destination, extraStops = [], onRouteCalculated })
 
   // Update route on map when routeInfo changes
   useEffect(() => {
-    if (directionsRenderer && routeInfo) {
+    if (directionsRenderer && routeInfo?.route) {
       const directionsResult = {
         routes: [routeInfo.route],
         request: {

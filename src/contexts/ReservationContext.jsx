@@ -1,5 +1,5 @@
 import { createContext, useState, useCallback } from "react";
-import { calculateRoute, getPlaceDetails, validateAddresses } from "../services/GoogleMapsService";
+import { calculateRoute, getPlaceDetails } from "../services/GoogleMapsService";
 
 export const ReservationContext = createContext(null);
 
@@ -28,7 +28,6 @@ export const ReservationContextProvider = ({ children }) => {
     hours: 2,
     plannedActivities: "",
     specialRequestDetails: "",
-    // Enhanced route-related fields
     pickupDetails: null,
     dropoffDetails: null,
     extraStopDetails: [],
@@ -62,51 +61,16 @@ export const ReservationContextProvider = ({ children }) => {
         break;
     }
 
-    // Validate Switzerland location requirement
-    if (newReservationInfo.pickupPlaceInfo || newReservationInfo.dropoffPlaceInfo) {
-      const validation = await validateAddresses(
-        newReservationInfo.pickupPlaceInfo,
-        newReservationInfo.dropoffPlaceInfo
-      );
+    // Update state without validation
+    setReservationInfo(newReservationInfo);
 
-      // Only update state if validation passes
-      if (validation.isValid) {
-        setReservationInfo(newReservationInfo);
-      } else {
-        throw new Error(validation.error);
-      }
-    }
-
-    if (type === 'route') {
-      // Update route information
-      setReservationInfo(prev => ({
-        ...prev,
-        routeInfo: placeInfo.routeInfo,
-        optimizedWaypoints: placeInfo.routeInfo?.waypoints || null,
-        totalDistance: placeInfo.routeInfo?.distanceValue || 0,
-        totalDuration: placeInfo.routeInfo?.durationValue || 0
-      }));
-      return;
-    }
-
-    // Handle pickup, dropoff, or extra stop selection
-    setReservationInfo(prev => ({
-      ...prev,
-      [`${type}Details`]: placeInfo
-    }));
-
-    // If we have both pickup and dropoff locations and any extra stops, allow the route to be calculated
-    const updatedInfo = {
-      ...reservationInfo,
-      [`${type}Details`]: placeInfo
-    };
-
-    if (!updatedInfo.isHourly && updatedInfo.pickupDetails && updatedInfo.dropoffDetails) {
+    // Calculate route if we have both pickup and dropoff
+    if (!reservationInfo.isHourly && newReservationInfo.pickupDetails && newReservationInfo.dropoffDetails) {
       try {
         const route = await calculateRoute(
-          updatedInfo.pickupDetails.formattedAddress,
-          updatedInfo.dropoffDetails.formattedAddress,
-          updatedInfo.extraStops
+          newReservationInfo.pickupDetails.formattedAddress,
+          newReservationInfo.dropoffDetails.formattedAddress,
+          newReservationInfo.extraStops
         );
         
         setReservationInfo(prev => ({
