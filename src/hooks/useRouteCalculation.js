@@ -3,7 +3,7 @@ import { calculateRoute } from '../services/GoogleMapsService';
 import cacheService from '../services/CacheService';
 import { useGoogleMapsApi } from './useGoogleMapsApi';
 
-const DEBOUNCE_DELAY = 1000; // 1 second debounce
+const DEBOUNCE_DELAY = 500; // Reduced to 500ms for better responsiveness
 
 export const useRouteCalculation = (origin, destination, extraStops = []) => {
   const [routeInfo, setRouteInfo] = useState(null);
@@ -29,10 +29,27 @@ export const useRouteCalculation = (origin, destination, extraStops = []) => {
     const calculateFullRoute = async () => {
       if (!isLoaded || !origin || (destination && !destination.trim())) return;
 
+      // Extract actual addresses from the inputs
+      const originAddress = typeof origin === 'string' ? origin : origin?.formattedAddress || origin?.placeInfo?.formattedAddress;
+      const destinationAddress = typeof destination === 'string' ? destination : destination?.formattedAddress || destination?.placeInfo?.formattedAddress;
+      const stopAddresses = extraStops.map(stop => 
+        typeof stop === 'string' ? stop : stop?.formattedAddress || stop?.placeInfo?.formattedAddress
+      );
+
+      // Validate addresses
+      if (!originAddress || (destination && !destinationAddress)) {
+        return;
+      }
+
+      // Check if any stops are empty
+      if (stopAddresses.some(stop => !stop?.trim())) {
+        return;
+      }
+
       // Check if this is the same calculation as last time
-      const sameOrigin = origin === lastCalculation.current.origin;
-      const sameDestination = destination === lastCalculation.current.destination;
-      const sameStops = JSON.stringify(extraStops) === JSON.stringify(lastCalculation.current.extraStops);
+      const sameOrigin = originAddress === lastCalculation.current.origin;
+      const sameDestination = destinationAddress === lastCalculation.current.destination;
+      const sameStops = JSON.stringify(stopAddresses) === JSON.stringify(lastCalculation.current.extraStops);
       
       if (sameOrigin && sameDestination && sameStops && routeInfo) {
         return;
@@ -40,9 +57,9 @@ export const useRouteCalculation = (origin, destination, extraStops = []) => {
 
       // Update last calculation reference
       lastCalculation.current = {
-        origin,
-        destination,
-        extraStops: [...extraStops]
+        origin: originAddress,
+        destination: destinationAddress,
+        extraStops: [...stopAddresses]
       };
 
       // Clear any existing timeout
@@ -72,14 +89,14 @@ export const useRouteCalculation = (origin, destination, extraStops = []) => {
           }
 
           // Check cache first
-          const cachedResult = cacheService.getCachedRoute(origin, destination, extraStops);
+          const cachedResult = cacheService.getCachedRoute(originAddress, destinationAddress, stopAddresses);
           if (cachedResult) {
             setRouteInfo(cachedResult);
             setIsCalculating(false);
             return;
           }
 
-          const result = await calculateRoute(origin, destination, extraStops);
+          const result = await calculateRoute(originAddress, destinationAddress, stopAddresses);
           setRouteInfo(result);
         } catch (err) {
           setError(err.message);

@@ -9,50 +9,48 @@ const SWISS_CITIES = [
   'davos', 'gstaad', 'locarno', 'st. moritz', 'verbier', 'zermatt'
 ];
 
-// Rate limiting configuration
-const RATE_LIMIT_WINDOW = 1000; // 1 second
-let lastRequestTime = 0;
-let requestQueue = [];
+// Queue for managing API requests
+const requestQueue = [];
+let isProcessing = false;
 
-const waitForRateLimit = () => {
-  const now = Date.now();
-  const timeSinceLastRequest = now - lastRequestTime;
+const processQueue = async () => {
+  if (isProcessing || requestQueue.length === 0) return;
   
-  if (timeSinceLastRequest < RATE_LIMIT_WINDOW) {
-    return new Promise(resolve => {
-      setTimeout(resolve, RATE_LIMIT_WINDOW - timeSinceLastRequest);
-    });
+  isProcessing = true;
+  const { request, resolve, reject } = requestQueue.shift();
+  
+  try {
+    const result = await request();
+    resolve(result);
+  } catch (error) {
+    reject(error);
+  } finally {
+    isProcessing = false;
+    processQueue();
   }
-  return Promise.resolve();
 };
 
 const enqueueRequest = (requestFn) => {
   return new Promise((resolve, reject) => {
-    const executeRequest = async () => {
-      try {
-        await waitForRateLimit();
-        lastRequestTime = Date.now();
-        const result = await requestFn();
-        resolve(result);
-      } catch (error) {
-        reject(error);
-      } finally {
-        requestQueue.shift();
-        if (requestQueue.length > 0) {
-          requestQueue[0]();
-        }
-      }
-    };
-
-    requestQueue.push(executeRequest);
-    if (requestQueue.length === 1) {
-      executeRequest();
-    }
+    requestQueue.push({
+      request: requestFn,
+      resolve,
+      reject
+    });
+    processQueue();
   });
 };
 
 // Calculate distance and duration between two points
 export const calculateRoute = async (origin, destination, extraStops = []) => {
+  if (!origin) {
+    throw new Error("Origin is required");
+  }
+
+  if (!window.google || !window.google.maps) {
+    throw new Error("Google Maps not loaded");
+  }
+
   // Check cache first
   const cachedRoute = cacheService.getCachedRoute(origin, destination, extraStops);
   if (cachedRoute) {
@@ -64,31 +62,42 @@ export const calculateRoute = async (origin, destination, extraStops = []) => {
       const directionsService = new window.google.maps.DirectionsService();
       
       const request = {
-        origin,
-        destination,
+        origin: origin,
+        destination: destination || origin, // Use origin as destination for hourly bookings
         travelMode: window.google.maps.TravelMode.DRIVING,
+        optimizeWaypoints: true
       };
 
-      if (extraStops.length > 0) {
-        request.waypoints = extraStops
-          .filter(stop => stop.trim())
-          .map(stop => ({
+      if (extraStops && extraStops.length > 0) {
+        const validStops = extraStops.filter(stop => stop && stop.trim());
+        if (validStops.length > 0) {
+          request.waypoints = validStops.map(stop => ({
             location: stop,
             stopover: true
           }));
-        request.optimizeWaypoints = true;
+        }
       }
 
       const result = await new Promise((resolve, reject) => {
-        directionsService.route(request, (response, status) => {
-          if (status === 'OK') {
-            resolve(response);
-          } else {
-            reject(new Error(status === 'OVER_QUERY_LIMIT' 
-              ? 'Rate limit exceeded. Please try again in a few moments.'
-              : `Route calculation failed: ${status}`));
-          }
-        });
+        let retryCount = 0;
+        const maxRetries = 3;
+
+        const tryCalculateRoute = () => {
+          directionsService.route(request, (response, status) => {
+            if (status === 'OK') {
+              resolve(response);
+            } else if (status === 'OVER_QUERY_LIMIT' && retryCount < maxRetries) {
+              retryCount++;
+              setTimeout(tryCalculateRoute, 1000 * retryCount); // Exponential backoff
+            } else {
+              reject(new Error(status === 'OVER_QUERY_LIMIT' 
+                ? 'Rate limit exceeded. Please try again in a few moments.'
+                : `Route calculation failed: ${status}`));
+            }
+          });
+        };
+
+        tryCalculateRoute();
       });
 
       // Calculate total distance and duration across all legs
@@ -116,7 +125,7 @@ export const calculateRoute = async (origin, destination, extraStops = []) => {
         duration: formatDuration(totalDuration),
         distanceValue: totalDistance,
         durationValue: totalDuration,
-        waypoints: result.routes[0].waypoint_order,
+        waypoints: result.routes[0].waypoint_order
       };
 
       // Cache the result
@@ -152,14 +161,21 @@ export const getPlaceDetails = async (address) => {
         });
       });
       
+      const isSpecialLocation = result.types?.some(type => 
+        ['airport', 'train_station', 'transit_station', 'premise', 'point_of_interest'].includes(type)
+      );
+
+      const displayName = isSpecialLocation ? result.name : result.formatted_address;
+      
       const placeInfo = {
-        formattedAddress: result.formatted_address,
+        formattedAddress: displayName,
         location: {
           lat: result.geometry.location.lat(),
           lng: result.geometry.location.lng(),
         },
         placeId: result.place_id,
         types: result.types,
+        originalName: result.name
       };
 
       // Cache the result
@@ -175,6 +191,41 @@ export const getPlaceDetails = async (address) => {
 // Validate if addresses are in Switzerland
 export const validateAddresses = async (pickup, dropoff) => {
   try {
+    if (!pickup && !dropoff) {
+      return {
+        isValid: false,
+        error: "At least one location is required"
+      };
+    }
+
+    // Enhanced validation for pickup location
+    if (pickup) {
+      const pickupInSwitzerland = await isAddressInSwitzerland(pickup);
+      const isPickupAirport = pickup.types?.includes('airport');
+      
+      // Special handling for airports near Switzerland's borders
+      if (!pickupInSwitzerland && isPickupAirport) {
+        const distanceToSwissBorder = await calculateDistanceToSwissBorder(pickup.location);
+        if (distanceToSwissBorder <= 50000) { // Within 50km of Swiss border
+          return { isValid: true, error: null };
+        }
+      }
+    }
+
+    // Enhanced validation for dropoff location
+    if (dropoff) {
+      const dropoffInSwitzerland = await isAddressInSwitzerland(dropoff);
+      const isDropoffAirport = dropoff.types?.includes('airport');
+      
+      if (!dropoffInSwitzerland && isDropoffAirport) {
+        const distanceToSwissBorder = await calculateDistanceToSwissBorder(dropoff.location);
+        if (distanceToSwissBorder <= 50000) {
+          return { isValid: true, error: null };
+        }
+      }
+    }
+
+    // Check if at least one location is in Switzerland
     const pickupInSwitzerland = pickup ? await isAddressInSwitzerland(pickup) : false;
     const dropoffInSwitzerland = dropoff ? await isAddressInSwitzerland(dropoff) : false;
 
@@ -196,12 +247,6 @@ export const validateAddresses = async (pickup, dropoff) => {
       error: "Error validating addresses"
     };
   }
-};
-
-// Check if place is a hotel
-export const isHotel = (placeTypes) => {
-  const hotelTypes = ['lodging', 'hotel', 'resort'];
-  return placeTypes.some(type => hotelTypes.includes(type));
 };
 
 // Check if place is in Switzerland using both address components and coordinates
@@ -226,4 +271,22 @@ export const isAddressInSwitzerland = async (placeInfo) => {
          lat <= switzerlandBounds.north &&
          lng >= switzerlandBounds.west &&
          lng <= switzerlandBounds.east;
+};
+
+// Helper function to calculate distance to Swiss border
+const calculateDistanceToSwissBorder = async (location) => {
+  const switzerlandBounds = {
+    north: 47.8084,
+    south: 45.8179,
+    west: 5.9566,
+    east: 10.4915
+  };
+
+  // Calculate minimum distance to any edge of Switzerland's bounding box
+  const distanceNorth = Math.abs(location.lat - switzerlandBounds.north) * 111000;
+  const distanceSouth = Math.abs(location.lat - switzerlandBounds.south) * 111000;
+  const distanceWest = Math.abs(location.lng - switzerlandBounds.west) * 111000;
+  const distanceEast = Math.abs(location.lng - switzerlandBounds.east) * 111000;
+
+  return Math.min(distanceNorth, distanceSouth, distanceWest, distanceEast);
 };

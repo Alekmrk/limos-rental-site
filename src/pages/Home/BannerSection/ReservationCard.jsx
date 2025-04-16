@@ -47,8 +47,9 @@ const ReservationCard = () => {
 
       const options = {
         bounds,
-        fields: ["formatted_address", "geometry", "place_id", "address_components"],
-        strictBounds: false
+        fields: ["formatted_address", "geometry", "place_id", "address_components", "name", "types"],
+        strictBounds: false,
+        componentRestrictions: { country: 'ch' }
       };
 
       autocompleteRef.current = new window.google.maps.places.Autocomplete(inputRef.current, options);
@@ -58,25 +59,27 @@ const ReservationCard = () => {
           const countryComponent = place.address_components?.find(
             component => component.types.includes("country")
           );
-          const adminArea = place.address_components?.find(
-            component => component.types.includes("administrative_area_level_1")
-          );
 
           const isSwiss = countryComponent?.short_name === "CH";
-          const canton = adminArea?.short_name;
+          const isSpecialLocation = place.types?.some(type => 
+            ['airport', 'train_station', 'transit_station', 'premise', 'point_of_interest'].includes(type)
+          );
+
+          const displayName = isSpecialLocation ? place.name : place.formatted_address;
 
           handlePlaceSelection(type, {
-            formattedAddress: place.formatted_address,
+            formattedAddress: displayName,
             location: {
               lat: place.geometry.location.lat(),
               lng: place.geometry.location.lng()
             },
             placeId: place.place_id,
             isSwiss,
-            canton
+            originalName: place.name,
+            types: place.types
           });
-          // Update input value manually
-          inputRef.current.value = place.formatted_address;
+          
+          inputRef.current.value = displayName;
         }
       });
     };

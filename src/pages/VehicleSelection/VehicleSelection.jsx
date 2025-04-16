@@ -1,4 +1,4 @@
-import { useContext, useState, useEffect, useRef, useMemo } from "react";
+import { useContext, useState, useEffect, useRef, useMemo, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import ReservationContext from "../../contexts/ReservationContext";
 import Button from "../../components/Button";
@@ -108,26 +108,25 @@ const VehicleSelection = ({ scrollUp }) => {
     navigate('/');
   };
 
-  const handleRemoveExtraStop = (index) => {
+  const handleRemoveExtraStop = useCallback((index) => {
     const newStops = [...latestStopsRef.current];
     newStops.splice(index, 1);
     removeExtraStop(index);
     
-    // Only validate if user has attempted to submit
     if (hasAttemptedSubmit) {
       updateErrors(validateFormErrors(newStops));
     }
-  };
+  }, [removeExtraStop, hasAttemptedSubmit, validateFormErrors]);
 
-  const updateStop = (index, value) => {
+  const updateStop = useCallback((index, value, placeInfo) => {
     const newStops = [...reservationInfo.extraStops];
-    newStops[index] = value;
-    updateExtraStop(index, value);
+    newStops[index] = placeInfo?.formattedAddress || value;
+    updateExtraStop(index, value, placeInfo);
 
     if (hasAttemptedSubmit) {
       updateErrors(validateFormErrors(newStops));
     }
-  };
+  }, [reservationInfo.extraStops, hasAttemptedSubmit, updateExtraStop, validateFormErrors]);
 
   const handleVehicleSelect = (vehicle) => {
     setSelectedVehicle(vehicle);
@@ -139,13 +138,13 @@ const VehicleSelection = ({ scrollUp }) => {
     }
   };
 
-  const handleAddExtraStop = () => {
+  const handleAddExtraStop = useCallback(() => {
     addExtraStop();
     if (hasAttemptedSubmit) {
       const newStops = [...reservationInfo.extraStops, ""];
       updateErrors(validateFormErrors(newStops));
     }
-  };
+  }, [addExtraStop, hasAttemptedSubmit, reservationInfo.extraStops, validateFormErrors]);
 
   // Memoize available vehicles to prevent recalculation on every render
   const availableVehicles = useMemo(() => {

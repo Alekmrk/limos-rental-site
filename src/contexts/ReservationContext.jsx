@@ -103,7 +103,8 @@ export const ReservationContextProvider = ({ children }) => {
     }
   };
 
-  const handleExtraStopSelection = (index, placeInfo) => {
+  // Memoize handlers to prevent unnecessary rerenders
+  const handleExtraStopSelection = useCallback((index, placeInfo) => {
     setReservationInfo(prev => {
       const newExtraStops = [...prev.extraStops];
       const newExtraStopsPlaceInfo = [...prev.extraStopsPlaceInfo];
@@ -117,42 +118,43 @@ export const ReservationContextProvider = ({ children }) => {
         extraStopsPlaceInfo: newExtraStopsPlaceInfo,
       };
     });
-  };
+  }, []);
 
-  const addExtraStop = async () => {
+  const addExtraStop = useCallback(async () => {
     if (!reservationInfo.isHourly && !reservationInfo.isSpecialRequest && reservationInfo.extraStops.length < 10) {
       setReservationInfo(prev => ({
         ...prev,
         extraStops: [...prev.extraStops, ""],
-        extraStopDetails: [...prev.extraStopDetails, null]
+        extraStopDetails: [...prev.extraStopDetails, null],
+        extraStopsPlaceInfo: [...prev.extraStopsPlaceInfo, null]
       }));
     }
-  };
+  }, [reservationInfo.isHourly, reservationInfo.isSpecialRequest, reservationInfo.extraStops.length]);
 
-  const removeExtraStop = async (index) => {
-    // Get current stops without the removed one
-    const newExtraStops = reservationInfo.extraStops.filter((_, i) => i !== index);
-    const newExtraStopDetails = reservationInfo.extraStopDetails.filter((_, i) => i !== index);
+  const removeExtraStop = useCallback(async (index) => {
+    setReservationInfo(prev => {
+      const newExtraStops = prev.extraStops.filter((_, i) => i !== index);
+      const newExtraStopDetails = prev.extraStopDetails.filter((_, i) => i !== index);
+      const newExtraStopsPlaceInfo = prev.extraStopsPlaceInfo.filter((_, i) => i !== index);
 
-    setReservationInfo(prev => ({
-      ...prev,
-      extraStops: newExtraStops,
-      extraStopDetails: newExtraStopDetails
-    }));
+      return {
+        ...prev,
+        extraStops: newExtraStops,
+        extraStopDetails: newExtraStopDetails,
+        extraStopsPlaceInfo: newExtraStopsPlaceInfo
+      };
+    });
 
-    // Recalculate route if we have both pickup and dropoff
     if (!reservationInfo.isHourly && reservationInfo.pickup && reservationInfo.dropoff) {
       try {
         const route = await calculateRoute(
           reservationInfo.pickup,
           reservationInfo.dropoff,
-          newExtraStops.filter(stop => stop.trim()) // Only include non-empty stops
+          reservationInfo.extraStops.filter((_, i) => i !== index).filter(stop => stop.trim())
         );
         
         setReservationInfo(prev => ({
           ...prev,
-          extraStops: newExtraStops,
-          extraStopDetails: newExtraStopDetails,
           routeInfo: route,
           distance: route.distance,
           duration: route.duration,
@@ -164,28 +166,32 @@ export const ReservationContextProvider = ({ children }) => {
         console.error('Error recalculating route:', error);
       }
     }
-  };
+  }, [reservationInfo.isHourly, reservationInfo.pickup, reservationInfo.dropoff, reservationInfo.extraStops]);
 
-  const updateExtraStop = async (index, value, details = null) => {
-    const newExtraStops = [...reservationInfo.extraStops];
-    const newExtraStopDetails = [...reservationInfo.extraStopDetails];
-    
-    newExtraStops[index] = value;
-    newExtraStopDetails[index] = details || newExtraStopDetails[index];
+  const updateExtraStop = useCallback(async (index, value, placeInfo = null) => {
+    setReservationInfo(prev => {
+      const newExtraStops = [...prev.extraStops];
+      const newExtraStopsPlaceInfo = [...prev.extraStopsPlaceInfo];
+      
+      // If we have placeInfo, use the formatted address from it
+      newExtraStops[index] = placeInfo?.formattedAddress || value;
+      newExtraStopsPlaceInfo[index] = placeInfo || null;
 
-    setReservationInfo(prev => ({
-      ...prev,
-      extraStops: newExtraStops,
-      extraStopDetails: newExtraStopDetails
-    }));
+      return {
+        ...prev,
+        extraStops: newExtraStops,
+        extraStopsPlaceInfo: newExtraStopsPlaceInfo
+      };
+    });
 
-    // Only recalculate if the stop is fully entered (not empty) and we have pickup/dropoff
-    if (value.trim() && !reservationInfo.isHourly && reservationInfo.pickup && reservationInfo.dropoff) {
+    // Only recalculate route if we have confirmed location and all required fields
+    if (!reservationInfo.isHourly && reservationInfo.pickup && reservationInfo.dropoff) {
       try {
         const route = await calculateRoute(
           reservationInfo.pickup,
           reservationInfo.dropoff,
-          newExtraStops.filter(stop => stop.trim()) // Only include non-empty stops
+          reservationInfo.extraStops.map((stop, i) => i === index ? (placeInfo?.formattedAddress || value) : stop)
+            .filter(stop => stop.trim())
         );
         
         setReservationInfo(prev => ({
@@ -201,7 +207,7 @@ export const ReservationContextProvider = ({ children }) => {
         console.error('Error recalculating route:', error);
       }
     }
-  };
+  }, [reservationInfo.isHourly, reservationInfo.pickup, reservationInfo.dropoff, reservationInfo.extraStops]);
 
   const setSelectedVehicle = (vehicle) => {
     setReservationInfo(prev => ({ ...prev, selectedVehicle: vehicle }));

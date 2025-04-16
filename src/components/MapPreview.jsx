@@ -10,6 +10,10 @@ const MapPreview = ({ origin, destination, extraStops = [], onRouteCalculated })
   const [directionsServiceAvailable, setDirectionsServiceAvailable] = useState(false);
   const { routeInfo, isCalculating, error } = useRouteCalculation(origin, destination, extraStops);
   const mapInitializedRef = useRef(false);
+  const directionsRendererRef = useRef(null);
+
+  // Check if any stops are being edited (empty)
+  const hasEmptyStops = extraStops.some(stop => !stop || !stop.trim());
 
   // Check for DirectionsService availability
   useEffect(() => {
@@ -51,17 +55,17 @@ const MapPreview = ({ origin, destination, extraStops = [], onRouteCalculated })
       setMap(newMap);
       mapInitializedRef.current = true;
 
-      if (destination) {
-        const newDirectionsRenderer = new window.google.maps.DirectionsRenderer({
-          suppressMarkers: false,
-          polylineOptions: {
-            strokeColor: '#D4AF37',
-            strokeWeight: 4
-          }
-        });
-        newDirectionsRenderer.setMap(newMap);
-        setDirectionsRenderer(newDirectionsRenderer);
-      }
+      // Always initialize DirectionsRenderer
+      const newDirectionsRenderer = new window.google.maps.DirectionsRenderer({
+        suppressMarkers: false,
+        polylineOptions: {
+          strokeColor: '#D4AF37',
+          strokeWeight: 4
+        }
+      });
+      newDirectionsRenderer.setMap(newMap);
+      directionsRendererRef.current = newDirectionsRenderer;
+      setDirectionsRenderer(newDirectionsRenderer);
     }
 
     // For hourly mode (no destination), just show a marker at the pickup location
@@ -91,30 +95,34 @@ const MapPreview = ({ origin, destination, extraStops = [], onRouteCalculated })
 
   // Update route on map when routeInfo changes
   useEffect(() => {
-    if (directionsRenderer && routeInfo?.route) {
-      const directionsResult = {
-        routes: [routeInfo.route],
-        request: {
-          origin,
-          destination,
-          travelMode: 'DRIVING'
+    if (directionsRendererRef.current && routeInfo?.route && !hasEmptyStops) {
+      try {
+        const directionsResult = {
+          routes: [routeInfo.route],
+          request: {
+            origin,
+            destination,
+            travelMode: 'DRIVING'
+          }
+        };
+        directionsRendererRef.current.setDirections(directionsResult);
+
+        if (onRouteCalculated) {
+          onRouteCalculated({
+            ...routeInfo,
+            optimizedWaypoints: routeInfo.waypoints
+          });
         }
-      };
-      directionsRenderer.setDirections(directionsResult);
 
-      if (onRouteCalculated) {
-        onRouteCalculated({
-          ...routeInfo,
-          optimizedWaypoints: routeInfo.waypoints
-        });
-      }
-
-      // Fit bounds to show the entire route
-      if (map && routeInfo.route.bounds) {
-        map.fitBounds(routeInfo.route.bounds);
+        // Fit bounds to show the entire route
+        if (map && routeInfo.route.bounds) {
+          map.fitBounds(routeInfo.route.bounds);
+        }
+      } catch (error) {
+        console.error('Error setting directions:', error);
       }
     }
-  }, [directionsRenderer, routeInfo, onRouteCalculated, map, origin, destination]);
+  }, [directionsRenderer, routeInfo, onRouteCalculated, map, origin, destination, hasEmptyStops]);
 
   return (
     <div className="relative w-full h-full">
@@ -133,7 +141,7 @@ const MapPreview = ({ origin, destination, extraStops = [], onRouteCalculated })
         )}
       </div>
       
-      {isCalculating && (
+      {isCalculating && !hasEmptyStops && (
         <div className="absolute inset-0 flex items-center justify-center bg-zinc-900/50 backdrop-blur-sm rounded-xl">
           <div className="text-center">
             <div className="inline-block w-8 h-8 border-2 border-gold border-t-transparent rounded-full animate-spin mb-2"></div>
@@ -142,7 +150,15 @@ const MapPreview = ({ origin, destination, extraStops = [], onRouteCalculated })
         </div>
       )}
       
-      {error && (
+      {hasEmptyStops && (
+        <div className="absolute inset-0 flex items-center justify-center bg-zinc-900/50 backdrop-blur-sm rounded-xl">
+          <div className="text-center">
+            <div className="text-gold">Enter all stop locations to calculate the route</div>
+          </div>
+        </div>
+      )}
+      
+      {error && !hasEmptyStops && (
         <div className="absolute inset-0 flex items-center justify-center bg-zinc-900/50 backdrop-blur-sm rounded-xl">
           <div className="bg-zinc-800 p-6 rounded-lg border border-red-500/20 max-w-[80%] text-center">
             <svg className="w-8 h-8 text-red-500 mx-auto mb-2" viewBox="0 0 24 24" fill="currentColor">
