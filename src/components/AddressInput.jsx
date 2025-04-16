@@ -37,6 +37,60 @@ const AddressInput = ({ value, onChange, name, placeholder, onPlaceSelected, cla
 
     autocompleteRef.current = new window.google.maps.places.Autocomplete(inputRef.current, options);
 
+    // Apply custom styles to the autocomplete dropdown
+    const pacContainer = document.querySelector('.pac-container');
+    if (pacContainer) {
+      pacContainer.remove();
+    }
+    
+    // Observer to style new pac-containers as they are added
+    const observer = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        mutation.addedNodes.forEach((node) => {
+          if (node.classList && node.classList.contains('pac-container')) {
+            node.classList.add(
+              'dark:bg-zinc-800/85',
+              'backdrop-blur-xl',
+              'border',
+              'border-zinc-700/50',
+              'rounded-2xl',
+              'shadow-xl',
+              'mt-2',
+              'overflow-hidden'
+            );
+
+            // Style all pac-items
+            node.querySelectorAll('.pac-item').forEach(item => {
+              item.classList.add(
+                'text-white',
+                'hover:bg-gold/20',
+                'cursor-pointer',
+                'px-6',
+                'py-3',
+                'border-zinc-700/50'
+              );
+            });
+
+            // Style the pac-item-query (main text)
+            node.querySelectorAll('.pac-item-query').forEach(query => {
+              query.classList.add('text-white');
+            });
+
+            // Remove the Google default styles
+            node.style.border = 'none';
+            node.style.background = 'transparent';
+            node.style.boxShadow = 'none';
+            node.style.marginTop = '8px';
+          }
+        });
+      });
+    });
+
+    observer.observe(document.body, {
+      childList: true,
+      subtree: true
+    });
+
     const listener = autocompleteRef.current.addListener("place_changed", () => {
       const place = autocompleteRef.current.getPlace();
       isSelectingRef.current = true;
@@ -88,6 +142,7 @@ const AddressInput = ({ value, onChange, name, placeholder, onPlaceSelected, cla
     });
 
     return () => {
+      observer.disconnect();
       if (window.google && autocompleteRef.current) {
         window.google.maps.event.clearInstanceListeners(autocompleteRef.current);
       }
