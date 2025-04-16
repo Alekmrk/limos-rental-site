@@ -117,8 +117,8 @@ const MapPreview = ({ origin, destination, extraStops = [], onRouteCalculated })
   }, [directionsRenderer, routeInfo, onRouteCalculated, map, origin, destination]);
 
   return (
-    <div className="relative w-full">
-      <div className="w-full h-64 md:h-96 rounded-xl overflow-hidden border border-zinc-700/50">
+    <div className="relative w-full h-full">
+      <div className="w-full h-full rounded-2xl overflow-hidden border border-zinc-700/50">
         {!isLoaded || !directionsServiceAvailable ? (
           <div className="w-full h-full flex items-center justify-center bg-zinc-800">
             <div className="text-center">

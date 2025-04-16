@@ -216,7 +216,7 @@ const VehicleSelection = ({ scrollUp }) => {
         
         <ProgressBar />
 
-        <div className="h-[500px] md:h-[600px] w-full">
+        <div className="h-[400px] md:h-[500px] w-full mb-6">
           {reservationInfo.pickup && (
             <MapPreview
               origin={reservationInfo.pickup}
@@ -226,7 +226,7 @@ const VehicleSelection = ({ scrollUp }) => {
           )}
         </div>
         
-        <div className="bg-zinc-800/30 p-6 rounded-lg border border-zinc-700/50">
+        <div className="bg-zinc-800/30 p-6 rounded-xl border border-zinc-700/50">
           <div className="mb-4">
             <p className="text-sm">{reservationInfo.date}</p>
             <p className="text-sm">{reservationInfo.time} (CET/CEST)</p>
@@ -365,40 +365,76 @@ const VehicleSelection = ({ scrollUp }) => {
           )}
         </div>
 
-        <div>
-          <h2 className="text-2xl font-medium mb-4">Available Vehicles</h2>
-          <div className="grid md:grid-cols-3 gap-6">
-            {availableVehicles.map((vehicle) => (
-              <div
-                key={vehicle.id}
-                onClick={() => handleVehicleSelect(vehicle)}
-                className={`p-6 rounded-lg cursor-pointer transition-all ${
-                  reservationInfo.selectedVehicle?.id === vehicle.id
-                    ? "bg-gold/20 border-2 border-gold"
-                    : "bg-zinc-800/30 border border-zinc-700/50 hover:border-gold/50"
-                }`}
-              >
-                <img
-                  src={vehicle.image}
-                  alt={vehicle.name}
-                  className="w-full h-48 object-contain mb-4"
-                />
-                <h3 className="text-xl font-medium mb-2">{vehicle.name}</h3>
-                <div className="text-sm text-zinc-400">
-                  <p>Seats: {vehicle.seats}</p>
-                  <p>Luggage: {vehicle.luggage}</p>
-                  {prices[vehicle.id] && (
-                    <p className="text-gold font-medium mt-2">
-                      CHF {prices[vehicle.id]}
-                    </p>
-                  )}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
         <form onSubmit={handleSubmit}>
+          <div className="grid md:grid-cols-2 gap-6 mb-8 mt-8">
+            <div>
+              <label className="block text-sm font-medium mb-2" htmlFor="passengers">
+                Number of Passengers *
+              </label>
+              <input
+                type="number"
+                id="passengers"
+                name="passengers"
+                min="1"
+                max="8"
+                value={reservationInfo.passengers}
+                onChange={handleInput}
+                className="bg-zinc-800/30 rounded-lg py-2 px-4 w-full border border-zinc-700/50"
+                required
+              />
+              {errors.passengers && (
+                <span className="text-red-500 text-sm">{errors.passengers}</span>
+              )}
+            </div>
+            
+            <div>
+              <label className="block text-sm font-medium mb-2" htmlFor="bags">
+                Number of Bags
+              </label>
+              <input
+                type="number"
+                id="bags"
+                name="bags"
+                min="0"
+                max="8"
+                value={reservationInfo.bags}
+                onChange={handleInput}
+                className="bg-zinc-800/30 rounded-lg py-2 px-4 w-full border border-zinc-700/50"
+              />
+              {errors.bags && (
+                <span className="text-red-500 text-sm">{errors.bags}</span>
+              )}
+            </div>
+          </div>
+
+          <div className="mb-8">
+            <h2 className="text-2xl font-medium mb-4">Available Vehicles</h2>
+            <div className="grid md:grid-cols-3 gap-6">
+              {availableVehicles.map((vehicle) => (
+                <div
+                  key={vehicle.id}
+                  onClick={() => handleVehicleSelect(vehicle)}
+                  className={`p-6 rounded-lg cursor-pointer transition-all ${
+                    reservationInfo.selectedVehicle?.id === vehicle.id
+                      ? "bg-gold/20 border-2 border-gold"
+                      : "bg-zinc-800/30 border border-zinc-700/50 hover:border-gold/50"
+                  }`}
+                >
+                  <img
+                    src={vehicle.image}
+                    alt={vehicle.name}
+                    className="w-full h-48 object-contain mb-4"
+                  />
+                  <h3 className="text-xl font-medium mb-2">{vehicle.name}</h3>
+                  <div className="text-sm text-zinc-400">
+                    <p>Seats: {vehicle.seats}</p>
+                    <p>Luggage: {vehicle.luggage}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
           <div className="flex flex-col gap-4">
             <div className="flex justify-between items-start">
               <Button
@@ -408,18 +444,18 @@ const VehicleSelection = ({ scrollUp }) => {
               >
                 Back
               </Button>
-              <div className="flex flex-col items-end gap-1">
+              <div className="flex flex-col items-end gap-2">
+                <Button type="submit" variant="secondary">
+                  Continue
+                </Button>
                 {hasAttemptedSubmit && (errors.vehicle || errors.extraStops) && (
-                  <div className="text-red-500 text-sm bg-red-500/10 px-3 py-1.5 rounded border border-red-500/20 mb-1">
+                  <div className="text-red-500 text-sm bg-red-500/10 px-3 py-1.5 rounded border border-red-500/20">
                     <svg className="w-4 h-4 inline-block mr-1" viewBox="0 0 24 24" fill="currentColor">
                       <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
                     </svg>
                     {errors.vehicle || "Please fill in or remove empty stops"}
                   </div>
                 )}
-                <Button type="submit" variant="secondary">
-                  Continue
-                </Button>
               </div>
             </div>
           </div>
