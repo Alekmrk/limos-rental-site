@@ -49,7 +49,7 @@ const ReservationCard = () => {
         bounds,
         fields: ["formatted_address", "geometry", "place_id", "address_components", "name", "types"],
         strictBounds: false,
-        componentRestrictions: { country: 'ch' }
+        componentRestrictions: { country: ['ch', 'de', 'fr', 'it', 'at', 'li'] }
       };
 
       autocompleteRef.current = new window.google.maps.places.Autocomplete(inputRef.current, options);
