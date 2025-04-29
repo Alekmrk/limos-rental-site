@@ -4,10 +4,16 @@ import ReservationContext from "../../contexts/ReservationContext";
 import Button from "../../components/Button";
 import ProgressBar from "../../components/ProgressBar";
 import { calculatePrice, formatPrice } from "../../services/PriceCalculationService";
+import { sendPaymentConfirmation } from "../../services/EmailService";
 
 const PaymentPage = ({ scrollUp }) => {
   const navigate = useNavigate();
-  const { reservationInfo } = useContext(ReservationContext);
+  // Get everything from context
+  const { 
+    reservationInfo,
+    handleInput  // We'll use this to update the reservation context
+  } = useContext(ReservationContext);
+  
   const [paymentMethod, setPaymentMethod] = useState(null);
   const [isProcessing, setIsProcessing] = useState(false);
   const [price, setPrice] = useState(0);
@@ -31,6 +37,15 @@ const PaymentPage = ({ scrollUp }) => {
   useEffect(() => {
     // Calculate price based on reservation details
     if (reservationInfo.selectedVehicle) {
+      console.log('Calculating price with:', {
+        distance: reservationInfo.distance || 46.5,
+        duration: reservationInfo.duration || 36,
+        vehicle: reservationInfo.selectedVehicle.name,
+        extraStops: reservationInfo.extraStops?.length || 0,
+        isHourly: reservationInfo.isHourly,
+        hours: reservationInfo.isHourly ? parseInt(reservationInfo.hours) : 0
+      });
+      
       const calculatedPrice = calculatePrice(
         reservationInfo.distance || 46.5, // Default distance if not set
         reservationInfo.duration || 36, // Default duration if not set
@@ -39,7 +54,9 @@ const PaymentPage = ({ scrollUp }) => {
         reservationInfo.isHourly,
         reservationInfo.isHourly ? parseInt(reservationInfo.hours) : 0
       );
-      setPrice(calculatedPrice);
+      
+      console.log('Calculated price:', calculatedPrice);
+      setPrice(calculatedPrice || 0); // Ensure we never set NaN by defaulting to 0
     }
   }, [reservationInfo]);
 
@@ -55,14 +72,77 @@ const PaymentPage = ({ scrollUp }) => {
     navigate('/customer-details');
   };
 
+  // Process payment and send confirmation email
+  const processPayment = async () => {
+    setIsProcessing(true);
+    console.log('Payment processing started');
+    console.log('Payment method:', paymentMethod);
+    console.log('Amount:', formatPrice(price));
+    
+    try {
+      // In a real implementation, this would be an API call to process payment
+      console.log(`Processing ${paymentMethod} payment for ${formatPrice(price)}`);
+      
+      // Create payment details object
+      const paymentDetails = {
+        method: paymentMethod,
+        amount: price,
+        currency: 'CHF',
+        timestamp: new Date().toISOString(),
+        reference: `PAY-${Math.random().toString(36).substr(2, 9).toUpperCase()}`
+      };
+      
+      // Update reservation context with payment details
+      // We need to use synthetic events to work with handleInput
+      const syntheticEvent = {
+        target: {
+          name: 'paymentDetails',
+          value: paymentDetails
+        }
+      };
+      
+      console.log('Updating reservation with payment details:', paymentDetails);
+      await handleInput(syntheticEvent);
+      
+      // Get the updated reservation info with payment details
+      const updatedReservationInfo = {
+        ...reservationInfo,
+        paymentDetails: paymentDetails
+      };
+      
+      console.log('Sending payment confirmation emails...');
+      
+      // Send payment confirmation emails
+      const emailResult = await sendPaymentConfirmation(updatedReservationInfo);
+      console.log('Email sending result:', emailResult);
+      
+      if (!emailResult.success) {
+        console.warn('Payment confirmation emails may not have been sent properly');
+      } else {
+        console.log('Payment confirmation emails sent successfully!');
+      }
+      
+      // Short delay to ensure everything is processed
+      setTimeout(() => {
+        // Payment processed, navigate to thank you page
+        console.log('Navigating to thank you page');
+        navigate('/thankyou');
+      }, 500);
+    } catch (error) {
+      console.error("Payment processing error:", error);
+      console.error("Error details:", error.stack);
+      alert("There was a problem processing your payment. Please try again.");
+      setIsProcessing(false);
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setIsProcessing(true);
+    await processPayment();
+  };
 
-    // Simulate payment processing
-    setTimeout(() => {
-      navigate('/thankyou');
-    }, 2000);
+  const handleCryptoPayment = async () => {
+    await processPayment();
   };
 
   return (
@@ -204,10 +284,11 @@ const PaymentPage = ({ scrollUp }) => {
                   </Button>
                   <Button 
                     type="button" 
-                    variant="secondary" 
-                    onClick={() => navigate('/thankyou')}
+                    variant="secondary"
+                    onClick={handleCryptoPayment}
+                    disabled={isProcessing}
                   >
-                    I've Sent the Payment
+                    {isProcessing ? 'Processing...' : 'I\'ve Sent the Payment'}
                   </Button>
                 </div>
               </div>

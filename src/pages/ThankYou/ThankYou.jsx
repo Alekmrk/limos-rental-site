@@ -1,11 +1,55 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import ProgressBar from "../../components/ProgressBar";
 import { useContext } from "react";
 import ReservationContext from "../../contexts/ReservationContext";
+import { sendTransferConfirmationToAdmin } from "../../services/EmailService";
 
 const ThankYou = ({ scrollUp }) => {
-  useEffect(() => scrollUp(), []);
+  const [emailStatus, setEmailStatus] = useState({
+    sent: false,
+    error: null
+  });
   const { reservationInfo } = useContext(ReservationContext);
+
+  useEffect(() => scrollUp(), [scrollUp]);
+  
+  // Log reservation info for debugging
+  useEffect(() => {
+    console.log('ThankYou component loaded');
+    console.log('reservationInfo:', reservationInfo);
+    console.log('Has payment details?', !!reservationInfo.paymentDetails);
+  }, [reservationInfo]);
+  
+  // Send email confirmations when the component mounts
+  useEffect(() => {
+    const sendEmails = async () => {
+      try {
+        console.log('Attempting to send confirmation emails...');
+        // The backend will handle sending to both admin and customer as needed
+        const result = await sendTransferConfirmationToAdmin(reservationInfo);
+        console.log('Email sending result:', result);
+        setEmailStatus({ sent: result.success, error: null });
+        
+        if (!result.success) {
+          console.warn("Email notification may not have been sent properly");
+        } else {
+          console.log("Email notification sent successfully!");
+        }
+      } catch (error) {
+        console.error("Error sending confirmation emails:", error);
+        setEmailStatus({ sent: false, error: error.message });
+      }
+    };
+
+    // Send emails only if this is not coming from a payment completion
+    // Payment confirmations are sent from the PaymentPage
+    if (!reservationInfo.paymentDetails) {
+      console.log('No payment details found, sending confirmation emails');
+      sendEmails();
+    } else {
+      console.log('Payment details found, skipping emails (should be sent from payment page)');
+    }
+  }, [reservationInfo]);
 
   return (
     <div className="container-default mt-28">
