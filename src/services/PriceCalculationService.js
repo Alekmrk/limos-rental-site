@@ -1,112 +1,183 @@
-// Base rates per vehicle type (CHF)
-const baseRates = {
-  'Mersedes Benz S Class': 2.5,
-  'Mersedes Benz V Class': 3.0,
-  'Audi A8': 2.5,
-  'Cadillac Escalade': 3.5,
-  'Rolls Royce Ghost': 4.0
+/**
+ * Simplified Price Calculation Service
+ * Only considers distance for transfers and hourly rate for hourly bookings
+ */
+
+// Vehicle rates (in CHF)
+const VEHICLE_RATES = {
+  // Base per km rates for point-to-point transfers
+  BASE_KM_RATE: {
+    'Mersedes Benz S Class': 3.0,
+    'Mersedes Benz V Class': 3.5,
+    'Audi A8': 3.0,
+    'Cadillac Escalade': 4.0,
+    'Rolls Royce Ghost': 5.0
+  },
+  
+  // Hourly rates (CHF per hour)
+  HOURLY_RATE: {
+    'Mersedes Benz S Class': 120,
+    'Mersedes Benz V Class': 150,
+    'Audi A8': 120,
+    'Cadillac Escalade': 180,
+    'Rolls Royce Ghost': 250
+  },
+  
+  // Minimum charges (in CHF) for point-to-point transfers
+  MINIMUM_TRANSFER_CHARGE: {
+    'Mersedes Benz S Class': 150,
+    'Mersedes Benz V Class': 180,
+    'Audi A8': 150,
+    'Cadillac Escalade': 200,
+    'Rolls Royce Ghost': 300
+  },
+  
+  // Minimum hours for hourly bookings
+  MINIMUM_HOURS: 2
 };
 
-// Hourly rates (CHF per hour)
-const hourlyRates = {
-  'Mersedes Benz S Class': 80,
-  'Mersedes Benz V Class': 100,
-  'Audi A8': 80,
-  'Cadillac Escalade': 120,
-  'Rolls Royce Ghost': 150
+// Legacy vehicle category mappings (for backward compatibility)
+const VEHICLE_CATEGORIES = {
+  'Mersedes Benz S Class': 'premium',
+  'Mersedes Benz V Class': 'premium',
+  'Audi A8': 'premium',
+  'Cadillac Escalade': 'suv',
+  'Rolls Royce Ghost': 'luxury'
 };
 
-// Base rates per vehicle category (in CHF)
-const BASE_RATES = {
-  standard: 120,
+// Legacy price per km (for backward compatibility with calculatePriceByDistance)
+const PRICE_PER_KM = {
+  standard: 3.0,
+  premium: 3.5,
+  luxury: 5.0,
+  suv: 4.0,
+};
+
+// Legacy minimum charges (for backward compatibility with calculatePriceByDistance)
+const MINIMUM_CHARGES = {
+  standard: 150,
   premium: 180,
-  luxury: 250,
+  luxury: 300,
   suv: 200,
 };
 
-// Minimum charges (in CHF)
-const MINIMUM_CHARGES = {
-  standard: 240, // 2 hours minimum
-  premium: 360,
-  luxury: 500,
-  suv: 400,
-};
-
-// Price per kilometer (in CHF)
-const PRICE_PER_KM = {
-  standard: 3.5,
-  premium: 4.5,
-  luxury: 6.0,
-  suv: 5.0,
-};
-
-export const calculatePrice = (distance, duration, vehicleType, extraStops = 0, isHourly = false, hours = 0) => {
-  // Get base rate for vehicle type, default to highest rate if type not found
-  const baseRate = baseRates[vehicleType] || Math.max(...Object.values(baseRates));
-  const hourlyRate = hourlyRates[vehicleType] || Math.max(...Object.values(hourlyRates));
-
-  let totalPrice;
-  
-  if (isHourly) {
-    // Ensure hours are within limits (2-24)
-    const validHours = Math.max(2, Math.min(24, hours));
-    // Calculate price based on hourly rate
-    totalPrice = validHours * hourlyRate;
-  } else {
-    // Calculate base price based on distance and duration
-    const distancePrice = distance * baseRate;
-    const durationPrice = (duration / 60) * 50; // 50 CHF per hour waiting time
-    totalPrice = distancePrice + durationPrice;
+/**
+ * Simplified price calculation function for both transfer and hourly bookings
+ * 
+ * @param {number} distance - Distance in kilometers for point-to-point transfers
+ * @param {number} duration - Not used in simplified calculation, maintained for backward compatibility
+ * @param {string} vehicleType - Type of vehicle
+ * @param {number} extraStops - Not used in simplified calculation, maintained for backward compatibility
+ * @param {boolean} isHourly - Whether this is an hourly booking (default: false)
+ * @param {number} hours - Number of hours for hourly booking (default: 0)
+ * @returns {number} - Calculated total price
+ */
+export const calculatePrice = (distance = 0, duration = 0, vehicleType = 'Mersedes Benz S Class', extraStops = 0, isHourly = false, hours = 0) => {
+  try {
+    // Get rates for selected vehicle, fallback to highest rates if vehicle not found
+    const kmRate = VEHICLE_RATES.BASE_KM_RATE[vehicleType] || 
+      Math.max(...Object.values(VEHICLE_RATES.BASE_KM_RATE));
+    
+    const hourlyRate = VEHICLE_RATES.HOURLY_RATE[vehicleType] || 
+      Math.max(...Object.values(VEHICLE_RATES.HOURLY_RATE));
+    
+    const minimumCharge = VEHICLE_RATES.MINIMUM_TRANSFER_CHARGE[vehicleType] || 
+      Math.max(...Object.values(VEHICLE_RATES.MINIMUM_TRANSFER_CHARGE));
+    
+    let totalPrice = 0;
+    
+    if (isHourly) {
+      // Hourly booking - ensure minimum hours
+      const validHours = Math.max(VEHICLE_RATES.MINIMUM_HOURS, hours);
+      totalPrice = validHours * hourlyRate;
+    } else {
+      // Point-to-point transfer - distance-based only
+      totalPrice = Math.max(
+        distance * kmRate, // Distance-based price
+        minimumCharge // Minimum charge
+      );
+    }
+    
+    // Round to nearest CHF
+    return Math.ceil(totalPrice);
+  } catch (error) {
+    console.error('Error calculating price:', error);
+    return 0; // Return 0 if there's an error
   }
-
-  // Extra stops charge
-  const extraStopCharge = extraStops * 20; // 20 CHF per extra stop
-  totalPrice += extraStopCharge;
-
-  // Minimum charge
-  const minimumCharge = 100;
-  return Math.max(totalPrice, minimumCharge);
 };
 
-// Calculate price based on distance and vehicle type
-export const calculatePriceByDistance = (distanceInMeters, vehicleCategory, routeDuration) => {
-  const distanceInKm = distanceInMeters / 1000;
-  const durationInHours = routeDuration / 3600;
-
-  // Calculate base price by distance
-  const distancePrice = distanceInKm * PRICE_PER_KM[vehicleCategory];
-  
-  // Calculate time-based minimum charge
-  const timeBasedMinimum = BASE_RATES[vehicleCategory] * Math.ceil(durationInHours);
-  
-  // Get the category minimum charge
-  const categoryMinimum = MINIMUM_CHARGES[vehicleCategory];
-  
-  // Take the highest of all calculations
-  const finalPrice = Math.max(distancePrice, timeBasedMinimum, categoryMinimum);
-  
-  return Math.ceil(finalPrice); // Round up to nearest CHF
+/**
+ * Legacy function - Calculate price based on distance and vehicle category
+ * Maintained for backward compatibility with VehicleSelection.jsx
+ * 
+ * @param {number} distanceInMeters - Distance in meters
+ * @param {string} vehicleCategory - Vehicle category (standard, premium, luxury, suv)
+ * @param {number} routeDuration - Not used in simplified calculation
+ * @returns {number} - Calculated price
+ */
+export const calculatePriceByDistance = (distanceInMeters, vehicleType, routeDuration = 0) => {
+  try {
+    // Convert vehicle type to category if needed
+    const vehicleCategory = VEHICLE_CATEGORIES[vehicleType] || 'premium';
+    
+    const distanceInKm = distanceInMeters / 1000;
+    
+    // Calculate price by distance
+    const distancePrice = distanceInKm * (PRICE_PER_KM[vehicleCategory] || 3.5);
+    
+    // Get minimum charge
+    const minimumCharge = MINIMUM_CHARGES[vehicleCategory] || 180;
+    
+    // Take the highest
+    const finalPrice = Math.max(distancePrice, minimumCharge);
+    
+    return Math.ceil(finalPrice); // Round up to nearest CHF
+  } catch (error) {
+    console.error('Error in calculatePriceByDistance:', error);
+    return 0;
+  }
 };
 
-// Calculate hourly rate
-export const calculateHourlyRate = (hours, vehicleCategory) => {
-  const rate = BASE_RATES[vehicleCategory];
-  const minimum = MINIMUM_CHARGES[vehicleCategory];
-  const total = rate * hours;
-  return Math.max(total, minimum);
+/**
+ * Legacy function - Add surcharges to base price
+ * Maintained for backward compatibility with VehicleSelection.jsx
+ * In simplified pricing, we don't use surcharges anymore
+ */
+export const addSurcharges = (basePrice, { isAirport = false, isNightTime = false, isWeekend = false }) => {
+  // In simplified pricing, we're not using surcharges, 
+  // but return the base price unchanged for backward compatibility
+  return basePrice;
 };
 
-// Add surcharges
-export const addSurcharges = (basePrice, { isAirport, isNightTime, isWeekend }) => {
-  let finalPrice = basePrice;
-  
-  if (isAirport) finalPrice *= 1.1; // 10% airport surcharge
-  if (isNightTime) finalPrice *= 1.15; // 15% night surcharge
-  if (isWeekend) finalPrice *= 1.2; // 20% weekend surcharge
-  
-  return Math.ceil(finalPrice);
-};
-
+/**
+ * Format a price value to display currency
+ */
 export const formatPrice = (price) => {
-  return `CHF ${price.toFixed(2)}`;
+  if (isNaN(price) || price === null) return 'CHF 0.00';
+  return `CHF ${Number(price).toFixed(2)}`;
+};
+
+/**
+ * Get estimated price range for display on the website
+ * Returns an object with min price and hourly rate for a vehicle type
+ */
+export const getEstimatedPriceRange = (vehicleType) => {
+  try {
+    const hourlyRate = VEHICLE_RATES.HOURLY_RATE[vehicleType];
+    const minimumCharge = VEHICLE_RATES.MINIMUM_TRANSFER_CHARGE[vehicleType];
+    
+    return {
+      minPrice: minimumCharge,
+      hourlyRate: hourlyRate,
+      formattedMinPrice: formatPrice(minimumCharge),
+      formattedHourlyRate: formatPrice(hourlyRate)
+    };
+  } catch (error) {
+    return {
+      minPrice: 0,
+      hourlyRate: 0,
+      formattedMinPrice: formatPrice(0),
+      formattedHourlyRate: formatPrice(0)
+    };
+  }
 };
