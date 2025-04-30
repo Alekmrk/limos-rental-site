@@ -34,6 +34,12 @@ LIMOS is built using the following technologies:
 - SCSS
 - Tailwind CSS
 
+## Development
+
+For developers working on this project:
+- Check out [copilot-instructions.md](copilot-instructions.md) for guidelines on using GitHub Copilot with this codebase
+- Follow the established patterns and best practices outlined in the documentation
+
 ## Upcoming Features
 
 1. Integrated Email Newsletter subscription system.

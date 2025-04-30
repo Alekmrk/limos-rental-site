@@ -18,23 +18,23 @@ const FeaturedSection = () => {
   return (
     <div className="container-default mt-32">
       <h1 className="font-semibold text-5xl md:text-7xl text-center mb-6">
-        Only today $75/day
+        Only today <span className="text-gold">$75/day</span>
       </h1>
-      <p className="md:w-[50ch] mx-auto text-center text-neutral-600 mb-12">
+      <p className="md:w-[50ch] mx-auto text-center text-neutral-400 mb-12">
         Take advantage Of our hot offers, saving a significant amount when
         renting a limousine
       </p>
-      <div className="p-12 bg-zinc-200 rounded-[1.5rem] relative">
-        <h2 className="text-5xl mb-8 mt-24 sm:mt-0">Cadillac Escalade</h2>
+      <div className="p-12 luxury-card rounded-[1.5rem] relative">
+        <h2 className="text-5xl mb-8 mt-24 sm:mt-0 text-gold">Cadillac Escalade</h2>
 
-        <ul className="feature-list text-sm text-neutral-600 grid gap-1 md:grid-cols-2 md:w-6/12 mb-8">
+        <ul className="feature-list text-sm text-neutral-400 grid gap-1 md:grid-cols-2 md:w-6/12 mb-8">
           {vehicleFeatures.map((feature, i) => (
             <FeatureItem text={feature} key={i} />
           ))}
         </ul>
 
         <Link to={"/vehicles"}>
-          <Button>Reserve Now</Button>
+          <Button variant="secondary">Reserve Now</Button>
         </Link>
         <img
           className="w-[450px] md:w-[620px] absolute -top-12 sm:top-24 md:-top-12 right-0"

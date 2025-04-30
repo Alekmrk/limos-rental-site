@@ -36,7 +36,7 @@ const Header = () => {
 
   return (
     <header
-      className={`py-6 fixed z-10 bg-white left-0 right-0 top-0 ${
+      className={`py-6 fixed z-50 bg-zinc-900/95 backdrop-blur-sm border-b border-zinc-800 left-0 right-0 top-0 ${
         shadowVisible && "shadow-default"
       }`}
     >
@@ -51,8 +51,8 @@ const Header = () => {
         {screenSize < screenMd && (
           <button onClick={() => setNavHidden(!navHidden)} className="text-lg">
             <FontAwesomeIcon
-              icon={navHidden ? faBars : faXmark} // replacing the hamburger icon with the close button once the nav bar is displayed
-              style={{ color: "#000000" }}
+              icon={navHidden ? faBars : faXmark}
+              style={{ color: "#ffffff" }}
             />
           </button>
         )}

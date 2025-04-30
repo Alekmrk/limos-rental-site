@@ -1,14 +1,214 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import ProgressBar from "../../components/ProgressBar";
+import { useContext } from "react";
+import ReservationContext from "../../contexts/ReservationContext";
+import { sendTransferConfirmationToAdmin } from "../../services/EmailService";
 
 const ThankYou = ({ scrollUp }) => {
-  useEffect(() => scrollUp(), []);
+  const [emailStatus, setEmailStatus] = useState({
+    sent: false,
+    error: null
+  });
+  const { reservationInfo } = useContext(ReservationContext);
+
+  useEffect(() => scrollUp(), [scrollUp]);
+  
+  // Log reservation info for debugging
+  useEffect(() => {
+    console.log('ThankYou component loaded');
+    console.log('reservationInfo:', reservationInfo);
+    console.log('Has payment details?', !!reservationInfo.paymentDetails);
+  }, [reservationInfo]);
+  
+  // Send email confirmations when the component mounts
+  useEffect(() => {
+    const sendEmails = async () => {
+      try {
+        console.log('Attempting to send confirmation emails...');
+        // The backend will handle sending to both admin and customer as needed
+        const result = await sendTransferConfirmationToAdmin(reservationInfo);
+        console.log('Email sending result:', result);
+        setEmailStatus({ sent: result.success, error: null });
+        
+        if (!result.success) {
+          console.warn("Email notification may not have been sent properly");
+        } else {
+          console.log("Email notification sent successfully!");
+        }
+      } catch (error) {
+        console.error("Error sending confirmation emails:", error);
+        setEmailStatus({ sent: false, error: error.message });
+      }
+    };
+
+    // Send emails only if this is not coming from a payment completion
+    // Payment confirmations are sent from the PaymentPage
+    if (!reservationInfo.paymentDetails) {
+      console.log('No payment details found, sending confirmation emails');
+      sendEmails();
+    } else {
+      console.log('Payment details found, skipping emails (should be sent from payment page)');
+    }
+  }, [reservationInfo]);
 
   return (
     <div className="container-default mt-28">
-      <h1 className="text-5xl md:text-7xl font-semibold">Reserved!</h1>
-      <p className="text-zinc-600">
-        Thank You for choosing us. Your ride is booked!
-      </p>
+      <div className="max-w-6xl mx-auto">
+        <h1 className="text-5xl md:text-7xl font-semibold mb-8 text-center">
+          <span className="text-gold">
+            {reservationInfo.isSpecialRequest ? "Request Received!" : "Booking Confirmed!"}
+          </span>
+        </h1>
+        
+        <ProgressBar />
+        
+        <div className="bg-zinc-800/30 p-8 rounded-lg border border-gold/50 mt-8">
+          <div className="text-center mb-8">
+            <div className="inline-block p-4 rounded-full bg-gold/20 mb-4">
+              <svg className="w-16 h-16 text-gold" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <h2 className="text-3xl font-medium mb-2">Thank You for Choosing Us!</h2>
+            <p className="text-zinc-400 text-lg">
+              {reservationInfo.isSpecialRequest 
+                ? "We'll review your request and get back to you shortly with a customized quote."
+                : "Your luxury transfer has been successfully booked."}
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-6 mb-8">
+            {reservationInfo.isSpecialRequest ? (
+              <>
+                <div className="bg-black/20 p-6 rounded-lg h-full">
+                  <h3 className="text-gold font-medium mb-4 flex items-center gap-2">
+                    <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 010-5 2.5 2.5 0 010 5z"/>
+                    </svg>
+                    Request Details
+                  </h3>
+                  <div className="space-y-2 text-zinc-300">
+                    <p>Date: {reservationInfo.date}</p>
+                    <p>Preferred Time: {reservationInfo.time}</p>
+                    <p className="mt-4 text-sm text-zinc-400">Special Request:</p>
+                    <p className="text-sm">{reservationInfo.specialRequestDetails}</p>
+                    {reservationInfo.additionalRequests && (
+                      <>
+                        <p className="mt-4 text-sm text-zinc-400">Additional Information:</p>
+                        <p className="text-sm">{reservationInfo.additionalRequests}</p>
+                      </>
+                    )}
+                  </div>
+                </div>
+
+                <div className="bg-black/20 p-6 rounded-lg h-full">
+                  <h3 className="text-gold font-medium mb-4 flex items-center gap-2">
+                    <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                    </svg>
+                    Contact Details
+                  </h3>
+                  <div className="space-y-2 text-zinc-300">
+                    <p>Email: {reservationInfo.email}</p>
+                    <p>Phone: {reservationInfo.phone}</p>
+                  </div>
+                </div>
+
+                <div className="bg-black/20 p-6 rounded-lg h-full">
+                  <h3 className="text-gold font-medium mb-4 flex items-center gap-2">
+                    <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 14H4V8l8 5 8-5v10zm-8-7L4 6h16l-8 5z"/>
+                    </svg>
+                    Next Steps
+                  </h3>
+                  <div className="space-y-3 text-zinc-300 text-sm">
+                    <p>1. Our team will review your request within 24 hours</p>
+                    <p>2. We'll prepare a customized quote based on your requirements</p>
+                    <p>3. You'll receive a detailed proposal via email</p>
+                    <p>4. We can schedule a call to discuss any questions</p>
+                  </div>
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="bg-black/20 p-6 rounded-lg h-full">
+                  <h3 className="text-gold font-medium mb-4 flex items-center gap-2">
+                    <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                    </svg>
+                    Transfer Details
+                  </h3>
+                  <div className="space-y-2 text-zinc-300">
+                    <p>From: {reservationInfo.pickup}</p>
+                    {reservationInfo.extraStops.map((stop, index) => (
+                      <p key={index} className="pl-4 flex items-center gap-2">
+                        <svg className="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="currentColor">
+                          <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                        </svg>
+                        <span>Extra Stop {index + 1}: {stop}</span>
+                      </p>
+                    ))}
+                    <p>To: {reservationInfo.dropoff}</p>
+                    <p>Date: {reservationInfo.date}</p>
+                    <p>Time: {reservationInfo.time}</p>
+                  </div>
+                </div>
+
+                <div className="bg-black/20 p-6 rounded-lg h-full">
+                  <h3 className="text-gold font-medium mb-4 flex items-center gap-2">
+                    <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M21 12v-2h-2V7l-3-3-2 2-2-2-2 2-2-2-3 3v3H3v2h2v7h14v-7h2zm-5-3.5l2 2V10h-4V8.5l2-2zm-4 0l2 2V10h-4V8.5l2-2zm-4 0l2 2V10H6V8.5l2-2z"/>
+                    </svg>
+                    Vehicle Details
+                  </h3>
+                  <div className="space-y-2 text-zinc-300">
+                    <p>Vehicle: {reservationInfo.selectedVehicle?.name}</p>
+                    <p>Passengers: {reservationInfo.passengers}</p>
+                    <p>Bags: {reservationInfo.bags}</p>
+                    {reservationInfo.childSeats > 0 && (
+                      <p>Child Seats: {reservationInfo.childSeats}</p>
+                    )}
+                    {reservationInfo.babySeats > 0 && (
+                      <p>Baby Seats: {reservationInfo.babySeats}</p>
+                    )}
+                    {reservationInfo.skiEquipment > 0 && (
+                      <p>Ski Equipment: {reservationInfo.skiEquipment}</p>
+                    )}
+                  </div>
+                </div>
+
+                <div className="bg-black/20 p-6 rounded-lg h-full">
+                  <h3 className="text-gold font-medium mb-4 flex items-center gap-2">
+                    <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                    </svg>
+                    Customer Details
+                  </h3>
+                  <div className="space-y-2 text-zinc-300">
+                    <p>Email: {reservationInfo.email}</p>
+                    <p>Phone: {reservationInfo.phone}</p>
+                    {reservationInfo.flightNumber && (
+                      <p>Flight Number: {reservationInfo.flightNumber}</p>
+                    )}
+                    {reservationInfo.additionalRequests && (
+                      <p>Additional Requests: {reservationInfo.additionalRequests}</p>
+                    )}
+                  </div>
+                </div>
+              </>
+            )}
+          </div>
+
+          <div className="text-center text-zinc-400">
+            <p className="mb-2">
+              {reservationInfo.isSpecialRequest 
+                ? `We'll send a detailed response to ${reservationInfo.email}`
+                : `A confirmation email has been sent to ${reservationInfo.email}`}
+            </p>
+            <p>If you have any questions, please don't hesitate to contact us.</p>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

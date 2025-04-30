@@ -13,38 +13,59 @@
   body,
   html {
     min-height: 100vh;
+    @apply bg-zinc-900 text-white;
   }
 
   .reservation input {
-    @apply block w-full py-2 px-4 mb-3 font-thin placeholder:text-neutral-600 rounded-[0.6rem] bg-gray-100;
-
+    @apply block w-full py-3 px-4 mb-3 font-light placeholder:text-neutral-400 rounded-xl bg-zinc-800/30 border border-zinc-700/50 text-white transition-all duration-200;
+    &:focus {
+      outline: none;
+      @apply border-gold/50 shadow-[0_0_15px_rgba(212,175,55,0.1)];
+    }
+    &:hover {
+      @apply border-zinc-600;
+    }
   }
 
   .nav-link {
-    @apply font-normal text-base text-neutral-500 hover:text-black transition;
+    @apply font-normal text-base text-neutral-400 transition;
+    &:hover {
+      color: #D4AF37;
+    }
     &.active {
-      @apply text-black;
+      color: #D4AF37;
     }
   }
 
   .banner {
-    background-image: url('./assets/banner-image.jpg');
+    background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), url('./assets/banner-image.jpg');
     background-size: cover;
     background-position: bottom;
     background-repeat: no-repeat;
-    height: 660px;
+    min-height: 760px;
+    height: auto;
+    padding-bottom: 28rem;
+    @apply border border-zinc-900 shadow-2xl;
+
+    @media (min-width: 768px) {
+      height: 760px;
+      padding-bottom: 0;
+    }
   }
 
   .service-card button {
     width: 150px;
   }
 
-  .tabs button{
-    @apply py-2 px-3 md:px-5 md:mx-2 rounded-[0.5rem] transition-colors duration-200 ease-in-out;
+  .tabs button {
+    @apply py-2 px-3 md:px-5 md:mx-2 rounded-[0.5rem] transition-colors duration-200 ease-in-out text-neutral-400;
+    &:hover {
+      color: #D4AF37;
+    }
   }
   
   button.active {
-    @apply bg-accent;
+    @apply bg-gold text-black shadow-[0_0_20px_rgba(212,175,55,0.2)];
   }
 
   .slider-card:hover .car {
@@ -54,21 +75,42 @@
   }
 
   ::-webkit-scrollbar {
-      width: 0.6em;
+    width: 0.6em;
 
-      &-track {
-        @apply bg-neutral-400 rounded-full;
+    &-track {
+      @apply bg-zinc-900 rounded-full;
+    }
+
+    &-thumb {
+      background-color: #D4AF37;
+      border-radius: 9999px;
+
+      &:hover {
+        opacity: 0.8;
       }
-
-      &-thumb {
-        @apply bg-neutral-700 rounded-full;
-
-        &:hover {
-          @apply bg-zinc-800;
-        }
-      }
+    }
   }
 
+  /* Force 24-hour time input format */
+  input[type="time"].hour24::-webkit-datetime-edit-ampm-field {
+    display: none;
+  }
+
+  input[type="time"].hour24 {
+    &::-webkit-calendar-picker-indicator {
+      background: none;
+    }
+    
+    &::-webkit-datetime-edit-hour-field,
+    &::-webkit-datetime-edit-minute-field {
+      color: white;
+    }
+    
+    &::-webkit-datetime-edit-text {
+      color: white;
+      padding: 0 0.3em;
+    }
+  }
 
   /* Utility Classes */
   .container-default {
@@ -87,8 +129,80 @@
   }
 
   .shadow-default {
-    box-shadow: 0px 2px 19px 1px rgba(0,0,0,0.1);
-    -webkit-box-shadow: 0px 2px 19px 1px rgba(0,0,0,0.1);
-    -moz-box-shadow: 0px 2px 19px 1px rgba(0,0,0,0.1);
+    box-shadow: 0px 2px 19px 1px rgba(0,0,0,0.3);
+    -webkit-box-shadow: 0px 2px 19px 1px rgba(0,0,0,0.3);
+    -moz-box-shadow: 0px 2px 19px 1px rgba(0,0,0,0.3);
+  }
+
+  /* Luxury Elements */
+  .luxury-card {
+    @apply bg-zinc-900 border border-zinc-800 shadow-xl;
+  }
+
+  .luxury-text {
+    color: #D4AF37;
+  }
+}
+
+// Google Places Autocomplete Custom Styles
+.pac-container {
+  font-family: inherit;
+  z-index: 9999 !important;
+  background: rgba(39, 39, 42, 0.85) !important;  // Changed to zinc-800 with slightly higher opacity
+  backdrop-filter: blur(16px);
+  border-radius: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+
+  // Remove Google Logo
+  &:after {
+    display: none !important;
+  }
+
+  .pac-item {
+    border-top: none;
+    font-size: 14px;
+    line-height: 1.5;
+    transition: all 0.2s;
+    padding: 0.75rem 1.5rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    background: transparent;
+
+    &:first-child {
+      border-top: none;
+    }
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    &:hover {
+      background: rgba(212, 175, 55, 0.2);
+    }
+  }
+
+  .pac-icon {
+    filter: brightness(0) invert(1);
+    opacity: 0.5;
+    margin-top: 2px;
+  }
+
+  .pac-item-selected {
+    background: rgba(212, 175, 55, 0.2);
+  }
+
+  .pac-item-query {
+    font-size: 14px;
+    padding-right: 3px;
+    color: white;
+  }
+
+  .pac-matched {
+    color: rgb(212, 175, 55);
+    font-weight: 500;
+  }
+
+  // Remove secondary text color
+  .pac-item > span:not(.pac-icon):not(.pac-item-query) {
+    color: rgba(255, 255, 255, 0.5);
   }
 }
