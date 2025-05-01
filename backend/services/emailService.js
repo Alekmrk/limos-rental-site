@@ -1,31 +1,46 @@
-const nodemailer = require('nodemailer');
+const { EmailClient } = require('@azure/communication-email');
 require('dotenv').config();
 
-// Create a transporter object with enhanced logging
-const createTransporter = () => {
-  console.log("Creating email transporter with the following settings:");
-  console.log(`- Host: ${process.env.EMAIL_HOST}`);
-  console.log(`- Port: ${process.env.EMAIL_PORT}`);
-  console.log(`- User: ${process.env.EMAIL_USER}`);
-  console.log(`- From: ${process.env.EMAIL_FROM}`);
-  console.log(`- Secure: ${process.env.EMAIL_PORT === '465'}`);
-  
-  return nodemailer.createTransport({
-    host: process.env.EMAIL_HOST,
-    port: parseInt(process.env.EMAIL_PORT),
-    secure: process.env.EMAIL_PORT === '465', // true for 465, false for other ports
-    auth: {
-      user: process.env.EMAIL_USER,
-      pass: process.env.EMAIL_PASS,
-    },
-    debug: true, // Enable additional debug logging
-    logger: true  // Log transport activity
-  });
-};
+// Initialize Azure Communication Services client
+const emailClient = new EmailClient(process.env.COMMUNICATION_CONNECTION_STRING);
 
 // Format date and time for email
 const formatDateTime = (date, time) => {
   return `${date} at ${time}`;
+};
+
+// Send email using Azure Communication Services
+const sendEmail = async (to, subject, content) => {
+  try {
+    const message = {
+      senderAddress: process.env.EMAIL_FROM,
+      content: {
+        subject,
+        plainText: content.text,
+        html: content.html,
+      },
+      recipients: {
+        to: [{ address: to }],
+      },
+    };
+
+    const poller = await emailClient.beginSend(message);
+    const result = await poller.pollUntilDone();
+
+    console.log('Email sent successfully:', result.id);
+    return {
+      success: true,
+      messageId: result.id,
+      message: `Email sent to ${to}`
+    };
+  } catch (error) {
+    console.error('Error sending email:', error);
+    return {
+      success: false,
+      message: 'Failed to send email',
+      error: error.message
+    };
+  }
 };
 
 /**
@@ -34,46 +49,13 @@ const formatDateTime = (date, time) => {
  * @returns {Object} - Email send result
  */
 const sendToAdmin = async (reservationInfo) => {
-  try {
-    console.log("sendToAdmin called with reservation info:", JSON.stringify(reservationInfo, null, 2));
-    const transporter = createTransporter();
-    const isSpecialRequest = reservationInfo.isSpecialRequest;
-    
-    // Create email subject
-    const subject = isSpecialRequest 
-      ? `New Special Request: ${reservationInfo.date}`
-      : `New Transfer Booking: ${formatDateTime(reservationInfo.date, reservationInfo.time)}`;
-    
-    // Generate email content
-    const content = generateAdminEmailContent(reservationInfo);
-    
-    console.log(`Attempting to send email to admin (${process.env.ADMIN_EMAIL})...`);
-
-    // Send email
-    const info = await transporter.sendMail({
-      from: `"Limos Rental" <${process.env.EMAIL_FROM}>`,
-      to: process.env.ADMIN_EMAIL,
-      subject: subject,
-      text: content.text,
-      html: content.html
-    });
-
-    console.log('Email sent to admin successfully:', info.messageId);
-    console.log('Preview URL:', nodemailer.getTestMessageUrl(info));
-    return {
-      success: true,
-      messageId: info.messageId,
-      message: `Email sent to ${process.env.ADMIN_EMAIL}`,
-      previewUrl: nodemailer.getTestMessageUrl(info)
-    };
-  } catch (error) {
-    console.error('Error sending email to admin:', error);
-    return {
-      success: false,
-      message: 'Failed to send email to admin',
-      error: error.message
-    };
-  }
+  const isSpecialRequest = reservationInfo.isSpecialRequest;
+  const subject = isSpecialRequest 
+    ? `New Special Request: ${reservationInfo.date}`
+    : `New Transfer Booking: ${formatDateTime(reservationInfo.date, reservationInfo.time)}`;
+  
+  const content = generateAdminEmailContent(reservationInfo);
+  return await sendEmail(process.env.ADMIN_EMAIL, subject, content);
 };
 
 /**
@@ -82,41 +64,13 @@ const sendToAdmin = async (reservationInfo) => {
  * @returns {Object} - Email send result
  */
 const sendToCustomer = async (reservationInfo) => {
-  try {
-    const transporter = createTransporter();
-    const isSpecialRequest = reservationInfo.isSpecialRequest;
-    
-    // Create email subject
-    const subject = isSpecialRequest 
-      ? 'Your Special Request Has Been Received - Limos Rental'
-      : 'Your Luxury Transfer Confirmation - Limos Rental';
-    
-    // Generate email content
-    const content = generateCustomerEmailContent(reservationInfo);
-
-    // Send email
-    const info = await transporter.sendMail({
-      from: `"Limos Rental" <${process.env.EMAIL_FROM}>`,
-      to: reservationInfo.email,
-      subject: subject,
-      text: content.text,
-      html: content.html
-    });
-
-    console.log('Email sent to customer:', info.messageId);
-    return {
-      success: true,
-      messageId: info.messageId,
-      message: `Email sent to ${reservationInfo.email}`
-    };
-  } catch (error) {
-    console.error('Error sending email to customer:', error);
-    return {
-      success: false,
-      message: 'Failed to send email to customer',
-      error: error.message
-    };
-  }
+  const isSpecialRequest = reservationInfo.isSpecialRequest;
+  const subject = isSpecialRequest 
+    ? 'Your Special Request Has Been Received - Limos Rental'
+    : 'Your Luxury Transfer Confirmation - Limos Rental';
+  
+  const content = generateCustomerEmailContent(reservationInfo);
+  return await sendEmail(reservationInfo.email, subject, content);
 };
 
 /**
@@ -125,38 +79,9 @@ const sendToCustomer = async (reservationInfo) => {
  * @returns {Object} - Email send result
  */
 const sendPaymentConfirmationToAdmin = async (reservationInfo) => {
-  try {
-    const transporter = createTransporter();
-    
-    // Create email subject
-    const subject = `Payment Received: ${formatDateTime(reservationInfo.date, reservationInfo.time)}`;
-    
-    // Generate payment email content
-    const content = generatePaymentEmailForAdmin(reservationInfo);
-
-    // Send email
-    const info = await transporter.sendMail({
-      from: `"Limos Rental" <${process.env.EMAIL_FROM}>`,
-      to: process.env.ADMIN_EMAIL,
-      subject: subject,
-      text: content.text,
-      html: content.html
-    });
-
-    console.log('Payment email sent to admin:', info.messageId);
-    return {
-      success: true,
-      messageId: info.messageId,
-      message: `Payment notification sent to ${process.env.ADMIN_EMAIL}`
-    };
-  } catch (error) {
-    console.error('Error sending payment email to admin:', error);
-    return {
-      success: false,
-      message: 'Failed to send payment notification to admin',
-      error: error.message
-    };
-  }
+  const subject = `Payment Received: ${formatDateTime(reservationInfo.date, reservationInfo.time)}`;
+  const content = generatePaymentEmailForAdmin(reservationInfo);
+  return await sendEmail(process.env.ADMIN_EMAIL, subject, content);
 };
 
 /**
@@ -165,38 +90,9 @@ const sendPaymentConfirmationToAdmin = async (reservationInfo) => {
  * @returns {Object} - Email send result
  */
 const sendPaymentReceiptToCustomer = async (reservationInfo) => {
-  try {
-    const transporter = createTransporter();
-    
-    // Create email subject
-    const subject = 'Payment Receipt - Limos Rental Transfer';
-    
-    // Generate payment receipt content
-    const content = generatePaymentReceiptForCustomer(reservationInfo);
-
-    // Send email
-    const info = await transporter.sendMail({
-      from: `"Limos Rental" <${process.env.EMAIL_FROM}>`,
-      to: reservationInfo.email,
-      subject: subject,
-      text: content.text,
-      html: content.html
-    });
-
-    console.log('Payment receipt sent to customer:', info.messageId);
-    return {
-      success: true,
-      messageId: info.messageId,
-      message: `Payment receipt sent to ${reservationInfo.email}`
-    };
-  } catch (error) {
-    console.error('Error sending payment receipt to customer:', error);
-    return {
-      success: false,
-      message: 'Failed to send payment receipt to customer',
-      error: error.message
-    };
-  }
+  const subject = 'Payment Receipt - Limos Rental Transfer';
+  const content = generatePaymentReceiptForCustomer(reservationInfo);
+  return await sendEmail(reservationInfo.email, subject, content);
 };
 
 /**
