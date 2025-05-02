@@ -9,7 +9,7 @@ const BannerSection = () => {
         Luxury Limo Hire
       </h1>
       <p className="md:w-[42ch] mx-auto mb-8 px-4 md:px-0">
-        Alek offer professional car rental & limousine services in our range of
+        1Alek1 offer professional car rental & limousine services in our range of
         high-end vehicles
       </p>
       <Link to={"/vehicles"}>
