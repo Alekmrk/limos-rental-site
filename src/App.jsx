@@ -20,6 +20,10 @@ import { useGoogleMapsApi } from "./hooks/useGoogleMapsApi";
 function App() {
   const { isLoaded, loadError } = useGoogleMapsApi();
   
+  useEffect(() => {
+    console.log('Build timestamp:', process.env.VITE_BUILD_TIME);
+  }, []);
+
   const scrollUp = () => {
     window.scrollTo({
       top: 0,
@@ -36,6 +40,8 @@ function App() {
   return (
     <>
       <ReservationContextProvider>
+        {/* Add hidden build indicator */}
+        <div style={{ display: 'none' }} data-build-time={process.env.VITE_BUILD_TIME}></div>
         <div className="App">
           {/* Version indicator for debugging */}
           <div style={{position: 'fixed', bottom: 0, right: 0, background: '#000', color: '#fff', padding: '2px 5px', fontSize: '10px', zIndex: 9999}}>
