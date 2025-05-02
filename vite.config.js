@@ -28,7 +28,8 @@ export default defineConfig({
     })
   ],
   define: {
-    'import.meta.env.VITE_GOOGLE_MAPS_API_KEY': JSON.stringify(process.env.VITE_GOOGLE_MAPS_API_KEY)
+    'import.meta.env.VITE_GOOGLE_MAPS_API_KEY': JSON.stringify(process.env.VITE_GOOGLE_MAPS_API_KEY),
+    'import.meta.env.BUILD_TIMESTAMP': JSON.stringify(new Date().toISOString())
   },
   build: {
     rollupOptions: {
@@ -44,6 +45,12 @@ export default defineConfig({
       }
     },
     chunkSizeWarningLimit: 1000,
-    assetsInlineLimit: 4096
+    assetsInlineLimit: 4096,
+    // Clean the output directory before building
+    emptyOutDir: true,
+    // Add timestamp to the build
+    manifest: true,
+    // Generate source maps
+    sourcemap: true
   }
 })

@@ -35,36 +35,38 @@ function App() {
 
   return (
     <>
-      <Header />
       <ReservationContextProvider>
-        <Routes>
-          <Route path="/" element={<Home scrollUp={scrollUp} setSelectedVehicle={setSelectedVehicle} />} />
-          <Route path="/services" element={<ServicesPage scrollUp={scrollUp} />} />
-          <Route
-            path="/vehicles"
-            element={
-              <Vehicles
-                scrollUp={scrollUp}
-                selectedVehicle={selectedVehicle}
-                setSelectedVehicle={setSelectedVehicle}
-              />
-            }
-          />
-          <Route
-            path="/vehicle-selection"
-            element={<VehicleSelection scrollUp={scrollUp} isMapReady={isLoaded} />}
-          />
-          <Route
-            path="/customer-details"
-            element={<CustomerDetails scrollUp={scrollUp} />}
-          />
-          <Route
-            path="/payment"
-            element={<PaymentPage scrollUp={scrollUp} />}
-          />
-          <Route path="/thankyou" element={<ThankYou scrollUp={scrollUp} />} />
-          <Route path="*" element={<NotFound scrollUp={scrollUp} />} />
-        </Routes>
+        <div className="App">
+          {/* Version indicator for debugging */}
+          <div style={{position: 'fixed', bottom: 0, right: 0, background: '#000', color: '#fff', padding: '2px 5px', fontSize: '10px', zIndex: 9999}}>
+            Build: {new Date().toISOString()}
+          </div>
+          <Header />
+          <Routes>
+            <Route path="/" element={<Home scrollUp={scrollUp} setSelectedVehicle={setSelectedVehicle} />} />
+            <Route path="/services" element={<ServicesPage scrollUp={scrollUp} />} />
+            <Route
+              path="/vehicles"
+              element={
+                <Vehicles
+                  scrollUp={scrollUp}
+                  selectedVehicle={selectedVehicle}
+                  setSelectedVehicle={setSelectedVehicle}
+                />
+              }
+            />
+            <Route
+              path="/vehicle-selection"
+              element={<VehicleSelection scrollUp={scrollUp} isMapReady={isLoaded} />}
+            />
+            <Route
+              path="/customer-details"
+              element={<CustomerDetails scrollUp={scrollUp} />}
+            />
+            <Route path="/thankyou" element={<ThankYou scrollUp={scrollUp} />} />
+            <Route path="*" element={<NotFound scrollUp={scrollUp} />} />
+          </Routes>
+        </div>
       </ReservationContextProvider>
       <Footer />
       <BackToTopButton scrollUp={scrollUp} />
