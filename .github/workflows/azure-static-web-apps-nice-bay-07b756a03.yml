@@ -43,6 +43,8 @@ jobs:
           echo "Build completed"
           echo "Dist directory size:"
           du -sh dist
+          # Add timestamp to index.html for cache busting
+          echo "<!-- Build: $(date -u) -->" >> dist/index.html
         env:
           VITE_GOOGLE_MAPS_API_KEY: ${{ secrets.VITE_GOOGLE_MAPS_API_KEY }}
           NODE_ENV: production
@@ -58,6 +60,10 @@ jobs:
           output_location: "."
           skip_app_build: true
           deployment_environment: production
+          production_branch: "master"
+          config_file_location: "/"
+          headers: |
+            Cache-Control: no-cache, no-store, must-revalidate
 
   close_pull_request_job:
     if: github.event_name == 'pull_request' && github.event.action == 'closed'
