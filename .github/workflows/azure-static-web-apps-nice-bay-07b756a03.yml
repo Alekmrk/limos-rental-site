@@ -47,7 +47,7 @@ jobs:
           output_location: "dist"
           skip_app_build: false
           production_branch: "master"
-          deployment_environment: production
+          deployment_environment: "Production"
           force_deployment: true
 
   close_pull_request_job:

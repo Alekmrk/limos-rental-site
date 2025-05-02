@@ -11,5 +11,10 @@
   ],
   "navigationFallback": {
     "rewrite": "/index.html"
+  },
+  "environments": {
+    "Production": {
+      "environmentName": "Production"
+    }
   }
 }
