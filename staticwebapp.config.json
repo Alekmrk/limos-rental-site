@@ -17,7 +17,8 @@
     }
   },
   "globalHeaders": {
-    "content-security-policy": "default-src https: 'unsafe-eval' 'unsafe-inline'; object-src 'none'"
+    "content-security-policy": "default-src https: 'unsafe-eval' 'unsafe-inline'; object-src 'none'",
+    "cache-control": "no-cache"
   },
   "mimeTypes": {
     ".json": "text/json"
@@ -29,9 +30,11 @@
     }
   ],
   "trailingSlash": "never",
+  "productionBranch": "master",
   "environments": {
     "Production": {
-      "environmentName": "Production"
+      "environmentName": "Production",
+      "production": true
     }
   }
 }
