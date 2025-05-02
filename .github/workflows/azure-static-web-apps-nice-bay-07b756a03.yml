@@ -31,9 +31,16 @@ jobs:
           npm ci
           echo "Node modules installed successfully"
 
+      - name: Add build timestamp
+        run: |
+          echo "VITE_BUILD_TIME=$(date +%s)" >> .env
+          echo "Build timestamp added to environment"
+
       - name: Build
         run: |
+          rm -rf dist
           npm run build
+          echo "<!-- Build: $(date) -->" >> dist/index.html
           echo "Build completed successfully"
 
       - name: Deploy
