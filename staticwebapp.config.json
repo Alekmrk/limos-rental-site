@@ -12,18 +12,30 @@
     {
       "route": "/*",
       "headers": {
-        "cache-control": "no-cache, no-store, must-revalidate, max-age=0",
+        "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0",
         "Pragma": "no-cache",
         "Expires": "0",
-        "Clear-Site-Data": "\"cache\"",
         "Surrogate-Control": "no-store",
-        "X-Version": "v2-${BUILD_ID}"
-      }
+        "Clear-Site-Data": "*"
+      },
+      "methods": ["GET"]
     }
   ],
   "navigationFallback": {
     "rewrite": "/index.html",
     "exclude": ["/assets/*", "/static/*", "/*.{png,jpg,gif,svg,ico}"]
+  },
+  "responseOverrides": {
+    "404": {
+      "rewrite": "/index.html",
+      "statusCode": 200
+    }
+  },
+  "globalHeaders": {
+    "Vary": "*",
+    "Access-Control-Allow-Origin": "*",
+    "X-Deploy-Time": "${VITE_BUILD_TIME}",
+    "X-Version": "v2-${VITE_DEPLOY_ID}"
   },
   "mimeTypes": {
     ".json": "text/json",
