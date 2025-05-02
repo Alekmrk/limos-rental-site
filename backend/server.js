@@ -36,6 +36,11 @@ app.get('/', (req, res) => {
   });
 });
 
+// Health check endpoint
+app.get('/health', (req, res) => {
+  res.status(200).json({ status: 'healthy' });
+});
+
 // Test email route
 app.get('/api/test-email', async (req, res) => {
   try {
