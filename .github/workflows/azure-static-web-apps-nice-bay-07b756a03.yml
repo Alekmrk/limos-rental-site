@@ -1,4 +1,4 @@
-name: Azure Static Web Apps CI/CD
+name: Azure Static Web Apps CI/CD 
 
 on:
   push:
@@ -27,12 +27,25 @@ jobs:
           cache: 'npm'
 
       - name: Install Dependencies
-        run: npm ci
+        run: |
+          npm ci
+          echo "Node modules installed successfully"
+
+      - name: Clean dist directory
+        run: |
+          rm -rf dist
+          echo "Cleaned dist directory"
 
       - name: Build
-        run: npm run build
+        run: |
+          echo "Starting build process..."
+          VITE_MAPS_LOG_LEVEL=error npm run build
+          echo "Build completed"
+          echo "Dist directory size:"
+          du -sh dist
         env:
           VITE_GOOGLE_MAPS_API_KEY: ${{ secrets.VITE_GOOGLE_MAPS_API_KEY }}
+          NODE_ENV: production
 
       - name: Deploy
         id: builddeploy
@@ -41,9 +54,10 @@ jobs:
           azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_NICE_BAY_07B756A03 }}
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           action: "upload"
-          app_location: "/" 
-          output_location: "dist"
-          skip_app_build: true # We already built the app
+          app_location: "dist"
+          output_location: "."
+          skip_app_build: true
+          deployment_environment: production
 
   close_pull_request_job:
     if: github.event_name == 'pull_request' && github.event.action == 'closed'
