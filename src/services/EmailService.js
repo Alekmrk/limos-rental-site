@@ -1,7 +1,9 @@
 // Email service for sending notifications via the backend API
 
-// API base URL - update this to match your backend deployment
-const API_BASE_URL = 'http://localhost:5000/api/email';
+// API base URL - dynamically set based on environment
+const API_BASE_URL = import.meta.env.PROD 
+  ? 'https://limos-rental-api.azurewebsites.net/api/email'
+  : 'http://localhost:5000/api/email';
 
 /**
  * Prepares reservation data for sending by removing large unnecessary fields

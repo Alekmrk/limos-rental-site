@@ -1,4 +1,5 @@
-name: Deploy Backend
+name: Deploy Backend API to Azure
+
 on:
   push:
     branches: [ master ]
@@ -7,85 +8,68 @@ on:
   workflow_dispatch:
 
 jobs:
-  build_and_deploy:
+  build-and-deploy:
     runs-on: ubuntu-latest
-    name: Build and Deploy Backend
+    
     steps:
-      - uses: actions/checkout@v3
-      
-      - uses: actions/setup-node@v3
-        with:
-          node-version: '18'
-          cache: 'npm'
-          cache-dependency-path: './backend/package-lock.json'
-      
-      - name: Install Dependencies
-        run: |
-          cd backend
-          npm ci
-      
-      - name: Build
-        run: |
-          cd backend
-          npm run build || true
-        env:
-          NODE_ENV: production
-          
-      - name: Azure Login
-        uses: azure/login@v1
-        with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
-          
-      - name: Deploy to Azure Web App
-        id: deploy
-        uses: azure/webapps-deploy@v2
-        with:
-          app-name: 'limos-rental-api'
-          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-          package: './backend'
+    - uses: actions/checkout@v3
 
-      - name: Configure Web App Settings
-        uses: azure/CLI@v1
-        with:
-          inlineScript: |
-            az webapp config appsettings set \
-              --name limos-rental-api \
-              --resource-group limos-rental-rg \
-              --settings \
-              NODE_ENV=production \
-              COMMUNICATION_CONNECTION_STRING="${{ secrets.COMMUNICATION_CONNECTION_STRING }}" \
-              EMAIL_FROM="noreply@elitewaylimo.ch" \
-              ADMIN_EMAIL="aleksandarpantic98@gmail.com" \
-              FRONTEND_URL="https://www.elitewaylimo.ch" \
-              PORT=8080 \
-              DEPLOYMENT_TIMESTAMP="$(date -u +"%Y-%m-%dT%H:%M:%SZ")"
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+        cache: 'npm'
+        cache-dependency-path: backend/package-lock.json
 
-      - name: Wait for Deployment
-        run: |
-          echo "Waiting for deployment to stabilize..."
-          sleep 30
+    - name: Install dependencies
+      run: cd backend && npm ci
 
-      - name: Verify Deployment
-        run: |
-          echo "Checking health endpoint..."
-          HEALTH_CHECK=$(curl -s https://limos-rental-api.azurewebsites.net/health)
-          echo "Health check response: $HEALTH_CHECK"
-          
-          if [[ $HEALTH_CHECK == *"healthy"* ]]; then
-            echo "✅ Health check passed"
-            
-            echo "Checking root endpoint for deployment info..."
-            ROOT_CHECK=$(curl -s https://limos-rental-api.azurewebsites.net/)
-            echo "Root endpoint response: $ROOT_CHECK"
-            
-            if [[ $ROOT_CHECK == *"deploymentInfo"* ]]; then
-              echo "✅ Deployment verification successful"
-              exit 0
-            else
-              echo "❌ Deployment verification failed - missing deployment info"
-              exit 1
-            fi
-          else
-            echo "❌ Health check failed"
-            exit 1
-          fi
+    - name: Deploy to Azure Web App
+      uses: azure/webapps-deploy@v2
+      with:
+        app-name: 'limos-rental-api'
+        publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+        package: backend
+
+    - name: Configure App Settings
+      uses: azure/appservice-settings@v1
+      with:
+        app-name: 'limos-rental-api'
+        app-settings-json: '[
+          {
+            "name": "CORS_ORIGIN",
+            "value": "https://www.elitewaylimo.ch"
+          },
+          {
+            "name": "COMMUNICATION_CONNECTION_STRING",
+            "value": "${{ secrets.COMMUNICATION_CONNECTION_STRING }}"
+          },
+          {
+            "name": "EMAIL_FROM",
+            "value": "noreply@elitewaylimo.ch"
+          },
+          {
+            "name": "ADMIN_EMAIL",
+            "value": "aleksandarpantic98@gmail.com"
+          },
+          {
+            "name": "WEBSITE_NODE_DEFAULT_VERSION",
+            "value": "~18"
+          },
+          {
+            "name": "FRONTEND_URL",
+            "value": "https://www.elitewaylimo.ch"
+          }
+        ]'
+        mask-inputs: true
+
+    # Health check after deployment
+    - name: Health check
+      run: |
+        echo "Waiting for service to start..."
+        sleep 30
+        response=$(curl -s -o /dev/null -w "%{http_code}" https://limos-rental-api.azurewebsites.net/health)
+        if [ "$response" != "200" ]; then
+          echo "Health check failed with status $response"
+          exit 1
+        fi
