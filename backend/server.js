@@ -6,6 +6,10 @@ require('dotenv').config();
 // Import routes
 const emailRoutes = require('./routes/emailRoutes');
 
+// Deployment tracking
+const deploymentTimestamp = new Date().toISOString();
+const deploymentId = Math.random().toString(36).substring(7);
+
 // Initialize express app
 const app = express();
 
@@ -15,6 +19,12 @@ app.use(cors({
   methods: ['GET', 'POST'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
+
+// Add request logging middleware
+app.use((req, res, next) => {
+  console.log(`[${new Date().toISOString()}] ${req.method} ${req.path}`);
+  next();
+});
 
 // Increase JSON payload size limit to 50mb
 app.use(express.json({ limit: '50mb' }));
@@ -27,6 +37,11 @@ app.use('/api/email', emailRoutes);
 app.get('/', (req, res) => {
   res.json({ 
     message: 'Limos Rental Email Service API is running!', 
+    deploymentInfo: {
+      timestamp: deploymentTimestamp,
+      id: deploymentId,
+      environment: process.env.NODE_ENV
+    },
     env: {
       host: process.env.EMAIL_HOST,
       port: process.env.EMAIL_PORT,
@@ -37,9 +52,18 @@ app.get('/', (req, res) => {
   });
 });
 
-// Health check endpoint
+// Enhanced health check endpoint
 app.get('/health', (req, res) => {
-  res.status(200).json({ status: 'healthy' });
+  res.status(200).json({ 
+    status: 'healthy',
+    uptime: process.uptime(),
+    deploymentInfo: {
+      timestamp: deploymentTimestamp,
+      id: deploymentId,
+      environment: process.env.NODE_ENV
+    },
+    memory: process.memoryUsage()
+  });
 });
 
 // Test email route
