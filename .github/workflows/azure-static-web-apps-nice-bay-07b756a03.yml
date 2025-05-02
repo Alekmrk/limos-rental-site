@@ -14,6 +14,9 @@ jobs:
     if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action != 'closed')
     runs-on: ubuntu-latest
     name: Build and Deploy Job
+    environment:
+      name: "Production"
+      url: https://nice-bay-07b756a03.6.azurestaticapps.net
     steps:
       - uses: actions/checkout@v3
         with:
@@ -69,8 +72,14 @@ jobs:
           output_location: "dist"
           skip_app_build: true
           production_branch: "master"
-          deployment_environment: production
+          deployment_environment: "Production"
           force_deployment: true
+
+      - name: Clear preview environments
+        if: github.ref == 'refs/heads/master'
+        run: |
+          echo "Cleaning up preview environments..."
+          curl -X DELETE -H "Authorization: Bearer ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_NICE_BAY_07B756A03 }}" "https://management.azure.com/subscriptions/${{ vars.AZURE_SUBSCRIPTION_ID }}/resourceGroups/${{ vars.AZURE_RESOURCE_GROUP }}/providers/Microsoft.Web/staticSites/${{ vars.AZURE_STATIC_SITE_NAME }}/builds?api-version=2019-12-01-preview"
 
       - name: Verify Deployment
         run: |
