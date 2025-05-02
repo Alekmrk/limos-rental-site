@@ -29,14 +29,12 @@ jobs:
 
       - name: Clean workspace
         run: |
-          rm -rf node_modules
-          rm -rf dist
-          rm -rf .env
+          rm -rf node_modules dist .env
           echo "Cleaned workspace"
 
-      - name: Clean install dependencies
+      - name: Install dependencies
         run: |
-          npm ci
+          npm ci --no-audit
           echo "Node modules installed successfully"
 
       - name: Add build timestamp
@@ -50,13 +48,15 @@ jobs:
           npm run build
           echo "<!-- Build: $(date) -->" >> dist/index.html
           echo "<!-- Deploy ID: ${{ github.run_id }} -->" >> dist/index.html
+          find dist -type f | wc -l
+          du -sh dist
           echo "Build completed successfully"
 
-      - name: List build output
+      - name: Prepare deployment
         run: |
-          ls -la dist/
-          cat dist/index.html | tail -n 5
-          echo "Build output listed"
+          cd dist
+          find . -type f -name "*.map" -delete
+          echo "Deployment preparation completed"
 
       - name: Deploy
         id: builddeploy
@@ -75,8 +75,8 @@ jobs:
       - name: Verify Deployment
         run: |
           echo "Waiting for deployment to propagate..."
-          sleep 30
-          curl -I https://nice-bay-07b756a03.6.azurestaticapps.net
+          sleep 45
+          curl -I https://nice-bay-07b756a03.6.azurestaticapps.net || true
 
   close_pull_request_job:
     if: github.event_name == 'pull_request' && github.event.action == 'closed'

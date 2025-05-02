@@ -3,10 +3,8 @@ import react from '@vitejs/plugin-react'
 import dotenv from 'dotenv'
 import viteImagemin from 'vite-plugin-imagemin'
 
-// Load environment variables
 dotenv.config()
 
-// https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
     react(),
@@ -19,12 +17,24 @@ export default defineConfig({
         optimizationLevel: 7,
       },
       mozjpeg: {
-        quality: 60,
+        quality: 40,
+        progressive: true
       },
       pngquant: {
-        quality: [0.7, 0.8],
+        quality: [0.5, 0.7],
         speed: 4,
-      }
+      },
+      svgo: {
+        plugins: [
+          {
+            name: 'removeViewBox',
+          },
+          {
+            name: 'removeEmptyAttrs',
+            active: true,
+          },
+        ],
+      },
     })
   ],
   define: {
@@ -35,22 +45,26 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks: {
-          'react-vendor': ['react', 'react-dom'],
-          'maps-vendor': ['@react-google-maps/api']
+          vendor: ['react', 'react-dom', '@react-google-maps/api', 'react-router-dom']
         },
-        // Force unique filenames for all assets
-        entryFileNames: `assets/[name]-[hash]-${Date.now()}.js`,
-        chunkFileNames: `assets/[name]-[hash]-${Date.now()}.js`,
-        assetFileNames: `assets/[name]-[hash]-${Date.now()}.[ext]`
+        entryFileNames: 'assets/[name].[hash].js',
+        chunkFileNames: 'assets/[name].[hash].js',
+        assetFileNames: (assetInfo) => {
+          const info = assetInfo.name.split('.')
+          const ext = info[info.length - 1]
+          if (/\.(png|jpe?g|svg|gif|tiff|bmp|ico)$/i.test(assetInfo.name)) {
+            return `assets/img/[name].[hash][extname]`
+          }
+          return `assets/[name].[hash][extname]`
+        }
       }
     },
-    chunkSizeWarningLimit: 1000,
-    assetsInlineLimit: 4096,
-    // Clean the output directory before building
+    chunkSizeWarningLimit: 2000,
+    assetsInlineLimit: 8192,
     emptyOutDir: true,
-    // Add timestamp to the build
     manifest: true,
-    // Generate source maps
-    sourcemap: true
+    sourcemap: false,
+    target: 'esnext',
+    minify: 'esbuild'
   }
 })
