@@ -1,4 +1,4 @@
-// Test deployment - May 2, 2025
+// Test deployment
 const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
