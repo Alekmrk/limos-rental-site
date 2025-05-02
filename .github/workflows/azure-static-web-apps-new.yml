@@ -28,7 +28,8 @@ jobs:
         run: npm ci
           
       - name: Build
-        run: npm run build
+        run: |
+          npm run build
         env:
           VITE_GOOGLE_MAPS_API_KEY: ${{ secrets.VITE_GOOGLE_MAPS_API_KEY }}
           
@@ -36,10 +37,23 @@ jobs:
         id: builddeploy
         uses: Azure/static-web-apps-deploy@v1
         with:
-          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_NEW }}
+          azure_static_web_apps_api_token: 6fa4ae4f8b5bc4ca6ca1049ae48ac58c288706d2e9ac64d7f44eee15b3f2a34506-58c3c600-f8b9-4af8-aee1-794a8e89086d003288230d0cb3203
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           action: "upload"
           app_location: "/"
           output_location: "dist"
           skip_app_build: true
           production_branch: "master"
+          deployment_environment: production
+
+  close_pull_request_job:
+    if: github.event_name == 'pull_request' && github.event.action == 'closed'
+    runs-on: ubuntu-latest
+    name: Close Pull Request Job
+    steps:
+      - name: Close Pull Request
+        id: closepullrequest
+        uses: Azure/static-web-apps-deploy@v1
+        with:
+          azure_static_web_apps_api_token: 6fa4ae4f8b5bc4ca6ca1049ae48ac58c288706d2e9ac64d7f44eee15b3f2a34506-58c3c600-f8b9-4af8-aee1-794a8e89086d003288230d0cb3203
+          action: "close"
