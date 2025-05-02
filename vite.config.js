@@ -36,7 +36,11 @@ export default defineConfig({
         manualChunks: {
           'react-vendor': ['react', 'react-dom'],
           'maps-vendor': ['@react-google-maps/api']
-        }
+        },
+        // Force unique filenames for all assets
+        entryFileNames: `assets/[name]-[hash]-${Date.now()}.js`,
+        chunkFileNames: `assets/[name]-[hash]-${Date.now()}.js`,
+        assetFileNames: `assets/[name]-[hash]-${Date.now()}.[ext]`
       }
     },
     chunkSizeWarningLimit: 1000,
