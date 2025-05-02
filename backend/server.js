@@ -1,4 +1,4 @@
-// Test deployment
+// Updated email configuration - May 2, 2025
 const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
