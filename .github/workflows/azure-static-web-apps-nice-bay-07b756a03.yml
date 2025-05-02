@@ -19,12 +19,20 @@ jobs:
         with:
           submodules: true
           lfs: false
+          fetch-depth: 0
 
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '18'
           cache: 'npm'
+
+      - name: Clean workspace
+        run: |
+          rm -rf node_modules
+          rm -rf dist
+          rm -rf .env
+          echo "Cleaned workspace"
 
       - name: Clean install dependencies
         run: |
@@ -34,14 +42,21 @@ jobs:
       - name: Add build timestamp
         run: |
           echo "VITE_BUILD_TIME=$(date +%s)" >> .env
-          echo "Build timestamp added to environment"
+          echo "VITE_DEPLOY_ID=${{ github.run_id }}" >> .env
+          echo "Build information added to environment"
 
       - name: Build
         run: |
-          rm -rf dist
           npm run build
           echo "<!-- Build: $(date) -->" >> dist/index.html
+          echo "<!-- Deploy ID: ${{ github.run_id }} -->" >> dist/index.html
           echo "Build completed successfully"
+
+      - name: List build output
+        run: |
+          ls -la dist/
+          cat dist/index.html | tail -n 5
+          echo "Build output listed"
 
       - name: Deploy
         id: builddeploy
@@ -52,10 +67,16 @@ jobs:
           action: "upload"
           app_location: "/"
           output_location: "dist"
-          skip_app_build: false
+          skip_app_build: true
           production_branch: "master"
           deployment_environment: production
           force_deployment: true
+
+      - name: Verify Deployment
+        run: |
+          echo "Waiting for deployment to propagate..."
+          sleep 30
+          curl -I https://nice-bay-07b756a03.6.azurestaticapps.net
 
   close_pull_request_job:
     if: github.event_name == 'pull_request' && github.event.action == 'closed'
