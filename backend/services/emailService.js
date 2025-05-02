@@ -1,6 +1,12 @@
 const { EmailClient } = require('@azure/communication-email');
 require('dotenv').config();
 
+console.log('Email Service Configuration:', {
+  connectionString: process.env.COMMUNICATION_CONNECTION_STRING?.substring(0, 50) + '...',
+  emailFrom: process.env.EMAIL_FROM,
+  adminEmail: process.env.ADMIN_EMAIL
+});
+
 // Initialize Azure Communication Services client
 const emailClient = new EmailClient(process.env.COMMUNICATION_CONNECTION_STRING);
 
@@ -12,6 +18,12 @@ const formatDateTime = (date, time) => {
 // Send email using Azure Communication Services
 const sendEmail = async (to, subject, content) => {
   try {
+    console.log('Attempting to send email:', {
+      to,
+      subject,
+      from: process.env.EMAIL_FROM
+    });
+
     const message = {
       senderAddress: process.env.EMAIL_FROM,
       content: {
@@ -24,17 +36,26 @@ const sendEmail = async (to, subject, content) => {
       },
     };
 
-    const poller = await emailClient.beginSend(message);
-    const result = await poller.pollUntilDone();
+    console.log('Email message prepared:', JSON.stringify(message, null, 2));
 
-    console.log('Email sent successfully:', result.id);
+    const poller = await emailClient.beginSend(message);
+    console.log('Email send operation started, polling for completion...');
+    
+    const result = await poller.pollUntilDone();
+    console.log('Email sent successfully:', result);
+    
     return {
       success: true,
       messageId: result.id,
       message: `Email sent to ${to}`
     };
   } catch (error) {
-    console.error('Error sending email:', error);
+    console.error('Error details:', {
+      name: error.name,
+      message: error.message,
+      code: error.code,
+      stack: error.stack
+    });
     return {
       success: false,
       message: 'Failed to send email',

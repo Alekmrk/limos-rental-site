@@ -1,4 +1,4 @@
-// Updated Communication Services to Switzerland region - May 3, 2025
+// Updated email service logging - May 3, 2025
 const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
