@@ -1,3 +1,4 @@
+// Test deployment - Frontend workflow update - May 2, 2025 - v2
 import { Route, Routes } from "react-router-dom";
 import { useEffect } from "react";
 import Footer from "./components/Footer/Footer";
