@@ -24,6 +24,11 @@ jobs:
     - name: Install dependencies
       run: cd backend && npm ci
 
+    - name: Login to Azure
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
     - name: Deploy to Azure Web App
       uses: azure/webapps-deploy@v2
       with:
@@ -32,36 +37,10 @@ jobs:
         package: backend
 
     - name: Configure App Settings
-      uses: azure/appservice-settings@v1
+      uses: azure/CLI@v1
       with:
-        app-name: 'limos-rental-api'
-        app-settings-json: '[
-          {
-            "name": "CORS_ORIGIN",
-            "value": "https://www.elitewaylimo.ch"
-          },
-          {
-            "name": "COMMUNICATION_CONNECTION_STRING",
-            "value": "${{ secrets.COMMUNICATION_CONNECTION_STRING }}"
-          },
-          {
-            "name": "EMAIL_FROM",
-            "value": "noreply@elitewaylimo.ch"
-          },
-          {
-            "name": "ADMIN_EMAIL",
-            "value": "aleksandarpantic98@gmail.com"
-          },
-          {
-            "name": "WEBSITE_NODE_DEFAULT_VERSION",
-            "value": "~18"
-          },
-          {
-            "name": "FRONTEND_URL",
-            "value": "https://www.elitewaylimo.ch"
-          }
-        ]'
-        mask-inputs: true
+        inlineScript: |
+          az webapp config appsettings set --name limos-rental-api --resource-group limos-rental-rg --settings CORS_ORIGIN=https://www.elitewaylimo.ch COMMUNICATION_CONNECTION_STRING="${{ secrets.COMMUNICATION_CONNECTION_STRING }}" EMAIL_FROM=noreply@elitewaylimo.ch ADMIN_EMAIL=aleksandarpantic98@gmail.com WEBSITE_NODE_DEFAULT_VERSION="~18" FRONTEND_URL=https://www.elitewaylimo.ch
 
     # Health check after deployment
     - name: Health check
