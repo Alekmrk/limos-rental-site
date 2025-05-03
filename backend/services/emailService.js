@@ -219,9 +219,18 @@ const generateAdminEmailContent = (reservationInfo) => {
   // Add customer details
   details.push(`Customer: ${reservationInfo.email} | ${reservationInfo.phone || 'No phone'}`);
   
-  // Format the date/time in Swiss format
-  const formattedDateTime = formatDateTime(reservationInfo.date, reservationInfo.time);
-  details.push(`Date and Time: ${formattedDateTime}`);
+  // Format the date to day, month, year
+  const [year, month, day] = reservationInfo.date.split('-').map(Number);
+  const dt = new Date(year, month - 1, day);
+  const formattedDate = dt.toLocaleDateString('en-CH', {
+    timeZone: 'Europe/Zurich',
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric'
+  });
+  
+  details.push(`Date: ${formattedDate}`);
+  details.push(`Time: ${reservationInfo.time}`);
   
   if (isSpecialRequest) {
     // Special request specific info
@@ -350,8 +359,18 @@ const generateCustomerEmailContent = (reservationInfo) => {
   // Generate details
   const details = [];
   
+  // Format the date to day, month, year
+  const [year, month, day] = reservationInfo.date.split('-').map(Number);
+  const dt = new Date(year, month - 1, day);
+  const formattedDate = dt.toLocaleDateString('en-CH', {
+    timeZone: 'Europe/Zurich',
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric'
+  });
+  
   // Basic info for all bookings
-  details.push(`Date: ${reservationInfo.date}`);
+  details.push(`Date: ${formattedDate}`);
   details.push(`Time: ${reservationInfo.time}`);
   
   if (isSpecialRequest) {
