@@ -93,6 +93,11 @@ const formatSwissDateTime = (date, time) => {
   }
 };
 
+const formatDate = (dateString) => {
+  const [year, month, day] = dateString.split('-');
+  return `${day}-${month}-${year}`;
+};
+
 // Send email using Azure Communication Services
 const sendEmail = async (to, subject, content, senderType = 'noreply') => {
   try {
@@ -359,18 +364,8 @@ const generateCustomerEmailContent = (reservationInfo) => {
   // Generate details
   const details = [];
   
-  // Format the date to day, month, year
-  const [year, month, day] = reservationInfo.date.split('-').map(Number);
-  const dt = new Date(year, month - 1, day);
-  const formattedDate = dt.toLocaleDateString('en-CH', {
-    timeZone: 'Europe/Zurich',
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric'
-  });
-  
   // Basic info for all bookings
-  details.push(`Date: ${formattedDate}`);
+  details.push(`Date: ${formatDate(reservationInfo.date)}`);
   details.push(`Time: ${reservationInfo.time}`);
   
   if (isSpecialRequest) {
@@ -588,7 +583,7 @@ Reference: ${paymentDetails?.reference || 'N/A'}
 Date: ${formatPaymentDateTime(paymentDetails?.timestamp || Date.now())}
 
 RESERVATION DETAILS
-Date: ${reservationInfo.date}
+Date: ${formatDate(reservationInfo.date)}
 Time: ${reservationInfo.time}
 ${reservationInfo.isHourly 
   ? `Service: Hourly (${reservationInfo.hours} hours)\nPickup Location: ${reservationInfo.pickup}`
@@ -641,7 +636,7 @@ Limos Rental Team
           
           <div class="reservation-info">
             <h3>Reservation Details</h3>
-            <div class="detail-row"><strong>Date:</strong> ${reservationInfo.date}</div>
+            <div class="detail-row"><strong>Date:</strong> ${formatDate(reservationInfo.date)}</div>
             <div class="detail-row"><strong>Time:</strong> ${reservationInfo.time}</div>
             ${reservationInfo.isHourly 
               ? `<div class="detail-row"><strong>Service:</strong> Hourly (${reservationInfo.hours} hours)</div>

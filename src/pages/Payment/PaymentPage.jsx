@@ -152,6 +152,12 @@ const PaymentPage = ({ scrollUp }) => {
     await processPayment();
   };
 
+  // Format date to dd-mm-yyyy
+  const formatDate = (dateString) => {
+    const [year, month, day] = dateString.split('-');
+    return `${day}-${month}-${year}`;
+  };
+
   return (
     <div className="container-default mt-28">
       <div className="mx-auto px-4 sm:px-6 lg:px-8">
@@ -171,7 +177,7 @@ const PaymentPage = ({ scrollUp }) => {
               </div>
               <div>
                 <p className="text-zinc-400 text-sm mb-1">Date</p>
-                <p className="font-medium">{reservationInfo.date}</p>
+                <p className="font-medium">{formatDate(reservationInfo.date)}</p>
               </div>
               <div>
                 <p className="text-zinc-400 text-sm mb-1">Time</p>

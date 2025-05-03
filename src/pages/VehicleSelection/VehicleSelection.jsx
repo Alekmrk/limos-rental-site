@@ -212,6 +212,12 @@ const VehicleSelection = ({ scrollUp }) => {
     scrollUp();
   }, [scrollUp]);
 
+  // Format date to dd-mm-yyyy
+  const formatDate = (dateString) => {
+    const [year, month, day] = dateString.split('-');
+    return `${day}-${month}-${year}`;
+  };
+
   return (
     <div className="container-default mt-28">
       <div className="max-w-6xl mx-auto">
@@ -231,7 +237,7 @@ const VehicleSelection = ({ scrollUp }) => {
         
         <div className="bg-zinc-800/30 p-6 rounded-xl border border-zinc-700/50">
           <div className="mb-4">
-            <p className="text-sm">{reservationInfo.date}</p>
+            <p className="text-sm">{formatDate(reservationInfo.date)}</p>
             <p className="text-sm">{reservationInfo.time} (CET)</p>
             <div className="flex items-center gap-2 text-sm">
               <span className="inline-flex items-center">

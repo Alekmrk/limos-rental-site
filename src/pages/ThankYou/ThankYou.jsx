@@ -53,10 +53,10 @@ const ThankYou = ({ scrollUp }) => {
     }
   }, [reservationInfo]);
 
-  // Format date to dd-mm-yy
+  // Format date to dd-mm-yyyy
   const formatDate = (dateString) => {
     const [year, month, day] = dateString.split('-');
-    return `${day}-${month}-${year.slice(2)}`;
+    return `${day}-${month}-${year}`;
   };
 
   return (
