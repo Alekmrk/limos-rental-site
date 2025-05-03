@@ -2,13 +2,33 @@ const express = require('express');
 const router = express.Router();
 const emailService = require('../services/emailService');
 
+// Helper function for Swiss timezone
+const getSwissDateTime = () => {
+  const now = new Date();
+  return {
+    date: now.toLocaleDateString('en-CH', {
+      timeZone: 'Europe/Zurich',
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit'
+    }).split('.').reverse().join('-'),
+    time: now.toLocaleTimeString('en-CH', {
+      timeZone: 'Europe/Zurich',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false
+    })
+  };
+};
+
 // Test email route
 router.get('/test-email', async (req, res) => {
   try {
+    const { date, time } = getSwissDateTime();
     const testReservation = {
       email: process.env.ADMIN_EMAIL,
-      date: new Date().toISOString().split('T')[0],
-      time: new Date().toTimeString().split(' ')[0].substring(0, 5),
+      date,
+      time,
       pickup: 'Test Location',
       isSpecialRequest: false,
       isHourly: false,
@@ -18,7 +38,12 @@ router.get('/test-email', async (req, res) => {
     const result = await emailService.sendToAdmin(testReservation);
     res.json({ 
       message: 'Test email sent',
-      result 
+      result,
+      testTime: new Date().toLocaleString('en-CH', {
+        timeZone: 'Europe/Zurich',
+        dateStyle: 'full',
+        timeStyle: 'long'
+      })
     });
   } catch (error) {
     console.error('Test email error:', error);
@@ -32,11 +57,12 @@ router.get('/test-email', async (req, res) => {
 // Test email route for DoNotReply
 router.get('/test-email-noreply', async (req, res) => {
   try {
+    const { date, time } = getSwissDateTime();
     const testReservation = {
       email: process.env.ADMIN_EMAIL,
       firstName: 'Test',
-      date: new Date().toISOString().split('T')[0],
-      time: new Date().toTimeString().split(' ')[0].substring(0, 5),
+      date,
+      time,
       pickup: 'Test Location',
       dropoff: 'Test Destination',
       isSpecialRequest: false,
@@ -54,7 +80,12 @@ router.get('/test-email-noreply', async (req, res) => {
     
     res.json({ 
       message: 'Test DoNotReply email sent',
-      result 
+      result,
+      testTime: new Date().toLocaleString('en-CH', {
+        timeZone: 'Europe/Zurich',
+        dateStyle: 'full',
+        timeStyle: 'long'
+      })
     });
   } catch (error) {
     console.error('Test email error:', error);
@@ -68,11 +99,12 @@ router.get('/test-email-noreply', async (req, res) => {
 // Test email route for Info
 router.get('/test-email-info', async (req, res) => {
   try {
+    const { date, time } = getSwissDateTime();
     const testReservation = {
       email: process.env.ADMIN_EMAIL,
       firstName: 'Test',
-      date: new Date().toISOString().split('T')[0],
-      time: new Date().toTimeString().split(' ')[0].substring(0, 5),
+      date,
+      time,
       pickup: 'Test Location',
       isSpecialRequest: false,
       isHourly: false,
@@ -89,7 +121,12 @@ router.get('/test-email-info', async (req, res) => {
     
     res.json({ 
       message: 'Test Info email sent',
-      result 
+      result,
+      testTime: new Date().toLocaleString('en-CH', {
+        timeZone: 'Europe/Zurich',
+        dateStyle: 'full',
+        timeStyle: 'long'
+      })
     });
   } catch (error) {
     console.error('Test email error:', error);
@@ -103,11 +140,12 @@ router.get('/test-email-info', async (req, res) => {
 // Test email route for Contact
 router.get('/test-email-contact', async (req, res) => {
   try {
+    const { date, time } = getSwissDateTime();
     const testReservation = {
       email: process.env.ADMIN_EMAIL,
       firstName: 'Test',
-      date: new Date().toISOString().split('T')[0],
-      time: new Date().toTimeString().split(' ')[0].substring(0, 5),
+      date,
+      time,
       pickup: 'Test Location',
       isSpecialRequest: false,
       isHourly: false,
@@ -124,7 +162,12 @@ router.get('/test-email-contact', async (req, res) => {
     
     res.json({ 
       message: 'Test Contact email sent',
-      result 
+      result,
+      testTime: new Date().toLocaleString('en-CH', {
+        timeZone: 'Europe/Zurich',
+        dateStyle: 'full',
+        timeStyle: 'long'
+      })
     });
   } catch (error) {
     console.error('Test email error:', error);

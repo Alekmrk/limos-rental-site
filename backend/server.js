@@ -6,8 +6,16 @@ require('dotenv').config();
 // Import routes
 const emailRoutes = require('./routes/emailRoutes');
 
-// Deployment tracking
-const deploymentTimestamp = new Date().toISOString();
+// Deployment tracking with Swiss timezone
+const getSwissTime = () => {
+  return new Date().toLocaleString('en-CH', {
+    timeZone: 'Europe/Zurich',
+    dateStyle: 'full',
+    timeStyle: 'long'
+  });
+};
+
+const deploymentTimestamp = getSwissTime();
 const deploymentId = Math.random().toString(36).substring(7);
 
 // Initialize express app
@@ -20,9 +28,9 @@ app.use(cors({
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
-// Add request logging middleware
+// Add request logging middleware with Swiss time
 app.use((req, res, next) => {
-  console.log(`[${new Date().toISOString()}] ${req.method} ${req.path}`);
+  console.log(`[${getSwissTime()}] ${req.method} ${req.path}`);
   next();
 });
 
@@ -39,8 +47,10 @@ app.get('/', (req, res) => {
     message: 'Limos Rental Email Service API is running!', 
     deploymentInfo: {
       timestamp: deploymentTimestamp,
+      currentTime: getSwissTime(),
       id: deploymentId,
-      environment: process.env.NODE_ENV
+      environment: process.env.NODE_ENV,
+      timezone: 'Europe/Zurich'
     },
     env: {
       host: process.env.EMAIL_HOST,
@@ -52,15 +62,17 @@ app.get('/', (req, res) => {
   });
 });
 
-// Enhanced health check endpoint
+// Enhanced health check endpoint with Swiss time
 app.get('/health', (req, res) => {
   res.status(200).json({ 
     status: 'healthy',
+    currentTime: getSwissTime(),
     uptime: process.uptime(),
     deploymentInfo: {
       timestamp: deploymentTimestamp,
       id: deploymentId,
-      environment: process.env.NODE_ENV
+      environment: process.env.NODE_ENV,
+      timezone: 'Europe/Zurich'
     },
     memory: process.memoryUsage()
   });
@@ -70,11 +82,26 @@ app.get('/health', (req, res) => {
 app.get('/api/test-email', async (req, res) => {
   try {
     const emailService = require('./services/emailService');
+    const now = new Date();
+    const swissDate = now.toLocaleDateString('en-CH', {
+      timeZone: 'Europe/Zurich',
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit'
+    }).split('.').reverse().join('-');
+    
+    const swissTime = now.toLocaleTimeString('en-CH', {
+      timeZone: 'Europe/Zurich',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false
+    });
+
     const testReservation = {
       email: 'test@example.com',
       phone: '123-456-7890',
-      date: '2025-05-01',
-      time: '14:00',
+      date: swissDate,
+      time: swissTime,
       pickup: 'Test Pickup Location',
       dropoff: 'Test Dropoff Location',
       isSpecialRequest: false,
@@ -88,7 +115,8 @@ app.get('/api/test-email', async (req, res) => {
     const result = await emailService.sendToAdmin(testReservation);
     res.json({ 
       message: 'Test email sent. Check console for details.', 
-      result 
+      result,
+      testTime: getSwissTime()
     });
   } catch (error) {
     console.error('Test email error:', error);

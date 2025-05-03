@@ -91,7 +91,7 @@ const ThankYou = ({ scrollUp }) => {
                   </h3>
                   <div className="space-y-2 text-zinc-300">
                     <p className="break-words">Date: {reservationInfo.date}</p>
-                    <p className="break-words">Preferred Time: {reservationInfo.time}</p>
+                    <p className="break-words">Preferred Time: {reservationInfo.time} (CET)</p>
                     <p className="mt-4 text-sm text-zinc-400">Special Request:</p>
                     <p className="text-sm break-words overflow-hidden">{reservationInfo.specialRequestDetails}</p>
                     {reservationInfo.additionalRequests && (
@@ -143,16 +143,11 @@ const ThankYou = ({ scrollUp }) => {
                   <div className="space-y-2 text-zinc-300">
                     <p className="break-words">From: {reservationInfo.pickup}</p>
                     {reservationInfo.extraStops.map((stop, index) => (
-                      <p key={index} className="pl-4 flex items-center gap-2 break-words">
-                        <svg className="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="currentColor">
-                          <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
-                        </svg>
-                        <span className="break-words overflow-hidden">{stop}</span>
-                      </p>
+                      stop && <p key={index} className="break-words pl-4">• {stop}</p>
                     ))}
                     <p className="break-words">To: {reservationInfo.dropoff}</p>
                     <p className="break-words">Date: {reservationInfo.date}</p>
-                    <p className="break-words">Time: {reservationInfo.time}</p>
+                    <p className="break-words">Time: {reservationInfo.time} (CET)</p>
                   </div>
                 </div>
 

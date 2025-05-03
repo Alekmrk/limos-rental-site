@@ -3,6 +3,30 @@ import { calculateRoute, getPlaceDetails } from "../services/GoogleMapsService";
 
 export const ReservationContext = createContext(null);
 
+const getInitialTime = () => {
+  const now = new Date();
+  // Convert to Swiss time
+  const swissTime = now.toLocaleTimeString('en-CH', {
+    timeZone: 'Europe/Zurich',
+    hour12: false,
+    hour: '2-digit',
+    minute: '2-digit'
+  });
+  return swissTime;
+};
+
+const getInitialDate = () => {
+  const now = new Date();
+  // Convert to Swiss date in YYYY-MM-DD format
+  const swissDate = now.toLocaleDateString('en-CH', {
+    timeZone: 'Europe/Zurich',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit'
+  }).split('.').reverse().join('-');
+  return swissDate;
+};
+
 export const ReservationContextProvider = ({ children }) => {
   const [reservationInfo, setReservationInfo] = useState({
     pickup: "",
@@ -11,8 +35,8 @@ export const ReservationContextProvider = ({ children }) => {
     dropoffPlaceInfo: null,
     extraStops: [],
     extraStopsPlaceInfo: [],
-    date: "",
-    time: "",
+    date: getInitialDate(), // Initialize with current Swiss date
+    time: getInitialTime(), // Initialize with current Swiss time
     passengers: 1,
     bags: 0,
     flightNumber: "",

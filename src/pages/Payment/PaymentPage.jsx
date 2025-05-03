@@ -165,7 +165,7 @@ const PaymentPage = ({ scrollUp }) => {
               </div>
               <div>
                 <p className="text-zinc-400 text-sm mb-1">Time</p>
-                <p className="font-medium">{reservationInfo.time}</p>
+                <p className="font-medium">{reservationInfo.time} (CET)</p>
               </div>
             </div>
 

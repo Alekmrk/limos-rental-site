@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 const TimeInput = ({ value, onChange, name, id, className }) => {
   const [inputValue, setInputValue] = useState(value || '');
@@ -27,9 +27,27 @@ const TimeInput = ({ value, onChange, name, id, className }) => {
 
     setInputValue(val);
     if (val.length === 5) {
-      onChange({ target: { name, value: val, type: 'time' }});
+      // Convert to Switzerland time if needed
+      const [h, m] = val.split(':').map(Number);
+      const date = new Date();
+      date.setHours(h, m);
+      
+      // Format in 24-hour time
+      const swissTime = date.toLocaleTimeString('en-CH', { 
+        hour: '2-digit', 
+        minute: '2-digit', 
+        hour12: false,
+        timeZone: 'Europe/Zurich'
+      });
+      
+      onChange({ target: { name, value: swissTime, type: 'time' }});
     }
   };
+
+  // Update display value when the time prop changes
+  useEffect(() => {
+    setInputValue(value || '');
+  }, [value]);
 
   return (
     <input
@@ -40,7 +58,7 @@ const TimeInput = ({ value, onChange, name, id, className }) => {
       maxLength={5}
       name={name}
       id={id}
-      className={`${className || ''} appearance-none`.trim()}
+      className={`${className || ''} hour24 appearance-none`.trim()}
       pattern="[0-2][0-9]:[0-5][0-9]"
       autoComplete="off"
     />
