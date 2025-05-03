@@ -1,9 +1,25 @@
 const { EmailClient } = require('@azure/communication-email');
 require('dotenv').config();
 
+// Email sender addresses configuration
+const emailSenders = {
+  noreply: {
+    address: process.env.EMAIL_FROM || 'DoNotReply@elitewaylimo.ch',
+    displayName: 'Elite Way Limo'
+  },
+  info: {
+    address: process.env.EMAIL_INFO || 'info@elitewaylimo.ch',
+    displayName: 'Elite Way Info'
+  },
+  contact: {
+    address: process.env.EMAIL_CONTACT || 'contact@elitewaylimo.ch',
+    displayName: 'Elite Way Contact'
+  }
+};
+
 console.log('Email Service Configuration:', {
   connectionString: process.env.COMMUNICATION_CONNECTION_STRING?.substring(0, 50) + '...',
-  emailFrom: process.env.EMAIL_FROM,
+  emailSenders,
   adminEmail: process.env.ADMIN_EMAIL
 });
 
@@ -16,50 +32,61 @@ const formatDateTime = (date, time) => {
 };
 
 // Send email using Azure Communication Services
-const sendEmail = async (to, subject, content) => {
+const sendEmail = async (to, subject, content, senderType = 'noreply') => {
   try {
-    console.log('Attempting to send email:', {
+    const sender = emailSenders[senderType] || emailSenders.noreply;
+    
+    console.log('Sending email with Azure Communication Services:', {
       to,
-      subject,
-      from: process.env.EMAIL_FROM
+      from: sender.address,
+      displayName: sender.displayName,
+      subject
     });
 
     const message = {
-      senderAddress: process.env.EMAIL_FROM,
+      senderAddress: sender.address,
       content: {
         subject,
         plainText: content.text,
         html: content.html,
       },
       recipients: {
-        to: [{ address: to }],
-      },
+        to: [{ address: to }]
+      }
     };
 
-    console.log('Email message prepared:', JSON.stringify(message, null, 2));
-
     const poller = await emailClient.beginSend(message);
-    console.log('Email send operation started, polling for completion...');
-    
     const result = await poller.pollUntilDone();
-    console.log('Email sent successfully:', result);
     
+    console.log('Email sent successfully:', {
+      messageId: result.id,
+      status: result.status,
+      recipient: to,
+      sender: sender.address
+    });
+
     return {
       success: true,
       messageId: result.id,
       message: `Email sent to ${to}`
     };
   } catch (error) {
-    console.error('Error details:', {
+    console.error('Email sending failed:', {
       name: error.name,
       message: error.message,
       code: error.code,
-      stack: error.stack
+      statusCode: error.statusCode,
+      details: error.details
     });
+    
     return {
       success: false,
       message: 'Failed to send email',
-      error: error.message
+      error: error.message,
+      details: {
+        code: error.code,
+        statusCode: error.statusCode
+      }
     };
   }
 };
@@ -76,7 +103,7 @@ const sendToAdmin = async (reservationInfo) => {
     : `New Transfer Booking: ${formatDateTime(reservationInfo.date, reservationInfo.time)}`;
   
   const content = generateAdminEmailContent(reservationInfo);
-  return await sendEmail(process.env.ADMIN_EMAIL, subject, content);
+  return await sendEmail(process.env.ADMIN_EMAIL, subject, content, 'info');
 };
 
 /**
@@ -91,7 +118,7 @@ const sendToCustomer = async (reservationInfo) => {
     : 'Your Luxury Transfer Confirmation - Limos Rental';
   
   const content = generateCustomerEmailContent(reservationInfo);
-  return await sendEmail(reservationInfo.email, subject, content);
+  return await sendEmail(reservationInfo.email, subject, content, 'contact');
 };
 
 /**
@@ -102,7 +129,7 @@ const sendToCustomer = async (reservationInfo) => {
 const sendPaymentConfirmationToAdmin = async (reservationInfo) => {
   const subject = `Payment Received: ${formatDateTime(reservationInfo.date, reservationInfo.time)}`;
   const content = generatePaymentEmailForAdmin(reservationInfo);
-  return await sendEmail(process.env.ADMIN_EMAIL, subject, content);
+  return await sendEmail(process.env.ADMIN_EMAIL, subject, content, 'info');
 };
 
 /**
@@ -113,7 +140,7 @@ const sendPaymentConfirmationToAdmin = async (reservationInfo) => {
 const sendPaymentReceiptToCustomer = async (reservationInfo) => {
   const subject = 'Payment Receipt - Limos Rental Transfer';
   const content = generatePaymentReceiptForCustomer(reservationInfo);
-  return await sendEmail(reservationInfo.email, subject, content);
+  return await sendEmail(reservationInfo.email, subject, content, 'contact');
 };
 
 /**

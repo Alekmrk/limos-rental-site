@@ -2,6 +2,33 @@ const express = require('express');
 const router = express.Router();
 const emailService = require('../services/emailService');
 
+// Test email route
+router.get('/test-email', async (req, res) => {
+  try {
+    const testReservation = {
+      email: process.env.ADMIN_EMAIL,
+      date: new Date().toISOString().split('T')[0],
+      time: new Date().toTimeString().split(' ')[0].substring(0, 5),
+      pickup: 'Test Location',
+      isSpecialRequest: false,
+      isHourly: false,
+      selectedVehicle: { name: 'Test Vehicle' }
+    };
+    
+    const result = await emailService.sendToAdmin(testReservation);
+    res.json({ 
+      message: 'Test email sent',
+      result 
+    });
+  } catch (error) {
+    console.error('Test email error:', error);
+    res.status(500).json({ 
+      message: 'Error sending test email', 
+      error: error.message 
+    });
+  }
+});
+
 /**
  * @route   POST /api/email/send-confirmation
  * @desc    Send confirmation email for a booking
