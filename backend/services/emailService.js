@@ -224,17 +224,7 @@ const generateAdminEmailContent = (reservationInfo) => {
   // Add customer details
   details.push(`Customer: ${reservationInfo.email} | ${reservationInfo.phone || 'No phone'}`);
   
-  // Format the date to day, month, year
-  const [year, month, day] = reservationInfo.date.split('-').map(Number);
-  const dt = new Date(year, month - 1, day);
-  const formattedDate = dt.toLocaleDateString('en-CH', {
-    timeZone: 'Europe/Zurich',
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric'
-  });
-  
-  details.push(`Date: ${formattedDate}`);
+  details.push(`Date: ${formatDate(reservationInfo.date)}`);
   details.push(`Time: ${reservationInfo.time}`);
   
   if (isSpecialRequest) {
@@ -483,7 +473,7 @@ const generatePaymentEmailForAdmin = (reservationInfo) => {
     `Date: ${formatPaymentDateTime(paymentDetails?.timestamp || Date.now())}`,
     ``,
     `Customer: ${reservationInfo.email} | ${reservationInfo.phone || 'No phone'}`,
-    `Reservation Date: ${reservationInfo.date} at ${reservationInfo.time}`,
+    `Reservation Date: ${formatDate(reservationInfo.date)} at ${reservationInfo.time}`,
   ];
   
   if (reservationInfo.isHourly) {
