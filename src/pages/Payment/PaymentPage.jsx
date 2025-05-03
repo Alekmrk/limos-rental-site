@@ -81,12 +81,22 @@ const PaymentPage = ({ scrollUp }) => {
       // In a real implementation, this would be an API call to process payment
       console.log(`Processing ${paymentMethod} payment for ${formatPrice(price)}`);
       
-      // Create payment details object
+      // Create payment details object with Swiss timezone
+      const now = new Date();
+      const swissTime = now.toLocaleString('en-CH', {
+        timeZone: 'Europe/Zurich',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: false
+      });
+      
       const paymentDetails = {
         method: paymentMethod,
         amount: price,
         currency: 'CHF',
-        timestamp: new Date().toISOString(),
+        timestamp: now.toISOString(), // Keep ISO for backend
+        swissTimestamp: swissTime,
         reference: `PAY-${Math.random().toString(36).substr(2, 9).toUpperCase()}`
       };
       

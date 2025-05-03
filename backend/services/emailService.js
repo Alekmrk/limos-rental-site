@@ -33,7 +33,7 @@ const formatDateTime = (date, time) => {
   const [hours, minutes] = time.split(':').map(Number);
   const dt = new Date(year, month - 1, day, hours, minutes);
   
-  // Format in Swiss timezone
+  // Format in Swiss timezone with full date format
   const swissDateTime = dt.toLocaleString('en-CH', {
     timeZone: 'Europe/Zurich',
     weekday: 'long',
@@ -46,6 +46,20 @@ const formatDateTime = (date, time) => {
   });
   
   return swissDateTime;
+};
+
+const formatPaymentDateTime = (timestamp) => {
+  const date = new Date(timestamp);
+  return date.toLocaleString('en-CH', {
+    timeZone: 'Europe/Zurich',
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: false
+  });
 };
 
 const formatSwissDateTime = (date, time) => {
@@ -200,8 +214,10 @@ const generateAdminEmailContent = (reservationInfo) => {
   
   // Add customer details
   details.push(`Customer: ${reservationInfo.email} | ${reservationInfo.phone || 'No phone'}`);
-  details.push(`Date: ${reservationInfo.date}`);
-  details.push(`Time: ${reservationInfo.time}`);
+  
+  // Format the date/time in Swiss format
+  const formattedDateTime = formatDateTime(reservationInfo.date, reservationInfo.time);
+  details.push(`Date and Time: ${formattedDateTime}`);
   
   if (isSpecialRequest) {
     // Special request specific info
@@ -260,6 +276,16 @@ const generateAdminEmailContent = (reservationInfo) => {
     if (reservationInfo.additionalRequests) {
       details.push(`Additional Requests: ${reservationInfo.additionalRequests}`);
     }
+  }
+
+  // If payment details exist, add them with proper formatting
+  if (reservationInfo.paymentDetails) {
+    const { paymentDetails } = reservationInfo;
+    const formattedPaymentTime = paymentDetails.swissTimestamp || formatPaymentDateTime(paymentDetails.timestamp);
+    details.push(`Payment Method: ${paymentDetails.method}`);
+    details.push(`Amount: ${paymentDetails.currency} ${paymentDetails.amount}`);
+    details.push(`Payment Time: ${formattedPaymentTime}`);
+    details.push(`Reference: ${paymentDetails.reference}`);
   }
 
   const textContent = details.join('\n');
@@ -436,7 +462,7 @@ const generatePaymentEmailForAdmin = (reservationInfo) => {
     `Payment Method: ${paymentDetails?.method || 'Not specified'}`,
     `Amount: ${paymentDetails?.currency || 'CHF'} ${paymentDetails?.amount || 0}`,
     `Reference: ${paymentDetails?.reference || 'N/A'}`,
-    `Date: ${new Date(paymentDetails?.timestamp || Date.now()).toLocaleString()}`,
+    `Date: ${formatPaymentDateTime(paymentDetails?.timestamp || Date.now())}`,
     ``,
     `Customer: ${reservationInfo.email} | ${reservationInfo.phone || 'No phone'}`,
     `Reservation Date: ${reservationInfo.date} at ${reservationInfo.time}`,
@@ -484,7 +510,7 @@ const generatePaymentEmailForAdmin = (reservationInfo) => {
             <div class="detail-row"><span class="label">Payment Method:</span> ${paymentDetails?.method || 'Not specified'}</div>
             <div class="detail-row"><span class="label">Amount:</span> ${paymentDetails?.currency || 'CHF'} ${paymentDetails?.amount || 0}</div>
             <div class="detail-row"><span class="label">Reference:</span> ${paymentDetails?.reference || 'N/A'}</div>
-            <div class="detail-row"><span class="label">Date:</span> ${new Date(paymentDetails?.timestamp || Date.now()).toLocaleString()}</div>
+            <div class="detail-row"><span class="label">Date:</span> ${formatPaymentDateTime(paymentDetails?.timestamp || Date.now())}</div>
           </div>
           
           <div class="reservation-info">
@@ -536,7 +562,7 @@ PAYMENT DETAILS
 Payment Method: ${paymentDetails?.method || 'Not specified'}
 Amount: ${paymentDetails?.currency || 'CHF'} ${paymentDetails?.amount || 0}
 Reference: ${paymentDetails?.reference || 'N/A'}
-Date: ${new Date(paymentDetails?.timestamp || Date.now()).toLocaleString()}
+Date: ${formatPaymentDateTime(paymentDetails?.timestamp || Date.now())}
 
 RESERVATION DETAILS
 Date: ${reservationInfo.date}
@@ -587,7 +613,7 @@ Limos Rental Team
             <div class="detail-row"><strong>Payment Method:</strong> ${paymentDetails?.method || 'Not specified'}</div>
             <div class="detail-row"><strong>Amount:</strong> ${paymentDetails?.currency || 'CHF'} ${paymentDetails?.amount || 0}</div>
             <div class="detail-row"><strong>Reference:</strong> ${paymentDetails?.reference || 'N/A'}</div>
-            <div class="detail-row"><strong>Date:</strong> ${new Date(paymentDetails?.timestamp || Date.now()).toLocaleString()}</div>
+            <div class="detail-row"><strong>Date:</strong> ${formatPaymentDateTime(paymentDetails?.timestamp || Date.now())}</div>
           </div>
           
           <div class="reservation-info">
