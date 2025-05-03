@@ -44,7 +44,11 @@ const Header = () => {
         <a href="/">
           <img className="w-28" src={logo} alt="LIMO-logo" />
         </a>
-        <PrimaryNav screenSize={screenSize} navHidden={navHidden} />
+        <PrimaryNav 
+          screenSize={screenSize} 
+          navHidden={navHidden} 
+          setNavHidden={setNavHidden} 
+        />
 
         {screenSize >= screenMd && <LanguageSelector />}
 
