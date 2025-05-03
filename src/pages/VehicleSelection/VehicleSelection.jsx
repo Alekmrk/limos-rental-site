@@ -349,7 +349,7 @@ const VehicleSelection = ({ scrollUp }) => {
                     <span className="text-sm text-zinc-300">Total Duration: {reservationInfo.routeInfo?.duration || '36 min'}</span>
                   </div>
                 </div>
-                <p className="text-xs text-zinc-500 mt-3">
+                <p className="hidden text-xs text-zinc-500 mt-3">
                   * Total duration includes estimated traffic and processing time at each stop.
                 </p>
               </div>
