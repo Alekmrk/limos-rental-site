@@ -29,6 +29,10 @@ const CustomerDetails = ({ scrollUp }) => {
     }
   }, [reservationInfo, navigate]);
 
+  useEffect(() => {
+    scrollUp();
+  }, [scrollUp]);
+
   const validateForm = () => {
     const newErrors = {};
     if (!reservationInfo.email) {

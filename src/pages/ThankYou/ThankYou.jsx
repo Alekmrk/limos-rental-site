@@ -11,7 +11,9 @@ const ThankYou = ({ scrollUp }) => {
   });
   const { reservationInfo } = useContext(ReservationContext);
 
-  useEffect(() => scrollUp(), [scrollUp]);
+  useEffect(() => {
+    scrollUp();
+  }, [scrollUp]);
   
   // Log reservation info for debugging
   useEffect(() => {

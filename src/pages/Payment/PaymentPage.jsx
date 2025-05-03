@@ -35,6 +35,10 @@ const PaymentPage = ({ scrollUp }) => {
   }, [reservationInfo, navigate]);
 
   useEffect(() => {
+    scrollUp();
+  }, [scrollUp]);
+
+  useEffect(() => {
     // Calculate price based on reservation details
     if (reservationInfo.selectedVehicle) {
       console.log('Calculating price with simplified pricing system...');

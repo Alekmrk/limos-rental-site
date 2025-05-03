@@ -208,6 +208,10 @@ const VehicleSelection = ({ scrollUp }) => {
     }
   }, [reservationInfo.routeInfo, availableVehicles, reservationInfo.time, reservationInfo.date]);
 
+  useEffect(() => {
+    scrollUp();
+  }, [scrollUp]);
+
   return (
     <div className="container-default mt-28">
       <div className="max-w-6xl mx-auto">
