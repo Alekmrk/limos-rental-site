@@ -112,8 +112,39 @@ const ReservationCard = () => {
 
   const validateForm = async () => {
     const newErrors = {};
-    if (!reservationInfo.date) newErrors.date = "Date is required";
-    if (!reservationInfo.time) newErrors.time = "Time is required";
+    
+    // Date and time validation
+    if (!reservationInfo.date) {
+      newErrors.date = "Date is required";
+    } else {
+      const selectedDate = new Date(reservationInfo.date);
+      const now = new Date();
+      
+      // Convert current time to Swiss timezone
+      const swissNow = new Date(now.toLocaleString('en-US', { timeZone: 'Europe/Zurich' }));
+      
+      if (selectedDate < swissNow) {
+        newErrors.date = "Date cannot be in the past";
+      }
+      
+      // If date is today, check if time is at least 3 hours in advance
+      if (reservationInfo.time && selectedDate.toDateString() === swissNow.toDateString()) {
+        const [hours, minutes] = reservationInfo.time.split(':').map(Number);
+        const selectedTime = new Date(selectedDate);
+        selectedTime.setHours(hours, minutes);
+        
+        const minAllowedTime = new Date(swissNow);
+        minAllowedTime.setHours(swissNow.getHours() + 3);
+        
+        if (selectedTime < minAllowedTime) {
+          newErrors.time = "Booking must be at least 3 hours in advance";
+        }
+      }
+    }
+    
+    if (!reservationInfo.time) {
+      newErrors.time = "Time is required";
+    }
 
     if (!reservationInfo.isSpecialRequest) {
       if (!pickupRef.current.value) newErrors.pickup = "Pick up location is required";
@@ -143,7 +174,7 @@ const ReservationCard = () => {
         }
       }
     }
-    
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
