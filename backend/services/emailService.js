@@ -33,19 +33,23 @@ const formatDateTime = (date, time) => {
   const [hours, minutes] = time.split(':').map(Number);
   const dt = new Date(year, month - 1, day, hours, minutes);
   
-  // Format in Swiss timezone with full date format
-  const swissDateTime = dt.toLocaleString('en-CH', {
+  // Format date in Swiss format (day month year) with time
+  const formattedDate = dt.toLocaleDateString('en-CH', {
     timeZone: 'Europe/Zurich',
-    weekday: 'long',
-    year: 'numeric',
-    month: 'long',
     day: 'numeric',
+    month: 'long',
+    year: 'numeric'
+  });
+  
+  // Format time separately to ensure HH:mm format
+  const formattedTime = dt.toLocaleTimeString('en-CH', {
+    timeZone: 'Europe/Zurich',
     hour: '2-digit',
     minute: '2-digit',
     hour12: false
   });
   
-  return swissDateTime;
+  return `${formattedDate}, ${formattedTime} (CET)`;
 };
 
 const formatPaymentDateTime = (timestamp) => {
