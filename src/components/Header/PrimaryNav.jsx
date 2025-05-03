@@ -16,9 +16,9 @@ const PrimaryNav = ({ navHidden, screenSize, setNavHidden }) => {
     >
       <ul className="flex flex-col md:flex-row gap-16 mb-8 md:mb-0 justify-center">
         <li>
-          <NavLink className="nav-link" to="/" onClick={handleNavClick}>
+          <a className="nav-link" href="/" onClick={handleNavClick}>
             Home
-          </NavLink>
+          </a>
         </li>
         <li>
           <NavLink className="nav-link" to="/vehicles" onClick={handleNavClick}>
