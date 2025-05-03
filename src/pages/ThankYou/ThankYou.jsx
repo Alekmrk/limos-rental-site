@@ -53,6 +53,12 @@ const ThankYou = ({ scrollUp }) => {
     }
   }, [reservationInfo]);
 
+  // Format date to dd-mm-yy
+  const formatDate = (dateString) => {
+    const [year, month, day] = dateString.split('-');
+    return `${day}-${month}-${year.slice(2)}`;
+  };
+
   return (
     <div className="container-default mt-28">
       <div className="max-w-6xl mx-auto">
@@ -90,7 +96,7 @@ const ThankYou = ({ scrollUp }) => {
                     Request Details
                   </h3>
                   <div className="space-y-2 text-zinc-300">
-                    <p className="break-words">Date: {reservationInfo.date}</p>
+                    <p className="break-words">Date: {formatDate(reservationInfo.date)}</p>
                     <p className="break-words">Preferred Time: {reservationInfo.time} (CET)</p>
                     <p className="mt-4 text-sm text-zinc-400">Special Request:</p>
                     <p className="text-sm break-words overflow-hidden">{reservationInfo.specialRequestDetails}</p>
@@ -146,7 +152,7 @@ const ThankYou = ({ scrollUp }) => {
                       stop && <p key={index} className="break-words pl-4">• {stop}</p>
                     ))}
                     <p className="break-words">To: {reservationInfo.dropoff}</p>
-                    <p className="break-words">Date: {reservationInfo.date}</p>
+                    <p className="break-words">Date: {formatDate(reservationInfo.date)}</p>
                     <p className="break-words">Time: {reservationInfo.time} (CET)</p>
                   </div>
                 </div>

@@ -28,28 +28,28 @@ const emailClient = new EmailClient(process.env.COMMUNICATION_CONNECTION_STRING)
 
 // Format date and time for email
 const formatDateTime = (date, time) => {
-  // Create a Date object from the date and time
-  const [year, month, day] = date.split('-').map(Number);
-  const [hours, minutes] = time.split(':').map(Number);
-  const dt = new Date(year, month - 1, day, hours, minutes);
-  
-  // Format date in Swiss format (day month year) with time
-  const formattedDate = dt.toLocaleDateString('en-CH', {
-    timeZone: 'Europe/Zurich',
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric'
-  });
-  
-  // Format time separately to ensure HH:mm format
-  const formattedTime = dt.toLocaleTimeString('en-CH', {
-    timeZone: 'Europe/Zurich',
-    hour: '2-digit',
-    minute: '2-digit',
-    hour12: false
-  });
-  
-  return `${formattedDate}, ${formattedTime} (CET)`;
+  try {
+    // Create a Date object from the date and time
+    const [year, month, day] = date.split('-').map(Number);
+    const [hours, minutes] = time.split(':').map(Number);
+    const dt = new Date(year, month - 1, day, hours, minutes);
+    
+    // Format date as dd-mm-yy
+    const formattedDate = `${day.toString().padStart(2, '0')}-${month.toString().padStart(2, '0')}-${year.toString().slice(2)}`;
+    
+    // Format time separately to ensure HH:mm format
+    const formattedTime = dt.toLocaleTimeString('en-CH', {
+      timeZone: 'Europe/Zurich',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false
+    });
+    
+    return `${formattedDate}, ${formattedTime} (CET)`;
+  } catch (error) {
+    console.error('Error formatting Swiss date/time:', error);
+    return `${date} ${time} CET`;
+  }
 };
 
 const formatPaymentDateTime = (timestamp) => {
