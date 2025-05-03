@@ -34,8 +34,8 @@ const formatDateTime = (date, time) => {
     const [hours, minutes] = time.split(':').map(Number);
     const dt = new Date(year, month - 1, day, hours, minutes);
     
-    // Format date as dd-mm-yy
-    const formattedDate = `${day.toString().padStart(2, '0')}-${month.toString().padStart(2, '0')}-${year.toString().slice(2)}`;
+    // Format date as dd-mm-yyyy
+    const formattedDate = `${day.toString().padStart(2, '0')}-${month.toString().padStart(2, '0')}-${year}`;
     
     // Format time separately to ensure HH:mm format
     const formattedTime = dt.toLocaleTimeString('en-CH', {
@@ -524,7 +524,7 @@ const generatePaymentEmailForAdmin = (reservationInfo) => {
           <div class="reservation-info">
             <h3>Reservation Details</h3>
             <div class="detail-row"><span class="label">Customer:</span> ${reservationInfo.email} | ${reservationInfo.phone || 'No phone'}</div>
-            <div class="detail-row"><span class="label">Date:</span> ${reservationInfo.date} at ${reservationInfo.time}</div>
+            <div class="detail-row"><span class="label">Date:</span> ${formatDate(reservationInfo.date)} at ${reservationInfo.time}</div>
             ${reservationInfo.isHourly 
               ? `<div class="detail-row"><span class="label">Service:</span> Hourly (${reservationInfo.hours} hours)</div>
                  <div class="detail-row"><span class="label">Location:</span> ${reservationInfo.pickup}</div>`
