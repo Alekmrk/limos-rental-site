@@ -587,5 +587,10 @@ module.exports = {
   sendToAdmin,
   sendToCustomer,
   sendPaymentConfirmationToAdmin,
-  sendPaymentReceiptToCustomer
+  sendPaymentReceiptToCustomer,
+  generateAdminEmailContent,
+  generateCustomerEmailContent,
+  generatePaymentEmailForAdmin,
+  generatePaymentReceiptForCustomer,
+  sendEmail
 };

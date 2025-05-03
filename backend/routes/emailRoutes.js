@@ -29,6 +29,112 @@ router.get('/test-email', async (req, res) => {
   }
 });
 
+// Test email route for DoNotReply
+router.get('/test-email-noreply', async (req, res) => {
+  try {
+    const testReservation = {
+      email: process.env.ADMIN_EMAIL,
+      firstName: 'Test',
+      date: new Date().toISOString().split('T')[0],
+      time: new Date().toTimeString().split(' ')[0].substring(0, 5),
+      pickup: 'Test Location',
+      dropoff: 'Test Destination',
+      isSpecialRequest: false,
+      isHourly: false,
+      selectedVehicle: { name: 'Test Vehicle' }
+    };
+    
+    const content = await emailService.generateAdminEmailContent(testReservation);
+    const result = await emailService.sendEmail(
+      process.env.ADMIN_EMAIL,
+      'Test Email from DoNotReply',
+      content,
+      'noreply'
+    );
+    
+    res.json({ 
+      message: 'Test DoNotReply email sent',
+      result 
+    });
+  } catch (error) {
+    console.error('Test email error:', error);
+    res.status(500).json({ 
+      message: 'Error sending test email', 
+      error: error.message 
+    });
+  }
+});
+
+// Test email route for Info
+router.get('/test-email-info', async (req, res) => {
+  try {
+    const testReservation = {
+      email: process.env.ADMIN_EMAIL,
+      firstName: 'Test',
+      date: new Date().toISOString().split('T')[0],
+      time: new Date().toTimeString().split(' ')[0].substring(0, 5),
+      pickup: 'Test Location',
+      isSpecialRequest: false,
+      isHourly: false,
+      selectedVehicle: { name: 'Test Vehicle' }
+    };
+    
+    const content = await emailService.generateAdminEmailContent(testReservation);
+    const result = await emailService.sendEmail(
+      process.env.ADMIN_EMAIL,
+      'Test Email from Info',
+      content,
+      'info'
+    );
+    
+    res.json({ 
+      message: 'Test Info email sent',
+      result 
+    });
+  } catch (error) {
+    console.error('Test email error:', error);
+    res.status(500).json({ 
+      message: 'Error sending test email', 
+      error: error.message 
+    });
+  }
+});
+
+// Test email route for Contact
+router.get('/test-email-contact', async (req, res) => {
+  try {
+    const testReservation = {
+      email: process.env.ADMIN_EMAIL,
+      firstName: 'Test',
+      date: new Date().toISOString().split('T')[0],
+      time: new Date().toTimeString().split(' ')[0].substring(0, 5),
+      pickup: 'Test Location',
+      isSpecialRequest: false,
+      isHourly: false,
+      selectedVehicle: { name: 'Test Vehicle' }
+    };
+    
+    const content = await emailService.generateCustomerEmailContent(testReservation);
+    const result = await emailService.sendEmail(
+      process.env.ADMIN_EMAIL,
+      'Test Email from Contact',
+      content,
+      'contact'
+    );
+    
+    res.json({ 
+      message: 'Test Contact email sent',
+      result 
+    });
+  } catch (error) {
+    console.error('Test email error:', error);
+    res.status(500).json({ 
+      message: 'Error sending test email', 
+      error: error.message 
+    });
+  }
+});
+
 /**
  * @route   POST /api/email/send-confirmation
  * @desc    Send confirmation email for a booking
