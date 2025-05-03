@@ -88,14 +88,14 @@ const ThankYou = ({ scrollUp }) => {
                     Request Details
                   </h3>
                   <div className="space-y-2 text-zinc-300">
-                    <p>Date: {reservationInfo.date}</p>
-                    <p>Preferred Time: {reservationInfo.time}</p>
+                    <p className="break-words">Date: {reservationInfo.date}</p>
+                    <p className="break-words">Preferred Time: {reservationInfo.time}</p>
                     <p className="mt-4 text-sm text-zinc-400">Special Request:</p>
-                    <p className="text-sm">{reservationInfo.specialRequestDetails}</p>
+                    <p className="text-sm break-words overflow-hidden">{reservationInfo.specialRequestDetails}</p>
                     {reservationInfo.additionalRequests && (
                       <>
                         <p className="mt-4 text-sm text-zinc-400">Additional Information:</p>
-                        <p className="text-sm">{reservationInfo.additionalRequests}</p>
+                        <p className="text-sm break-words overflow-hidden">{reservationInfo.additionalRequests}</p>
                       </>
                     )}
                   </div>
@@ -109,8 +109,8 @@ const ThankYou = ({ scrollUp }) => {
                     Contact Details
                   </h3>
                   <div className="space-y-2 text-zinc-300">
-                    <p>Email: {reservationInfo.email}</p>
-                    <p>Phone: {reservationInfo.phone}</p>
+                    <p className="break-words">Email: {reservationInfo.email}</p>
+                    <p className="break-words">Phone: {reservationInfo.phone}</p>
                   </div>
                 </div>
 
@@ -139,18 +139,18 @@ const ThankYou = ({ scrollUp }) => {
                     Transfer Details
                   </h3>
                   <div className="space-y-2 text-zinc-300">
-                    <p>From: {reservationInfo.pickup}</p>
+                    <p className="break-words">From: {reservationInfo.pickup}</p>
                     {reservationInfo.extraStops.map((stop, index) => (
-                      <p key={index} className="pl-4 flex items-center gap-2">
+                      <p key={index} className="pl-4 flex items-center gap-2 break-words">
                         <svg className="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="currentColor">
                           <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
                         </svg>
-                        <span>Extra Stop {index + 1}: {stop}</span>
+                        <span className="break-words overflow-hidden">{stop}</span>
                       </p>
                     ))}
-                    <p>To: {reservationInfo.dropoff}</p>
-                    <p>Date: {reservationInfo.date}</p>
-                    <p>Time: {reservationInfo.time}</p>
+                    <p className="break-words">To: {reservationInfo.dropoff}</p>
+                    <p className="break-words">Date: {reservationInfo.date}</p>
+                    <p className="break-words">Time: {reservationInfo.time}</p>
                   </div>
                 </div>
 
@@ -162,17 +162,17 @@ const ThankYou = ({ scrollUp }) => {
                     Vehicle Details
                   </h3>
                   <div className="space-y-2 text-zinc-300">
-                    <p>Vehicle: {reservationInfo.selectedVehicle?.name}</p>
-                    <p>Passengers: {reservationInfo.passengers}</p>
-                    <p>Bags: {reservationInfo.bags}</p>
+                    <p className="break-words">Vehicle: {reservationInfo.selectedVehicle?.name}</p>
+                    <p className="break-words">Passengers: {reservationInfo.passengers}</p>
+                    <p className="break-words">Bags: {reservationInfo.bags}</p>
                     {reservationInfo.childSeats > 0 && (
-                      <p>Child Seats: {reservationInfo.childSeats}</p>
+                      <p className="break-words">Child Seats: {reservationInfo.childSeats}</p>
                     )}
                     {reservationInfo.babySeats > 0 && (
-                      <p>Baby Seats: {reservationInfo.babySeats}</p>
+                      <p className="break-words">Baby Seats: {reservationInfo.babySeats}</p>
                     )}
                     {reservationInfo.skiEquipment > 0 && (
-                      <p>Ski Equipment: {reservationInfo.skiEquipment}</p>
+                      <p className="break-words">Ski Equipment: {reservationInfo.skiEquipment}</p>
                     )}
                   </div>
                 </div>
@@ -185,13 +185,13 @@ const ThankYou = ({ scrollUp }) => {
                     Customer Details
                   </h3>
                   <div className="space-y-2 text-zinc-300">
-                    <p>Email: {reservationInfo.email}</p>
-                    <p>Phone: {reservationInfo.phone}</p>
+                    <p className="break-words">Email: {reservationInfo.email}</p>
+                    <p className="break-words">Phone: {reservationInfo.phone}</p>
                     {reservationInfo.flightNumber && (
-                      <p>Flight Number: {reservationInfo.flightNumber}</p>
+                      <p className="break-words">Flight Number: {reservationInfo.flightNumber}</p>
                     )}
                     {reservationInfo.additionalRequests && (
-                      <p>Additional Requests: {reservationInfo.additionalRequests}</p>
+                      <p className="break-words overflow-hidden">Additional Requests: {reservationInfo.additionalRequests}</p>
                     )}
                   </div>
                 </div>
@@ -200,12 +200,12 @@ const ThankYou = ({ scrollUp }) => {
           </div>
 
           <div className="text-center text-zinc-400">
-            <p className="mb-2">
+            <p className="mb-2 break-words">
               {reservationInfo.isSpecialRequest 
                 ? `We'll send a detailed response to ${reservationInfo.email}`
                 : `A confirmation email has been sent to ${reservationInfo.email}`}
             </p>
-            <p>If you have any questions, please don't hesitate to contact us.</p>
+            <p className="break-words">If you have any questions, please don't hesitate to contact us.</p>
           </div>
         </div>
       </div>
