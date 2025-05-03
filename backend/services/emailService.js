@@ -393,7 +393,7 @@ Date: ${formatPaymentDateTime(reservationInfo.paymentDetails.timestamp)}
 ` : ''}
 
 TRANSFER DETAILS
-${isSpecialRequest 
+${reservationInfo.isSpecialRequest 
   ? `Date: ${formatDate(reservationInfo.date)}
 Preferred Time: ${reservationInfo.time} (CET)
 ${reservationInfo.specialRequestDetails ? `Special Request: ${reservationInfo.specialRequestDetails}` : ''}`
