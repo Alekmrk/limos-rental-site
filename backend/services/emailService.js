@@ -169,7 +169,7 @@ const sendToAdmin = async (reservationInfo) => {
     ? `New Special Request: ${reservationInfo.date}`
     : `New Transfer Booking: ${formatDateTime(reservationInfo.date, reservationInfo.time)}`;
   
-  const content = generateAdminEmailContent(reservationInfo);
+  const content = generateEmailContent(reservationInfo, 'admin');
   return await sendEmail(process.env.ADMIN_EMAIL, subject, content, 'info');
 };
 
@@ -184,7 +184,7 @@ const sendToCustomer = async (reservationInfo) => {
     ? 'Your Special Request Has Been Received - Limos Rental'
     : 'Your Luxury Transfer Confirmation - Limos Rental';
   
-  const content = generateCustomerEmailContent(reservationInfo);
+  const content = generateEmailContent(reservationInfo, 'customer');
   return await sendEmail(reservationInfo.email, subject, content, 'contact');
 };
 
@@ -195,7 +195,7 @@ const sendToCustomer = async (reservationInfo) => {
  */
 const sendPaymentConfirmationToAdmin = async (reservationInfo) => {
   const subject = `Payment Received: ${formatDateTime(reservationInfo.date, reservationInfo.time)}`;
-  const content = generatePaymentEmailForAdmin(reservationInfo);
+  const content = generateEmailContent(reservationInfo, 'admin');
   return await sendEmail(process.env.ADMIN_EMAIL, subject, content, 'info');
 };
 
@@ -206,7 +206,7 @@ const sendPaymentConfirmationToAdmin = async (reservationInfo) => {
  */
 const sendPaymentReceiptToCustomer = async (reservationInfo) => {
   const subject = 'Payment Receipt - Limos Rental Transfer';
-  const content = generatePaymentReceiptForCustomer(reservationInfo);
+  const content = generateEmailContent(reservationInfo, 'customer');
   return await sendEmail(reservationInfo.email, subject, content, 'contact');
 };
 
@@ -215,233 +215,118 @@ const sendPaymentReceiptToCustomer = async (reservationInfo) => {
  * @param {Object} reservationInfo - Reservation details
  * @returns {Object} - Email content with text and HTML versions
  */
-const generateAdminEmailContent = (reservationInfo) => {
+const generateEmailContent = (reservationInfo, type = 'customer') => {
   const isSpecialRequest = reservationInfo.isSpecialRequest;
+  const hasPayment = !!reservationInfo.paymentDetails;
   
-  // Generate plain text version
-  const details = [];
-  
-  // Add customer details
-  details.push(`Customer: ${reservationInfo.email} | ${reservationInfo.phone || 'No phone'}`);
-  
-  details.push(`Date: ${formatDate(reservationInfo.date)}`);
-  details.push(`Time: ${reservationInfo.time}`);
-  
-  if (isSpecialRequest) {
-    // Special request specific info
-    details.push(`Request Type: Special Request`);
-    if (reservationInfo.specialRequestDetails) {
-      details.push(`Request Details: ${reservationInfo.specialRequestDetails}`);
-    }
-    if (reservationInfo.additionalRequests) {
-      details.push(`Additional Notes: ${reservationInfo.additionalRequests}`);
-    }
-  } else {
-    // Standard transfer specific info
-    details.push(`Service Type: ${reservationInfo.isHourly ? 'Hourly' : 'Point-to-Point'}`);
-    
-    if (reservationInfo.isHourly) {
-      details.push(`Duration: ${reservationInfo.hours} hours`);
-      details.push(`Pickup: ${reservationInfo.pickup}`);
-      if (reservationInfo.plannedActivities) {
-        details.push(`Planned Activities: ${reservationInfo.plannedActivities}`);
-      }
-    } else {
-      details.push(`Route: ${reservationInfo.pickup} → ${reservationInfo.dropoff}`);
-      if (reservationInfo.extraStops && reservationInfo.extraStops.length > 0) {
-        const validStops = reservationInfo.extraStops.filter(stop => stop && stop.trim());
-        if (validStops.length > 0) {
-          details.push(`Extra Stops: ${validStops.join(' | ')}`);
-        }
-      }
-      if (reservationInfo.distance) {
-        details.push(`Distance: ${reservationInfo.distance}`);
-      }
-      if (reservationInfo.duration) {
-        details.push(`Duration: ${reservationInfo.duration}`);
-      }
-    }
-    
-    // Vehicle and passenger details
-    if (reservationInfo.selectedVehicle) {
-      details.push(`Vehicle: ${reservationInfo.selectedVehicle.name}`);
-    }
-    details.push(`Passengers: ${reservationInfo.passengers || 1}`);
-    details.push(`Bags: ${reservationInfo.bags || 0}`);
-    
-    if (reservationInfo.childSeats > 0) {
-      details.push(`Child Seats: ${reservationInfo.childSeats}`);
-    }
-    if (reservationInfo.babySeats > 0) {
-      details.push(`Baby Seats: ${reservationInfo.babySeats}`);
-    }
-    if (reservationInfo.skiEquipment > 0) {
-      details.push(`Ski Equipment: ${reservationInfo.skiEquipment}`);
-    }
-    if (reservationInfo.flightNumber) {
-      details.push(`Flight Number: ${reservationInfo.flightNumber}`);
-    }
-    if (reservationInfo.additionalRequests) {
-      details.push(`Additional Requests: ${reservationInfo.additionalRequests}`);
-    }
-  }
-
-  // If payment details exist, add them with proper formatting
-  if (reservationInfo.paymentDetails) {
-    const { paymentDetails } = reservationInfo;
-    const formattedPaymentTime = paymentDetails.swissTimestamp || formatPaymentDateTime(paymentDetails.timestamp);
-    details.push(`Payment Method: ${paymentDetails.method}`);
-    details.push(`Amount: ${paymentDetails.currency} ${paymentDetails.amount}`);
-    details.push(`Payment Time: ${formattedPaymentTime}`);
-    details.push(`Reference: ${paymentDetails.reference}`);
-  }
-
-  const textContent = details.join('\n');
-  
-  // Generate HTML version
-  const htmlContent = `
-    <!DOCTYPE html>
-    <html>
-    <head>
-      <style>
-        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
-        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-        .header { background-color: #000; color: gold; padding: 10px 20px; text-align: center; }
-        .content { padding: 20px; }
-        .footer { font-size: 12px; text-align: center; margin-top: 20px; color: #666; }
-        .detail-row { margin-bottom: 10px; }
-        .label { font-weight: bold; }
-      </style>
-    </head>
-    <body>
-      <div class="container">
-        <div class="header">
-          <h2>New ${isSpecialRequest ? 'Special Request' : 'Transfer Booking'}</h2>
-        </div>
-        <div class="content">
-          ${details.map(detail => {
-            const [label, value] = detail.includes(':') ? detail.split(':', 2) : [detail, ''];
-            return `<div class="detail-row"><span class="label">${label}:</span> ${value}</div>`;
-          }).join('')}
-        </div>
-        <div class="footer">
-          <p>This is an automated notification from your Limos Rental website.</p>
-        </div>
-      </div>
-    </body>
-    </html>
+  // Shared CSS styles
+  const styles = `
+    body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; background-color: #1a1a1a; }
+    .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+    .header { background-color: #000; color: gold; padding: 20px; text-align: center; border-radius: 8px 8px 0 0; }
+    .content { padding: 20px; background-color: #2a2a2a; }
+    .section { background-color: rgba(0, 0, 0, 0.2); padding: 24px; border-radius: 8px; margin-bottom: 24px; }
+    .section-title { color: gold; font-size: 18px; font-weight: 500; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+    .section-content { color: #e5e5e5; }
+    .detail-row { margin-bottom: 8px; }
+    .footer { text-align: center; margin-top: 20px; color: #666; font-size: 12px; }
   `;
 
-  return {
-    text: textContent,
-    html: htmlContent
+  const generateSection = (title, icon, content) => `
+    <div class="section">
+      <h3 class="section-title">
+        ${icon}
+        ${title}
+      </h3>
+      <div class="section-content">
+        ${content}
+      </div>
+    </div>
+  `;
+
+  // Icons (SVG)
+  const icons = {
+    transfer: '<svg style="width: 20px; height: 20px;" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 010-5 2.5 2.5 0 010 5z"/></svg>',
+    vehicle: '<svg style="width: 20px; height: 20px;" viewBox="0 0 24 24" fill="currentColor"><path d="M21 12v-2h-2V7l-3-3-2 2-2-2-2 2-2-2-3 3v3H3v2h2v7h14v-7h2zm-5-3.5l2 2V10h-4V8.5l2-2zm-4 0l2 2V10h-4V8.5l2-2zm-4 0l2 2V10H6V8.5l2-2z"/></svg>',
+    customer: '<svg style="width: 20px; height: 20px;" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>'
   };
-};
 
-/**
- * Generate email content for customer confirmations
- * @param {Object} reservationInfo - Reservation details
- * @returns {Object} - Email content with text and HTML versions
- */
-const generateCustomerEmailContent = (reservationInfo) => {
-  const isSpecialRequest = reservationInfo.isSpecialRequest;
-  
-  // Generate intro text
-  const intro = isSpecialRequest
-    ? 'Thank you for your special request. We will review your requirements and get back to you shortly.'
-    : 'Thank you for your booking. Your luxury transfer has been confirmed.';
-  
-  // Generate details
-  const details = [];
-  
-  // Basic info for all bookings
-  details.push(`Date: ${formatDate(reservationInfo.date)}`);
-  details.push(`Time: ${reservationInfo.time}`);
-  
-  if (isSpecialRequest) {
-    // No additional details needed for now
-  } else {
-    // Standard transfer details
-    if (reservationInfo.isHourly) {
-      details.push(`Service Type: Hourly Service (${reservationInfo.hours} hours)`);
-      details.push(`Pickup Location: ${reservationInfo.pickup}`);
-    } else {
-      details.push('Service Type: Point-to-Point Transfer');
-      details.push(`From: ${reservationInfo.pickup}`);
-      if (reservationInfo.extraStops && reservationInfo.extraStops.length > 0) {
-        const validStops = reservationInfo.extraStops.filter(stop => stop && stop.trim());
-        if (validStops.length > 0) {
-          details.push(`Extra Stops: ${validStops.join(', ')}`);
-        }
-      }
-      details.push(`To: ${reservationInfo.dropoff}`);
-    }
-    
-    // Vehicle details
-    if (reservationInfo.selectedVehicle) {
-      details.push(`Vehicle: ${reservationInfo.selectedVehicle.name}`);
-    }
-  }
-  
-  // Generate outro text
-  const outro = isSpecialRequest
-    ? 'We will send you a detailed proposal within 24 hours. If you have any questions in the meantime, please contact our customer service.'
-    : 'We look forward to providing you with a luxurious and comfortable journey. If you need to make any changes to your reservation, please contact our customer service at least 24 hours before your scheduled pickup.';
-  
-  // Generate plain text content
-  const textContent = `
-Dear ${reservationInfo.firstName || 'Customer'},
+  // Generate transfer details section
+  const transferDetails = isSpecialRequest 
+    ? `
+      <p>Date: ${formatDate(reservationInfo.date)}</p>
+      <p>Preferred Time: ${reservationInfo.time} (CET)</p>
+      ${reservationInfo.specialRequestDetails ? `<p>Special Request: ${reservationInfo.specialRequestDetails}</p>` : ''}
+    `
+    : `
+      <p>From: ${reservationInfo.pickup}</p>
+      ${reservationInfo.extraStops?.map(stop => stop ? `<p style="padding-left: 16px;">• ${stop}</p>` : '').join('') || ''}
+      <p>To: ${reservationInfo.dropoff}</p>
+      <p>Date: ${formatDate(reservationInfo.date)}</p>
+      <p>Time: ${reservationInfo.time} (CET)</p>
+    `;
 
-${intro}
+  // Generate vehicle details section
+  const vehicleDetails = `
+    ${reservationInfo.selectedVehicle ? `<p>Vehicle: ${reservationInfo.selectedVehicle.name}</p>` : ''}
+    <p>Passengers: ${reservationInfo.passengers}</p>
+    <p>Bags: ${reservationInfo.bags}</p>
+    ${reservationInfo.childSeats > 0 ? `<p>Child Seats: ${reservationInfo.childSeats}</p>` : ''}
+    ${reservationInfo.babySeats > 0 ? `<p>Baby Seats: ${reservationInfo.babySeats}</p>` : ''}
+    ${reservationInfo.skiEquipment > 0 ? `<p>Ski Equipment: ${reservationInfo.skiEquipment}</p>` : ''}
+  `;
 
-${details.join('\n')}
+  // Generate customer details section
+  const customerDetails = `
+    <p>Email: ${reservationInfo.email}</p>
+    <p>Phone: ${reservationInfo.phone}</p>
+    ${reservationInfo.flightNumber ? `<p>Flight Number: ${reservationInfo.flightNumber}</p>` : ''}
+    ${reservationInfo.additionalRequests ? `<p>Additional Requests: ${reservationInfo.additionalRequests}</p>` : ''}
+  `;
 
-${outro}
+  // Payment details section (if applicable)
+  const paymentSection = hasPayment ? `
+    <div class="section" style="border-left: 4px solid gold;">
+      <h3 class="section-title">Payment Details</h3>
+      <div class="section-content">
+        <p>Payment Method: ${reservationInfo.paymentDetails.method}</p>
+        <p>Amount: ${reservationInfo.paymentDetails.currency} ${reservationInfo.paymentDetails.amount}</p>
+        <p>Reference: ${reservationInfo.paymentDetails.reference}</p>
+        <p>Date: ${formatPaymentDateTime(reservationInfo.paymentDetails.timestamp)}</p>
+      </div>
+    </div>
+  ` : '';
 
-Best regards,
-Limos Rental Team
-  `.trim();
-  
   // Generate HTML content
   const htmlContent = `
     <!DOCTYPE html>
     <html>
     <head>
-      <style>
-        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
-        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-        .header { background-color: #000; color: gold; padding: 10px 20px; text-align: center; }
-        .content { padding: 20px; }
-        .intro { margin-bottom: 20px; }
-        .details { margin-bottom: 20px; }
-        .detail-row { margin-bottom: 8px; }
-        .outro { margin-bottom: 20px; }
-        .footer { font-size: 12px; text-align: center; margin-top: 20px; color: #666; }
-      </style>
+      <style>${styles}</style>
     </head>
     <body>
       <div class="container">
         <div class="header">
-          <h2>${isSpecialRequest ? 'Special Request Received' : 'Booking Confirmation'}</h2>
+          <h2>${getEmailTitle(reservationInfo, type)}</h2>
         </div>
         <div class="content">
-          <div class="intro">
-            <p>Dear ${reservationInfo.firstName || 'Customer'},</p>
-            <p>${intro}</p>
+          <div style="text-align: center; margin-bottom: 32px;">
+            <h2 style="font-size: 24px; margin-bottom: 8px;">Thank You for Choosing Us!</h2>
+            <p style="color: #999; font-size: 18px;">
+              ${getEmailIntro(reservationInfo, type)}
+            </p>
           </div>
           
-          <div class="details">
-            ${details.map(detail => {
-              const [label, value] = detail.includes(':') ? detail.split(':', 2) : [detail, ''];
-              return `<div class="detail-row"><strong>${label}:</strong> ${value}</div>`;
-            }).join('')}
-          </div>
+          ${paymentSection}
           
-          <div class="outro">
-            <p>${outro}</p>
+          ${generateSection('Transfer Details', icons.transfer, transferDetails)}
+          ${generateSection('Vehicle Details', icons.vehicle, vehicleDetails)}
+          ${generateSection('Customer Details', icons.customer, customerDetails)}
+
+          <div style="text-align: center; color: #999; margin-top: 32px;">
+            <p>${getEmailOutro(reservationInfo, type)}</p>
+            <p>If you have any questions, please don't hesitate to contact us.</p>
           </div>
-          
-          <p>Best regards,<br>Limos Rental Team</p>
         </div>
         <div class="footer">
           <p>© ${new Date().getFullYear()} Limos Rental. All rights reserved.</p>
@@ -451,100 +336,8 @@ Limos Rental Team
     </html>
   `;
 
-  return {
-    text: textContent,
-    html: htmlContent
-  };
-};
-
-/**
- * Generate payment notification email for admin
- * @param {Object} reservationInfo - Reservation details with payment info
- * @returns {Object} - Email content with text and HTML versions
- */
-const generatePaymentEmailForAdmin = (reservationInfo) => {
-  const { paymentDetails } = reservationInfo;
-  
   // Generate plain text version
-  const details = [
-    `Payment Method: ${paymentDetails?.method || 'Not specified'}`,
-    `Amount: ${paymentDetails?.currency || 'CHF'} ${paymentDetails?.amount || 0}`,
-    `Reference: ${paymentDetails?.reference || 'N/A'}`,
-    `Date: ${formatPaymentDateTime(paymentDetails?.timestamp || Date.now())}`,
-    ``,
-    `Customer: ${reservationInfo.email} | ${reservationInfo.phone || 'No phone'}`,
-    `Reservation Date: ${formatDate(reservationInfo.date)} at ${reservationInfo.time}`,
-  ];
-  
-  if (reservationInfo.isHourly) {
-    details.push(`Service: Hourly (${reservationInfo.hours} hours)`);
-    details.push(`Location: ${reservationInfo.pickup}`);
-  } else {
-    details.push(`Service: Point-to-Point Transfer`);
-    details.push(`From: ${reservationInfo.pickup}`);
-    details.push(`To: ${reservationInfo.dropoff}`);
-  }
-  
-  if (reservationInfo.selectedVehicle) {
-    details.push(`Vehicle: ${reservationInfo.selectedVehicle.name}`);
-  }
-  
-  const textContent = details.join('\n');
-  
-  // Generate HTML version
-  const htmlContent = `
-    <!DOCTYPE html>
-    <html>
-    <head>
-      <style>
-        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
-        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-        .header { background-color: #000; color: gold; padding: 10px 20px; text-align: center; }
-        .content { padding: 20px; }
-        .payment-info { background-color: #f9f9f9; padding: 15px; border-left: 4px solid gold; margin-bottom: 20px; }
-        .reservation-info { margin-top: 20px; }
-        .detail-row { margin-bottom: 10px; }
-        .label { font-weight: bold; }
-        .footer { font-size: 12px; text-align: center; margin-top: 20px; color: #666; }
-      </style>
-    </head>
-    <body>
-      <div class="container">
-        <div class="header">
-          <h2>Payment Received</h2>
-        </div>
-        <div class="content">
-          <div class="payment-info">
-            <div class="detail-row"><span class="label">Payment Method:</span> ${paymentDetails?.method || 'Not specified'}</div>
-            <div class="detail-row"><span class="label">Amount:</span> ${paymentDetails?.currency || 'CHF'} ${paymentDetails?.amount || 0}</div>
-            <div class="detail-row"><span class="label">Reference:</span> ${paymentDetails?.reference || 'N/A'}</div>
-            <div class="detail-row"><span class="label">Date:</span> ${formatPaymentDateTime(paymentDetails?.timestamp || Date.now())}</div>
-          </div>
-          
-          <div class="reservation-info">
-            <h3>Reservation Details</h3>
-            <div class="detail-row"><span class="label">Customer:</span> ${reservationInfo.email} | ${reservationInfo.phone || 'No phone'}</div>
-            <div class="detail-row"><span class="label">Date:</span> ${formatDate(reservationInfo.date)} at ${reservationInfo.time}</div>
-            ${reservationInfo.isHourly 
-              ? `<div class="detail-row"><span class="label">Service:</span> Hourly (${reservationInfo.hours} hours)</div>
-                 <div class="detail-row"><span class="label">Location:</span> ${reservationInfo.pickup}</div>`
-              : `<div class="detail-row"><span class="label">Service:</span> Point-to-Point Transfer</div>
-                 <div class="detail-row"><span class="label">From:</span> ${reservationInfo.pickup}</div>
-                 <div class="detail-row"><span class="label">To:</span> ${reservationInfo.dropoff}</div>`
-            }
-            ${reservationInfo.selectedVehicle 
-              ? `<div class="detail-row"><span class="label">Vehicle:</span> ${reservationInfo.selectedVehicle.name}</div>`
-              : ''
-            }
-          </div>
-        </div>
-        <div class="footer">
-          <p>This is an automated notification from your Limos Rental website.</p>
-        </div>
-      </div>
-    </body>
-    </html>
-  `;
+  const textContent = generatePlainTextContent(reservationInfo, type);
 
   return {
     text: textContent,
@@ -552,113 +345,83 @@ const generatePaymentEmailForAdmin = (reservationInfo) => {
   };
 };
 
-/**
- * Generate payment receipt email for customer
- * @param {Object} reservationInfo - Reservation details with payment info
- * @returns {Object} - Email content with text and HTML versions
- */
-const generatePaymentReceiptForCustomer = (reservationInfo) => {
-  const { paymentDetails } = reservationInfo;
-  
-  // Generate plain text content
-  const textContent = `
-Dear ${reservationInfo.firstName || 'Customer'},
+// Helper functions for email content
+const getEmailTitle = (reservationInfo, type) => {
+  if (type === 'admin') {
+    return reservationInfo.isSpecialRequest ? 'New Special Request' : 'New Transfer Booking';
+  } else if (reservationInfo.paymentDetails) {
+    return 'Payment Receipt';
+  } else if (reservationInfo.isSpecialRequest) {
+    return 'Special Request Received';
+  }
+  return 'Booking Confirmation';
+};
 
-Thank you for your payment. This email confirms that we have received your payment for the luxury transfer booking.
+const getEmailIntro = (reservationInfo, type) => {
+  if (type === 'admin') {
+    return 'A new booking has been received.';
+  } else if (reservationInfo.paymentDetails) {
+    return 'Your payment has been successfully processed.';
+  } else if (reservationInfo.isSpecialRequest) {
+    return "We'll review your request and get back to you shortly with a customized quote.";
+  }
+  return 'Your luxury transfer has been successfully booked.';
+};
 
+const getEmailOutro = (reservationInfo, type) => {
+  if (type === 'admin') {
+    return 'Please review and process this booking according to our standard procedures.';
+  } else if (reservationInfo.isSpecialRequest) {
+    return `We'll send a detailed response to ${reservationInfo.email}`;
+  }
+  return `A confirmation email has been sent to ${reservationInfo.email}`;
+};
+
+const generatePlainTextContent = (reservationInfo, type) => {
+  // ... existing plain text generation code ...
+  return `
+Dear ${type === 'admin' ? 'Admin' : reservationInfo.firstName || 'Customer'},
+
+${getEmailIntro(reservationInfo, type)}
+
+${reservationInfo.paymentDetails ? `
 PAYMENT DETAILS
-Payment Method: ${paymentDetails?.method || 'Not specified'}
-Amount: ${paymentDetails?.currency || 'CHF'} ${paymentDetails?.amount || 0}
-Reference: ${paymentDetails?.reference || 'N/A'}
-Date: ${formatPaymentDateTime(paymentDetails?.timestamp || Date.now())}
+Payment Method: ${reservationInfo.paymentDetails.method}
+Amount: ${reservationInfo.paymentDetails.currency} ${reservationInfo.paymentDetails.amount}
+Reference: ${reservationInfo.paymentDetails.reference}
+Date: ${formatPaymentDateTime(reservationInfo.paymentDetails.timestamp)}
+` : ''}
 
-RESERVATION DETAILS
+TRANSFER DETAILS
+${isSpecialRequest 
+  ? `Date: ${formatDate(reservationInfo.date)}
+Preferred Time: ${reservationInfo.time} (CET)
+${reservationInfo.specialRequestDetails ? `Special Request: ${reservationInfo.specialRequestDetails}` : ''}`
+  : `From: ${reservationInfo.pickup}
+${reservationInfo.extraStops?.map(stop => stop ? `• ${stop}` : '').join('\n') || ''}
+To: ${reservationInfo.dropoff}
 Date: ${formatDate(reservationInfo.date)}
-Time: ${reservationInfo.time}
-${reservationInfo.isHourly 
-  ? `Service: Hourly (${reservationInfo.hours} hours)\nPickup Location: ${reservationInfo.pickup}`
-  : `Service: Point-to-Point Transfer\nFrom: ${reservationInfo.pickup}\nTo: ${reservationInfo.dropoff}`
-}
-${reservationInfo.selectedVehicle ? `Vehicle: ${reservationInfo.selectedVehicle.name}` : ''}
+Time: ${reservationInfo.time} (CET)`}
 
-We look forward to providing you with a luxurious and comfortable journey. If you need to make any changes to your reservation, please contact our customer service at least 24 hours before your scheduled pickup.
+VEHICLE DETAILS
+${reservationInfo.selectedVehicle ? `Vehicle: ${reservationInfo.selectedVehicle.name}` : ''}
+Passengers: ${reservationInfo.passengers}
+Bags: ${reservationInfo.bags}
+${reservationInfo.childSeats > 0 ? `Child Seats: ${reservationInfo.childSeats}` : ''}
+${reservationInfo.babySeats > 0 ? `Baby Seats: ${reservationInfo.babySeats}` : ''}
+${reservationInfo.skiEquipment > 0 ? `Ski Equipment: ${reservationInfo.skiEquipment}` : ''}
+
+CUSTOMER DETAILS
+Email: ${reservationInfo.email}
+Phone: ${reservationInfo.phone}
+${reservationInfo.flightNumber ? `Flight Number: ${reservationInfo.flightNumber}` : ''}
+${reservationInfo.additionalRequests ? `Additional Requests: ${reservationInfo.additionalRequests}` : ''}
+
+${getEmailOutro(reservationInfo, type)}
 
 Best regards,
 Limos Rental Team
-  `.trim();
-  
-  // Generate HTML content
-  const htmlContent = `
-    <!DOCTYPE html>
-    <html>
-    <head>
-      <style>
-        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
-        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-        .header { background-color: #000; color: gold; padding: 10px 20px; text-align: center; }
-        .content { padding: 20px; }
-        .intro { margin-bottom: 20px; }
-        .payment-info { background-color: #f9f9f9; padding: 15px; border-left: 4px solid gold; margin-bottom: 20px; }
-        .reservation-info { margin-top: 20px; margin-bottom: 20px; }
-        .detail-row { margin-bottom: 8px; }
-        .outro { margin-bottom: 20px; }
-        .footer { font-size: 12px; text-align: center; margin-top: 20px; color: #666; }
-      </style>
-    </head>
-    <body>
-      <div class="container">
-        <div class="header">
-          <h2>Payment Receipt</h2>
-        </div>
-        <div class="content">
-          <div class="intro">
-            <p>Dear ${reservationInfo.firstName || 'Customer'},</p>
-            <p>Thank you for your payment. This email confirms that we have received your payment for the luxury transfer booking.</p>
-          </div>
-          
-          <div class="payment-info">
-            <h3>Payment Details</h3>
-            <div class="detail-row"><strong>Payment Method:</strong> ${paymentDetails?.method || 'Not specified'}</div>
-            <div class="detail-row"><strong>Amount:</strong> ${paymentDetails?.currency || 'CHF'} ${paymentDetails?.amount || 0}</div>
-            <div class="detail-row"><strong>Reference:</strong> ${paymentDetails?.reference || 'N/A'}</div>
-            <div class="detail-row"><strong>Date:</strong> ${formatPaymentDateTime(paymentDetails?.timestamp || Date.now())}</div>
-          </div>
-          
-          <div class="reservation-info">
-            <h3>Reservation Details</h3>
-            <div class="detail-row"><strong>Date:</strong> ${formatDate(reservationInfo.date)}</div>
-            <div class="detail-row"><strong>Time:</strong> ${reservationInfo.time}</div>
-            ${reservationInfo.isHourly 
-              ? `<div class="detail-row"><strong>Service:</strong> Hourly (${reservationInfo.hours} hours)</div>
-                 <div class="detail-row"><strong>Pickup Location:</strong> ${reservationInfo.pickup}</div>`
-              : `<div class="detail-row"><strong>Service:</strong> Point-to-Point Transfer</div>
-                 <div class="detail-row"><strong>From:</strong> ${reservationInfo.pickup}</div>
-                 <div class="detail-row"><strong>To:</strong> ${reservationInfo.dropoff}</div>`
-            }
-            ${reservationInfo.selectedVehicle 
-              ? `<div class="detail-row"><strong>Vehicle:</strong> ${reservationInfo.selectedVehicle.name}</div>`
-              : ''
-            }
-          </div>
-          
-          <div class="outro">
-            <p>We look forward to providing you with a luxurious and comfortable journey. If you need to make any changes to your reservation, please contact our customer service at least 24 hours before your scheduled pickup.</p>
-          </div>
-          
-          <p>Best regards,<br>Limos Rental Team</p>
-        </div>
-        <div class="footer">
-          <p>© ${new Date().getFullYear()} Limos Rental. All rights reserved.</p>
-        </div>
-      </div>
-    </body>
-    </html>
-  `;
-
-  return {
-    text: textContent,
-    html: htmlContent
-  };
+`.trim();
 };
 
 module.exports = {
@@ -666,9 +429,6 @@ module.exports = {
   sendToCustomer,
   sendPaymentConfirmationToAdmin,
   sendPaymentReceiptToCustomer,
-  generateAdminEmailContent,
-  generateCustomerEmailContent,
-  generatePaymentEmailForAdmin,
-  generatePaymentReceiptForCustomer,
+  generateEmailContent,
   sendEmail
 };
