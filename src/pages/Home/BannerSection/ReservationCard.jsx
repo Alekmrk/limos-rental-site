@@ -3,6 +3,7 @@ import Button from "../../../components/Button";
 import { useNavigate } from "react-router-dom";
 import ReservationContext from "../../../contexts/ReservationContext";
 import TimeInput from "../../../components/TimeInput";
+import DateInput from "../../../components/DateInput";
 import { validateAddresses } from "../../../services/GoogleMapsService";
 import { useGoogleMapsApi } from "../../../hooks/useGoogleMapsApi";
 
@@ -298,11 +299,11 @@ const ReservationCard = () => {
         )}
 
         <div className="relative">
-          <input
-            onChange={handleInput}
+          <DateInput
             value={reservationInfo.date}
+            onChange={handleInput}
             name="date"
-            type="date"
+            id="date"
             className="bg-zinc-800/30 rounded-xl py-3 px-4 w-full border border-zinc-700/50 text-white transition-all duration-200 hover:border-zinc-600 focus:border-gold/50 focus:shadow-[0_0_15px_rgba(212,175,55,0.1)]"
           />
           {errors.date && <span className="text-red-500 text-sm absolute -bottom-5">{errors.date}</span>}
