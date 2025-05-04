@@ -166,8 +166,8 @@ const sendEmail = async (to, subject, content, senderType = 'noreply') => {
 const sendToAdmin = async (reservationInfo) => {
   const isSpecialRequest = reservationInfo.isSpecialRequest;
   const subject = isSpecialRequest 
-    ? `New Special Request: ${reservationInfo.date}`
-    : `New Transfer Booking: ${formatDateTime(reservationInfo.date, reservationInfo.time)}`;
+    ? '🔔 New Special Request Received'
+    : `🚘 New Booking: ${formatDateTime(reservationInfo.date, reservationInfo.time)}`;
   
   const content = generateEmailContent(reservationInfo, 'admin');
   return await sendEmail(process.env.ADMIN_EMAIL, subject, content, 'info');
@@ -221,15 +221,16 @@ const generateEmailContent = (reservationInfo, type = 'customer') => {
   
   // Shared CSS styles
   const styles = `
-    body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; background-color: #1a1a1a; }
+    body { font-family: Arial, sans-serif; line-height: 1.6; color: #e5e5e5; background-color: #1a1a1a; }
     .container { max-width: 600px; margin: 0 auto; padding: 20px; }
     .header { background-color: #000; color: gold; padding: 20px; text-align: center; border-radius: 8px 8px 0 0; }
-    .content { padding: 20px; background-color: #2a2a2a; }
-    .section { background-color: rgba(0, 0, 0, 0.2); padding: 24px; border-radius: 8px; margin-bottom: 24px; }
+    .content { padding: 20px; background-color: #2a2a2a; border-radius: 0 0 8px 8px; }
+    .section { background-color: rgba(0, 0, 0, 0.4); padding: 24px; border-radius: 8px; margin-bottom: 24px; }
     .section-title { color: gold; font-size: 18px; font-weight: 500; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
-    .section-content { color: #e5e5e5; }
-    .detail-row { margin-bottom: 8px; }
-    .footer { text-align: center; margin-top: 20px; color: #666; font-size: 12px; }
+    .section-content { color: #fff; }
+    .section-content p { margin: 8px 0; }
+    .detail-row { margin-bottom: 12px; }
+    .footer { text-align: center; margin-top: 20px; color: #888; font-size: 12px; }
   `;
 
   const generateSection = (title, icon, content) => `
@@ -311,8 +312,8 @@ const generateEmailContent = (reservationInfo, type = 'customer') => {
         </div>
         <div class="content">
           <div style="text-align: center; margin-bottom: 32px;">
-            <h2 style="font-size: 24px; margin-bottom: 8px;">Thank You for Choosing Us!</h2>
-            <p style="color: #999; font-size: 18px;">
+            <h2 style="font-size: 24px; margin-bottom: 8px; color: #fff;">Thank You for Choosing Us!</h2>
+            <p style="color: #ccc; font-size: 18px;">
               ${getEmailIntro(reservationInfo, type)}
             </p>
           </div>
@@ -323,13 +324,12 @@ const generateEmailContent = (reservationInfo, type = 'customer') => {
           ${generateSection('Vehicle Details', icons.vehicle, vehicleDetails)}
           ${generateSection('Customer Details', icons.customer, customerDetails)}
 
-          <div style="text-align: center; color: #999; margin-top: 32px;">
-            <p>${getEmailOutro(reservationInfo, type)}</p>
-            <p>If you have any questions, please don't hesitate to contact us.</p>
+          <div style="text-align: center; color: #ccc; margin-top: 32px;">
+            <p>If you have any questions, please contact us at info@elitewaylimo.ch</p>
           </div>
         </div>
         <div class="footer">
-          <p>© ${new Date().getFullYear()} Limos Rental. All rights reserved.</p>
+          <p>© ${new Date().getFullYear()} Elite Way Limo. All rights reserved.</p>
         </div>
       </div>
     </body>
@@ -348,9 +348,11 @@ const generateEmailContent = (reservationInfo, type = 'customer') => {
 // Helper functions for email content
 const getEmailTitle = (reservationInfo, type) => {
   if (type === 'admin') {
-    return reservationInfo.isSpecialRequest ? 'New Special Request' : 'New Transfer Booking';
+    return reservationInfo.isSpecialRequest 
+      ? '🔔 New Special Request Received'
+      : `🚘 New Transfer Booking`;
   } else if (reservationInfo.paymentDetails) {
-    return 'Payment Receipt';
+    return '💳 Payment Confirmation';
   } else if (reservationInfo.isSpecialRequest) {
     return 'Special Request Received';
   }
