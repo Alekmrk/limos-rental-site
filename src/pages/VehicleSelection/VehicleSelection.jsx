@@ -387,7 +387,14 @@ const VehicleSelection = ({ scrollUp }) => {
           )}
         </div>
 
-        <form onSubmit={handleSubmit}>
+        <form 
+          onSubmit={handleSubmit}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' && (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA')) {
+              e.preventDefault();
+            }
+          }}
+        >
           <div className="grid md:grid-cols-2 gap-6 mb-8 mt-8">
             <div>
               <label className="block text-sm font-medium mb-2" htmlFor="passengers">

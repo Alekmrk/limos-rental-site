@@ -230,9 +230,16 @@ const AddressInput = ({ value, onChange, name, placeholder, onPlaceSelected, cla
   }, [onChange, name]);
 
   const handleKeyDown = (e) => {
-    // Prevent form submission when pressing Enter
+    // Get the active element
+    const pacContainer = document.querySelector('.pac-container');
+    const hasSuggestions = pacContainer && pacContainer.children.length > 0;
+
     if (e.key === 'Enter') {
-      e.preventDefault();
+      // Only prevent form submission if there are no suggestions
+      // This allows the Google Places Autocomplete to handle selection on Enter
+      if (!hasSuggestions) {
+        e.preventDefault();
+      }
     }
   };
 
