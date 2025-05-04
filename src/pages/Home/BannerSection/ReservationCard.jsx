@@ -124,12 +124,18 @@ const ReservationCard = () => {
       // Convert current time to Swiss timezone
       const swissNow = new Date(now.toLocaleString('en-US', { timeZone: 'Europe/Zurich' }));
       
-      if (selectedDate < swissNow) {
+      // Set both dates to start of day for comparison
+      const selectedDateStart = new Date(selectedDate);
+      selectedDateStart.setHours(0, 0, 0, 0);
+      const swissNowStart = new Date(swissNow);
+      swissNowStart.setHours(0, 0, 0, 0);
+      
+      if (selectedDateStart < swissNowStart) {
         newErrors.date = "Date cannot be in the past";
       }
       
       // If date is today, check if time is at least 3 hours in advance
-      if (reservationInfo.time && selectedDate.toDateString() === swissNow.toDateString()) {
+      if (reservationInfo.time && selectedDateStart.getTime() === swissNowStart.getTime()) {
         const [hours, minutes] = reservationInfo.time.split(':').map(Number);
         const selectedTime = new Date(selectedDate);
         selectedTime.setHours(hours, minutes);
