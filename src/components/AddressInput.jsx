@@ -229,6 +229,13 @@ const AddressInput = ({ value, onChange, name, placeholder, onPlaceSelected, cla
     }, 1000);
   }, [onChange, name]);
 
+  const handleKeyDown = (e) => {
+    // Prevent form submission when pressing Enter
+    if (e.key === 'Enter') {
+      e.preventDefault();
+    }
+  };
+
   return (
     <div className="relative">
       <input
@@ -236,6 +243,7 @@ const AddressInput = ({ value, onChange, name, placeholder, onPlaceSelected, cla
         type="text"
         value={value}
         onChange={handleInputChange}
+        onKeyDown={handleKeyDown}
         name={name}
         placeholder={placeholder || "Enter location"}
         className={`bg-zinc-800/30 mb-3 rounded-[0.6rem] py-2 px-4 w-full border text-white transition-colors ${
