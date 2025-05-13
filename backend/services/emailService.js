@@ -4,16 +4,19 @@ require('dotenv').config();
 // Email sender addresses configuration
 const emailSenders = {
   noreply: {
-    address: process.env.EMAIL_FROM || 'DoNotReply@elitewaylimo.ch',
-    displayName: 'Elite Way Limo'
+    address: process.env.EMAIL_FROM || 'noreply@elitewaylimo.ch',
+    displayName: 'Elite Way Limo',
+    replyTo: 'info@elitewaylimo.ch'
   },
   info: {
     address: process.env.EMAIL_INFO || 'info@elitewaylimo.ch',
-    displayName: 'Elite Way Info'
+    displayName: 'Elite Way Info',
+    replyTo: 'info@elitewaylimo.ch'
   },
   contact: {
     address: process.env.EMAIL_CONTACT || 'contact@elitewaylimo.ch',
-    displayName: 'Elite Way Contact'
+    displayName: 'Elite Way Contact',
+    replyTo: 'contact@elitewaylimo.ch'
   }
 };
 
@@ -112,6 +115,7 @@ const sendEmail = async (to, subject, content, senderType = 'noreply') => {
 
     const message = {
       senderAddress: sender.address,
+      replyTo: sender.replyTo ? [{ address: sender.replyTo }] : undefined,
       content: {
         subject,
         plainText: content.text,

@@ -54,7 +54,7 @@ router.get('/test-email', async (req, res) => {
   }
 });
 
-// Test email route for DoNotReply
+// Test email route for No-Reply
 router.get('/test-email-noreply', async (req, res) => {
   try {
     const { date, time } = getSwissDateTime();
@@ -73,13 +73,13 @@ router.get('/test-email-noreply', async (req, res) => {
     const content = await emailService.generateAdminEmailContent(testReservation);
     const result = await emailService.sendEmail(
       process.env.ADMIN_EMAIL,
-      'Test Email from DoNotReply',
+      'Test Email from No-Reply',
       content,
       'noreply'
     );
     
     res.json({ 
-      message: 'Test DoNotReply email sent',
+      message: 'Test No-Reply email sent',
       result,
       testTime: new Date().toLocaleString('en-CH', {
         timeZone: 'Europe/Zurich',
