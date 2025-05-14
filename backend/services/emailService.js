@@ -5,12 +5,12 @@ require('dotenv').config();
 const emailSenders = {
   noreply: {
     address: 'info@elitewaylimo.ch',
-    displayName: 'Elite Way Limo',
+    displayName: 'Elite Way Limo | Reservations',
     replyTo: 'info@elitewaylimo.ch'
   },
   info: {
     address: 'info@elitewaylimo.ch',
-    displayName: 'Elite Way Limo',
+    displayName: 'Elite Way Limo | Inquiries',
     replyTo: 'info@elitewaylimo.ch'
   },
   contact: {
@@ -115,7 +115,8 @@ const sendEmail = async (to, subject, content, senderType = 'noreply') => {
 
     const message = {
       senderAddress: sender.address,
-      replyTo: sender.replyTo ? [{ address: sender.replyTo }] : undefined,
+      senderDisplayName: sender.displayName,
+      replyTo: sender.replyTo ? [{ address: sender.replyTo, displayName: sender.displayName }] : undefined,
       content: {
         subject,
         plainText: content.text,

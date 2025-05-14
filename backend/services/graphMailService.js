@@ -49,6 +49,18 @@ const sendEmail = async (subject, content, recipients) => {
                 contentType: 'HTML',
                 content
             },
+            from: {
+                emailAddress: {
+                    address: USER_EMAIL,
+                    name: 'Elite Way Limo'
+                }
+            },
+            sender: {
+                emailAddress: {
+                    address: USER_EMAIL,
+                    name: 'Elite Way Limo'
+                }
+            },
             toRecipients: recipients.map(email => ({
                 emailAddress: { address: email }
             })),
