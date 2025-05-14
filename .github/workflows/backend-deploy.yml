@@ -46,10 +46,10 @@ jobs:
           NODE_ENV="production" \
           CORS_ORIGIN="https://www.elitewaylimo.ch" \
           COMMUNICATION_CONNECTION_STRING="${{ secrets.COMMUNICATION_CONNECTION_STRING }}" \
-          EMAIL_FROM="noreply@elitewaylimo.ch" \
+          EMAIL_FROM="info@elitewaylimo.ch" \
           EMAIL_INFO="info@elitewaylimo.ch" \
-          EMAIL_CONTACT="contact@elitewaylimo.ch" \
-          ADMIN_EMAIL="aleksandarpantic98@gmail.com" \
+          EMAIL_CONTACT="info@elitewaylimo.ch" \
+          ADMIN_EMAIL="info@elitewaylimo.ch" \
           TENANT_ID="${{ secrets.TENANT_ID }}" \
           CLIENT_ID="${{ secrets.CLIENT_ID }}" \
           CLIENT_SECRET="${{ secrets.CLIENT_SECRET }}" \

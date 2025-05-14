@@ -4,19 +4,19 @@ require('dotenv').config();
 // Email sender addresses configuration
 const emailSenders = {
   noreply: {
-    address: process.env.EMAIL_FROM || 'noreply@elitewaylimo.ch',
+    address: 'info@elitewaylimo.ch',
     displayName: 'Elite Way Limo',
     replyTo: 'info@elitewaylimo.ch'
   },
   info: {
-    address: process.env.EMAIL_INFO || 'info@elitewaylimo.ch',
-    displayName: 'Elite Way Info',
+    address: 'info@elitewaylimo.ch',
+    displayName: 'Elite Way Limo',
     replyTo: 'info@elitewaylimo.ch'
   },
   contact: {
-    address: process.env.EMAIL_CONTACT || 'contact@elitewaylimo.ch',
-    displayName: 'Elite Way Contact',
-    replyTo: 'contact@elitewaylimo.ch'
+    address: 'info@elitewaylimo.ch',
+    displayName: 'Elite Way Limo',
+    replyTo: 'info@elitewaylimo.ch'
   }
 };
 
