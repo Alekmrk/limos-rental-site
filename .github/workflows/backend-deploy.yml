@@ -42,22 +42,37 @@ jobs:
       with:
         inlineScript: |
           az webapp config appsettings set --name limos-rental-api --resource-group limos-rental-rg --settings \
-          CORS_ORIGIN=https://www.elitewaylimo.ch \
+          PORT="8080" \
+          NODE_ENV="production" \
+          CORS_ORIGIN="https://www.elitewaylimo.ch" \
           COMMUNICATION_CONNECTION_STRING="${{ secrets.COMMUNICATION_CONNECTION_STRING }}" \
           EMAIL_FROM="noreply@elitewaylimo.ch" \
           EMAIL_INFO="info@elitewaylimo.ch" \
           EMAIL_CONTACT="contact@elitewaylimo.ch" \
           ADMIN_EMAIL="aleksandarpantic98@gmail.com" \
+          TENANT_ID="${{ secrets.TENANT_ID }}" \
+          CLIENT_ID="${{ secrets.CLIENT_ID }}" \
+          CLIENT_SECRET="${{ secrets.CLIENT_SECRET }}" \
           WEBSITE_NODE_DEFAULT_VERSION="~18" \
-          FRONTEND_URL=https://www.elitewaylimo.ch
+          FRONTEND_URL="https://www.elitewaylimo.ch"
 
-    # Health check after deployment
-    - name: Health check
+    - name: Wait for app to start
       run: |
         echo "Waiting for service to start..."
-        sleep 30
-        response=$(curl -s -o /dev/null -w "%{http_code}" https://limos-rental-api.azurewebsites.net/health)
-        if [ "$response" != "200" ]; then
-          echo "Health check failed with status $response"
-          exit 1
-        fi
+        sleep 45
+        max_retries=5
+        retry_count=0
+        
+        while [ $retry_count -lt $max_retries ]; do
+          response=$(curl -s -o /dev/null -w "%{http_code}" https://limos-rental-api.azurewebsites.net/health)
+          if [ "$response" = "200" ]; then
+            echo "Service is healthy"
+            exit 0
+          fi
+          echo "Health check failed with status $response, retrying in 30 seconds..."
+          sleep 30
+          retry_count=$((retry_count+1))
+        done
+        
+        echo "Health check failed after $max_retries attempts"
+        exit 1

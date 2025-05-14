@@ -1,4 +1,4 @@
-// Updated email service logging - May 3, 2025
+// Updated email service logging - May 15, 2025 - v2
 const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
