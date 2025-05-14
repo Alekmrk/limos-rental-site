@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const emailService = require('../services/emailService');
+const graphMailService = require('../services/graphMailService');
 
 // Helper function for Swiss timezone
 const getSwissDateTime = () => {
@@ -253,6 +254,96 @@ router.post('/payment-confirmation', async (req, res) => {
     res.status(500).json({ 
       success: false, 
       message: 'Failed to send payment confirmation email', 
+      error: error.message 
+    });
+  }
+});
+
+/**
+ * @route   GET /api/email/inbox
+ * @desc    Get recent emails from inbox
+ * @access  Private
+ */
+router.get('/inbox', async (req, res) => {
+  try {
+    const limit = parseInt(req.query.limit) || 10;
+    const messages = await graphMailService.listEmails(limit);
+    res.json({ success: true, messages });
+  } catch (error) {
+    console.error('Error fetching inbox:', error);
+    res.status(500).json({ success: false, message: 'Failed to fetch inbox', error: error.message });
+  }
+});
+
+/**
+ * @route   GET /api/email/calendar
+ * @desc    Get upcoming calendar events
+ * @access  Private
+ */
+router.get('/calendar', async (req, res) => {
+  try {
+    const days = parseInt(req.query.days) || 7;
+    const events = await graphMailService.listCalendarEvents(days);
+    res.json({ success: true, events });
+  } catch (error) {
+    console.error('Error fetching calendar events:', error);
+    res.status(500).json({ success: false, message: 'Failed to fetch calendar events', error: error.message });
+  }
+});
+
+/**
+ * @route   POST /api/email/send-via-graph
+ * @desc    Send email using Microsoft Graph API
+ * @access  Private
+ */
+router.post('/send-via-graph', async (req, res) => {
+  try {
+    const { subject, content, recipients } = req.body;
+    
+    if (!subject || !content || !recipients || !Array.isArray(recipients)) {
+      return res.status(400).json({ 
+        success: false, 
+        message: 'Missing required fields: subject, content, recipients (array)' 
+      });
+    }
+
+    const result = await graphMailService.sendEmail(subject, content, recipients);
+    res.json({ success: true, result });
+  } catch (error) {
+    console.error('Error sending email via Graph API:', error);
+    res.status(500).json({ success: false, message: 'Failed to send email', error: error.message });
+  }
+});
+
+/**
+ * @route   GET /api/email/test-graph-email
+ * @desc    Test sending email via Graph API
+ * @access  Public
+ */
+router.get('/test-graph-email', async (req, res) => {
+  try {
+    const testEmail = {
+      subject: "Test Email to Different Address via Graph API",
+      content: "<h1>Test Email</h1><p>This is a test email sent to a different address via Microsoft Graph API integration.</p><p>Time: " + new Date().toLocaleString() + "</p>",
+      recipients: ["aleksandarpantic98si@gmail.com"]  // Changed recipient
+    };
+    
+    const result = await graphMailService.sendEmail(
+      testEmail.subject,
+      testEmail.content,
+      testEmail.recipients
+    );
+
+    res.json({ 
+      success: true, 
+      message: 'Test email sent via Graph API',
+      result 
+    });
+  } catch (error) {
+    console.error('Error sending test email via Graph:', error);
+    res.status(500).json({ 
+      success: false, 
+      message: 'Failed to send test email', 
       error: error.message 
     });
   }
