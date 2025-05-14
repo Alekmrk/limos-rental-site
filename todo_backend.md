@@ -1,7 +1,7 @@
 # Limos Rental Site - Backend TODO List
 
 ## Email Service 📧
-- [ ] Set up email service provider integration (SendGrid, Mailgun, or AWS SES)
+- [ ] Set up Azure email service integration
 - [ ] Create HTML email templates for:
   - [ ] Booking confirmations
   - [ ] Special request acknowledgements
