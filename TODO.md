@@ -59,5 +59,67 @@
 - [ ] Location services upgrade
 - [ ] Content refresh and visual updates
 
+# Email Service Configuration TODO
+
+## Current Email Setup
+1. Azure Communication Services (Primary)
+- [x] DKIM configuration completed
+- [x] SPF record configured
+- [x] DMARC record set up
+- [ ] Set up email tracking and analytics
+- [ ] Implement email queue system
+- [ ] Add retry mechanism for failed emails
+- [ ] Set up monitoring dashboard
+
+2. Microsoft Graph API (Secondary)
+- [x] Basic integration completed
+- [ ] Fix deliverability issues (550 5.7.708 error)
+- [ ] Improve IP reputation with email providers
+- [ ] Set up proper throttling
+
+## Recommendations
+1. Service Consolidation
+- [ ] Remove email sending via Microsoft Graph API
+- [ ] Update all customer-facing endpoints to use Azure Communication Services
+- [ ] Keep Graph API for calendar and inbox management only
+- [ ] Document the separation of concerns
+
+2. Monitoring & Analytics
+- [ ] Set up email delivery tracking
+- [ ] Implement bounce rate monitoring
+- [ ] Create alert system for failed emails
+- [ ] Set up weekly email performance reports
+
+3. Performance Improvements
+- [ ] Implement email queue system
+- [ ] Add retry mechanism with exponential backoff
+- [ ] Set up rate limiting
+- [ ] Add email template caching
+
+4. Security Enhancements
+- [ ] Regular rotation of Azure Communication Services keys
+- [ ] Implement email sanitization
+- [ ] Set up IP allowlist for admin operations
+- [ ] Add email sending audit logs
+
+## Integration Points
+1. Customer Communications
+- [ ] Booking confirmations (Azure Communication Services)
+- [ ] Payment receipts (Azure Communication Services)
+- [ ] Special request notifications (Azure Communication Services)
+- [ ] Status updates (Azure Communication Services)
+
+2. Internal Operations
+- [ ] Calendar management (Microsoft Graph API)
+- [ ] Inbox monitoring (Microsoft Graph API)
+- [ ] Meeting scheduling (Microsoft Graph API)
+- [ ] Internal notifications (Microsoft Graph API)
+
+## Testing & Validation
+- [ ] Create comprehensive email test suite
+- [ ] Set up automated email validation
+- [ ] Implement spam score checking
+- [ ] Create email template validation system
+
 ---
 Last updated: [Current Date]

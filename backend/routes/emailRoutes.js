@@ -381,4 +381,32 @@ router.get('/test-graph-email', async (req, res) => {
   }
 });
 
+/**
+ * @route   POST /api/email/calendar/create
+ * @desc    Create a calendar event
+ * @access  Public
+ */
+router.post('/calendar/create', async (req, res) => {
+  try {
+    const { subject, start, end, attendees } = req.body;
+    
+    if (!subject || !start || !end || !attendees) {
+      return res.status(400).json({ 
+        success: false, 
+        message: 'Missing required fields: subject, start, end, attendees' 
+      });
+    }
+
+    const result = await graphMailService.createCalendarEvent(subject, start, end, attendees);
+    res.json({ success: true, result });
+  } catch (error) {
+    console.error('Error creating calendar event:', error);
+    res.status(500).json({ 
+      success: false, 
+      message: 'Failed to create calendar event', 
+      error: error.message 
+    });
+  }
+});
+
 module.exports = router;

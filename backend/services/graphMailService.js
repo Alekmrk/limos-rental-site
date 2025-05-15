@@ -14,7 +14,7 @@ const credentials = new ClientSecretCredential(
 
 const getAuthenticatedClient = async () => {
     const authProvider = new TokenCredentialAuthenticationProvider(credentials, {
-        scopes: ['https://graph.microsoft.com/.default']
+        scopes: ['https://graph.microsoft.com/.default']  // This includes all configured API permissions
     });
     
     return Client.initWithMiddleware({
@@ -109,8 +109,51 @@ const listCalendarEvents = async (days = 7) => {
     }
 };
 
+const createCalendarEvent = async (subject, start, end, attendees) => {
+    try {
+        const client = await getAuthenticatedClient();
+        const event = {
+            subject,
+            start: {
+                dateTime: start,
+                timeZone: 'Europe/Zurich'
+            },
+            end: {
+                dateTime: end,
+                timeZone: 'Europe/Zurich'
+            },
+            body: {
+                contentType: "HTML",
+                content: `<p>You have been invited to a meeting with Elite Way Limo.</p>
+                         <p>Date: ${new Date(start).toLocaleDateString('en-CH', { timeZone: 'Europe/Zurich' })}</p>
+                         <p>Time: ${new Date(start).toLocaleTimeString('en-CH', { timeZone: 'Europe/Zurich' })} - 
+                               ${new Date(end).toLocaleTimeString('en-CH', { timeZone: 'Europe/Zurich' })}</p>`
+            },
+            location: {
+                displayName: "Elite Way Limo Office"
+            },
+            isOnlineMeeting: true,
+            allowNewTimeProposals: true,
+            attendees: attendees.map(email => ({
+                emailAddress: { address: email },
+                type: 'required'
+            }))
+        };
+
+        const result = await client
+            .api(`/users/${USER_EMAIL}/calendar/events`)
+            .post(event);
+
+        return result;
+    } catch (error) {
+        console.error('Error creating calendar event:', error);
+        throw error;
+    }
+};
+
 module.exports = {
     listEmails,
     sendEmail,
-    listCalendarEvents
+    listCalendarEvents,
+    createCalendarEvent
 };
