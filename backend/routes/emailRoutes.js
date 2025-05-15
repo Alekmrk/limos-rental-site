@@ -22,29 +22,61 @@ const getSwissDateTime = () => {
   };
 };
 
-// Test email route
+const getSwissTime = () => {
+  const now = new Date();
+  return now.toLocaleString('en-CH', {
+    timeZone: 'Europe/Zurich',
+    dateStyle: 'full',
+    timeStyle: 'long'
+  });
+};
+
+/**
+ * @route   GET /api/email/test-email
+ * @desc    Test sending email via Azure Communication Services
+ * @access  Public
+ */
 router.get('/test-email', async (req, res) => {
   try {
     const { date, time } = getSwissDateTime();
     const testReservation = {
-      email: process.env.ADMIN_EMAIL,
+      email: req.query.email || process.env.ADMIN_EMAIL,
+      firstName: 'Test User',
       date,
       time,
       pickup: 'Test Location',
+      dropoff: 'Test Destination',
       isSpecialRequest: false,
       isHourly: false,
-      selectedVehicle: { name: 'Test Vehicle' }
+      selectedVehicle: { name: 'Test Vehicle' },
+      passengers: 2,
+      bags: 1
     };
     
-    const result = await emailService.sendToAdmin(testReservation);
+    // Generate email content
+    const content = {
+      text: `Test Email from Elite Way Limo\n\nThis is a test email sent via Azure Communication Services to verify email delivery.\n\nTime: ${getSwissTime()}\n\nBest regards,\nElite Way Limo Team`,
+      html: `
+        <h1>Test Email from Elite Way Limo</h1>
+        <p>This is a test email sent via Azure Communication Services to verify email delivery.</p>
+        <p>Time: ${getSwissTime()}</p>
+        <p>Best regards,<br>Elite Way Limo Team</p>
+      `
+    };
+    
+    // Send email using Azure Communication Services
+    const result = await emailService.sendEmail(
+      testReservation.email,
+      'Test Email - Elite Way Limo',
+      content,
+      'info'
+    );
+
     res.json({ 
-      message: 'Test email sent',
+      message: 'Test email sent via Azure Communication Services',
       result,
-      testTime: new Date().toLocaleString('en-CH', {
-        timeZone: 'Europe/Zurich',
-        dateStyle: 'full',
-        timeStyle: 'long'
-      })
+      testTime: getSwissTime(),
+      sentTo: testReservation.email
     });
   } catch (error) {
     console.error('Test email error:', error);
