@@ -6,7 +6,7 @@ import ProgressBar from "../../components/ProgressBar";
 import AddressInput from "../../components/AddressInput";
 import cars from "../../data/cars";
 import MapPreview from "../../components/MapPreview";
-import { calculatePriceByDistance, addSurcharges } from "../../services/PriceCalculationService";
+import { calculatePrice, calculatePriceByDistance, addSurcharges, formatPrice } from "../../services/PriceCalculationService";
 
 const VehicleSelection = ({ scrollUp }) => {
   const navigate = useNavigate();
@@ -217,6 +217,47 @@ const VehicleSelection = ({ scrollUp }) => {
     const [year, month, day] = dateString.split('-');
     return `${day}-${month}-${year}`;
   };
+
+  // Calculate prices for all vehicles
+  useEffect(() => {
+    const newPrices = {};
+    availableVehicles.forEach(vehicle => {
+      if (reservationInfo.isHourly) {
+        // Calculate hourly price
+        newPrices[vehicle.id] = calculatePrice(
+          0, // distance not used for hourly
+          0, // duration not used
+          vehicle.name,
+          0, // extra stops not used
+          true, // isHourly
+          reservationInfo.hours || 2 // use current hours or minimum 2
+        );
+      } else {
+        // Calculate transfer price
+        const basePrice = calculatePrice(
+          reservationInfo.totalDistance / 1000 || 46.5, // Convert meters to km or use default
+          0, // duration not used
+          vehicle.name,
+          reservationInfo.extraStops?.length || 0,
+          false // not hourly
+        );
+        
+        // Apply surcharges
+        const isAirport = reservationInfo.pickupDetails?.isAirport || reservationInfo.dropoffDetails?.isAirport;
+        const hour = parseInt(reservationInfo.time?.split(':')[0]) || 0;
+        const isNightTime = hour >= 22 || hour < 6;
+        const date = new Date(reservationInfo.date);
+        const isWeekend = date.getDay() === 0 || date.getDay() === 6;
+        
+        newPrices[vehicle.id] = addSurcharges(basePrice, {
+          isAirport,
+          isNightTime,
+          isWeekend
+        });
+      }
+    });
+    setPrices(newPrices);
+  }, [reservationInfo, availableVehicles]);
 
   return (
     <div className="container-default mt-28">
@@ -455,9 +496,18 @@ const VehicleSelection = ({ scrollUp }) => {
                     className="w-full h-48 object-contain mb-4"
                   />
                   <h3 className="text-xl font-medium mb-2">{vehicle.name}</h3>
-                  <div className="text-sm text-zinc-400">
+                  <div className="text-sm text-zinc-400 mb-4">
                     <p>Seats: {vehicle.seats}</p>
                     <p>Luggage: {vehicle.luggage}</p>
+                  </div>
+                  <div className="mt-4 pt-4 border-t border-zinc-700/50">
+                    <div className="text-sm text-gold">
+                      {reservationInfo.isHourly ? (
+                        <p>{formatPrice(prices[vehicle.id] || 0)} for {reservationInfo.hours || 2} hours</p>
+                      ) : (
+                        <p>{formatPrice(prices[vehicle.id] || 0)}</p>
+                      )}
+                    </div>
                   </div>
                 </div>
               ))}
