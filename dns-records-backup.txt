@@ -1,0 +1,63 @@
+# DNS Records Backup for elitewaylimo.ch
+# Created: May 16, 2025
+
+# MX Records (Email)
+Type: MX
+Host: @
+Points to: elitewaylimo-ch.mail.protection.outlook.com
+Priority: 0
+TTL: 60 minutes (3600 seconds)
+
+# CNAME Records (Subdomains)
+Type: CNAME
+Host: www
+Points to: nice-bay-07b756a03.6.azurestaticapps.net.
+TTL: 60 minutes
+
+Type: CNAME
+Host: selector2-azurecomm-prod-net._domainkey
+Points to: selector2-azurecomm-prod-net._domainkey.azurecomm.net.
+TTL: 60 minutes
+
+Type: CNAME
+Host: selector1-azurecomm-prod-net._domainkey
+Points to: selector1-azurecomm-prod-net._domainkey.azurecomm.net.
+TTL: 60 minutes
+
+Type: CNAME
+Host: autodiscover
+Points to: autodiscover.outlook.com.
+TTL: 60 minutes
+
+# TXT Records (Email Authentication & Verification)
+Type: TXT
+Host: _dmarc
+Value: v=DMARC1; p=quarantine; pct=100; rua=mailto:info@elitewaylimo.ch; ruf=mailto:dmarc-failures@elitewaylimo.ch; fo=1
+TTL: 60 minutes/automatic
+
+Type: TXT
+Host: @
+Value: ms-domain-verification=03499e6d-795f-4b31-b16b-a4d84df81208
+TTL: 60 minutes
+
+Type: TXT
+Host: @
+Value: MS=ms72852773
+TTL: 60 minutes
+
+Type: TXT
+Host: @
+Value: v=spf1 include:spf.protection.outlook.com include:communication.azure.com -all
+TTL: 60 minutes
+
+# URL Redirect
+Type: URL Redirect/Forward
+Host: @
+Points to: https://www.elitewaylimo.ch
+Type: Permanent (301)
+
+# Notes:
+- All records are essential for website, email, and Azure services
+- Preserve exact values including trailing dots
+- Keep TTL values as specified
+- All TXT record values must be exact matches
