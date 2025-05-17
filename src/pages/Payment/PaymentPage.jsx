@@ -369,13 +369,26 @@ const PaymentPage = ({ scrollUp }) => {
                   const url_cancel = "https://elitewaylimo.ch/payment-cancel";
                   const keyindex = "1";
                   const cn = "40435659038";
-                  // Request sign from backend
+                  
+                  const requestData = { sid, amount, currency, orderID, url_ok, url_cancel, keyindex, cn };
+                  console.log('Sending request to myPOS sign endpoint:', {
+                    url: 'https://api.elitewaylimo.ch/api/mypos-sign',
+                    data: requestData
+                  });
+
                   try {
                     const res = await axios.post(
                       "https://api.elitewaylimo.ch/api/mypos-sign",
-                      { sid, amount, currency, orderID, url_ok, url_cancel, keyindex, cn }
+                      requestData,
+                      {
+                        headers: {
+                          'Content-Type': 'application/json'
+                        }
+                      }
                     );
+                    console.log('myPOS sign response:', res.data);
                     const sign = res.data.sign;
+                    
                     // Set form fields and submit
                     const form = document.getElementById("mypos-form");
                     form.sid.value = sid;
@@ -387,9 +400,18 @@ const PaymentPage = ({ scrollUp }) => {
                     form.keyindex.value = keyindex;
                     form.cn.value = cn;
                     form.sign.value = sign;
+                    console.log('Submitting myPOS form with values:', {
+                      sid, amount, currency, orderID, url_ok, url_cancel, keyindex, cn, sign
+                    });
                     form.submit();
                   } catch (err) {
-                    alert("Failed to initiate payment. Please try again.");
+                    console.error('Failed to get myPOS sign:', {
+                      error: err,
+                      response: err.response?.data,
+                      status: err.response?.status,
+                      headers: err.response?.headers
+                    });
+                    alert("Failed to initiate payment. Please check browser console for details.");
                   }
                 }}
               >
