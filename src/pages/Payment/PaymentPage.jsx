@@ -20,6 +20,9 @@ const PaymentPage = ({ scrollUp }) => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [price, setPrice] = useState(0);
   const [usdtAddress, setUsdtAddress] = useState("");
+  const [errorMessage, setErrorMessage] = useState('');
+  const [retryCount, setRetryCount] = useState(0);
+  const maxRetries = 3;
 
   // Check if we have the required data from previous steps
   useEffect(() => {
@@ -220,9 +223,28 @@ const PaymentPage = ({ scrollUp }) => {
 
   const handlePaymentError = (error) => {
     console.error("Payment error:", error);
-    alert("There was a problem processing your payment. Please try again.");
     setIsProcessing(false);
+    
+    // Show user-friendly error message if provided by Stripe component
+    const message = error.userMessage || "There was a problem processing your payment. Please try again.";
+    setErrorMessage(message);
+    
+    // Track retry attempts
+    setRetryCount(prev => prev + 1);
+    
+    // If we've tried too many times, suggest alternative payment method
+    if (retryCount >= maxRetries - 1) {
+      setErrorMessage(
+        "We're having trouble processing your card. You might want to try our alternative payment method below or contact support."
+      );
+    }
   };
+
+  // Clear error when payment method changes
+  useEffect(() => {
+    setErrorMessage('');
+    setRetryCount(0);
+  }, [paymentMethod]);
 
   return (
     <div className="container-default mt-28">
@@ -546,6 +568,17 @@ const PaymentPage = ({ scrollUp }) => {
                   {isProcessing ? 'Processing...' : 'I\'ve Sent the Payment'}
                 </Button>
               </div>
+            </div>
+          )}
+
+          {errorMessage && (
+            <div className="bg-red-900/20 border border-red-500/50 rounded-lg p-4 mb-6">
+              <p className="text-red-400">{errorMessage}</p>
+              {retryCount >= maxRetries - 1 && (
+                <p className="text-sm text-red-400 mt-2">
+                  Need help? Contact our support at support@elitewaylimo.ch
+                </p>
+              )}
             </div>
           )}
         </div>

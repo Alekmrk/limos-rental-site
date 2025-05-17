@@ -25,6 +25,14 @@ const CheckoutForm = ({ amount, onSuccess, onError }) => {
     setErrorMessage('');
 
     try {
+      // First validate the card without submitting
+      const { error: validationError } = await elements.submit();
+      if (validationError) {
+        setErrorMessage(getReadableErrorMessage(validationError.message));
+        setIsProcessing(false);
+        return;
+      }
+
       const { error } = await stripe.confirmPayment({
         elements,
         confirmParams: {
@@ -34,18 +42,45 @@ const CheckoutForm = ({ amount, onSuccess, onError }) => {
       });
 
       if (error) {
-        setErrorMessage(error.message);
-        onError(error);
+        // Handle specific error types
+        const message = getReadableErrorMessage(error.message);
+        setErrorMessage(message);
+        onError({ ...error, userMessage: message });
       } else {
         // Payment successful
         onSuccess();
       }
     } catch (err) {
-      setErrorMessage('An unexpected error occurred.');
-      onError(err);
+      const message = getReadableErrorMessage(err.message);
+      setErrorMessage(message);
+      onError({ ...err, userMessage: message });
     } finally {
       setIsProcessing(false);
     }
+  };
+
+  // Convert technical error messages to user-friendly ones
+  const getReadableErrorMessage = (technicalMessage) => {
+    const errorMap = {
+      'card_declined': 'Your card was declined. Please try another card.',
+      'expired_card': 'This card has expired. Please use a different card.',
+      'incorrect_cvc': 'The security code (CVC) is incorrect. Please check and try again.',
+      'insufficient_funds': 'Insufficient funds on this card. Please use a different card.',
+      'invalid_expiry_year': 'The expiration year is invalid. Please check and try again.',
+      'invalid_expiry_month': 'The expiration month is invalid. Please check and try again.',
+      'invalid_number': 'This card number is invalid. Please check and try again.',
+      'processing_error': 'There was an error processing your card. Please try again in a few moments.',
+    };
+
+    // Check if we have a specific message for this error
+    for (const [errorCode, message] of Object.entries(errorMap)) {
+      if (technicalMessage.toLowerCase().includes(errorCode)) {
+        return message;
+      }
+    }
+
+    // Default generic message
+    return 'There was a problem processing your payment. Please try again or use a different card.';
   };
 
   return (

@@ -55,7 +55,6 @@ router.post('/webhook', express.raw({ type: 'application/json' }), async (req, r
   let event;
 
   try {
-    // Verify webhook signature
     event = stripe.webhooks.constructEvent(
       req.body,
       sig,
@@ -82,28 +81,54 @@ router.post('/webhook', express.raw({ type: 'application/json' }), async (req, r
           customer: paymentIntent.customer,
           timestamp: new Date().toISOString()
         });
-        // Handle successful payment (e.g., update order status, send confirmation)
+        // Handle successful payment
         break;
 
       case 'payment_intent.failed':
         const failedIntent = event.data.object;
-        console.log('Payment failed:', {
+        const errorDetails = failedIntent.last_payment_error;
+        console.error('Payment failed:', {
           id: failedIntent.id,
-          error: failedIntent.last_payment_error,
+          error: errorDetails,
           status: failedIntent.status,
-          failureMessage: failedIntent.last_payment_error?.message,
-          failureCode: failedIntent.last_payment_error?.code,
+          failureMessage: errorDetails?.message,
+          failureCode: errorDetails?.code,
+          declineCode: errorDetails?.decline_code,
           timestamp: new Date().toISOString()
         });
-        // Handle failed payment (e.g., notify customer, update order status)
+        
+        // Handle specific failure reasons
+        switch (errorDetails?.code) {
+          case 'card_declined':
+            // Card was declined - could notify the user to try another card
+            break;
+          case 'expired_card':
+            // Card is expired
+            break;
+          case 'incorrect_cvc':
+            // Wrong CVC entered
+            break;
+          case 'processing_error':
+            // Temporary processing error - could be retried
+            break;
+          default:
+            // Other errors
+            console.error('Unhandled payment failure reason:', errorDetails?.code);
+        }
+        break;
+
+      case 'payment_intent.requires_action':
+        const actionRequired = event.data.object;
+        console.log('Payment requires action:', {
+          id: actionRequired.id,
+          status: actionRequired.status,
+          nextAction: actionRequired.next_action?.type,
+          timestamp: new Date().toISOString()
+        });
         break;
 
       default:
-        console.log(`Unhandled event type ${event.type}:`, {
-          id: event.id,
-          type: event.type,
-          timestamp: new Date(event.created * 1000).toISOString()
-        });
+        console.log(`Unhandled event type ${event.type}`);
     }
 
     res.json({ received: true });
@@ -114,7 +139,19 @@ router.post('/webhook', express.raw({ type: 'application/json' }), async (req, r
       headers: req.headers,
       timestamp: new Date().toISOString()
     });
-    return res.status(400).send(`Webhook Error: ${err.message}`);
+    
+    // Check for specific types of webhook errors
+    if (err.type === 'StripeSignatureVerificationError') {
+      return res.status(400).json({ 
+        error: 'Invalid signature',
+        message: 'Could not verify webhook signature'
+      });
+    }
+    
+    return res.status(400).json({ 
+      error: 'Webhook Error',
+      message: err.message
+    });
   }
 });
 
