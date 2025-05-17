@@ -27,10 +27,15 @@ jobs:
           cd backend
           if [ -f package.json ] && grep -q '"build"' package.json; then npm run build; fi
 
+      - name: 'Login to Azure'
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v2
         with:
-          app-name: limos-rental-api # <-- Updated to your Azure App Service name
+          app-name: limos-rental-api # <-- Your Azure App Service name
           slot-name: production
           package: ./backend
         env:
