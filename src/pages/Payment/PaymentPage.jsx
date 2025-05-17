@@ -42,7 +42,7 @@ const PaymentPage = ({ scrollUp }) => {
 
   useEffect(() => {
     // Calculate price based on reservation details
-    if (reservationInfo.selectedVehicle) {
+    if (!reservationInfo.selectedVehicle) {
       console.log('Calculating price with simplified pricing system...');
       
       // Calculate price using only distance or hours
@@ -58,6 +58,9 @@ const PaymentPage = ({ scrollUp }) => {
       console.log('Calculated price:', calculatedPrice);
       setPrice(calculatedPrice || 0); // Ensure we never set NaN
     }
+
+    // Override calculated price with fixed amount
+    setPrice(1);
   }, [reservationInfo]);
 
   const handlePaymentMethodSelect = (method) => {
