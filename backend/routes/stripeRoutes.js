@@ -8,11 +8,11 @@ router.post('/create-payment-intent', async (req, res) => {
     const { amount, currency = 'chf' } = req.body;
     console.log('Creating payment intent:', { amount, currency });
 
-    // Create PaymentIntent
+    // Create PaymentIntent with only enabled payment methods
     const paymentIntent = await stripe.paymentIntents.create({
       amount: Math.round(amount * 100), // Convert to cents
       currency: currency.toLowerCase(),
-      payment_method_types: ['card', 'applepay', 'googlepay', 'twint'],
+      payment_method_types: ['card', 'twint'], // Remove applepay and googlepay
       metadata: {
         orderID: `ORDER-${Date.now()}`,
       }
