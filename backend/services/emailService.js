@@ -102,54 +102,46 @@ const formatDate = (dateString) => {
 };
 
 // Send email using Azure Communication Services
-const sendEmail = async (to, subject, content, senderType = 'noreply') => {
+const sendEmail = async (to, subject, content, from = 'noreply', attempt = 1) => {
+  const maxRetries = 3;
+  const retryDelay = attempt * 2000; // Exponential backoff: 2s, 4s, 6s
+
   try {
-    const sender = emailSenders[senderType] || emailSenders.noreply;
-    
-    console.log('Sending email with Azure Communication Services:', {
-      to,
-      from: sender.address,
-      displayName: sender.displayName,
-      subject
+    console.log(`Attempt ${attempt} to send email to ${to}`, {
+      subject,
+      from,
+      timestamp: new Date().toISOString()
     });
 
-    const message = {
-      senderAddress: sender.address,
-      senderDisplayName: sender.displayName,
-      replyTo: sender.replyTo ? [{ address: sender.replyTo, displayName: sender.displayName }] : undefined,
-      content: {
-        subject,
-        plainText: content.text,
-        html: content.html,
-      },
-      recipients: {
-        to: [{ address: to }]
-      }
-    };
-
-    const poller = await emailClient.beginSend(message);
-    const result = await poller.pollUntilDone();
+    const response = await graphMailService.sendMail(to, subject, content, from);
     
     console.log('Email sent successfully:', {
-      messageId: result.id,
-      status: result.status,
-      recipient: to,
-      sender: sender.address
+      to,
+      subject,
+      from,
+      messageId: response.id,
+      timestamp: new Date().toISOString()
     });
 
     return {
       success: true,
-      messageId: result.id,
-      message: `Email sent to ${to}`
+      messageId: response.id
     };
   } catch (error) {
-    console.error('Email sending failed:', {
-      name: error.name,
-      message: error.message,
+    console.error(`Email sending failed (attempt ${attempt}):`, {
+      error: error.message,
       code: error.code,
       statusCode: error.statusCode,
-      details: error.details
+      details: error.details,
+      timestamp: new Date().toISOString()
     });
+    
+    // If we haven't reached max retries, try again after delay
+    if (attempt < maxRetries) {
+      console.log(`Retrying in ${retryDelay}ms...`);
+      await new Promise(resolve => setTimeout(resolve, retryDelay));
+      return sendEmail(to, subject, content, from, attempt + 1);
+    }
     
     return {
       success: false,
@@ -157,7 +149,8 @@ const sendEmail = async (to, subject, content, senderType = 'noreply') => {
       error: error.message,
       details: {
         code: error.code,
-        statusCode: error.statusCode
+        statusCode: error.statusCode,
+        attempts: attempt
       }
     };
   }
@@ -199,9 +192,21 @@ const sendToCustomer = async (reservationInfo) => {
  * @returns {Object} - Email send result
  */
 const sendPaymentConfirmationToAdmin = async (reservationInfo) => {
-  const subject = `Payment Received: ${formatDateTime(reservationInfo.date, reservationInfo.time)}`;
-  const content = generateEmailContent(reservationInfo, 'admin');
-  return await sendEmail(process.env.ADMIN_EMAIL, subject, content, 'info');
+  try {
+    const subject = `💳 Payment Received: ${formatDateTime(reservationInfo.date, reservationInfo.time)}`;
+    const content = generateEmailContent(reservationInfo, 'admin');
+    
+    console.log('Sending payment confirmation to admin:', {
+      email: process.env.ADMIN_EMAIL,
+      subject,
+      timestamp: new Date().toISOString()
+    });
+
+    return await sendEmail(process.env.ADMIN_EMAIL, subject, content, 'info');
+  } catch (error) {
+    console.error('Failed to send admin payment confirmation:', error);
+    throw error;
+  }
 };
 
 /**
@@ -210,9 +215,29 @@ const sendPaymentConfirmationToAdmin = async (reservationInfo) => {
  * @returns {Object} - Email send result
  */
 const sendPaymentReceiptToCustomer = async (reservationInfo) => {
-  const subject = 'Payment Receipt - Limos Rental Transfer';
-  const content = generateEmailContent(reservationInfo, 'customer');
-  return await sendEmail(reservationInfo.email, subject, content, 'contact');
+  try {
+    if (!reservationInfo.email) {
+      console.warn('No customer email provided for payment receipt');
+      return {
+        success: false,
+        message: 'No customer email provided'
+      };
+    }
+
+    const subject = '💳 Payment Receipt - Limos Rental Transfer';
+    const content = generateEmailContent(reservationInfo, 'customer');
+    
+    console.log('Sending payment receipt to customer:', {
+      email: reservationInfo.email,
+      subject,
+      timestamp: new Date().toISOString()
+    });
+
+    return await sendEmail(reservationInfo.email, subject, content, 'contact');
+  } catch (error) {
+    console.error('Failed to send customer payment receipt:', error);
+    throw error;
+  }
 };
 
 /**

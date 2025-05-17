@@ -36,8 +36,8 @@ const CheckoutForm = ({ amount, onSuccess, onError }) => {
       const { error } = await stripe.confirmPayment({
         elements,
         confirmParams: {
-          // Handle success in the component instead of redirecting
-          return_url: window.location.href,
+          // Make sure we return to payment success page
+          return_url: `${window.location.origin}/payment-success`,
         },
       });
 
@@ -47,7 +47,7 @@ const CheckoutForm = ({ amount, onSuccess, onError }) => {
         setErrorMessage(message);
         onError({ ...error, userMessage: message });
       } else {
-        // Payment successful
+        // Payment successful - handled by return_url redirect
         onSuccess();
       }
     } catch (err) {
