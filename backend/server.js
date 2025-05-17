@@ -24,8 +24,8 @@ const app = express();
 
 // Set up middleware
 app.use(cors({
-  origin: process.env.CORS_ORIGIN || 'http://localhost:5173',
-  methods: ['GET', 'POST'],
+  origin: ['https://elitewaylimo.ch', 'https://www.elitewaylimo.ch'],
+  methods: ['GET', 'POST', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
 

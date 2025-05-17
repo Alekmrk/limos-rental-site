@@ -20,9 +20,14 @@ const formatPrivateKey = (key) => {
 // POST /api/mypos-sign
 router.post('/mypos-sign', (req, res) => {
   // Add CORS headers explicitly for this route
-  res.header('Access-Control-Allow-Origin', 'https://elitewaylimo.ch');
+  res.header('Access-Control-Allow-Origin', req.headers.origin);  // This will match either domain
   res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
   res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  
+  // Handle OPTIONS preflight request
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
 
   // Log request details
   console.log('myPOS sign request received with body:', req.body);

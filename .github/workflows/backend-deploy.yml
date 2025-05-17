@@ -25,6 +25,11 @@ jobs:
     - name: Install dependencies
       run: cd backend && npm ci
 
+    - name: Build (if needed)
+      run: |
+        cd backend
+        if [ -f package.json ] && grep -q '"build"' package.json; then npm run build; fi
+
     - name: Login to Azure
       uses: azure/login@v1
       with:
@@ -34,7 +39,7 @@ jobs:
       uses: azure/webapps-deploy@v2
       with:
         app-name: 'limos-rental-api'
-        publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+        slot-name: production
         package: backend
 
     - name: Configure App Settings
@@ -45,6 +50,7 @@ jobs:
           PORT="8080" \
           NODE_ENV="production" \
           CORS_ORIGIN="https://www.elitewaylimo.ch" \
+          MY_POS_PRIVATE_KEY="${{ secrets.MY_POS_PRIVATE_KEY }}" \
           COMMUNICATION_CONNECTION_STRING="${{ secrets.COMMUNICATION_CONNECTION_STRING }}" \
           EMAIL_FROM="info@elitewaylimo.ch" \
           EMAIL_INFO="info@elitewaylimo.ch" \
