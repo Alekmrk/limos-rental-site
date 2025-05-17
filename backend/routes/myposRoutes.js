@@ -11,25 +11,29 @@ router.use((req, res, next) => {
   next();
 });
 
-// Helper function to format private key
+// Helper function to format private key with proper PEM format
 const formatPrivateKey = (key) => {
   if (!key) {
     console.error('Private key is empty or undefined');
     return null;
   }
+
   try {
-    // Remove existing line breaks and spaces
-    const cleanKey = key.replace(/[\r\n\s]/g, '');
-    // Add proper line breaks
-    const header = '-----BEGIN RSA PRIVATE KEY-----\n';
-    const footer = '\n-----END RSA PRIVATE KEY-----';
-    const body = cleanKey
-      .replace(/-----BEGIN RSA PRIVATE KEY-----|-----END RSA PRIVATE KEY-----/g, '')
-      .match(/.{1,64}/g)
-      .join('\n');
-    const formattedKey = header + body + footer;
-    console.log('Private key formatting successful:', formattedKey);
-    return formattedKey;
+    // Remove all whitespace and newlines
+    let cleanKey = key.replace(/[\s\r\n]+/g, '');
+    
+    // Remove existing headers if present
+    cleanKey = cleanKey.replace(/-----BEGIN RSA PRIVATE KEY-----|-----END RSA PRIVATE KEY-----/g, '');
+    
+    // Split into 64-character chunks
+    const chunks = cleanKey.match(/.{1,64}/g) || [];
+    
+    // Reconstruct PEM format with proper line breaks
+    return [
+      '-----BEGIN RSA PRIVATE KEY-----',
+      ...chunks,
+      '-----END RSA PRIVATE KEY-----'
+    ].join('\n');
   } catch (error) {
     console.error('Error formatting private key:', error);
     return null;
@@ -48,60 +52,60 @@ router.post('/mypos-sign', (req, res) => {
     res.header('Access-Control-Allow-Origin', origin);
     res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
     res.header('Access-Control-Allow-Headers', 'Content-Type');
-  } else {
-    console.error('Invalid origin:', origin);
   }
 
   // Handle OPTIONS preflight
   if (req.method === 'OPTIONS') {
-    console.log('Handling OPTIONS preflight request');
     return res.status(200).end();
   }
 
-  console.log('Request body:', req.body);
   const { sid, amount, currency, orderID, url_ok, url_cancel, keyindex, cn } = req.body;
 
   // Validate required fields
   if (!sid || !amount || !currency || !orderID || !url_ok || !url_cancel || !keyindex || !cn) {
-    console.error('Missing required fields:', { sid, amount, currency, orderID, url_ok, url_cancel, keyindex, cn });
     return res.status(400).json({ error: 'Missing required fields' });
   }
 
   try {
-    // Get and validate private key
+    // Get and format private key
     const rawKey = process.env.MY_POS_PRIVATE_KEY;
     if (!rawKey) {
-      console.error('MY_POS_PRIVATE_KEY environment variable is not set');
       return res.status(500).json({ error: 'Server configuration error: missing private key' });
     }
 
-    console.log('Raw private key length:', rawKey.length);
     const privateKey = formatPrivateKey(rawKey);
     if (!privateKey) {
-      console.error('Failed to format private key');
       return res.status(500).json({ error: 'Server configuration error: invalid private key format' });
     }
 
-    // Create data string to sign
+    // Log key format for debugging (only first and last few characters)
+    console.log('Formatted key starts with:', privateKey.substring(0, 40) + '...');
+    console.log('Formatted key ends with:', '...' + privateKey.substring(privateKey.length - 40));
+
+    // Create signature
     const data = `${sid}${amount}${currency}${orderID}${url_ok}${url_cancel}${keyindex}${cn}`;
     console.log('Data to sign:', data);
 
-    // Generate signature
-    const signer = crypto.createSign('RSA-SHA256');
-    signer.update(data);
-    signer.end();
-    
-    const signature = signer.sign(privateKey, 'base64');
-    console.log('Signature generated successfully, length:', signature.length);
-    
-    return res.json({ sign: signature });
+    try {
+      const signer = crypto.createSign('RSA-SHA256');
+      signer.update(data);
+      signer.end();
+      const signature = signer.sign(privateKey, 'base64');
+      
+      console.log('Signature generated successfully, length:', signature.length);
+      return res.json({ sign: signature });
+    } catch (signError) {
+      console.error('Error during signature generation:', signError);
+      return res.status(500).json({ 
+        error: 'Failed to generate signature',
+        details: signError.message
+      });
+    }
   } catch (err) {
-    console.error('Error generating signature:', err);
-    console.error('Stack trace:', err.stack);
+    console.error('General error:', err);
     return res.status(500).json({ 
-      error: 'Failed to generate signature',
-      details: err.message,
-      stack: err.stack
+      error: 'Server error',
+      details: err.message
     });
   }
 });
