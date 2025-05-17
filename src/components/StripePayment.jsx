@@ -28,7 +28,8 @@ const CheckoutForm = ({ amount, onSuccess, onError }) => {
       const { error } = await stripe.confirmPayment({
         elements,
         confirmParams: {
-          return_url: 'https://elitewaylimo.ch/payment-success',
+          // Handle success in the component instead of redirecting
+          return_url: window.location.href,
         },
       });
 
@@ -36,6 +37,7 @@ const CheckoutForm = ({ amount, onSuccess, onError }) => {
         setErrorMessage(error.message);
         onError(error);
       } else {
+        // Payment successful
         onSuccess();
       }
     } catch (err) {

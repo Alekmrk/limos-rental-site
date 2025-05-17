@@ -165,6 +165,8 @@ const PaymentPage = ({ scrollUp }) => {
 
   const handlePaymentSuccess = async () => {
     try {
+      setIsProcessing(true);
+      
       // Create payment details object with Swiss timezone
       const now = new Date();
       const swissTime = now.toLocaleString('en-CH', {
@@ -192,20 +194,27 @@ const PaymentPage = ({ scrollUp }) => {
         }
       });
 
-      // Send confirmation emails
+      // Send confirmation emails with retries
+      console.log('Sending payment confirmation emails...');
       const emailResult = await sendPaymentConfirmation({
         ...reservationInfo,
         paymentDetails
       });
 
       if (!emailResult.success) {
-        console.warn('Payment confirmation emails may not have been sent properly');
+        console.warn('Payment confirmation emails may not have been sent properly:', emailResult.message);
+        // Continue to thank you page even if emails fail - they will be retried
       }
 
+      // Navigate to thank you page
       navigate('/thankyou');
+      
     } catch (error) {
       console.error("Error processing successful payment:", error);
-      alert("Payment successful, but there was an error updating your reservation. Our team will contact you shortly.");
+      alert("Payment was successful. If you don't receive a confirmation email within 5 minutes, please contact our support.");
+      navigate('/thankyou');
+    } finally {
+      setIsProcessing(false);
     }
   };
 
