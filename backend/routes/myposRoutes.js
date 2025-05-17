@@ -2,25 +2,27 @@ const express = require('express');
 const router = express.Router();
 const crypto = require('crypto');
 
-const createPrivateKey = (pemKey) => {
+const formatPrivateKey = (key) => {
   try {
-    console.log('Raw private key received:', pemKey);
-    // Clean the key - remove any extra spaces or line breaks
-    const cleanKey = pemKey
-      .replace(/\\n/g, '\n')
-      .replace(/[\r\n]+/g, '\n')
-      .trim();
-    
-    console.log('Cleaned private key:', cleanKey);
+    console.log('Original key value:', key);
+    console.log('Key length:', key.length);
 
-    // Create a KeyObject from the PEM key
-    return crypto.createPrivateKey({
-      key: cleanKey,
-      format: 'pem',
-      type: 'pkcs1'
-    });
+    // Basic cleanup - remove any windows-style line endings and extra spaces
+    let cleanKey = key.replace(/\r/g, '');
+    
+    // If the key doesn't have proper line breaks, add them
+    if (!cleanKey.includes('\n')) {
+      cleanKey = cleanKey
+        .replace('-----BEGIN RSA PRIVATE KEY-----', '-----BEGIN RSA PRIVATE KEY-----\n')
+        .replace('-----END RSA PRIVATE KEY-----', '\n-----END RSA PRIVATE KEY-----');
+    }
+
+    console.log('Formatted key:', cleanKey);
+    console.log('Formatted key length:', cleanKey.length);
+    
+    return cleanKey;
   } catch (error) {
-    console.error('Error creating private key:', error);
+    console.error('Error in formatPrivateKey:', error);
     return null;
   }
 };
@@ -58,9 +60,9 @@ router.post('/mypos-sign', async (req, res) => {
       });
     }
 
-    // Get private key from environment and log it
-    const pemKey = process.env.MY_POS_PRIVATE_KEY;
-    if (!pemKey) {
+    // Get and format private key
+    const rawKey = process.env.MY_POS_PRIVATE_KEY;
+    if (!rawKey) {
       console.error('MY_POS_PRIVATE_KEY is not set');
       return res.status(500).json({ 
         error: 'Server configuration error',
@@ -68,14 +70,11 @@ router.post('/mypos-sign', async (req, res) => {
       });
     }
 
-    console.log('Environment MY_POS_PRIVATE_KEY value:', pemKey);
-    
-    // Create KeyObject from PEM
-    const privateKey = createPrivateKey(pemKey);
+    const privateKey = formatPrivateKey(rawKey);
     if (!privateKey) {
       return res.status(500).json({ 
         error: 'Server configuration error',
-        details: 'Failed to create private key object'
+        details: 'Failed to format private key'
       });
     }
 
@@ -84,10 +83,12 @@ router.post('/mypos-sign', async (req, res) => {
     console.log('Data to sign:', data);
 
     try {
-      // Create signature using KeyObject
+      // Try signing with the formatted key directly
       const signer = crypto.createSign('RSA-SHA256');
       signer.update(data);
       signer.end();
+
+      console.log('Attempting to sign with key...');
       const signature = signer.sign(privateKey, 'base64');
 
       if (!signature) {
@@ -100,7 +101,12 @@ router.post('/mypos-sign', async (req, res) => {
       return res.json({ sign: signature });
     } catch (signError) {
       console.error('Error during signature generation:', signError);
-      throw signError;
+      return res.status(500).json({ 
+        error: 'Signature generation failed',
+        details: signError.message,
+        keyFormat: 'Key type: ' + typeof privateKey,
+        keyStartsWith: privateKey.substring(0, 50)
+      });
     }
   } catch (err) {
     console.error('=== myPOS Sign Request Error ===');
