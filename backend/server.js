@@ -26,7 +26,8 @@ const app = express();
 app.use(cors({
   origin: ['https://elitewaylimo.ch', 'https://www.elitewaylimo.ch'],
   methods: ['GET', 'POST', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true
 }));
 
 // Add request logging middleware with Swiss time
