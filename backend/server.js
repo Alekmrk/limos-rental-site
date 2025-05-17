@@ -6,6 +6,7 @@ require('dotenv').config();
 // Import routes
 const emailRoutes = require('./routes/emailRoutes');
 const myposRoutes = require('./routes/myposRoutes');
+const stripeRoutes = require('./routes/stripeRoutes');
 
 // Deployment tracking with Swiss timezone
 const getSwissTime = () => {
@@ -36,13 +37,17 @@ app.use((req, res, next) => {
   next();
 });
 
-// Increase JSON payload size limit to 50mb
+// Raw body parsing for Stripe webhooks
+app.use('/api/webhook', express.raw({ type: 'application/json' }));
+
+// Regular body parsing for other routes
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
 // Define routes
 app.use('/api/email', emailRoutes);
 app.use('/api', myposRoutes);
+app.use('/api/stripe', stripeRoutes);
 
 // Basic route for testing
 app.get('/', (req, res) => {

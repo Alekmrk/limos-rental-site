@@ -6,6 +6,7 @@ import ProgressBar from "../../components/ProgressBar";
 import { calculatePrice, formatPrice } from "../../services/PriceCalculationService";
 import { sendPaymentConfirmation } from "../../services/EmailService";
 import axios from "axios";
+import StripePayment from '../../components/StripePayment';
 
 const PaymentPage = ({ scrollUp }) => {
   const navigate = useNavigate();
@@ -157,6 +158,58 @@ const PaymentPage = ({ scrollUp }) => {
   const formatDate = (dateString) => {
     const [year, month, day] = dateString.split('-');
     return `${day}-${month}-${year}`;
+  };
+
+  const handlePaymentSuccess = async () => {
+    try {
+      // Create payment details object with Swiss timezone
+      const now = new Date();
+      const swissTime = now.toLocaleString('en-CH', {
+        timeZone: 'Europe/Zurich',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: false
+      });
+      
+      const paymentDetails = {
+        method: 'stripe',
+        amount: price,
+        currency: 'CHF',
+        timestamp: now.toISOString(),
+        swissTimestamp: swissTime,
+        reference: `PAY-${Math.random().toString(36).substr(2, 9).toUpperCase()}`
+      };
+
+      // Update reservation context with payment details
+      await handleInput({
+        target: {
+          name: 'paymentDetails',
+          value: paymentDetails
+        }
+      });
+
+      // Send confirmation emails
+      const emailResult = await sendPaymentConfirmation({
+        ...reservationInfo,
+        paymentDetails
+      });
+
+      if (!emailResult.success) {
+        console.warn('Payment confirmation emails may not have been sent properly');
+      }
+
+      navigate('/thankyou');
+    } catch (error) {
+      console.error("Error processing successful payment:", error);
+      alert("Payment successful, but there was an error updating your reservation. Our team will contact you shortly.");
+    }
+  };
+
+  const handlePaymentError = (error) => {
+    console.error("Payment error:", error);
+    alert("There was a problem processing your payment. Please try again.");
+    setIsProcessing(false);
   };
 
   return (
@@ -336,119 +389,121 @@ const PaymentPage = ({ scrollUp }) => {
             </div>
           </div>
 
-          {/* Payment form sections remain unchanged */}
           {paymentMethod === 'card' && (
-            <>
-              <form onSubmit={handleSubmit} className="space-y-4">
-                {/* ...existing form fields... */}
+            <div className="space-y-4">
+              <StripePayment 
+                amount={price}
+                onSuccess={handlePaymentSuccess}
+                onError={handlePaymentError}
+              />
+              
+              <div className="mt-4 text-sm text-zinc-400">
+                <p>• Secure payment powered by Stripe</p>
+                <p>• Your card will be charged immediately</p>
+                <p>• You will receive a confirmation email</p>
+                <p>• In case of issues, contact our support</p>
+              </div>
 
-                <div className="flex justify-between">
-                  <Button type="button" variant="secondary" onClick={handleBack}>
-                    Back
-                  </Button>
-                  <Button type="submit" variant="secondary" disabled={isProcessing}>
-                    {isProcessing ? 'Processing...' : `Pay ${formatPrice(price)}`}
-                  </Button>
-                </div>
-              </form>
+              {/* Keep myPOS as backup */}
+              <div className="mt-8 pt-8 border-t border-zinc-700/50">
+                <p className="text-sm text-zinc-400 mb-4">Alternative Payment Method:</p>
+                <form
+                  id="mypos-form"
+                  action="https://www.mypos.eu/vmp/checkout"
+                  method="POST"
+                  target="_blank"
+                  className="mt-4"
+                  onSubmit={async e => {
+                    e.preventDefault();
+                    const sid = "1047772";
+                    const amount = "1.00";
+                    const currency = "CHF";
+                    const orderID = `ORDER-${Date.now()}`;
+                    const url_ok = "https://elitewaylimo.ch/payment-success";
+                    const url_cancel = "https://elitewaylimo.ch/payment-cancel";
+                    const keyindex = "1";
+                    const cn = "40435659038";
+                    
+                    const requestData = { sid, amount, currency, orderID, url_ok, url_cancel, keyindex, cn };
+                    console.log('Sending request to myPOS sign endpoint:', {
+                      url: 'https://api.elitewaylimo.ch/api/mypos-sign',
+                      data: requestData
+                    });
 
-              {/* myPOS Pay Button (always 1 CHF, production) */}
-              <form
-                id="mypos-form"
-                action="https://www.mypos.eu/vmp/checkout"
-                method="POST"
-                target="_blank"
-                className="mt-4"
-                onSubmit={async e => {
-                  e.preventDefault();
-                  const sid = "1047772";
-                  const amount = "1.00";
-                  const currency = "CHF";
-                  const orderID = `ORDER-${Date.now()}`;
-                  const url_ok = "https://elitewaylimo.ch/payment-success";
-                  const url_cancel = "https://elitewaylimo.ch/payment-cancel";
-                  const keyindex = "1";
-                  const cn = "40435659038";
-                  
-                  const requestData = { sid, amount, currency, orderID, url_ok, url_cancel, keyindex, cn };
-                  console.log('Sending request to myPOS sign endpoint:', {
-                    url: 'https://api.elitewaylimo.ch/api/mypos-sign',
-                    data: requestData
-                  });
-
-                  try {
-                    console.log('Making request to backend with data:', requestData);
-                    const res = await axios.post(
-                      "https://api.elitewaylimo.ch/api/mypos-sign",
-                      requestData,
-                      {
-                        headers: {
-                          'Content-Type': 'application/json'
-                        },
-                        // Add timeout and full error response
-                        timeout: 10000,
-                        validateStatus: function (status) {
-                          return status >= 200 && status < 600; // Don't reject any status codes
+                    try {
+                      console.log('Making request to backend with data:', requestData);
+                      const res = await axios.post(
+                        "https://api.elitewaylimo.ch/api/mypos-sign",
+                        requestData,
+                        {
+                          headers: {
+                            'Content-Type': 'application/json'
+                          },
+                          // Add timeout and full error response
+                          timeout: 10000,
+                          validateStatus: function (status) {
+                            return status >= 200 && status < 600; // Don't reject any status codes
+                          }
                         }
+                      );
+                      
+                      if (res.status !== 200) {
+                        console.error('Backend error response:', {
+                          status: res.status,
+                          statusText: res.statusText,
+                          data: res.data,
+                          headers: res.headers
+                        });
+                        throw new Error(res.data.details || res.data.error || 'Unknown error');
                       }
-                    );
-                    
-                    if (res.status !== 200) {
-                      console.error('Backend error response:', {
-                        status: res.status,
-                        statusText: res.statusText,
-                        data: res.data,
-                        headers: res.headers
-                      });
-                      throw new Error(res.data.details || res.data.error || 'Unknown error');
-                    }
 
-                    console.log('Backend response:', res.data);
-                    const sign = res.data.sign;
-                    
-                    // Set form fields and submit
-                    const form = document.getElementById("mypos-form");
-                    form.sid.value = sid;
-                    form.amount.value = amount;
-                    form.currency.value = currency;
-                    form.orderID.value = orderID;
-                    form.url_ok.value = url_ok;
-                    form.url_cancel.value = url_cancel;
-                    form.keyindex.value = keyindex;
-                    form.cn.value = cn;
-                    form.sign.value = sign;
-                    console.log('Submitting myPOS form with values:', {
-                      sid, amount, currency, orderID, url_ok, url_cancel, keyindex, cn, sign
-                    });
-                    form.submit();
-                  } catch (err) {
-                    console.error('Failed to get myPOS sign:', {
-                      error: err,
-                      response: err.response?.data,
-                      status: err.response?.status,
-                      headers: err.response?.headers
-                    });
-                    alert("Failed to initiate payment. Please check browser console for details.");
-                  }
-                }}
-              >
-                <input type="hidden" name="sid" />
-                <input type="hidden" name="amount" />
-                <input type="hidden" name="currency" />
-                <input type="hidden" name="orderID" />
-                <input type="hidden" name="url_ok" />
-                <input type="hidden" name="url_cancel" />
-                <input type="hidden" name="keyindex" />
-                <input type="hidden" name="cn" />
-                <input type="hidden" name="sign" />
-                <button
-                  type="submit"
-                  className="p-3 rounded-lg bg-blue-600 text-white font-semibold hover:bg-blue-700 transition"
+                      console.log('Backend response:', res.data);
+                      const sign = res.data.sign;
+                      
+                      // Set form fields and submit
+                      const form = document.getElementById("mypos-form");
+                      form.sid.value = sid;
+                      form.amount.value = amount;
+                      form.currency.value = currency;
+                      form.orderID.value = orderID;
+                      form.url_ok.value = url_ok;
+                      form.url_cancel.value = url_cancel;
+                      form.keyindex.value = keyindex;
+                      form.cn.value = cn;
+                      form.sign.value = sign;
+                      console.log('Submitting myPOS form with values:', {
+                        sid, amount, currency, orderID, url_ok, url_cancel, keyindex, cn, sign
+                      });
+                      form.submit();
+                    } catch (err) {
+                      console.error('Failed to get myPOS sign:', {
+                        error: err,
+                        response: err.response?.data,
+                        status: err.response?.status,
+                        headers: err.response?.headers
+                      });
+                      alert("Failed to initiate payment. Please check browser console for details.");
+                    }
+                  }}
                 >
-                  Pay 1 CHF with myPOS
-                </button>
-              </form>
-            </>
+                  <input type="hidden" name="sid" />
+                  <input type="hidden" name="amount" />
+                  <input type="hidden" name="currency" />
+                  <input type="hidden" name="orderID" />
+                  <input type="hidden" name="url_ok" />
+                  <input type="hidden" name="url_cancel" />
+                  <input type="hidden" name="keyindex" />
+                  <input type="hidden" name="cn" />
+                  <input type="hidden" name="sign" />
+                  <button
+                    type="submit"
+                    className="p-3 rounded-lg bg-blue-600 text-white font-semibold hover:bg-blue-700 transition"
+                  >
+                    Pay 1 CHF with myPOS
+                  </button>
+                </form>
+              </div>
+            </div>
           )}
 
           {paymentMethod === 'crypto' && (
