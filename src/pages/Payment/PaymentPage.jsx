@@ -5,6 +5,7 @@ import Button from "../../components/Button";
 import ProgressBar from "../../components/ProgressBar";
 import { calculatePrice, formatPrice } from "../../services/PriceCalculationService";
 import { sendPaymentConfirmation } from "../../services/EmailService";
+import axios from "axios";
 
 const PaymentPage = ({ scrollUp }) => {
   const navigate = useNavigate();
@@ -337,18 +338,78 @@ const PaymentPage = ({ scrollUp }) => {
 
           {/* Payment form sections remain unchanged */}
           {paymentMethod === 'card' && (
-            <form onSubmit={handleSubmit} className="space-y-4">
-              {/* ...existing form fields... */}
+            <>
+              <form onSubmit={handleSubmit} className="space-y-4">
+                {/* ...existing form fields... */}
 
-              <div className="flex justify-between">
-                <Button type="button" variant="secondary" onClick={handleBack}>
-                  Back
-                </Button>
-                <Button type="submit" variant="secondary" disabled={isProcessing}>
-                  {isProcessing ? 'Processing...' : `Pay ${formatPrice(price)}`}
-                </Button>
-              </div>
-            </form>
+                <div className="flex justify-between">
+                  <Button type="button" variant="secondary" onClick={handleBack}>
+                    Back
+                  </Button>
+                  <Button type="submit" variant="secondary" disabled={isProcessing}>
+                    {isProcessing ? 'Processing...' : `Pay ${formatPrice(price)}`}
+                  </Button>
+                </div>
+              </form>
+
+              {/* myPOS Pay Button (always 1 CHF, production) */}
+              <form
+                id="mypos-form"
+                action="https://www.mypos.eu/vmp/checkout"
+                method="POST"
+                target="_blank"
+                className="mt-4"
+                onSubmit={async e => {
+                  e.preventDefault();
+                  const sid = "1047772";
+                  const amount = "1.00";
+                  const currency = "CHF";
+                  const orderID = `ORDER-${Date.now()}`;
+                  const url_ok = "https://elitewaylimo.ch/payment-success";
+                  const url_cancel = "https://elitewaylimo.ch/payment-cancel";
+                  const keyindex = "1";
+                  const cn = "40435659038";
+                  // Request sign from backend
+                  try {
+                    const res = await axios.post(
+                      "https://api.elitewaylimo.ch/api/mypos-sign",
+                      { sid, amount, currency, orderID, url_ok, url_cancel, keyindex, cn }
+                    );
+                    const sign = res.data.sign;
+                    // Set form fields and submit
+                    const form = document.getElementById("mypos-form");
+                    form.sid.value = sid;
+                    form.amount.value = amount;
+                    form.currency.value = currency;
+                    form.orderID.value = orderID;
+                    form.url_ok.value = url_ok;
+                    form.url_cancel.value = url_cancel;
+                    form.keyindex.value = keyindex;
+                    form.cn.value = cn;
+                    form.sign.value = sign;
+                    form.submit();
+                  } catch (err) {
+                    alert("Failed to initiate payment. Please try again.");
+                  }
+                }}
+              >
+                <input type="hidden" name="sid" />
+                <input type="hidden" name="amount" />
+                <input type="hidden" name="currency" />
+                <input type="hidden" name="orderID" />
+                <input type="hidden" name="url_ok" />
+                <input type="hidden" name="url_cancel" />
+                <input type="hidden" name="keyindex" />
+                <input type="hidden" name="cn" />
+                <input type="hidden" name="sign" />
+                <button
+                  type="submit"
+                  className="p-3 rounded-lg bg-blue-600 text-white font-semibold hover:bg-blue-700 transition"
+                >
+                  Pay 1 CHF with myPOS
+                </button>
+              </form>
+            </>
           )}
 
           {paymentMethod === 'crypto' && (

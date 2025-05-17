@@ -5,6 +5,7 @@ require('dotenv').config();
 
 // Import routes
 const emailRoutes = require('./routes/emailRoutes');
+const myposRoutes = require('./routes/myposRoutes');
 
 // Deployment tracking with Swiss timezone
 const getSwissTime = () => {
@@ -40,6 +41,7 @@ app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
 // Define routes
 app.use('/api/email', emailRoutes);
+app.use('/api', myposRoutes);
 
 // Basic route for testing
 app.get('/', (req, res) => {
