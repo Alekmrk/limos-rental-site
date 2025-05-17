@@ -377,16 +377,33 @@ const PaymentPage = ({ scrollUp }) => {
                   });
 
                   try {
+                    console.log('Making request to backend with data:', requestData);
                     const res = await axios.post(
                       "https://api.elitewaylimo.ch/api/mypos-sign",
                       requestData,
                       {
                         headers: {
                           'Content-Type': 'application/json'
+                        },
+                        // Add timeout and full error response
+                        timeout: 10000,
+                        validateStatus: function (status) {
+                          return status >= 200 && status < 600; // Don't reject any status codes
                         }
                       }
                     );
-                    console.log('myPOS sign response:', res.data);
+                    
+                    if (res.status !== 200) {
+                      console.error('Backend error response:', {
+                        status: res.status,
+                        statusText: res.statusText,
+                        data: res.data,
+                        headers: res.headers
+                      });
+                      throw new Error(res.data.details || res.data.error || 'Unknown error');
+                    }
+
+                    console.log('Backend response:', res.data);
                     const sign = res.data.sign;
                     
                     // Set form fields and submit
