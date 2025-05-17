@@ -8,8 +8,8 @@ import {
 } from '@stripe/react-stripe-js';
 import Button from './Button';
 
-// Initialize Stripe
-const stripePromise = loadStripe('pk_live_51RPJz2IRGMq7s4cbNNd3aY9KVzfvowhFoKbfjlysxRsOPadnd5ZSH2z8veaVZeSyNYr7qv54Pks7odMTAHazJMsg00kOYlEBrQ');
+// Initialize Stripe with test key
+const stripePromise = loadStripe('pk_test_51RPJz2IRGMq7s4cbxWmO1g6uXoVfxHsiT2HrXPw59CsEOehsDVgTkNoV4FhnkjZMXBYyfbxSx45HzKbAhYTrNXGR00otrVEZXx');
 
 const CheckoutForm = ({ amount, onSuccess, onError }) => {
   const stripe = useStripe();
