@@ -11,6 +11,8 @@ import CustomerDetails from "./pages/CustomerDetails/CustomerDetails";
 import ThankYou from "./pages/ThankYou/ThankYou";
 import ServicesPage from "./pages/ServicesPage/ServicesPage";
 import PaymentPage from "./pages/Payment/PaymentPage";
+import PaymentSuccess from "./pages/Payment/PaymentSuccess";
+import PaymentCancel from "./pages/Payment/PaymentCancel";
 import BackToTopButton from "./components/BackToTopButton";
 import { useState } from "react";
 import cars from "./data/cars";
@@ -61,6 +63,14 @@ function App() {
           <Route
             path="/payment"
             element={<PaymentPage scrollUp={scrollUp} />}
+          />
+          <Route 
+            path="/payment-success" 
+            element={<PaymentSuccess />} 
+          />
+          <Route 
+            path="/payment-cancel" 
+            element={<PaymentCancel />} 
           />
           <Route path="/thankyou" element={<ThankYou scrollUp={scrollUp} />} />
           <Route path="*" element={<NotFound scrollUp={scrollUp} />} />

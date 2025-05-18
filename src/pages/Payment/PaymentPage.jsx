@@ -63,7 +63,7 @@ const PaymentPage = ({ scrollUp }) => {
     }
 
     // Override calculated price with fixed amount
-    setPrice(1);
+    setPrice(0.1);
   }, [reservationInfo]);
 
   const handlePaymentMethodSelect = (method) => {
@@ -245,6 +245,90 @@ const PaymentPage = ({ scrollUp }) => {
     setErrorMessage('');
     setRetryCount(0);
   }, [paymentMethod]);
+
+  const handleMyPOSFormSubmit = async (e) => {
+    e.preventDefault();
+    const sid = "1047772";
+    const amount = "1.00";
+    const currency = "CHF";
+    const orderID = `ORDER-${Date.now()}`;
+    const url_ok = `${window.location.origin}/payment-success`;
+    const url_cancel = `${window.location.origin}/payment-cancel`;
+    const keyindex = "1";
+    const cn = "40435659038";
+    
+    const requestData = { sid, amount, currency, orderID, url_ok, url_cancel, keyindex, cn };
+    console.log('Starting MyPOS payment flow:', {
+      orderID,
+      amount,
+      currency
+    });
+
+    try {
+      setIsProcessing(true);
+      const res = await axios.post(
+        "https://api.elitewaylimo.ch/api/mypos-sign",
+        requestData,
+        {
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          timeout: 10000,
+          validateStatus: function (status) {
+            return status >= 200 && status < 600;
+          }
+        }
+      );
+      
+      if (res.status !== 200) {
+        throw new Error(res.data.details || res.data.error || 'Failed to initialize payment');
+      }
+
+      const sign = res.data.sign;
+      
+      // Set form fields and submit
+      const form = document.getElementById("mypos-form");
+      form.sid.value = sid;
+      form.amount.value = amount;
+      form.currency.value = currency;
+      form.orderID.value = orderID;
+      form.url_ok.value = url_ok;
+      form.url_cancel.value = url_cancel;
+      form.keyindex.value = keyindex;
+      form.cn.value = cn;
+      form.sign.value = sign;
+
+      // Store order reference in context before submitting
+      await handleInput({
+        target: {
+          name: 'orderReference',
+          value: orderID
+        }
+      });
+
+      form.submit();
+    } catch (err) {
+      console.error('MyPOS payment initialization failed:', {
+        error: err,
+        response: err.response?.data,
+        status: err.response?.status
+      });
+      
+      setErrorMessage(
+        'Unable to start payment process. Please try again or use a different payment method.'
+      );
+      
+      setRetryCount(prev => prev + 1);
+      
+      if (retryCount >= maxRetries - 1) {
+        setErrorMessage(
+          'We are experiencing technical difficulties. Please try again later or contact support.'
+        );
+      }
+    } finally {
+      setIsProcessing(false);
+    }
+  };
 
   return (
     <div className="container-default mt-28">
@@ -447,78 +531,7 @@ const PaymentPage = ({ scrollUp }) => {
                   method="POST"
                   target="_blank"
                   className="mt-4"
-                  onSubmit={async e => {
-                    e.preventDefault();
-                    const sid = "1047772";
-                    const amount = "1.00";
-                    const currency = "CHF";
-                    const orderID = `ORDER-${Date.now()}`;
-                    const url_ok = "https://elitewaylimo.ch/payment-success";
-                    const url_cancel = "https://elitewaylimo.ch/payment-cancel";
-                    const keyindex = "1";
-                    const cn = "40435659038";
-                    
-                    const requestData = { sid, amount, currency, orderID, url_ok, url_cancel, keyindex, cn };
-                    console.log('Sending request to myPOS sign endpoint:', {
-                      url: 'https://api.elitewaylimo.ch/api/mypos-sign',
-                      data: requestData
-                    });
-
-                    try {
-                      console.log('Making request to backend with data:', requestData);
-                      const res = await axios.post(
-                        "https://api.elitewaylimo.ch/api/mypos-sign",
-                        requestData,
-                        {
-                          headers: {
-                            'Content-Type': 'application/json'
-                          },
-                          // Add timeout and full error response
-                          timeout: 10000,
-                          validateStatus: function (status) {
-                            return status >= 200 && status < 600; // Don't reject any status codes
-                          }
-                        }
-                      );
-                      
-                      if (res.status !== 200) {
-                        console.error('Backend error response:', {
-                          status: res.status,
-                          statusText: res.statusText,
-                          data: res.data,
-                          headers: res.headers
-                        });
-                        throw new Error(res.data.details || res.data.error || 'Unknown error');
-                      }
-
-                      console.log('Backend response:', res.data);
-                      const sign = res.data.sign;
-                      
-                      // Set form fields and submit
-                      const form = document.getElementById("mypos-form");
-                      form.sid.value = sid;
-                      form.amount.value = amount;
-                      form.currency.value = currency;
-                      form.orderID.value = orderID;
-                      form.url_ok.value = url_ok;
-                      form.url_cancel.value = url_cancel;
-                      form.keyindex.value = keyindex;
-                      form.cn.value = cn;
-                      form.sign.value = sign;
-                      console.log('Submitting myPOS form with values:', {
-                        sid, amount, currency, orderID, url_ok, url_cancel, keyindex, cn, sign
-                      });
-                      form.submit();
-                    } catch (err) {
-                      console.error('Failed to get myPOS sign:', {
-                        error: err,
-                        response: err.response?.data,
-                        status: err.response?.status,
-                        headers: err.response?.headers
-                      });
-                      alert("Failed to initiate payment. Please check browser console for details.");
-                    }
-                  }}
+                  onSubmit={handleMyPOSFormSubmit}
                 >
                   <input type="hidden" name="sid" />
                   <input type="hidden" name="amount" />

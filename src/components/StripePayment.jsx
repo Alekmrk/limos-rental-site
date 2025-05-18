@@ -17,9 +17,41 @@ const CheckoutForm = ({ amount, onSuccess, onError }) => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
 
+  const getReadableErrorMessage = (technicalMessage) => {
+    const errorMap = {
+      'card_declined': 'Your card was declined. Please try another card.',
+      'expired_card': 'This card has expired. Please use a different card.',
+      'incorrect_cvc': 'The security code (CVC) is incorrect. Please check and try again.',
+      'insufficient_funds': 'Insufficient funds on this card. Please use a different card.',
+      'invalid_expiry_year': 'The expiration year is invalid. Please check and try again.',
+      'invalid_expiry_month': 'The expiration month is invalid. Please check and try again.',
+      'invalid_number': 'This card number is invalid. Please check and try again.',
+      'processing_error': 'There was an error processing your card. Please try again in a few moments.',
+      'authentication_required': 'This payment requires authentication. Please follow the prompts from your bank.',
+      'try_again_later': 'The payment system is temporarily unavailable. Please try again in a few moments.',
+      'rate_limit': 'Too many payment attempts. Please wait a few minutes before trying again.',
+      'invalid_request': 'The payment request was invalid. Please try again or contact support.'
+    };
+
+    // Check if we have a specific message for this error
+    for (const [errorCode, message] of Object.entries(errorMap)) {
+      if (technicalMessage.toLowerCase().includes(errorCode)) {
+        return message;
+      }
+    }
+
+    // If authentication required or 3DS related
+    if (technicalMessage.toLowerCase().includes('authentication') || technicalMessage.toLowerCase().includes('3ds')) {
+      return 'This payment requires additional verification. Please follow the prompts from your bank.';
+    }
+
+    // Default to a generic message for unhandled errors
+    return 'There was a problem processing your payment. Please try again or use a different payment method.';
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!stripe || !elements) return;
+    if (!stripe || !elements || isProcessing) return;
 
     setIsProcessing(true);
     setErrorMessage('');
@@ -33,22 +65,33 @@ const CheckoutForm = ({ amount, onSuccess, onError }) => {
         return;
       }
 
-      const { error } = await stripe.confirmPayment({
+      const { error: confirmError, paymentIntent } = await stripe.confirmPayment({
         elements,
         confirmParams: {
-          // Make sure we return to payment success page
           return_url: `${window.location.origin}/payment-success`,
         },
+        redirect: 'if_required'
       });
 
-      if (error) {
+      if (confirmError) {
         // Handle specific error types
-        const message = getReadableErrorMessage(error.message);
+        const message = getReadableErrorMessage(confirmError.message);
         setErrorMessage(message);
-        onError({ ...error, userMessage: message });
-      } else {
-        // Payment successful - handled by return_url redirect
+        onError({ ...confirmError, userMessage: message });
+        
+        // If payment requires authentication, let Stripe handle the redirect
+        if (confirmError.type === 'card_error' && confirmError.code === 'authentication_required') {
+          return;
+        }
+      } else if (paymentIntent && paymentIntent.status === 'succeeded') {
+        // Payment successful without 3DS
         onSuccess();
+      } else if (paymentIntent && paymentIntent.status === 'requires_action') {
+        // 3DS required, Stripe will handle the redirect
+        return;
+      } else {
+        // Unexpected state
+        throw new Error('Unexpected payment state');
       }
     } catch (err) {
       const message = getReadableErrorMessage(err.message);
@@ -57,30 +100,6 @@ const CheckoutForm = ({ amount, onSuccess, onError }) => {
     } finally {
       setIsProcessing(false);
     }
-  };
-
-  // Convert technical error messages to user-friendly ones
-  const getReadableErrorMessage = (technicalMessage) => {
-    const errorMap = {
-      'card_declined': 'Your card was declined. Please try another card.',
-      'expired_card': 'This card has expired. Please use a different card.',
-      'incorrect_cvc': 'The security code (CVC) is incorrect. Please check and try again.',
-      'insufficient_funds': 'Insufficient funds on this card. Please use a different card.',
-      'invalid_expiry_year': 'The expiration year is invalid. Please check and try again.',
-      'invalid_expiry_month': 'The expiration month is invalid. Please check and try again.',
-      'invalid_number': 'This card number is invalid. Please check and try again.',
-      'processing_error': 'There was an error processing your card. Please try again in a few moments.',
-    };
-
-    // Check if we have a specific message for this error
-    for (const [errorCode, message] of Object.entries(errorMap)) {
-      if (technicalMessage.toLowerCase().includes(errorCode)) {
-        return message;
-      }
-    }
-
-    // Default generic message
-    return 'There was a problem processing your payment. Please try again or use a different card.';
   };
 
   return (
