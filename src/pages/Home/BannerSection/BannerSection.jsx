@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import Button from "../../../components/Button";
 import ReservationCard from "./ReservationCard";
+import bannerImage from "../../assets/banner-image.jpg?w=800;1200;1920&format=webp;png&as=picture";
 
 const BannerSection = () => {
   return (
@@ -15,6 +16,13 @@ const BannerSection = () => {
       <Link to={"/vehicles"}>
         <Button variant="secondary">Open Fleet</Button>
       </Link>
+
+      <picture>
+        {bannerImage.sources.map((src, i) => (
+          <source key={i} srcSet={src.srcSet} type={src.type} />
+        ))}
+        <img src={bannerImage.img.src} alt="Banner" className="w-full h-auto" />
+      </picture>
 
       <ReservationCard />
     </div>
