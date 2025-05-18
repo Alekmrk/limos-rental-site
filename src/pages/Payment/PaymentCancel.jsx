@@ -12,7 +12,7 @@ const PaymentCancel = () => {
   };
 
   const handleContact = () => {
-    window.location.href = 'mailto:support@elitewaylimo.ch?subject=Payment%20Issue%20-%20Order%20' + 
+    window.location.href = 'mailto:info@elitewaylimo.ch?subject=Payment%20Issue%20-%20Order%20' + 
       (reservationInfo?.orderReference || 'Unknown');
   };
 

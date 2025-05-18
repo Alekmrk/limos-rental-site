@@ -31,17 +31,17 @@ const ProgressBar = () => {
 
   return (
     <div className="w-full max-w-6xl mx-auto mb-12">
-      <div className="relative px-1 md:px-5">
+      <div className="relative px-0.5 sm:px-1 md:px-5">
         <div className="flex items-center justify-between">
           {steps.map((step, index) => (
             <div 
               key={step.path}
-              className="relative flex-1 flex flex-col items-center px-0.5 md:px-1"
+              className="relative flex-1 flex flex-col items-center px-0.5 sm:px-1"
             >
               {/* Connecting lines */}
               {index > 0 && (
                 <div 
-                  className={`absolute h-[2px] left-[-50%] w-full top-[20px] md:top-[24px] transition-colors duration-300 ${
+                  className={`absolute h-[2px] left-[-50%] w-full top-[15px] sm:top-[20px] md:top-[24px] transition-colors duration-300 ${
                     index <= currentStepIndex ? 'bg-gold' : 'bg-zinc-700'
                   }`}
                 />
@@ -50,7 +50,7 @@ const ProgressBar = () => {
               <button
                 onClick={() => handleStepClick(index)}
                 disabled={index >= currentStepIndex}
-                className={`w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center z-10 transition-all duration-300 text-sm md:text-base ${
+                className={`w-6 h-6 sm:w-8 sm:h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center z-10 transition-all duration-300 text-xs sm:text-sm md:text-base ${
                   index <= currentStepIndex 
                     ? "bg-gold text-black" 
                     : "bg-zinc-700 text-zinc-400"
@@ -63,7 +63,7 @@ const ProgressBar = () => {
                 {index + 1}
               </button>
               <span 
-                className={`mt-1 text-[10px] md:text-sm transition-colors duration-300 text-center whitespace-nowrap ${
+                className={`mt-1 text-[8px] sm:text-[10px] md:text-sm transition-colors duration-300 text-center whitespace-nowrap ${
                   index <= currentStepIndex 
                     ? "text-gold" 
                     : "text-zinc-400"
