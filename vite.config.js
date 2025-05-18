@@ -11,15 +11,53 @@ export default defineConfig({
   plugins: [
     react(),
     imagetools({
-      defaultDirectives: {
-        // Default quality for WebP and AVIF
-        quality: 80,
-        // Enable progressive loading for JPG
-        progressive: true,
-        // Enable optimization
-        optimizeSvg: true,
-        // Cache optimization results
-        cached: true
+      defaultDirectives: () => {
+        return new URLSearchParams({
+          format: 'webp;jpg',
+          quality: '80'
+        })
+      },
+      profiles: {
+        standard: () => {
+          return {
+            resize: {
+              width: 1280,
+              withoutEnlargement: true
+            },
+            format: 'webp;jpg',
+            quality: 75
+          }
+        },
+        thumbnail: () => {
+          return {
+            resize: {
+              width: 500,
+              withoutEnlargement: true
+            },
+            format: 'webp;jpg',
+            quality: 80
+          }
+        },
+        icon: () => {
+          return {
+            resize: {
+              width: 96,
+              withoutEnlargement: true
+            },
+            format: 'webp;png',
+            quality: 90
+          }
+        },
+        banner: () => {
+          return {
+            resize: {
+              width: 1920,
+              withoutEnlargement: true
+            },
+            format: 'webp;jpg',
+            quality: 70
+          }
+        }
       }
     })
   ],
@@ -32,14 +70,8 @@ export default defineConfig({
         manualChunks: {
           'react-vendor': ['react', 'react-dom'],
           'maps-vendor': ['@react-google-maps/api']
-        },
-        // Force unique filenames for all assets
-        entryFileNames: `assets/[name]-[hash]-${Date.now()}.js`,
-        chunkFileNames: `assets/[name]-[hash]-${Date.now()}.js`,
-        assetFileNames: `assets/[name]-[hash]-${Date.now()}.[ext]`
+        }
       }
-    },
-    chunkSizeWarningLimit: 1000,
-    assetsInlineLimit: 4096
+    }
   }
 })
