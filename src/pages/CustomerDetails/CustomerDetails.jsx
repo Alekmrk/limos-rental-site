@@ -9,6 +9,10 @@ const CustomerDetails = ({ scrollUp }) => {
   const { reservationInfo, handleInput } = useContext(ReservationContext);
   const [errors, setErrors] = useState({});
 
+  useEffect(() => {
+    scrollUp();
+  }, [scrollUp]);
+
   // Check if we have the required data from previous steps
   useEffect(() => {
     if (reservationInfo.isSpecialRequest) {
@@ -28,10 +32,6 @@ const CustomerDetails = ({ scrollUp }) => {
       }
     }
   }, [reservationInfo, navigate]);
-
-  useEffect(() => {
-    scrollUp();
-  }, [scrollUp]);
 
   const validateForm = () => {
     const newErrors = {};
