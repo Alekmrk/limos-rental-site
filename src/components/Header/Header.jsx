@@ -1,4 +1,4 @@
-import logo from "../../assets/elitewaylogo.png?profile=icon";
+import logo from "../../assets/elitewaylogo.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { useEffect, useState } from "react";

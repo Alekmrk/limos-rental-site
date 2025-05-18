@@ -1,8 +1,8 @@
-import imgBenzSClass from "../assets/cars/car-benz-s-class.png?profile=thumbnail";
-import imgBenzVClass from "../assets/cars/car-benz-v-class.png?profile=thumbnail";
-import imgAudiA8 from "../assets/cars/car-audi-a8.png?profile=thumbnail";
-import imgEscalade from "../assets/cars/car-cadillac-escalade.png?profile=thumbnail";
-import imgRoyce from "../assets/cars/car-rolls-royce-ghost.png?profile=thumbnail";
+import imgBenzSClass from "../assets/cars/car-benz-s-class.png";
+import imgBenzVClass from "../assets/cars/car-benz-v-class.png";
+import imgAudiA8 from "../assets/cars/car-audi-a8.png";
+import imgEscalade from "../assets/cars/car-cadillac-escalade.png";
+import imgRoyce from "../assets/cars/car-rolls-royce-ghost.png";
 const cars = [
   {
     id: 1,

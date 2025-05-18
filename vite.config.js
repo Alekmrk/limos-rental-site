@@ -13,65 +13,13 @@ export default defineConfig({
     imagetools({
       defaultDirectives: () => {
         return new URLSearchParams({
-          format: 'webp;jpg',
+          format: 'webp',
           quality: '80'
         })
-      },
-      profiles: {
-        standard: () => {
-          return {
-            resize: {
-              width: 1280,
-              withoutEnlargement: true
-            },
-            format: 'webp;jpg',
-            quality: 75
-          }
-        },
-        thumbnail: () => {
-          return {
-            resize: {
-              width: 500,
-              withoutEnlargement: true
-            },
-            format: 'webp;jpg',
-            quality: 80
-          }
-        },
-        icon: () => {
-          return {
-            resize: {
-              width: 96,
-              withoutEnlargement: true
-            },
-            format: 'webp;png',
-            quality: 90
-          }
-        },
-        banner: () => {
-          return {
-            resize: {
-              width: 1920,
-              withoutEnlargement: true
-            },
-            format: 'webp;jpg',
-            quality: 70
-          }
-        }
       }
     })
   ],
   define: {
     'import.meta.env.VITE_GOOGLE_MAPS_API_KEY': JSON.stringify(process.env.VITE_GOOGLE_MAPS_API_KEY)
-  },
-  build: {
-    rollupOptions: {
-      output: {
-        manualChunks: {
-          'react-vendor': ['react', 'react-dom'],
-          'maps-vendor': ['@react-google-maps/api']
-        }
-      }
-    }
   }
 })

@@ -1,4 +1,4 @@
-import logoFooter from "../../assets/elitewaylogo.png?profile=icon";
+import logoFooter from "../../assets/elitewaylogo.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faTwitter,

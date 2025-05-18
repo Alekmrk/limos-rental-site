@@ -1,7 +1,7 @@
-import ImgAirport from "../assets/image-airport-transfers.png?profile=standard";
-import ImgIntercity from "../assets/image-intercity-trips.png?profile=standard";
-import ImgWedding from "../assets/image-wedding-events.png?profile=standard";
-import ImgBusiness from "../assets/image-business-meeting.png?profile=standard";
+import ImgAirport from "../assets/image-airport-transfers.png";
+import ImgIntercity from "../assets/image-intercity-trips.png";
+import ImgWedding from "../assets/image-wedding-events.png";
+import ImgBusiness from "../assets/image-business-meeting.png";
 
 const services = [
   {
