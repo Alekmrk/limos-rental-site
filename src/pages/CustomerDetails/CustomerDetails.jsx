@@ -14,6 +14,7 @@ const CustomerDetails = ({ scrollUp }) => {
     if (reservationInfo.isSpecialRequest) {
       if (!reservationInfo.date || !reservationInfo.time) {
         navigate('/');
+        return;
       }
     } else {
       if (!reservationInfo.pickup || 
@@ -23,11 +24,17 @@ const CustomerDetails = ({ scrollUp }) => {
           (reservationInfo.isHourly && (!reservationInfo.hours || reservationInfo.hours < 2 || reservationInfo.hours > 24))
       ) {
         navigate('/');
-      } else if (!reservationInfo.selectedVehicle || !reservationInfo.passengers || reservationInfo.passengers < 1) {
-        navigate('/vehicle-selection');
+        return;
       }
     }
-  }, [reservationInfo, navigate]);
+
+    // Only scroll after validation passes
+    const timer = setTimeout(() => {
+      scrollUp();
+    }, 100);
+
+    return () => clearTimeout(timer);
+  }, [reservationInfo, navigate, scrollUp]);
 
   const validateForm = () => {
     const newErrors = {};
@@ -72,10 +79,6 @@ const CustomerDetails = ({ scrollUp }) => {
       navigate('/vehicle-selection');
     }
   };
-
-  useEffect(() => {
-    scrollUp();
-  }, [scrollUp]);
 
   return (
     <div className="container-default mt-28">

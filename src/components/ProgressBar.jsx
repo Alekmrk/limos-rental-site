@@ -1,5 +1,5 @@
-import { useLocation, useNavigate } from "react-router-dom";
-import { useContext } from "react";
+import { useLocation, useNavigate, useLayoutEffect } from "react-router-dom";
+import { useContext, useCallback } from "react";
 import ReservationContext from "../contexts/ReservationContext";
 
 const ProgressBar = () => {
@@ -20,14 +20,20 @@ const ProgressBar = () => {
   ];
 
   const steps = reservationInfo.isSpecialRequest ? specialSteps : regularSteps;
-
   const currentStepIndex = steps.findIndex(step => step.path === location.pathname);
 
-  const handleStepClick = (index) => {
+  const handleStepClick = useCallback((index) => {
     if (index < currentStepIndex) {
-      navigate(steps[index].path);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      setTimeout(() => {
+        navigate(steps[index].path);
+      }, 100);
     }
-  };
+  }, [currentStepIndex, navigate, steps]);
+
+  useLayoutEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [location.pathname]);
 
   return (
     <div className="w-full max-w-6xl mx-auto mb-12">

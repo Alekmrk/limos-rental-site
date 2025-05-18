@@ -1,7 +1,7 @@
 // Test deployment - Frontend workflow update - May 2, 2025 - v2
 import { lazy, Suspense } from 'react';
 import { Route, Routes } from 'react-router-dom';
-import { useEffect } from "react";
+import { useEffect, useCallback } from "react";
 import Footer from "./components/Footer/Footer";
 import Header from "./components/Header/Header";
 import BackToTopButton from "./components/BackToTopButton";
@@ -26,12 +26,14 @@ const NotFound = lazy(() => import('./pages/NotFound/NotFound'));
 function App() {
   const { isLoaded, loadError } = useGoogleMapsApi();
   
-  const scrollUp = () => {
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth",
-    });
-  };
+  const scrollUp = useCallback(() => {
+    setTimeout(() => {
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth",
+      });
+    }, 100);
+  }, []);
 
   const [selectedVehicle, setSelectedVehicle] = useState(cars[0]);
 
