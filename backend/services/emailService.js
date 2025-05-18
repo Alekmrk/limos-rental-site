@@ -126,7 +126,8 @@ const sendEmail = async (to, subject, content, from = 'noreply', attempt = 1) =>
       }
     };
 
-    const response = await emailClient.send(message);
+    const poller = await emailClient.beginSend(message);
+    const response = await poller.pollUntilDone();
 
     console.log('Email sent successfully:', {
       to,
@@ -155,17 +156,8 @@ const sendEmail = async (to, subject, content, from = 'noreply', attempt = 1) =>
       await new Promise(resolve => setTimeout(resolve, retryDelay));
       return sendEmail(to, subject, content, from, attempt + 1);
     }
-    
-    return {
-      success: false,
-      message: 'Failed to send email',
-      error: error.message,
-      details: {
-        code: error.code,
-        statusCode: error.statusCode,
-        attempts: attempt
-      }
-    };
+
+    throw error;
   }
 };
 
