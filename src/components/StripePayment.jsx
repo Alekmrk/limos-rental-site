@@ -15,7 +15,14 @@ const CheckoutForm = ({ amount, onSuccess, onError }) => {
   const stripe = useStripe();
   const elements = useElements();
   const [isProcessing, setIsProcessing] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState('');
+
+  useEffect(() => {
+    if (stripe && elements) {
+      setIsLoading(false);
+    }
+  }, [stripe, elements]);
 
   const getReadableErrorMessage = (technicalMessage) => {
     const errorMap = {
@@ -33,19 +40,16 @@ const CheckoutForm = ({ amount, onSuccess, onError }) => {
       'invalid_request': 'The payment request was invalid. Please try again or contact support.'
     };
 
-    // Check if we have a specific message for this error
     for (const [errorCode, message] of Object.entries(errorMap)) {
       if (technicalMessage.toLowerCase().includes(errorCode)) {
         return message;
       }
     }
 
-    // If authentication required or 3DS related
     if (technicalMessage.toLowerCase().includes('authentication') || technicalMessage.toLowerCase().includes('3ds')) {
       return 'This payment requires additional verification. Please follow the prompts from your bank.';
     }
 
-    // Default to a generic message for unhandled errors
     return 'There was a problem processing your payment. Please try again or use a different payment method.';
   };
 
@@ -76,20 +80,16 @@ const CheckoutForm = ({ amount, onSuccess, onError }) => {
         const message = getReadableErrorMessage(confirmError.message);
         setErrorMessage(message);
         onError({ ...confirmError, userMessage: message });
-        setIsProcessing(false);
         
         if (confirmError.type === 'card_error' && confirmError.code === 'authentication_required') {
-          // Keep the processing state for 3DS
-          setIsProcessing(true);
-          return;
+          return; // Keep processing state for 3DS
         }
+        setIsProcessing(false);
       } else if (paymentIntent) {
         if (paymentIntent.status === 'succeeded') {
-          // Keep processing state true during redirect
           onSuccess();
         } else if (paymentIntent.status === 'requires_action') {
-          // Keep processing state true for 3DS
-          return;
+          return; // Keep processing state for 3DS
         }
       }
     } catch (err) {
@@ -100,11 +100,26 @@ const CheckoutForm = ({ amount, onSuccess, onError }) => {
     }
   };
 
+  if (isLoading) {
+    return (
+      <div className="min-h-[250px] flex items-center justify-center">
+        <div className="text-center space-y-4">
+          <div className="animate-spin w-8 h-8 border-4 border-gold border-t-transparent rounded-full mx-auto"></div>
+          <p className="text-zinc-400">Loading payment form...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      <PaymentElement />
+      <div className="min-h-[200px]">
+        <PaymentElement />
+      </div>
       {errorMessage && (
-        <div className="text-red-500 text-sm">{errorMessage}</div>
+        <div className="text-red-500 text-sm bg-red-500/10 px-3 py-2 rounded border border-red-500/20">
+          {errorMessage}
+        </div>
       )}
       <Button
         type="submit"
@@ -119,8 +134,11 @@ const CheckoutForm = ({ amount, onSuccess, onError }) => {
 
 const StripePayment = ({ amount, onSuccess, onError }) => {
   const [clientSecret, setClientSecret] = useState('');
+  const [initError, setInitError] = useState('');
 
   useEffect(() => {
+    let isMounted = true;
+
     const createPaymentIntent = async () => {
       try {
         const response = await fetch('https://api.elitewaylimo.ch/api/stripe/create-payment-intent', {
@@ -128,6 +146,8 @@ const StripePayment = ({ amount, onSuccess, onError }) => {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ amount, currency: 'chf' })
         });
+        
+        if (!isMounted) return;
         
         const data = await response.json();
         
@@ -137,19 +157,53 @@ const StripePayment = ({ amount, onSuccess, onError }) => {
         
         setClientSecret(data.clientSecret);
       } catch (err) {
-        onError(err);
+        if (isMounted) {
+          setInitError(err.message);
+          onError(err);
+        }
       }
     };
 
     createPaymentIntent();
+    return () => {
+      isMounted = false;
+    };
   }, [amount, onError]);
 
+  if (initError) {
+    return (
+      <div className="bg-red-500/10 px-4 py-3 rounded border border-red-500/20 text-red-500">
+        <p>Unable to initialize payment form. Please try again or contact support.</p>
+      </div>
+    );
+  }
+
   if (!clientSecret) {
-    return <div>Loading payment form...</div>;
+    return (
+      <div className="min-h-[250px] flex items-center justify-center">
+        <div className="text-center space-y-4">
+          <div className="animate-spin w-8 h-8 border-4 border-gold border-t-transparent rounded-full mx-auto"></div>
+          <p className="text-zinc-400">Initializing payment...</p>
+        </div>
+      </div>
+    );
   }
 
   return (
-    <Elements stripe={stripePromise} options={{ clientSecret }}>
+    <Elements stripe={stripePromise} options={{ 
+      clientSecret,
+      loader: 'always',
+      appearance: {
+        theme: 'night',
+        variables: {
+          colorPrimary: '#D4AF37',
+          colorBackground: 'transparent',
+          colorText: '#ffffff',
+          colorDanger: '#ef4444',
+          fontFamily: 'ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+        }
+      }
+    }}>
       <CheckoutForm amount={amount} onSuccess={onSuccess} onError={onError} />
     </Elements>
   );

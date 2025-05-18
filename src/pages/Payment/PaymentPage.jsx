@@ -5,16 +5,11 @@ import Button from "../../components/Button";
 import ProgressBar from "../../components/ProgressBar";
 import { calculatePrice, formatPrice } from "../../services/PriceCalculationService";
 import { sendPaymentConfirmation } from "../../services/EmailService";
-import axios from "axios";
 import StripePayment from '../../components/StripePayment';
 
 const PaymentPage = ({ scrollUp }) => {
   const navigate = useNavigate();
-  // Get everything from context
-  const { 
-    reservationInfo,
-    handleInput
-  } = useContext(ReservationContext);
+  const { reservationInfo, handleInput } = useContext(ReservationContext);
   
   const [paymentMethod, setPaymentMethod] = useState(null);
   const [isProcessing, setIsProcessing] = useState(false);
@@ -24,7 +19,7 @@ const PaymentPage = ({ scrollUp }) => {
   const [retryCount, setRetryCount] = useState(0);
   const maxRetries = 3;
 
-  // Check if we have the required data from previous steps
+  // Check required data and redirect if missing
   useEffect(() => {
     if (!reservationInfo.email || 
         !reservationInfo.pickup || 
@@ -44,133 +39,41 @@ const PaymentPage = ({ scrollUp }) => {
   }, [scrollUp]);
 
   useEffect(() => {
-    // Calculate price based on reservation details
-    if (!reservationInfo.selectedVehicle) {
-      console.log('Calculating price with simplified pricing system...');
-      
-      // Calculate price using only distance or hours
-      const calculatedPrice = calculatePrice(
-        reservationInfo.totalDistance / 1000 || 46.5, // Convert meters to km, use default if not set
-        0, // Duration not used in simplified calculation
-        reservationInfo.selectedVehicle.name,
-        0, // Extra stops not used in simplified calculation
-        reservationInfo.isHourly,
-        reservationInfo.isHourly ? parseInt(reservationInfo.hours) : 0
-      );
-      
-      console.log('Calculated price:', calculatedPrice);
-      setPrice(calculatedPrice || 0); // Ensure we never set NaN
-    }
+    if (!reservationInfo.selectedVehicle) return;
 
-    // Override calculated price with fixed amount
-    setPrice(0.5);
+    // Calculate price based on reservation details
+    const calculatedPrice = calculatePrice(
+      reservationInfo.totalDistance / 1000 || 46.5,
+      0,
+      reservationInfo.selectedVehicle.name,
+      0,
+      reservationInfo.isHourly,
+      reservationInfo.isHourly ? parseInt(reservationInfo.hours) : 0
+    );
+    
+    setPrice(calculatedPrice || 0);
   }, [reservationInfo]);
 
   const handlePaymentMethodSelect = (method) => {
+    if (isProcessing) return;
     setPaymentMethod(method);
+    setErrorMessage('');
+    setRetryCount(0);
     if (method === 'crypto') {
-      // In a real app, this would be generated on the backend
       setUsdtAddress("TRX7NHqkeAhVrKdZrHQJ2RRf2MeL5132cr");
     }
   };
 
   const handleBack = () => {
-    navigate('/customer-details');
-  };
-
-  // Process payment and send confirmation email
-  const processPayment = async () => {
-    setIsProcessing(true);
-    console.log('Payment processing started');
-    console.log('Payment method:', paymentMethod);
-    console.log('Amount:', formatPrice(price));
-    
-    try {
-      // In a real implementation, this would be an API call to process payment
-      console.log(`Processing ${paymentMethod} payment for ${formatPrice(price)}`);
-      
-      // Create payment details object with Swiss timezone
-      const now = new Date();
-      const swissTime = now.toLocaleString('en-CH', {
-        timeZone: 'Europe/Zurich',
-        hour: '2-digit',
-        minute: '2-digit',
-        second: '2-digit',
-        hour12: false
-      });
-      
-      const paymentDetails = {
-        method: paymentMethod,
-        amount: price,
-        currency: 'CHF',
-        timestamp: now.toISOString(), // Keep ISO for backend
-        swissTimestamp: swissTime,
-        reference: `PAY-${Math.random().toString(36).substr(2, 9).toUpperCase()}`
-      };
-      
-      // Update reservation context with payment details
-      const syntheticEvent = {
-        target: {
-          name: 'paymentDetails',
-          value: paymentDetails
-        }
-      };
-      
-      console.log('Updating reservation with payment details:', paymentDetails);
-      await handleInput(syntheticEvent);
-      
-      // Get the updated reservation info with payment details
-      const updatedReservationInfo = {
-        ...reservationInfo,
-        paymentDetails: paymentDetails
-      };
-      
-      console.log('Sending payment confirmation emails...');
-      
-      // Send payment confirmation emails
-      const emailResult = await sendPaymentConfirmation(updatedReservationInfo);
-      console.log('Email sending result:', emailResult);
-      
-      if (!emailResult.success) {
-        console.warn('Payment confirmation emails may not have been sent properly');
-      } else {
-        console.log('Payment confirmation emails sent successfully!');
-      }
-      
-      // Short delay to ensure everything is processed
-      setTimeout(() => {
-        // Payment processed, navigate to thank you page
-        console.log('Navigating to thank you page');
-        navigate('/thankyou');
-      }, 500);
-    } catch (error) {
-      console.error("Payment processing error:", error);
-      console.error("Error details:", error.stack);
-      alert("There was a problem processing your payment. Please try again.");
-      setIsProcessing(false);
+    if (!isProcessing) {
+      navigate('/customer-details');
     }
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    await processPayment();
-  };
-
-  const handleCryptoPayment = async () => {
-    await processPayment();
-  };
-
-  // Format date to dd-mm-yyyy
-  const formatDate = (dateString) => {
-    const [year, month, day] = dateString.split('-');
-    return `${day}-${month}-${year}`;
   };
 
   const handlePaymentSuccess = async () => {
     try {
       setIsProcessing(true);
       
-      // Create payment details object with Swiss timezone
       const now = new Date();
       const swissTime = now.toLocaleString('en-CH', {
         timeZone: 'Europe/Zurich',
@@ -189,7 +92,6 @@ const PaymentPage = ({ scrollUp }) => {
         reference: `PAY-${Math.random().toString(36).substr(2, 9).toUpperCase()}`
       };
 
-      // Update reservation context with payment details
       await handleInput({
         target: {
           name: 'paymentDetails',
@@ -197,8 +99,6 @@ const PaymentPage = ({ scrollUp }) => {
         }
       });
 
-      // Send confirmation emails with retries
-      console.log('Sending payment confirmation emails...');
       const emailResult = await sendPaymentConfirmation({
         ...reservationInfo,
         paymentDetails
@@ -206,18 +106,13 @@ const PaymentPage = ({ scrollUp }) => {
 
       if (!emailResult.success) {
         console.warn('Payment confirmation emails may not have been sent properly:', emailResult.message);
-        // Continue to thank you page even if emails fail - they will be retried
       }
 
-      // Navigate to thank you page
       navigate('/thankyou');
-      
     } catch (error) {
       console.error("Error processing successful payment:", error);
       alert("Payment was successful. If you don't receive a confirmation email within 5 minutes, please contact our support.");
       navigate('/thankyou');
-    } finally {
-      setIsProcessing(false);
     }
   };
 
@@ -225,14 +120,11 @@ const PaymentPage = ({ scrollUp }) => {
     console.error("Payment error:", error);
     setIsProcessing(false);
     
-    // Show user-friendly error message if provided by Stripe component
     const message = error.userMessage || "There was a problem processing your payment. Please try again.";
     setErrorMessage(message);
     
-    // Track retry attempts
     setRetryCount(prev => prev + 1);
     
-    // If we've tried too many times, suggest alternative payment method
     if (retryCount >= maxRetries - 1) {
       setErrorMessage(
         "We're having trouble processing your card. You might want to try our alternative payment method below or contact support."
@@ -240,11 +132,49 @@ const PaymentPage = ({ scrollUp }) => {
     }
   };
 
-  // Clear error when payment method changes
-  useEffect(() => {
-    setErrorMessage('');
-    setRetryCount(0);
-  }, [paymentMethod]);
+  const handleCryptoPayment = async () => {
+    if (isProcessing) return;
+    setIsProcessing(true);
+    
+    try {
+      const now = new Date();
+      const swissTime = now.toLocaleString('en-CH', {
+        timeZone: 'Europe/Zurich',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: false
+      });
+      
+      const paymentDetails = {
+        method: 'crypto',
+        amount: price,
+        currency: 'USDT',
+        timestamp: now.toISOString(),
+        swissTimestamp: swissTime,
+        reference: `USDT-${Math.random().toString(36).substr(2, 9).toUpperCase()}`
+      };
+
+      await handleInput({
+        target: {
+          name: 'paymentDetails',
+          value: paymentDetails
+        }
+      });
+
+      navigate('/thankyou');
+    } catch (error) {
+      console.error("Error processing crypto payment:", error);
+      setErrorMessage("There was a problem processing your payment. Please try again or contact support.");
+      setIsProcessing(false);
+    }
+  };
+
+  // Format date to dd-mm-yyyy
+  const formatDate = (dateString) => {
+    const [year, month, day] = dateString.split('-');
+    return `${day}-${month}-${year}`;
+  };
 
   return (
     <div className="container-default mt-28">
@@ -312,15 +242,19 @@ const PaymentPage = ({ scrollUp }) => {
             </div>
           </div>
 
+          {/* Payment Method Selection */}
           <div className="space-y-4">
             <h2 className="text-xl font-medium">Select Payment Method</h2>
             <div className="grid grid-cols-2 gap-4">
               <button
                 onClick={() => handlePaymentMethodSelect('card')}
+                disabled={isProcessing}
                 className={`p-4 rounded-lg border transition-all ${
                   paymentMethod === 'card'
                     ? 'border-gold bg-gold/20'
-                    : 'border-zinc-700/50 bg-zinc-800/30 hover:border-zinc-600'
+                    : isProcessing 
+                      ? 'border-zinc-700/50 bg-zinc-800/30 opacity-50 cursor-not-allowed'
+                      : 'border-zinc-700/50 bg-zinc-800/30 hover:border-zinc-600'
                 }`}
               >
                 <div className="flex flex-col items-center gap-2">
@@ -333,15 +267,18 @@ const PaymentPage = ({ scrollUp }) => {
 
               <button
                 onClick={() => handlePaymentMethodSelect('crypto')}
+                disabled={isProcessing}
                 className={`p-4 rounded-lg border transition-all ${
                   paymentMethod === 'crypto'
                     ? 'border-gold bg-gold/20'
-                    : 'border-zinc-700/50 bg-zinc-800/30 hover:border-zinc-600'
+                    : isProcessing 
+                      ? 'border-zinc-700/50 bg-zinc-800/30 opacity-50 cursor-not-allowed'
+                      : 'border-zinc-700/50 bg-zinc-800/30 hover:border-zinc-600'
                 }`}
               >
                 <div className="flex flex-col items-center gap-2">
                   <svg className="w-8 h-8" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm.31-8.86c-1.77-.45-2.34-.94-2.34-1.67 0-.84.79-1.43 2.1-1.43 1.38 0 1.9.66 1.94 1.64h1.71c-.05-1.34-.87-2.57-2.49-2.97V5H10.9v1.69c-1.51.32-2.72 1.3-2.72 2.81 0 1.79 1.49 2.69 3.66 3.21 1.95.46 2.34 1.15 2.34 1.87 0 .53-.39 1.39-2.1 1.39-1.6 0-2.23-.72-2.32-1.64H8.04c.1 1.7 1.36 2.66 2.86 2.97V19h2.34v-1.67c1.52-.29 2.72-1.16 2.73-2.77-.01-2.2-1.9-2.96-3.66-3.42z"/>
+                    <path d="M12.31-8.86c-1.77-.45-2.34-.94-2.34-1.67"/>
                   </svg>
                   <span>USDT (TRC20)</span>
                 </div>
@@ -349,6 +286,7 @@ const PaymentPage = ({ scrollUp }) => {
             </div>
           </div>
 
+          {/* Payment Forms */}
           {paymentMethod === 'card' && (
             <div className="space-y-4">
               <StripePayment 
@@ -382,7 +320,12 @@ const PaymentPage = ({ scrollUp }) => {
               </div>
 
               <div className="flex justify-between">
-                <Button type="button" variant="secondary" onClick={handleBack}>
+                <Button 
+                  type="button" 
+                  variant="secondary" 
+                  onClick={handleBack}
+                  disabled={isProcessing}
+                >
                   Back
                 </Button>
                 <Button 
