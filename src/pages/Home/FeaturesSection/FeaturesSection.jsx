@@ -1,6 +1,6 @@
 import SectionHeading from "../../../components/SectionHeading";
-import FeatureCard from "./FeatureCard";
 import features from "./features";
+import FeatureItem from "./FeatureItem";
 
 const FeaturesSection = () => {
   return (
@@ -10,9 +10,14 @@ const FeaturesSection = () => {
         text="At LIMOS we pride ourselves in delivering extensive services to fulfill all of your
          needs with first rate customer care"
       />
-      <div className="features grid sm:grid-cols-2 md:grid-cols-4 gap-8">
+      <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-12">
         {features.map((feature) => (
-          <FeatureCard {...feature} key={feature.id} />
+          <FeatureItem
+            key={feature.id}
+            icon={feature.featureIcon}
+            heading={feature.heading}
+            text={feature.text}
+          />
         ))}
       </div>
     </div>

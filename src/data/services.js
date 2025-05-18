@@ -1,7 +1,7 @@
-import ImgAirport from "../assets/image-airport-transfers.png?w=400;800&format=webp;png&as=picture";
-import ImgIntercity from "../assets/image-intercity-trips.png?w=400;800&format=webp;png&as=picture";
-import ImgWedding from "../assets/image-wedding-events.png?w=400;800&format=webp;png&as=picture";
-import ImgBusiness from "../assets/image-business-meeting.png?w=400;800&format=webp;png&as=picture";
+import ImgAirport from "../assets/image-airport-transfers.png?w=260;300;400&format=webp;avif;png&as=picture";
+import ImgIntercity from "../assets/image-intercity-trips.png?w=260;300;400&format=webp;avif;png&as=picture";
+import ImgWedding from "../assets/image-wedding-events.png?w=260;300;400&format=webp;avif;png&as=picture";
+import ImgBusiness from "../assets/image-business-meeting.png?w=260;300;400&format=webp;avif;png&as=picture";
 
 const services = [
   {

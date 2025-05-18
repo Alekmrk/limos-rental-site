@@ -10,7 +10,18 @@ dotenv.config()
 export default defineConfig({
   plugins: [
     react(),
-    imagetools()
+    imagetools({
+      defaultDirectives: {
+        // Default quality for WebP and AVIF
+        quality: 80,
+        // Enable progressive loading for JPG
+        progressive: true,
+        // Enable optimization
+        optimizeSvg: true,
+        // Cache optimization results
+        cached: true
+      }
+    })
   ],
   define: {
     'import.meta.env.VITE_GOOGLE_MAPS_API_KEY': JSON.stringify(process.env.VITE_GOOGLE_MAPS_API_KEY)

@@ -1,7 +1,7 @@
-import iconBooking from "../../../assets/feature-online-booking.png?w=64;128&format=webp;png&as=picture";
-import iconPayment from "../../../assets/feature-online-payment.png?w=64;128&format=webp;png&as=picture";
-import iconDrivers from "../../../assets/feature-professional-drivers.png?w=64;128&format=webp;png&as=picture";
-import iconBrands from "../../../assets/feature-variety-of-brands.png?w=64;128&format=webp;png&as=picture";
+import iconBooking from "../../../assets/feature-online-booking.png?w=48;64;96&format=webp;avif;png&as=picture&quality=90";
+import iconPayment from "../../../assets/feature-online-payment.png?w=48;64;96&format=webp;avif;png&as=picture&quality=90";
+import iconDrivers from "../../../assets/feature-professional-drivers.png?w=48;64;96&format=webp;avif;png&as=picture&quality=90";
+import iconBrands from "../../../assets/feature-variety-of-brands.png?w=48;64;96&format=webp;avif;png&as=picture&quality=90";
 const features = [
   {
     id: 1,

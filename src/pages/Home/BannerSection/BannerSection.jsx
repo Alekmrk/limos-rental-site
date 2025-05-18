@@ -1,7 +1,8 @@
 import { Link } from "react-router-dom";
 import Button from "../../../components/Button";
 import ReservationCard from "./ReservationCard";
-import bannerImage from "../../../assets/banner-image.jpg?w=800;1200;1920&format=webp;png&as=picture";
+import Image from "../../../components/Image";
+import bannerImage from "../../../assets/banner-image.jpg?w=640;1280;1920&format=webp;avif;jpg&as=picture";
 
 const BannerSection = () => {
   return (
@@ -17,10 +18,12 @@ const BannerSection = () => {
         <Button variant="secondary">Open Fleet</Button>
       </Link>
 
-      <img 
+      <Image 
         src={bannerImage}
         alt="Banner"
-        className="w-full h-auto"
+        className="w-full h-full object-cover absolute inset-0 -z-10 rounded-[1.5rem] brightness-75"
+        sizes="(max-width: 640px) 640px, (max-width: 1280px) 1280px, 1920px"
+        priority={true}
       />
 
       <ReservationCard />
