@@ -1,8 +1,8 @@
-import imgBenzSClass from "../assets/cars/car-benz-s-class.png?w=400;800;1200&format=webp;png&as=picture";
-import imgBenzVClass from "../assets/cars/car-benz-v-class.png?w=400;800;1200&format=webp;png&as=picture";
-import imgAudiA8 from "../assets/cars/car-audi-a8.png?w=400;800;1200&format=webp;png&as=picture";
-import imgEscalade from "../assets/cars/car-cadillac-escalade.png?w=400;800;1200&format=webp;png&as=picture";
-import imgRoyce from "../assets/cars/car-rolls-royce-ghost.png?w=400;800;1200&format=webp;png&as=picture";
+import imgBenzSClass from "../../assets/cars/car-benz-s-class.png?w=400;800;1200&format=webp;png&as=picture";
+import imgBenzVClass from "../../assets/cars/car-benz-v-class.png?w=400;800;1200&format=webp;png&as=picture";
+import imgAudiA8 from "../../assets/cars/car-audi-a8.png?w=400;800;1200&format=webp;png&as=picture";
+import imgEscalade from "../../assets/cars/car-cadillac-escalade.png?w=400;800;1200&format=webp;png&as=picture";
+import imgRoyce from "../../assets/cars/car-rolls-royce-ghost.png?w=400;800;1200&format=webp;png&as=picture";
 const cars = [
   {
     id: 1,

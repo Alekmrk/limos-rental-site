@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import Button from "../../../components/Button";
 import ReservationCard from "./ReservationCard";
-import bannerImage from "../../assets/banner-image.jpg?w=800;1200;1920&format=webp;png&as=picture";
+import bannerImage from "../../../assets/banner-image.jpg?w=800;1200;1920&format=webp;png&as=picture";
 
 const BannerSection = () => {
   return (
