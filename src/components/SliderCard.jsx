@@ -14,16 +14,11 @@ const SliderCard = ({ index, image, name, seats, luggage, chooseVehicle }) => {
             index === 0 ? "bg-gold/20" : "bg-zinc-900"
           } rounded-[1.5rem] hover:shadow-luxury border border-zinc-800 px-8`}
         >
-          <picture>
-            {image.sources.map((src, i) => (
-              <source key={i} srcSet={src.srcSet} type={src.type} />
-            ))}
-            <img
-              className="car w-full transition"
-              src={image.img.src}
-              alt={name + " - image"}
-            />
-          </picture>
+          <img
+            className="car w-full transition"
+            src={image}
+            alt={name + " - image"}
+          />
         </div>
         <h2 className="text-lg font-medium my-4 text-white">{name}</h2>
         <div className="capacity-info flex gap-2">

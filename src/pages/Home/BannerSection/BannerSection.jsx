@@ -17,12 +17,11 @@ const BannerSection = () => {
         <Button variant="secondary">Open Fleet</Button>
       </Link>
 
-      <picture>
-        {bannerImage.sources.map((src, i) => (
-          <source key={i} srcSet={src.srcSet} type={src.type} />
-        ))}
-        <img src={bannerImage.img.src} alt="Banner" className="w-full h-auto" />
-      </picture>
+      <img 
+        src={bannerImage}
+        alt="Banner"
+        className="w-full h-auto"
+      />
 
       <ReservationCard />
     </div>
