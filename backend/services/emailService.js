@@ -113,19 +113,32 @@ const sendEmail = async (to, subject, content, from = 'noreply', attempt = 1) =>
       timestamp: new Date().toISOString()
     });
 
-    const response = await graphMailService.sendMail(to, subject, content, from);
-    
+    const sender = emailSenders[from] || emailSenders.noreply;
+    const message = {
+      senderAddress: sender.address,
+      content: {
+        subject,
+        plainText: content.text,
+        html: content.html
+      },
+      recipients: {
+        to: [{ address: to }]
+      }
+    };
+
+    const response = await emailClient.send(message);
+
     console.log('Email sent successfully:', {
       to,
       subject,
       from,
-      messageId: response.id,
+      messageId: response.messageId,
       timestamp: new Date().toISOString()
     });
 
     return {
       success: true,
-      messageId: response.id
+      messageId: response.messageId
     };
   } catch (error) {
     console.error(`Email sending failed (attempt ${attempt}):`, {
