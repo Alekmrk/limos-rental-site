@@ -8,6 +8,15 @@ const PaymentSuccess = () => {
   const { reservationInfo, handleInput } = useContext(ReservationContext);
 
   useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const paymentStatus = urlParams.get('payment_intent');
+    
+    if (!paymentStatus && !reservationInfo?.paymentDetails) {
+      // If no payment info, redirect to payment page
+      navigate('/payment');
+      return;
+    }
+
     const completePayment = async () => {
       try {
         // Create payment details
@@ -22,7 +31,7 @@ const PaymentSuccess = () => {
 
         const paymentDetails = {
           method: 'stripe',
-          amount: 1, // Fixed amount
+          amount: reservationInfo.price,
           currency: 'CHF',
           timestamp: now.toISOString(),
           swissTimestamp: swissTime,
@@ -38,7 +47,6 @@ const PaymentSuccess = () => {
         });
 
         // Send confirmation emails
-        console.log('Sending payment confirmation emails...');
         const emailResult = await sendPaymentConfirmation({
           ...reservationInfo,
           paymentDetails
@@ -48,16 +56,12 @@ const PaymentSuccess = () => {
           console.warn('Payment confirmation emails may not have been sent properly:', emailResult.message);
         }
 
-        // Navigate to thank you page after short delay
-        setTimeout(() => {
-          navigate('/thankyou');
-        }, 2000);
+        // Navigate to thank you page
+        navigate('/thankyou', { replace: true });
       } catch (error) {
         console.error('Error completing payment:', error);
         // Still redirect to thank you page even if there's an error
-        setTimeout(() => {
-          navigate('/thankyou');
-        }, 2000);
+        navigate('/thankyou', { replace: true });
       }
     };
 
@@ -66,9 +70,8 @@ const PaymentSuccess = () => {
 
   return (
     <div className="container-default mt-28 text-center">
-      <h1 className="text-4xl font-bold mb-4">Payment Successful</h1>
-      <p className="text-lg mb-4">Thank you for your payment. Your transaction was successful.</p>
-      <p className="text-lg mb-8">You will be redirected to the confirmation page shortly...</p>
+      <h1 className="text-4xl font-bold mb-4">Processing Your Payment</h1>
+      <p className="text-lg mb-4">Please wait while we confirm your payment...</p>
       <div className="animate-spin w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full mx-auto"></div>
     </div>
   );

@@ -57,7 +57,6 @@ const CheckoutForm = ({ amount, onSuccess, onError }) => {
     setErrorMessage('');
 
     try {
-      // First validate the card without submitting
       const { error: validationError } = await elements.submit();
       if (validationError) {
         setErrorMessage(getReadableErrorMessage(validationError.message));
@@ -74,30 +73,29 @@ const CheckoutForm = ({ amount, onSuccess, onError }) => {
       });
 
       if (confirmError) {
-        // Handle specific error types
         const message = getReadableErrorMessage(confirmError.message);
         setErrorMessage(message);
         onError({ ...confirmError, userMessage: message });
+        setIsProcessing(false);
         
-        // If payment requires authentication, let Stripe handle the redirect
         if (confirmError.type === 'card_error' && confirmError.code === 'authentication_required') {
+          // Keep the processing state for 3DS
+          setIsProcessing(true);
           return;
         }
-      } else if (paymentIntent && paymentIntent.status === 'succeeded') {
-        // Payment successful without 3DS
-        onSuccess();
-      } else if (paymentIntent && paymentIntent.status === 'requires_action') {
-        // 3DS required, Stripe will handle the redirect
-        return;
-      } else {
-        // Unexpected state
-        throw new Error('Unexpected payment state');
+      } else if (paymentIntent) {
+        if (paymentIntent.status === 'succeeded') {
+          // Keep processing state true during redirect
+          onSuccess();
+        } else if (paymentIntent.status === 'requires_action') {
+          // Keep processing state true for 3DS
+          return;
+        }
       }
     } catch (err) {
       const message = getReadableErrorMessage(err.message);
       setErrorMessage(message);
       onError({ ...err, userMessage: message });
-    } finally {
       setIsProcessing(false);
     }
   };
@@ -113,7 +111,7 @@ const CheckoutForm = ({ amount, onSuccess, onError }) => {
         disabled={!stripe || isProcessing}
         className="w-full"
       >
-        {isProcessing ? 'Processing...' : `Pay ${amount} CHF`}
+        {isProcessing ? 'Processing Payment...' : `Pay ${amount} CHF`}
       </Button>
     </form>
   );
