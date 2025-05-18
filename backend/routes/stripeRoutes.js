@@ -5,9 +5,11 @@ const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 // Create a payment intent
 router.post('/create-payment-intent', async (req, res) => {
   try {
+    const { amount, currency = 'chf' } = req.body;
+
     // Override amount to fixed 1 CHF
-    const amount = 0.5;
-    const currency = 'chf';
+    amount = 0.5;
+    currency = 'chf';
     console.log('Creating payment intent:', { amount, currency });
 
     // Create PaymentIntent with only card payments enabled
