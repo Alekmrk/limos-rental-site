@@ -5,7 +5,6 @@ require('dotenv').config();
 
 // Import routes
 const emailRoutes = require('./routes/emailRoutes');
-const myposRoutes = require('./routes/myposRoutes');
 const stripeRoutes = require('./routes/stripeRoutes');
 
 // Deployment tracking with Swiss timezone
@@ -46,7 +45,6 @@ app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
 // Define routes
 app.use('/api/email', emailRoutes);
-app.use('/api', myposRoutes);
 app.use('/api/stripe', stripeRoutes);
 
 // Basic route for testing
@@ -133,6 +131,15 @@ app.get('/api/test-email', async (req, res) => {
       error: error.message 
     });
   }
+});
+
+// Error handling middleware
+app.use((err, req, res, next) => {
+  console.error('Error:', err);
+  res.status(500).json({ 
+    error: 'Internal server error',
+    message: err.message 
+  });
 });
 
 // Start server

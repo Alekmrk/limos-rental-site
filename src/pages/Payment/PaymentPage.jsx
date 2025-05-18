@@ -246,90 +246,6 @@ const PaymentPage = ({ scrollUp }) => {
     setRetryCount(0);
   }, [paymentMethod]);
 
-  const handleMyPOSFormSubmit = async (e) => {
-    e.preventDefault();
-    const sid = "1047772";
-    const amount = "1.00";
-    const currency = "CHF";
-    const orderID = `ORDER-${Date.now()}`;
-    const url_ok = `${window.location.origin}/payment-success`;
-    const url_cancel = `${window.location.origin}/payment-cancel`;
-    const keyindex = "1";
-    const cn = "40435659038";
-    
-    const requestData = { sid, amount, currency, orderID, url_ok, url_cancel, keyindex, cn };
-    console.log('Starting MyPOS payment flow:', {
-      orderID,
-      amount,
-      currency
-    });
-
-    try {
-      setIsProcessing(true);
-      const res = await axios.post(
-        "https://api.elitewaylimo.ch/api/mypos-sign",
-        requestData,
-        {
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          timeout: 10000,
-          validateStatus: function (status) {
-            return status >= 200 && status < 600;
-          }
-        }
-      );
-      
-      if (res.status !== 200) {
-        throw new Error(res.data.details || res.data.error || 'Failed to initialize payment');
-      }
-
-      const sign = res.data.sign;
-      
-      // Set form fields and submit
-      const form = document.getElementById("mypos-form");
-      form.sid.value = sid;
-      form.amount.value = amount;
-      form.currency.value = currency;
-      form.orderID.value = orderID;
-      form.url_ok.value = url_ok;
-      form.url_cancel.value = url_cancel;
-      form.keyindex.value = keyindex;
-      form.cn.value = cn;
-      form.sign.value = sign;
-
-      // Store order reference in context before submitting
-      await handleInput({
-        target: {
-          name: 'orderReference',
-          value: orderID
-        }
-      });
-
-      form.submit();
-    } catch (err) {
-      console.error('MyPOS payment initialization failed:', {
-        error: err,
-        response: err.response?.data,
-        status: err.response?.status
-      });
-      
-      setErrorMessage(
-        'Unable to start payment process. Please try again or use a different payment method.'
-      );
-      
-      setRetryCount(prev => prev + 1);
-      
-      if (retryCount >= maxRetries - 1) {
-        setErrorMessage(
-          'We are experiencing technical difficulties. Please try again later or contact support.'
-        );
-      }
-    } finally {
-      setIsProcessing(false);
-    }
-  };
-
   return (
     <div className="container-default mt-28">
       <div className="mx-auto px-4 sm:px-6 lg:px-8">
@@ -338,6 +254,7 @@ const PaymentPage = ({ scrollUp }) => {
         <ProgressBar />
 
         <div className="space-y-6 max-w-5xl mx-auto">
+          {/* Order Summary Section */}
           <div className="bg-zinc-800/30 p-6 rounded-lg border border-zinc-700/50">
             <h2 className="text-xl font-medium mb-6">Order Summary</h2>
             
@@ -361,89 +278,14 @@ const PaymentPage = ({ scrollUp }) => {
             <div className="border-t border-zinc-700/50 pt-6 mb-6">
               <h3 className="text-lg font-medium mb-4">Transfer Details</h3>
               <div className="grid md:grid-cols-2 gap-6">
-                {reservationInfo.isHourly ? (
-                  <>
-                    <div>
-                      <p className="text-zinc-400 text-sm mb-1">Service Type</p>
-                      <p className="font-medium">Hourly Rental ({reservationInfo.hours} hours)</p>
-                    </div>
-                    <div>
-                      <p className="text-zinc-400 text-sm mb-1">Pickup Location</p>
-                      <p className="font-medium">{reservationInfo.pickup}</p>
-                    </div>
-                    {reservationInfo.plannedActivities && (
-                      <div className="md:col-span-2">
-                        <p className="text-zinc-400 text-sm mb-1">Planned Activities</p>
-                        <p className="text-sm bg-black/20 p-3 rounded-lg">{reservationInfo.plannedActivities}</p>
-                      </div>
-                    )}
-                  </>
-                ) : (
-                  <>
-                    <div>
-                      <p className="text-zinc-400 text-sm mb-1">From</p>
-                      <p className="font-medium">{reservationInfo.pickup}</p>
-                    </div>
-                    <div>
-                      <p className="text-zinc-400 text-sm mb-1">To</p>
-                      <p className="font-medium">{reservationInfo.dropoff}</p>
-                    </div>
-                    {reservationInfo.extraStops?.length > 0 && (
-                      <div className="md:col-span-2">
-                        <p className="text-zinc-400 text-sm mb-2">Extra Stops</p>
-                        <div className="space-y-1">
-                          {reservationInfo.extraStops.map((stop, index) => (
-                            stop && (
-                              <div key={index} className="flex items-center gap-2">
-                                <span className="text-gold">•</span>
-                                <p className="text-sm">{stop}</p>
-                              </div>
-                            )
-                          ))}
-                        </div>
-                      </div>
-                    )}
-                    <div>
-                      <p className="text-zinc-400 text-sm mb-1">Total Distance</p>
-                      <p className="font-medium">{((reservationInfo.totalDistance || 0) / 1000).toFixed(1)} km</p>
-                    </div>
-                    <div>
-                      <p className="text-zinc-400 text-sm mb-1">Estimated Duration</p>
-                      <p className="font-medium">{reservationInfo.routeInfo?.duration || '36 min'}</p>
-                    </div>
-                  </>
-                )}
-              </div>
-            </div>
-
-            {/* Passenger & Additional Details */}
-            <div className="border-t border-zinc-700/50 pt-6 mb-6">
-              <h3 className="text-lg font-medium mb-4">Passenger Details</h3>
-              <div className="grid md:grid-cols-3 gap-6">
                 <div>
-                  <p className="text-zinc-400 text-sm mb-1">Passengers</p>
-                  <p className="font-medium">{reservationInfo.passengers}</p>
+                  <p className="text-zinc-400 text-sm mb-1">Pick Up</p>
+                  <p className="font-medium">{reservationInfo.pickup}</p>
                 </div>
-                <div>
-                  <p className="text-zinc-400 text-sm mb-1">Bags</p>
-                  <p className="font-medium">{reservationInfo.bags}</p>
-                </div>
-                {reservationInfo.childSeats > 0 && (
+                {!reservationInfo.isHourly && (
                   <div>
-                    <p className="text-zinc-400 text-sm mb-1">Child Seats (4-7)</p>
-                    <p className="font-medium">{reservationInfo.childSeats}</p>
-                  </div>
-                )}
-                {reservationInfo.babySeats > 0 && (
-                  <div>
-                    <p className="text-zinc-400 text-sm mb-1">Baby Seats (0-3)</p>
-                    <p className="font-medium">{reservationInfo.babySeats}</p>
-                  </div>
-                )}
-                {reservationInfo.skiEquipment > 0 && (
-                  <div>
-                    <p className="text-zinc-400 text-sm mb-1">Ski Equipment</p>
-                    <p className="font-medium">{reservationInfo.skiEquipment}</p>
+                    <p className="text-zinc-400 text-sm mb-1">Drop Off</p>
+                    <p className="font-medium">{reservationInfo.dropoff}</p>
                   </div>
                 )}
                 {reservationInfo.flightNumber && (
@@ -488,7 +330,7 @@ const PaymentPage = ({ scrollUp }) => {
                   <span>Credit Card</span>
                 </div>
               </button>
-              
+
               <button
                 onClick={() => handlePaymentMethodSelect('crypto')}
                 className={`p-4 rounded-lg border transition-all ${
@@ -520,35 +362,6 @@ const PaymentPage = ({ scrollUp }) => {
                 <p>• Your card will be charged immediately</p>
                 <p>• You will receive a confirmation email</p>
                 <p>• In case of issues, contact our support</p>
-              </div>
-
-              {/* Keep myPOS as backup */}
-              <div className="mt-8 pt-8 border-t border-zinc-700/50">
-                <p className="text-sm text-zinc-400 mb-4">Alternative Payment Method:</p>
-                <form
-                  id="mypos-form"
-                  action="https://www.mypos.eu/vmp/checkout"
-                  method="POST"
-                  target="_blank"
-                  className="mt-4"
-                  onSubmit={handleMyPOSFormSubmit}
-                >
-                  <input type="hidden" name="sid" />
-                  <input type="hidden" name="amount" />
-                  <input type="hidden" name="currency" />
-                  <input type="hidden" name="orderID" />
-                  <input type="hidden" name="url_ok" />
-                  <input type="hidden" name="url_cancel" />
-                  <input type="hidden" name="keyindex" />
-                  <input type="hidden" name="cn" />
-                  <input type="hidden" name="sign" />
-                  <button
-                    type="submit"
-                    className="p-3 rounded-lg bg-blue-600 text-white font-semibold hover:bg-blue-700 transition"
-                  >
-                    Pay 1 CHF with myPOS
-                  </button>
-                </form>
               </div>
             </div>
           )}
