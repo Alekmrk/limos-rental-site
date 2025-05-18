@@ -63,7 +63,7 @@ const PaymentPage = ({ scrollUp }) => {
     }
 
     // Override calculated price with fixed amount
-    setPrice(0.1);
+    setPrice(0.5);
   }, [reservationInfo]);
 
   const handlePaymentMethodSelect = (method) => {
