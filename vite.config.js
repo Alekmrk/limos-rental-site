@@ -74,19 +74,50 @@ export default defineConfig({
     })
   ],
   build: {
+    target: 'esnext',
+    minify: 'terser',
+    terserOptions: {
+      compress: {
+        drop_console: true,
+        drop_debugger: true
+      }
+    },
     rollupOptions: {
       output: {
-        assetFileNames: (assetInfo) => {
-          // Add content hash to image files for cache busting
-          if (assetInfo.name.match(/\.(jpe?g|png|gif|tiff|webp|svg|avif)$/i)) {
-            return 'assets/images/[name]-[hash][extname]'
-          }
-          return 'assets/[name]-[hash][extname]'
+        manualChunks: {
+          'react-vendor': ['react', 'react-dom', 'react-router-dom'],
+          'maps-vendor': ['@react-google-maps/api'],
+          'stripe-vendor': ['@stripe/stripe-js', '@stripe/react-stripe-js'],
+          'ui-vendor': ['@fortawesome/react-fontawesome', '@fortawesome/free-solid-svg-icons', '@fortawesome/free-brands-svg-icons'],
         },
-      },
-    },
+        assetFileNames: (assetInfo) => {
+          const imgType = /\.(png|jpe?g|svg|gif|tiff|bmp|ico)$/i;
+          const fontType = /\.(woff|woff2|eot|ttf|otf)$/i;
+          
+          if (imgType.test(assetInfo.name)) {
+            return 'assets/images/[name]-[hash][extname]';
+          }
+          
+          if (fontType.test(assetInfo.name)) {
+            return 'assets/fonts/[name]-[hash][extname]';
+          }
+          
+          return 'assets/[name]-[hash][extname]';
+        }
+      }
+    }
   },
   define: {
     'import.meta.env.VITE_GOOGLE_MAPS_API_KEY': JSON.stringify(process.env.VITE_GOOGLE_MAPS_API_KEY)
+  },
+  server: {
+    headers: {
+      'Cache-Control': 'public, max-age=31536000'
+    }
+  },
+  preview: {
+    headers: {
+      'Cache-Control': 'public, max-age=31536000'
+    }
   }
 })

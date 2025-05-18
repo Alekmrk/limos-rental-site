@@ -2,6 +2,9 @@ import { useEffect, useRef, useState } from 'react';
 import { useRouteCalculation } from '../hooks/useRouteCalculation';
 import { useGoogleMapsApi } from '../hooks/useGoogleMapsApi';
 
+const DEFAULT_CENTER = { lat: 46.8182, lng: 8.2275 }; // Switzerland center
+const DEFAULT_ZOOM = 8;
+
 const MapPreview = ({ origin, destination, extraStops = [], onRouteCalculated }) => {
   const mapRef = useRef(null);
   const [map, setMap] = useState(null);
@@ -27,7 +30,7 @@ const MapPreview = ({ origin, destination, extraStops = [], onRouteCalculated })
     }
   }, [isLoaded]);
 
-  // Initialize map only when we have all required data
+  // Initialize map with performance optimizations
   useEffect(() => {
     if (!isLoaded || !directionsServiceAvailable || !origin || mapInitializedRef.current) {
       return;
@@ -35,9 +38,9 @@ const MapPreview = ({ origin, destination, extraStops = [], onRouteCalculated })
 
     // Initialize map if not already done
     if (!map && mapRef.current) {
-      const newMap = new window.google.maps.Map(mapRef.current, {
-        zoom: 8,
-        center: { lat: 46.8182, lng: 8.2275 }, // Switzerland center
+      const mapOptions = {
+        zoom: DEFAULT_ZOOM,
+        center: DEFAULT_CENTER,
         // Minimal styles for better performance
         styles: [
           {
@@ -50,32 +53,51 @@ const MapPreview = ({ origin, destination, extraStops = [], onRouteCalculated })
             elementType: 'labels.text.fill',
             stylers: [{ color: '#ffffff' }]
           }
-        ]
-      });
+        ],
+        // Performance optimizations
+        gestureHandling: 'cooperative',
+        disableDefaultUI: true,
+        zoomControl: true,
+        mapTypeControl: false,
+        scaleControl: true,
+        streetViewControl: false,
+        rotateControl: false,
+        fullscreenControl: false,
+        // Optimize tiles loading
+        tilt: 0,
+        maxZoom: 16
+      };
+
+      const newMap = new window.google.maps.Map(mapRef.current, mapOptions);
       setMap(newMap);
       mapInitializedRef.current = true;
 
-      // Always initialize DirectionsRenderer
-      const newDirectionsRenderer = new window.google.maps.DirectionsRenderer({
+      // Initialize DirectionsRenderer with optimized settings
+      const rendererOptions = {
         suppressMarkers: false,
+        preserveViewport: false,
         polylineOptions: {
           strokeColor: '#D4AF37',
-          strokeWeight: 4
+          strokeWeight: 4,
+          geodesic: true
         }
-      });
+      };
+
+      const newDirectionsRenderer = new window.google.maps.DirectionsRenderer(rendererOptions);
       newDirectionsRenderer.setMap(newMap);
       directionsRendererRef.current = newDirectionsRenderer;
       setDirectionsRenderer(newDirectionsRenderer);
     }
 
-    // For hourly mode (no destination), just show a marker at the pickup location
+    // For hourly mode (no destination), optimize marker rendering
     if (!destination && map) {
       const geocoder = new window.google.maps.Geocoder();
       geocoder.geocode({ address: origin }, (results, status) => {
         if (status === 'OK') {
-          new window.google.maps.Marker({
+          const marker = new window.google.maps.Marker({
             map: map,
             position: results[0].geometry.location,
+            optimized: true, // Enable marker optimization
             icon: {
               path: window.google.maps.SymbolPath.CIRCLE,
               fillColor: '#D4AF37',
@@ -93,7 +115,7 @@ const MapPreview = ({ origin, destination, extraStops = [], onRouteCalculated })
     }
   }, [map, origin, destination, isLoaded, directionsServiceAvailable]);
 
-  // Update route on map when routeInfo changes
+  // Update route on map with optimized rendering
   useEffect(() => {
     if (directionsRendererRef.current && routeInfo?.route && !hasEmptyStops) {
       try {
@@ -105,19 +127,22 @@ const MapPreview = ({ origin, destination, extraStops = [], onRouteCalculated })
             travelMode: 'DRIVING'
           }
         };
-        directionsRendererRef.current.setDirections(directionsResult);
+        
+        requestAnimationFrame(() => {
+          directionsRendererRef.current.setDirections(directionsResult);
+          
+          if (onRouteCalculated) {
+            onRouteCalculated({
+              ...routeInfo,
+              optimizedWaypoints: routeInfo.waypoints
+            });
+          }
 
-        if (onRouteCalculated) {
-          onRouteCalculated({
-            ...routeInfo,
-            optimizedWaypoints: routeInfo.waypoints
-          });
-        }
-
-        // Fit bounds to show the entire route
-        if (map && routeInfo.route.bounds) {
-          map.fitBounds(routeInfo.route.bounds);
-        }
+          // Optimize viewport changes
+          if (map && routeInfo.route.bounds) {
+            map.fitBounds(routeInfo.route.bounds);
+          }
+        });
       } catch (error) {
         console.error('Error setting directions:', error);
       }
