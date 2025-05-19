@@ -224,6 +224,12 @@ const PaymentPage = ({ scrollUp }) => {
                     <p className="font-medium">{reservationInfo.dropoff}</p>
                   </div>
                 )}
+                {reservationInfo.isHourly && (
+                  <div>
+                    <p className="text-zinc-400 text-sm mb-1">Duration</p>
+                    <p className="font-medium">{reservationInfo.hours} hours</p>
+                  </div>
+                )}
                 {reservationInfo.flightNumber && (
                   <div>
                     <p className="text-zinc-400 text-sm mb-1">Flight Number</p>
@@ -231,6 +237,12 @@ const PaymentPage = ({ scrollUp }) => {
                   </div>
                 )}
               </div>
+              {reservationInfo.isHourly && reservationInfo.plannedActivities && (
+                <div className="mt-6">
+                  <p className="text-zinc-400 text-sm mb-2">Planned Activities</p>
+                  <p className="text-sm bg-black/20 p-3 rounded-lg">{reservationInfo.plannedActivities}</p>
+                </div>
+              )}
               {reservationInfo.additionalRequests && (
                 <div className="mt-6">
                   <p className="text-zinc-400 text-sm mb-2">{reservationInfo.isSpecialRequest ? 'Special Request Details' : 'Additional Requests'}</p>
