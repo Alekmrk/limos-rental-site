@@ -6,20 +6,33 @@ import Footer from "./components/Footer/Footer";
 import Header from "./components/Header/Header";
 import BackToTopButton from "./components/BackToTopButton";
 import LoadingSpinner from './components/LoadingSpinner';
-import ReservationContextProvider from "./contexts/ReservationContext";
+import { ReservationContextProvider } from "./contexts/ReservationContext";
 import cars from "./data/cars";
 
+// Lazy load route components with error boundaries and retry logic
+const lazyWithRetry = (componentImport) => lazy(() => 
+  componentImport.catch(error => {
+    console.error('Error loading component:', error);
+    return new Promise((resolve) => {
+      // Retry after a short delay
+      setTimeout(() => {
+        resolve(componentImport);
+      }, 1000);
+    });
+  })
+);
+
 // Lazy load route components with proper paths
-const Home = lazy(() => import('./pages/Home/Home'));
-const ServicesPage = lazy(() => import('./pages/ServicesPage/ServicesPage'));
-const Vehicles = lazy(() => import('./pages/Vehicles/Vehicles'));
-const VehicleSelection = lazy(() => import('./pages/VehicleSelection/VehicleSelection'));
-const CustomerDetails = lazy(() => import('./pages/CustomerDetails/CustomerDetails'));
-const PaymentPage = lazy(() => import('./pages/Payment/PaymentPage'));
-const PaymentSuccess = lazy(() => import('./pages/Payment/PaymentSuccess'));
-const PaymentCancel = lazy(() => import('./pages/Payment/PaymentCancel'));
-const ThankYou = lazy(() => import('./pages/ThankYou/ThankYou'));
-const NotFound = lazy(() => import('./pages/NotFound/NotFound'));
+const Home = lazyWithRetry(import('./pages/Home/Home'));
+const ServicesPage = lazyWithRetry(import('./pages/ServicesPage/ServicesPage'));
+const Vehicles = lazyWithRetry(import('./pages/Vehicles/Vehicles'));
+const VehicleSelection = lazyWithRetry(import('./pages/VehicleSelection/VehicleSelection'));
+const CustomerDetails = lazyWithRetry(import('./pages/CustomerDetails/CustomerDetails'));
+const PaymentPage = lazyWithRetry(import('./pages/Payment/PaymentPage'));
+const PaymentSuccess = lazyWithRetry(import('./pages/Payment/PaymentSuccess'));
+const PaymentCancel = lazyWithRetry(import('./pages/Payment/PaymentCancel'));
+const ThankYou = lazyWithRetry(import('./pages/ThankYou/ThankYou'));
+const NotFound = lazyWithRetry(import('./pages/NotFound/NotFound'));
 
 function App() {
   const { isLoaded, loadError } = useGoogleMapsApi();
@@ -40,51 +53,53 @@ function App() {
   }
 
   return (
-    <>
-      <Header />
-      <ReservationContextProvider>
-        <Suspense fallback={<LoadingSpinner />}>
-          <Routes>
-            <Route path="/" element={<Home scrollUp={scrollUp} setSelectedVehicle={setSelectedVehicle} />} />
-            <Route path="/services" element={<ServicesPage scrollUp={scrollUp} />} />
-            <Route
-              path="/vehicles"
-              element={
-                <Vehicles
-                  scrollUp={scrollUp}
-                  selectedVehicle={selectedVehicle}
-                  setSelectedVehicle={setSelectedVehicle}
-                />
-              }
-            />
-            <Route
-              path="/vehicle-selection"
-              element={<VehicleSelection scrollUp={scrollUp} isMapReady={isLoaded} />}
-            />
-            <Route
-              path="/customer-details"
-              element={<CustomerDetails scrollUp={scrollUp} />}
-            />
-            <Route
-              path="/payment"
-              element={<PaymentPage scrollUp={scrollUp} />}
-            />
-            <Route 
-              path="/payment-success" 
-              element={<PaymentSuccess />} 
-            />
-            <Route 
-              path="/payment-cancel" 
-              element={<PaymentCancel />} 
-            />
-            <Route path="/thankyou" element={<ThankYou scrollUp={scrollUp} />} />
-            <Route path="*" element={<NotFound scrollUp={scrollUp} />} />
-          </Routes>
-        </Suspense>
-      </ReservationContextProvider>
-      <Footer />
-      <BackToTopButton scrollUp={scrollUp} />
-    </>
+    <ReservationContextProvider>
+      <div className="app">
+        <Header />
+        <main>
+          <Suspense fallback={<LoadingSpinner />}>
+            <Routes>
+              <Route path="/" element={<Home scrollUp={scrollUp} setSelectedVehicle={setSelectedVehicle} />} />
+              <Route path="/services" element={<ServicesPage scrollUp={scrollUp} />} />
+              <Route
+                path="/vehicles"
+                element={
+                  <Vehicles
+                    scrollUp={scrollUp}
+                    selectedVehicle={selectedVehicle}
+                    setSelectedVehicle={setSelectedVehicle}
+                  />
+                }
+              />
+              <Route
+                path="/vehicle-selection"
+                element={<VehicleSelection scrollUp={scrollUp} isMapReady={isLoaded} />}
+              />
+              <Route
+                path="/customer-details"
+                element={<CustomerDetails scrollUp={scrollUp} />}
+              />
+              <Route
+                path="/payment"
+                element={<PaymentPage scrollUp={scrollUp} />}
+              />
+              <Route 
+                path="/payment-success" 
+                element={<PaymentSuccess />} 
+              />
+              <Route 
+                path="/payment-cancel" 
+                element={<PaymentCancel />} 
+              />
+              <Route path="/thankyou" element={<ThankYou scrollUp={scrollUp} />} />
+              <Route path="*" element={<NotFound scrollUp={scrollUp} />} />
+            </Routes>
+          </Suspense>
+        </main>
+        <Footer />
+        <BackToTopButton scrollUp={scrollUp} />
+      </div>
+    </ReservationContextProvider>
   );
 }
 

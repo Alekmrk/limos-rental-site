@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react';
 
 const GOOGLE_MAPS_API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
+const LOADING_TIMEOUT = 30000; // 30 seconds timeout
 
 // Cache promise to prevent multiple loads
 let loadPromise = null;
+let initializationTimer = null;
 
 export const loadGoogleMapsApi = () => {
   if (loadPromise) {
@@ -25,7 +27,7 @@ export const loadGoogleMapsApi = () => {
 
   // Create script element with optimized loading
   const script = document.createElement('script');
-  script.src = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_API_KEY}&callback=initGoogleMaps&libraries=places`;
+  script.src = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_API_KEY}&libraries=places`;
   script.async = true;
   script.defer = true;
   
@@ -35,22 +37,40 @@ export const loadGoogleMapsApi = () => {
   
   // Cache the promise
   loadPromise = new Promise((resolve, reject) => {
-    window.initGoogleMaps = () => {
+    // Set a timeout to prevent hanging
+    initializationTimer = setTimeout(() => {
+      reject(new Error('Google Maps initialization timed out'));
+      loadPromise = null; // Reset the promise to allow retry
+    }, LOADING_TIMEOUT);
+
+    // Success handler
+    const handleLoad = () => {
+      clearTimeout(initializationTimer);
       if (window.google?.maps) {
         resolve(window.google.maps);
       } else {
         reject(new Error('Failed to load Google Maps API'));
       }
-      delete window.initGoogleMaps;
-      script.remove();
+      cleanup();
     };
 
-    script.onerror = () => {
+    // Error handler
+    const handleError = () => {
+      clearTimeout(initializationTimer);
       reject(new Error('Failed to load Google Maps API script'));
-      delete window.initGoogleMaps;
+      loadPromise = null; // Reset the promise to allow retry
+      cleanup();
+    };
+
+    // Cleanup function
+    const cleanup = () => {
+      script.removeEventListener('load', handleLoad);
+      script.removeEventListener('error', handleError);
       script.remove();
     };
 
+    script.addEventListener('load', handleLoad);
+    script.addEventListener('error', handleError);
     document.head.appendChild(script);
   });
 
@@ -67,12 +87,17 @@ export const useGoogleMapsApi = () => {
     if (!isLoaded) {
       loadGoogleMapsApi()
         .then(() => {
-          if (isMounted) setIsLoaded(true);
+          if (isMounted) {
+            setIsLoaded(true);
+            setLoadError(null);
+          }
         })
         .catch(error => {
           if (isMounted) {
             console.error('Error loading Google Maps:', error);
             setLoadError(error);
+            // Reset loaded state to allow retry
+            setIsLoaded(false);
           }
         });
     }
