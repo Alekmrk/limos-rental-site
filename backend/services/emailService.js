@@ -264,6 +264,9 @@ const generateEmailContent = (reservationInfo, type = 'customer') => {
     .section-title { color: gold; font-size: 18px; font-weight: 500; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
     .section-content { color: #fff; }
     .section-content p { margin: 8px 0; }
+    .section-content .subsection { margin-top: 16px; }
+    .section-content .subsection-title { color: #ccc; font-size: 14px; margin-bottom: 8px; }
+    .section-content .indent { padding-left: 16px; }
     .detail-row { margin-bottom: 12px; }
     .footer { text-align: center; margin-top: 20px; color: #888; font-size: 12px; }
   `;
@@ -282,56 +285,75 @@ const generateEmailContent = (reservationInfo, type = 'customer') => {
 
   // Icons (SVG)
   const icons = {
-    transfer: '<svg style="width: 20px; height: 20px;" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 010-5 2.5 2.5 0 010 5z"/></svg>',
+    transfer: '<svg style="width: 20px; height: 20px;" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>',
     vehicle: '<svg style="width: 20px; height: 20px;" viewBox="0 0 24 24" fill="currentColor"><path d="M21 12v-2h-2V7l-3-3-2 2-2-2-2 2-2-2-3 3v3H3v2h2v7h14v-7h2zm-5-3.5l2 2V10h-4V8.5l2-2zm-4 0l2 2V10h-4V8.5l2-2zm-4 0l2 2V10H6V8.5l2-2z"/></svg>',
     customer: '<svg style="width: 20px; height: 20px;" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>'
   };
 
-  // Generate transfer details section
+  // Generate transfer/request details section
   const transferDetails = isSpecialRequest 
     ? `
       <p>Date: ${formatDate(reservationInfo.date)}</p>
       <p>Preferred Time: ${reservationInfo.time} (CET)</p>
-      ${reservationInfo.specialRequestDetails ? `<p>Special Request: ${reservationInfo.specialRequestDetails}</p>` : ''}
+      <div class="subsection">
+        <p class="subsection-title">Special Request:</p>
+        <p>${reservationInfo.specialRequestDetails}</p>
+      </div>
     `
     : `
-      <p>From: ${reservationInfo.pickup}</p>
-      ${reservationInfo.extraStops?.map(stop => stop ? `<p style="padding-left: 16px;">• ${stop}</p>` : '').join('') || ''}
-      <p>To: ${reservationInfo.dropoff}</p>
       <p>Date: ${formatDate(reservationInfo.date)}</p>
-      <p>Time: ${reservationInfo.time} (CET)</p>
+      <p>${isSpecialRequest ? 'Preferred Time' : 'Pick Up Time'}: ${reservationInfo.time} (CET)</p>
+      <p>From: ${reservationInfo.pickup}</p>
+      ${!reservationInfo.isHourly ? reservationInfo.extraStops?.map(stop => stop ? `<p class="indent">• ${stop}</p>` : '').join('') : ''}
+      ${!reservationInfo.isHourly 
+        ? `<p>To: ${reservationInfo.dropoff}</p>`
+        : `<p>Duration: ${reservationInfo.hours} hours</p>`
+      }
+      ${reservationInfo.isHourly && reservationInfo.plannedActivities ? `
+        <div class="subsection">
+          <p class="subsection-title">Planned Activities:</p>
+          <p>${reservationInfo.plannedActivities}</p>
+        </div>
+      ` : ''}
+      ${!reservationInfo.isHourly && reservationInfo.routeInfo ? `
+        <div class="subsection">
+          <p class="subsection-title">Route Information:</p>
+          <p>Distance: ${reservationInfo.routeInfo.distance}</p>
+          <p>Duration: ${reservationInfo.routeInfo.duration}</p>
+        </div>
+      ` : ''}
     `;
 
   // Generate vehicle details section
-  const vehicleDetails = `
-    ${reservationInfo.selectedVehicle ? `<p>Vehicle: ${reservationInfo.selectedVehicle.name}</p>` : ''}
+  const vehicleDetails = !isSpecialRequest ? `
+    <p>Vehicle: ${reservationInfo.selectedVehicle?.name}</p>
     <p>Passengers: ${reservationInfo.passengers}</p>
     <p>Bags: ${reservationInfo.bags}</p>
-    ${reservationInfo.childSeats > 0 ? `<p>Child Seats: ${reservationInfo.childSeats}</p>` : ''}
-    ${reservationInfo.babySeats > 0 ? `<p>Baby Seats: ${reservationInfo.babySeats}</p>` : ''}
+    ${reservationInfo.childSeats > 0 ? `<p>Child Seats (4-7): ${reservationInfo.childSeats}</p>` : ''}
+    ${reservationInfo.babySeats > 0 ? `<p>Baby Seats (0-3): ${reservationInfo.babySeats}</p>` : ''}
     ${reservationInfo.skiEquipment > 0 ? `<p>Ski Equipment: ${reservationInfo.skiEquipment}</p>` : ''}
-  `;
+    ${hasPayment ? `
+      <div class="subsection">
+        <p class="subsection-title">Payment Information:</p>
+        <p>Method: ${reservationInfo.paymentDetails.method}</p>
+        <p>Amount: ${reservationInfo.paymentDetails.currency} ${reservationInfo.paymentDetails.amount}</p>
+        <p>Reference: ${reservationInfo.paymentDetails.reference}</p>
+      </div>
+    ` : ''}
+  ` : '';
 
   // Generate customer details section
   const customerDetails = `
     <p>Email: ${reservationInfo.email}</p>
     <p>Phone: ${reservationInfo.phone}</p>
     ${reservationInfo.flightNumber ? `<p>Flight Number: ${reservationInfo.flightNumber}</p>` : ''}
-    ${reservationInfo.additionalRequests ? `<p>Additional Requests: ${reservationInfo.additionalRequests}</p>` : ''}
-  `;
-
-  // Payment details section (if applicable)
-  const paymentSection = hasPayment ? `
-    <div class="section" style="border-left: 4px solid gold;">
-      <h3 class="section-title">Payment Details</h3>
-      <div class="section-content">
-        <p>Payment Method: ${reservationInfo.paymentDetails.method}</p>
-        <p>Amount: ${reservationInfo.paymentDetails.currency} ${reservationInfo.paymentDetails.amount}</p>
-        <p>Reference: ${reservationInfo.paymentDetails.reference}</p>
-        <p>Date: ${formatPaymentDateTime(reservationInfo.paymentDetails.timestamp)}</p>
+    ${reservationInfo.additionalRequests ? `
+      <div class="subsection">
+        <p class="subsection-title">Additional Requests:</p>
+        <p>${reservationInfo.additionalRequests}</p>
       </div>
-    </div>
-  ` : '';
+    ` : ''}
+  `;
 
   // Generate HTML content
   const htmlContent = `
@@ -353,13 +375,12 @@ const generateEmailContent = (reservationInfo, type = 'customer') => {
             </p>
           </div>
           
-          ${paymentSection}
-          
-          ${generateSection('Transfer Details', icons.transfer, transferDetails)}
-          ${generateSection('Vehicle Details', icons.vehicle, vehicleDetails)}
+          ${generateSection(isSpecialRequest ? 'Request Details' : 'Transfer Details', icons.transfer, transferDetails)}
+          ${!isSpecialRequest ? generateSection('Vehicle Details', icons.vehicle, vehicleDetails) : ''}
           ${generateSection('Customer Details', icons.customer, customerDetails)}
 
           <div style="text-align: center; color: #ccc; margin-top: 32px;">
+            <p>${getEmailOutro(reservationInfo, type)}</p>
             <p>If you have any questions, please contact us at info@elitewaylimo.ch</p>
           </div>
         </div>
