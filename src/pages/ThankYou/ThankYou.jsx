@@ -104,9 +104,10 @@ const ThankYou = ({ scrollUp }) => {
             </div>
           )}
 
-          <div className="grid md:grid-cols-3 gap-6 mb-8">
+          {/* Grid container for all boxes */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 mb-8">
             {/* Transfer/Request Details Section */}
-            <div className="bg-black/20 p-6 rounded-lg h-full">
+            <div className="bg-black/20 p-4 md:p-6 rounded-lg h-full">
               <h3 className="text-gold font-medium mb-4 flex items-center gap-2">
                 <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
                   <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
@@ -153,7 +154,7 @@ const ThankYou = ({ scrollUp }) => {
 
             {/* Vehicle Details Section - Hidden for Special Requests */}
             {!reservationInfo.isSpecialRequest && (
-              <div className="bg-black/20 p-6 rounded-lg h-full">
+              <div className="bg-black/20 p-4 md:p-6 rounded-lg h-full">
                 <h3 className="text-gold font-medium mb-4 flex items-center gap-2">
                   <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M21 12v-2h-2V7l-3-3-2 2-2-2-2 2-2-2-3 3v3H3v2h2v7h14v-7h2zm-5-3.5l2 2V10h-4V8.5l2-2zm-4 0l2 2V10h-4V8.5l2-2zm-4 0l2 2V10H6V8.5l2-2z"/>
@@ -178,7 +179,7 @@ const ThankYou = ({ scrollUp }) => {
             )}
 
             {/* Customer Details Section */}
-            <div className="bg-black/20 p-6 rounded-lg h-full">
+            <div className="bg-black/20 p-4 md:p-6 rounded-lg h-full">
               <h3 className="text-gold font-medium mb-4 flex items-center gap-2">
                 <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
                   <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
@@ -200,9 +201,9 @@ const ThankYou = ({ scrollUp }) => {
               </div>
             </div>
 
-            {/* Additional/Special Information Section - Only shown for Special Requests */}
+            {/* Additional Information Section - Only shown for Special Requests */}
             {reservationInfo.isSpecialRequest && reservationInfo.additionalRequests && (
-              <div className="bg-black/20 p-6 rounded-lg h-full">
+              <div className="bg-black/20 p-4 md:p-6 rounded-lg h-full">
                 <h3 className="text-gold font-medium mb-4 flex items-center gap-2">
                   <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-7 9h-2V5h2v6zm0 4h-2v-2h2v2z"/>
