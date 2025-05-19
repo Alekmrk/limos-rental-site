@@ -78,7 +78,10 @@ const CheckoutForm = ({ amount, onSuccess, onError }) => {
       if (confirmError) {
         const message = getReadableErrorMessage(confirmError.message);
         setErrorMessage(message);
-        onError({ ...confirmError, userMessage: message });
+        // Only propagate non-validation errors to parent
+        if (confirmError.type !== 'validation_error' && confirmError.type !== 'card_error') {
+          onError({ ...confirmError, userMessage: message });
+        }
 
         if (confirmError.type === 'card_error' && confirmError.code === 'authentication_required') {
           return; // Keep processing state for 3DS
@@ -94,7 +97,10 @@ const CheckoutForm = ({ amount, onSuccess, onError }) => {
     } catch (err) {
       const message = getReadableErrorMessage(err.message);
       setErrorMessage(message);
-      onError({ ...err, userMessage: message });
+      // Only propagate non-validation errors
+      if (err.type !== 'validation_error' && err.type !== 'card_error') {
+        onError({ ...err, userMessage: message });
+      }
       setIsProcessing(false);
     }
   };

@@ -129,15 +129,18 @@ const PaymentPage = ({ scrollUp }) => {
     console.error("Payment error:", error);
     setIsProcessing(false);
 
-    const message = error.userMessage || "There was a problem processing your payment. Please try again.";
-    setErrorMessage(message);
+    // Don't show payment validation errors in the bottom error box
+    if (error.userMessage && (error.type === 'validation_error' || error.type === 'card_error')) {
+      setErrorMessage('');
+    } else {
+      setErrorMessage(error.userMessage || "There was a problem processing your payment. Please try again.");
+      setRetryCount(prev => prev + 1);
 
-    setRetryCount(prev => prev + 1);
-
-    if (retryCount >= maxRetries - 1) {
-      setErrorMessage(
-        "We're having trouble processing your card. You might want to try our alternative payment method below or contact support."
-      );
+      if (retryCount >= maxRetries - 1) {
+        setErrorMessage(
+          "We're having trouble processing your card. You might want to try our alternative payment method below or contact support."
+        );
+      }
     }
   };
 
@@ -343,7 +346,8 @@ const PaymentPage = ({ scrollUp }) => {
             </div>
           )}
 
-          {errorMessage && (
+          {/* Only show bottom error box for processing errors or system issues */}
+          {errorMessage && retryCount > 0 && (
             <div className="bg-red-900/20 border border-red-500/50 rounded-lg p-4 mb-6">
               <p className="text-red-400">{errorMessage}</p>
               {retryCount >= maxRetries - 1 && (
