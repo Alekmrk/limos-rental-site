@@ -81,13 +81,28 @@ export default defineConfig({
     cssMinify: true,
     rollupOptions: {
       output: {
-        manualChunks: {
-          'google-maps': ['@googlemaps/js-api-loader'],
-          'react-vendor': ['react', 'react-dom', 'react-router-dom'],
-          'utils': ['date-fns', 'lodash'],
-          'maps-vendor': ['@react-google-maps/api'],
-          'stripe-vendor': ['@stripe/stripe-js', '@stripe/react-stripe-js'],
-          'ui-vendor': ['@fortawesome/react-fontawesome', '@fortawesome/free-solid-svg-icons', '@fortawesome/free-brands-svg-icons'],
+        manualChunks: (id) => {
+          if (id.includes('node_modules')) {
+            if (id.includes('@googlemaps')) {
+              return 'google-maps';
+            }
+            if (id.includes('react') || id.includes('react-dom') || id.includes('react-router')) {
+              return 'react-vendor';
+            }
+            if (id.includes('date-fns') || id.includes('lodash')) {
+              return 'utils';
+            }
+            if (id.includes('@react-google-maps')) {
+              return 'maps-vendor';
+            }
+            if (id.includes('@stripe')) {
+              return 'stripe-vendor';
+            }
+            if (id.includes('@fortawesome')) {
+              return 'ui-vendor';
+            }
+            return 'vendor';
+          }
         },
         assetFileNames: (assetInfo) => {
           const imgType = /\.(png|jpe?g|svg|gif|tiff|bmp|ico)$/i;
