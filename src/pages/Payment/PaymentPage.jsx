@@ -50,9 +50,7 @@ const PaymentPage = ({ scrollUp }) => {
       reservationInfo.isHourly,
       reservationInfo.isHourly ? parseInt(reservationInfo.hours) : 0
     );
-    
-    //setPrice(calculatedPrice || 0);
-    setPrice(0.5);
+    setPrice(calculatedPrice || 0);
   }, [reservationInfo]);
 
   const handlePaymentMethodSelect = (method) => {

@@ -7,12 +7,12 @@ router.post('/create-payment-intent', async (req, res) => {
   try {
     const { amount, currency = 'chf' } = req.body;
 
-    // Override amount to fixed 1 CHF
-    amount = 0.5;
-    currency = 'chf';
+    if (!amount || amount <= 0) {
+      return res.status(400).json({ error: 'Invalid amount' });
+    }
+
     console.log('Creating payment intent:', { amount, currency });
 
-    // Create PaymentIntent with only card payments enabled
     const paymentIntent = await stripe.paymentIntents.create({
       amount: Math.round(amount * 100), // Convert to cents
       currency: currency.toLowerCase(),
