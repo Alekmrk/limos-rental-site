@@ -1,12 +1,16 @@
 import { useLocation, useNavigate } from "react-router-dom";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import ReservationContext from "../contexts/ReservationContext";
 
 const ProgressBar = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { reservationInfo } = useContext(ReservationContext);
-  
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [location.pathname]);
+
   const regularSteps = [
     { path: "/vehicle-selection", label: "Vehicle " },
     { path: "/customer-details", label: "Customer Info" },
