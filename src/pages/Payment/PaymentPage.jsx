@@ -49,7 +49,9 @@ const PaymentPage = ({ scrollUp }) => {
       reservationInfo.isHourly ? parseInt(reservationInfo.hours) : 0
     );
     
-    setPrice(calculatedPrice || 0);
+    //setPrice(calculatedPrice || 0);
+    // Overriding the price to a fixed value for cheap testing
+    setPrice(0.5);
   }, [reservationInfo]);
 
   const handlePaymentMethodSelect = (method) => {
