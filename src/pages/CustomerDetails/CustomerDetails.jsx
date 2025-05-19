@@ -73,9 +73,16 @@ const CustomerDetails = ({ scrollUp }) => {
     }
   };
 
+
   useEffect(() => {
-    scrollUp();
-  }, [scrollUp]);
+    const ensureScrollUp = () => {
+      window.scrollTo(0, 0);
+    };
+
+    const timeoutId = setTimeout(ensureScrollUp, 100); // Add a slightly longer delay for reliability
+
+    return () => clearTimeout(timeoutId); // Cleanup timeout on unmount
+  }, []);
 
   return (
     <div className="container-default mt-28">
