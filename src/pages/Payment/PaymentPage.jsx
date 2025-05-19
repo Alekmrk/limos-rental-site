@@ -104,6 +104,19 @@ const PaymentPage = ({ scrollUp }) => {
         }
       });
 
+      // Send confirmation emails
+      console.log('Sending payment confirmation emails...');
+      const emailResult = await sendPaymentConfirmation({
+        ...reservationInfo,
+        paymentDetails
+      });
+
+      if (!emailResult.success) {
+        console.warn('Payment confirmation emails may not have been sent properly:', emailResult.message);
+      } else {
+        console.log('Payment confirmation emails sent successfully!');
+      }
+
       navigate('/thankyou');
     } catch (error) {
       console.error("Error processing successful payment:", error);
