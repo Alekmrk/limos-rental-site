@@ -8,7 +8,13 @@ const ProgressBar = () => {
   const { reservationInfo } = useContext(ReservationContext);
 
   useEffect(() => {
-    window.scrollTo(0, 0);
+    const scrollToTop = () => {
+      window.scrollTo(0, 0);
+    };
+
+    const timeoutId = setTimeout(scrollToTop, 100); // Add a small delay to ensure the page is rendered
+
+    return () => clearTimeout(timeoutId); // Cleanup timeout on unmount
   }, [location.pathname]);
 
   const regularSteps = [
