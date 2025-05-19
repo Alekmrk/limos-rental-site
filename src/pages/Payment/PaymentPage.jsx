@@ -333,7 +333,7 @@ const PaymentPage = ({ scrollUp }) => {
               <p className="text-red-400">{errorMessage}</p>
               {retryCount >= maxRetries - 1 && (
                 <p className="text-sm text-red-400 mt-2">
-                  Need help? Contact our support at support@elitewaylimo.ch
+                  Need help? Contact our support at info@elitewaylimo.ch
                 </p>
               )}
             </div>
