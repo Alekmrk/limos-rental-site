@@ -8,8 +8,8 @@ const ProgressBar = () => {
   const { reservationInfo } = useContext(ReservationContext);
   
   const regularSteps = [
-    { path: "/vehicle-selection", label: "Vehicle Selection" },
-    { path: "/customer-details", label: "Customer Details" },
+    { path: "/vehicle-selection", label: "Vehicle " },
+    { path: "/customer-details", label: "Customer Info" },
     { path: "/payment", label: "Payment" },
     { path: "/thankyou", label: "Confirmation" }
   ];
