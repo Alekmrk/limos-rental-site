@@ -174,11 +174,29 @@ const PaymentPage = ({ scrollUp }) => {
         }
       });
 
+      // Send confirmation emails
+      console.log('Sending payment confirmation emails...');
+      const emailResult = await sendPaymentConfirmation({
+        ...reservationInfo,
+        paymentDetails
+      });
+
+      if (!emailResult.success) {
+        console.warn('Payment confirmation emails may not have been sent properly:', emailResult.message);
+      } else {
+        console.log('Payment confirmation emails sent successfully!');
+      }
+
       navigate('/thankyou');
     } catch (error) {
       console.error("Error processing crypto payment:", error);
       setErrorMessage("There was a problem processing your payment. Please try again or contact support.");
       setIsProcessing(false);
+      // Still navigate to thank you page if it was just an email error
+      if (error.message?.includes('email')) {
+        alert("Payment recorded but confirmation email may be delayed. Please contact support if you don't receive it within 5 minutes.");
+        navigate('/thankyou');
+      }
     }
   };
 
