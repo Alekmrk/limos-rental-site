@@ -431,7 +431,8 @@ const VehicleSelection = ({ scrollUp }) => {
         <form 
           onSubmit={handleSubmit}
           onKeyDown={(e) => {
-            if (e.key === 'Enter' && (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA')) {
+            // Only prevent form submission for regular inputs, allow new lines in textareas
+            if (e.key === 'Enter' && e.target.tagName === 'INPUT') {
               e.preventDefault();
             }
           }}

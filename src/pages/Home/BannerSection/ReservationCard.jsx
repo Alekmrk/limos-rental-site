@@ -211,8 +211,8 @@ const ReservationCard = () => {
     <form 
       onSubmit={handleSubmit} 
       onKeyDown={(e) => {
-        // Only prevent form submission if it's in an input field
-        if (e.key === 'Enter' && (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA')) {
+        // Only prevent form submission for regular inputs, allow new lines in textareas
+        if (e.key === 'Enter' && e.target.tagName === 'INPUT') {
           e.preventDefault();
         }
       }}

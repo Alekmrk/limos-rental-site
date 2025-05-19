@@ -96,7 +96,8 @@ const CustomerDetails = ({ scrollUp }) => {
         <form 
           onSubmit={handleSubmit}
           onKeyDown={(e) => {
-            if (e.key === 'Enter' && (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA')) {
+            // Only prevent form submission for regular inputs, allow new lines in textareas
+            if (e.key === 'Enter' && e.target.tagName === 'INPUT') {
               e.preventDefault();
             }
           }}
@@ -152,10 +153,12 @@ const CustomerDetails = ({ scrollUp }) => {
                     value={reservationInfo.plannedActivities}
                     onChange={handleInput}
                     rows="4"
-                    className={`bg-zinc-800/30 rounded-lg py-2 px-4 w-full border ${
+                    wrap="soft"
+                    className={`bg-zinc-800/30 rounded-lg py-2 px-4 w-full border whitespace-pre-wrap ${
                       errors.plannedActivities ? 'border-red-500' : 'border-zinc-700/50'
                     }`}
                     placeholder="Please describe your planned activities during the rental period..."
+                    style={{ resize: 'vertical', minHeight: '100px' }}
                   ></textarea>
                   {errors.plannedActivities && (
                     <span className="text-red-500 text-sm">{errors.plannedActivities}</span>
@@ -246,10 +249,12 @@ const CustomerDetails = ({ scrollUp }) => {
                 value={reservationInfo.additionalRequests}
                 onChange={handleInput}
                 rows="6"
-                className={`bg-zinc-800/30 rounded-lg py-2 px-4 w-full border ${
+                wrap="soft"
+                className={`bg-zinc-800/30 rounded-lg py-2 px-4 w-full border whitespace-pre-wrap ${
                   errors.additionalRequests ? 'border-red-500' : 'border-zinc-700/50'
                 }`}
                 placeholder="Please provide any additional details that would help us understand your requirements better (e.g., number of guests, event type, specific vehicle preferences, budget constraints, etc.)"
+                style={{ resize: 'vertical', minHeight: '150px' }}
               ></textarea>
               {errors.additionalRequests && (
                 <span className="text-red-500 text-sm">{errors.additionalRequests}</span>
@@ -268,10 +273,12 @@ const CustomerDetails = ({ scrollUp }) => {
                 value={reservationInfo.additionalRequests}
                 onChange={handleInput}
                 rows="4"
-                className="bg-zinc-800/30 rounded-lg py-2 px-4 w-full border border-zinc-700/50"
+                wrap="soft"
+                className="bg-zinc-800/30 rounded-lg py-2 px-4 w-full border border-zinc-700/50 whitespace-pre-wrap"
                 placeholder={reservationInfo.isSpecialRequest 
                   ? "Please provide any details about your special request..."
                   : "Any special requirements or requests..."}
+                style={{ resize: 'vertical', minHeight: '100px' }}
               ></textarea>
             </div>
           )}
