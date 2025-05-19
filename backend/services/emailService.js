@@ -261,6 +261,7 @@ const generateEmailContent = (reservationInfo, type = 'customer') => {
     .header { background-color: #000; color: gold; padding: 20px; text-align: center; border-radius: 8px 8px 0 0; }
     .content { padding: 20px; background-color: #2a2a2a; border-radius: 0 0 8px 8px; }
     .section { background-color: rgba(0, 0, 0, 0.4); padding: 24px; border-radius: 8px; margin-bottom: 24px; }
+    .section.payment { background-color: rgba(212, 175, 55, 0.1); border: 1px solid rgba(212, 175, 55, 0.2); }
     .section-title { color: gold; font-size: 18px; font-weight: 500; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
     .section-content { color: #fff; }
     .section-content p { margin: 8px 0; }
@@ -271,8 +272,8 @@ const generateEmailContent = (reservationInfo, type = 'customer') => {
     .footer { text-align: center; margin-top: 20px; color: #888; font-size: 12px; }
   `;
 
-  const generateSection = (title, icon, content) => `
-    <div class="section">
+  const generateSection = (title, icon, content, className = '') => `
+    <div class="section ${className}">
       <h3 class="section-title">
         ${icon}
         ${title}
@@ -285,10 +286,18 @@ const generateEmailContent = (reservationInfo, type = 'customer') => {
 
   // Icons (SVG)
   const icons = {
+    payment: '<svg style="width: 20px; height: 20px;" viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/></svg>',
     transfer: '<svg style="width: 20px; height: 20px;" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>',
     vehicle: '<svg style="width: 20px; height: 20px;" viewBox="0 0 24 24" fill="currentColor"><path d="M21 12v-2h-2V7l-3-3-2 2-2-2-2 2-2-2-3 3v3H3v2h2v7h14v-7h2zm-5-3.5l2 2V10h-4V8.5l2-2zm-4 0l2 2V10h-4V8.5l2-2zm-4 0l2 2V10H6V8.5l2-2z"/></svg>',
     customer: '<svg style="width: 20px; height: 20px;" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>'
   };
+
+  // Generate payment details section if exists
+  const paymentSection = hasPayment ? `
+    <p>Method: ${reservationInfo.paymentDetails.method}</p>
+    <p>Amount: ${reservationInfo.paymentDetails.currency} ${reservationInfo.paymentDetails.amount}</p>
+    <p>Reference: ${reservationInfo.paymentDetails.reference}</p>
+  ` : '';
 
   // Generate transfer/request details section
   const transferDetails = isSpecialRequest 
@@ -302,7 +311,7 @@ const generateEmailContent = (reservationInfo, type = 'customer') => {
     `
     : `
       <p>Date: ${formatDate(reservationInfo.date)}</p>
-      <p>${isSpecialRequest ? 'Preferred Time' : 'Pick Up Time'}: ${reservationInfo.time} (CET)</p>
+      <p>Pick Up Time: ${reservationInfo.time} (CET)</p>
       <p>From: ${reservationInfo.pickup}</p>
       ${!reservationInfo.isHourly ? reservationInfo.extraStops?.map(stop => stop ? `<p class="indent">• ${stop}</p>` : '').join('') : ''}
       ${!reservationInfo.isHourly 
@@ -332,14 +341,6 @@ const generateEmailContent = (reservationInfo, type = 'customer') => {
     ${reservationInfo.childSeats > 0 ? `<p>Child Seats (4-7): ${reservationInfo.childSeats}</p>` : ''}
     ${reservationInfo.babySeats > 0 ? `<p>Baby Seats (0-3): ${reservationInfo.babySeats}</p>` : ''}
     ${reservationInfo.skiEquipment > 0 ? `<p>Ski Equipment: ${reservationInfo.skiEquipment}</p>` : ''}
-    ${hasPayment ? `
-      <div class="subsection">
-        <p class="subsection-title">Payment Information:</p>
-        <p>Method: ${reservationInfo.paymentDetails.method}</p>
-        <p>Amount: ${reservationInfo.paymentDetails.currency} ${reservationInfo.paymentDetails.amount}</p>
-        <p>Reference: ${reservationInfo.paymentDetails.reference}</p>
-      </div>
-    ` : ''}
   ` : '';
 
   // Generate customer details section
@@ -349,7 +350,7 @@ const generateEmailContent = (reservationInfo, type = 'customer') => {
     ${reservationInfo.flightNumber ? `<p>Flight Number: ${reservationInfo.flightNumber}</p>` : ''}
     ${reservationInfo.additionalRequests ? `
       <div class="subsection">
-        <p class="subsection-title">Additional Requests:</p>
+        <p class="subsection-title">${isSpecialRequest ? 'Special Request Details' : 'Additional Requests'}:</p>
         <p>${reservationInfo.additionalRequests}</p>
       </div>
     ` : ''}
@@ -375,6 +376,7 @@ const generateEmailContent = (reservationInfo, type = 'customer') => {
             </p>
           </div>
           
+          ${hasPayment ? generateSection('Payment Information', icons.payment, paymentSection, 'payment') : ''}
           ${generateSection(isSpecialRequest ? 'Request Details' : 'Transfer Details', icons.transfer, transferDetails)}
           ${!isSpecialRequest ? generateSection('Vehicle Details', icons.vehicle, vehicleDetails) : ''}
           ${generateSection('Customer Details', icons.customer, customerDetails)}
@@ -393,7 +395,49 @@ const generateEmailContent = (reservationInfo, type = 'customer') => {
   `;
 
   // Generate plain text version
-  const textContent = generatePlainTextContent(reservationInfo, type);
+  const textContent = `
+Dear ${type === 'admin' ? 'Admin' : reservationInfo.firstName || 'Customer'},
+
+${getEmailIntro(reservationInfo, type)}
+
+${hasPayment ? `
+PAYMENT INFORMATION
+Method: ${reservationInfo.paymentDetails.method}
+Amount: ${reservationInfo.paymentDetails.currency} ${reservationInfo.paymentDetails.amount}
+Reference: ${reservationInfo.paymentDetails.reference}
+` : ''}
+
+${isSpecialRequest ? 'REQUEST DETAILS' : 'TRANSFER DETAILS'}
+Date: ${formatDate(reservationInfo.date)}
+${isSpecialRequest ? 'Preferred' : 'Pick Up'} Time: ${reservationInfo.time} (CET)
+${!isSpecialRequest ? `From: ${reservationInfo.pickup}
+${!reservationInfo.isHourly ? reservationInfo.extraStops?.map(stop => stop ? `• ${stop}` : '').join('\n') : ''}
+${!reservationInfo.isHourly ? `To: ${reservationInfo.dropoff}` : `Duration: ${reservationInfo.hours} hours`}` : ''}
+${reservationInfo.isHourly && reservationInfo.plannedActivities ? `\nPlanned Activities: ${reservationInfo.plannedActivities}` : ''}
+${!reservationInfo.isHourly && reservationInfo.routeInfo ? `\nRoute Information:
+Distance: ${reservationInfo.routeInfo.distance}
+Duration: ${reservationInfo.routeInfo.duration}` : ''}
+${isSpecialRequest && reservationInfo.specialRequestDetails ? `\nSpecial Request: ${reservationInfo.specialRequestDetails}` : ''}
+
+${!isSpecialRequest ? `VEHICLE DETAILS
+Vehicle: ${reservationInfo.selectedVehicle?.name}
+Passengers: ${reservationInfo.passengers}
+Bags: ${reservationInfo.bags}
+${reservationInfo.childSeats > 0 ? `Child Seats (4-7): ${reservationInfo.childSeats}` : ''}
+${reservationInfo.babySeats > 0 ? `Baby Seats (0-3): ${reservationInfo.babySeats}` : ''}
+${reservationInfo.skiEquipment > 0 ? `Ski Equipment: ${reservationInfo.skiEquipment}` : ''}` : ''}
+
+CUSTOMER DETAILS
+Email: ${reservationInfo.email}
+Phone: ${reservationInfo.phone}
+${reservationInfo.flightNumber ? `Flight Number: ${reservationInfo.flightNumber}` : ''}
+${reservationInfo.additionalRequests ? `${isSpecialRequest ? 'Special Request Details' : 'Additional Requests'}: ${reservationInfo.additionalRequests}` : ''}
+
+${getEmailOutro(reservationInfo, type)}
+
+Best regards,
+Elite Way Limo Team
+`.trim();
 
   return {
     text: textContent,
@@ -436,7 +480,6 @@ const getEmailOutro = (reservationInfo, type) => {
 };
 
 const generatePlainTextContent = (reservationInfo, type) => {
-  // ... existing plain text generation code ...
   return `
 Dear ${type === 'admin' ? 'Admin' : reservationInfo.firstName || 'Customer'},
 
@@ -461,24 +504,24 @@ To: ${reservationInfo.dropoff}
 Date: ${formatDate(reservationInfo.date)}
 Time: ${reservationInfo.time} (CET)`}
 
-VEHICLE DETAILS
-${reservationInfo.selectedVehicle ? `Vehicle: ${reservationInfo.selectedVehicle.name}` : ''}
+${!reservationInfo.isSpecialRequest ? `VEHICLE DETAILS
+Vehicle: ${reservationInfo.selectedVehicle?.name}
 Passengers: ${reservationInfo.passengers}
 Bags: ${reservationInfo.bags}
-${reservationInfo.childSeats > 0 ? `Child Seats: ${reservationInfo.childSeats}` : ''}
-${reservationInfo.babySeats > 0 ? `Baby Seats: ${reservationInfo.babySeats}` : ''}
-${reservationInfo.skiEquipment > 0 ? `Ski Equipment: ${reservationInfo.skiEquipment}` : ''}
+${reservationInfo.childSeats > 0 ? `Child Seats (4-7): ${reservationInfo.childSeats}` : ''}
+${reservationInfo.babySeats > 0 ? `Baby Seats (0-3): ${reservationInfo.babySeats}` : ''}
+${reservationInfo.skiEquipment > 0 ? `Ski Equipment: ${reservationInfo.skiEquipment}` : ''}` : ''}
 
 CUSTOMER DETAILS
 Email: ${reservationInfo.email}
 Phone: ${reservationInfo.phone}
 ${reservationInfo.flightNumber ? `Flight Number: ${reservationInfo.flightNumber}` : ''}
-${reservationInfo.additionalRequests ? `Additional Requests: ${reservationInfo.additionalRequests}` : ''}
+${reservationInfo.additionalRequests ? `${reservationInfo.isSpecialRequest ? 'Special Request Details' : 'Additional Requests'}: ${reservationInfo.additionalRequests}` : ''}
 
 ${getEmailOutro(reservationInfo, type)}
 
 Best regards,
-Limos Rental Team
+Elite Way Limo Team
 `.trim();
 };
 

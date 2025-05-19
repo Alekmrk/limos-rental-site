@@ -233,7 +233,7 @@ const PaymentPage = ({ scrollUp }) => {
               </div>
               {reservationInfo.additionalRequests && (
                 <div className="mt-6">
-                  <p className="text-zinc-400 text-sm mb-2">Additional Requests</p>
+                  <p className="text-zinc-400 text-sm mb-2">{reservationInfo.isSpecialRequest ? 'Special Request Details' : 'Additional Requests'}</p>
                   <p className="text-sm bg-black/20 p-3 rounded-lg">{reservationInfo.additionalRequests}</p>
                 </div>
               )}

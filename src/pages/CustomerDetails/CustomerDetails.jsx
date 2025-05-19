@@ -260,7 +260,7 @@ const CustomerDetails = ({ scrollUp }) => {
           {!reservationInfo.isSpecialRequest && (
             <div className="mb-8">
               <label className="block text-sm font-medium mb-2" htmlFor="additionalRequests">
-                Additional Requests
+                {reservationInfo.isSpecialRequest ? 'Special Request Details' : 'Additional Requests'}
               </label>
               <textarea
                 id="additionalRequests"
@@ -269,7 +269,9 @@ const CustomerDetails = ({ scrollUp }) => {
                 onChange={handleInput}
                 rows="4"
                 className="bg-zinc-800/30 rounded-lg py-2 px-4 w-full border border-zinc-700/50"
-                placeholder="Any special requirements or requests..."
+                placeholder={reservationInfo.isSpecialRequest 
+                  ? "Please provide any details about your special request..."
+                  : "Any special requirements or requests..."}
               ></textarea>
             </div>
           )}

@@ -85,7 +85,27 @@ const ThankYou = ({ scrollUp }) => {
             </p>
           </div>
 
+          {/* Payment Details Section - Shown at the top if payment exists */}
+          {reservationInfo.paymentDetails && (
+            <div className="mb-8">
+              <div className="bg-gold/10 p-6 rounded-lg border border-gold/20">
+                <h3 className="text-gold font-medium mb-4 flex items-center gap-2">
+                  <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/>
+                  </svg>
+                  Payment Information
+                </h3>
+                <div className="space-y-2 text-zinc-300">
+                  <p>Method: {reservationInfo.paymentDetails.method}</p>
+                  <p>Amount: {reservationInfo.paymentDetails.currency} {reservationInfo.paymentDetails.amount}</p>
+                  <p>Reference: {reservationInfo.paymentDetails.reference}</p>
+                </div>
+              </div>
+            </div>
+          )}
+
           <div className="grid md:grid-cols-3 gap-6 mb-8">
+            {/* Transfer/Request Details Section */}
             <div className="bg-black/20 p-6 rounded-lg h-full">
               <h3 className="text-gold font-medium mb-4 flex items-center gap-2">
                 <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
@@ -131,41 +151,33 @@ const ThankYou = ({ scrollUp }) => {
               </div>
             </div>
 
-            <div className="bg-black/20 p-6 rounded-lg h-full">
-              <h3 className="text-gold font-medium mb-4 flex items-center gap-2">
-                <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M21 12v-2h-2V7l-3-3-2 2-2-2-2 2-2-2-3 3v3H3v2h2v7h14v-7h2zm-5-3.5l2 2V10h-4V8.5l2-2zm-4 0l2 2V10h-4V8.5l2-2zm-4 0l2 2V10H6V8.5l2-2z"/>
-                </svg>
-                Vehicle Details
-              </h3>
-              <div className="space-y-2 text-zinc-300">
-                {!reservationInfo.isSpecialRequest && (
-                  <>
-                    <p className="break-words">Vehicle: {reservationInfo.selectedVehicle?.name}</p>
-                    <p className="break-words">Passengers: {reservationInfo.passengers}</p>
-                    <p className="break-words">Bags: {reservationInfo.bags}</p>
-                    {reservationInfo.childSeats > 0 && (
-                      <p className="break-words">Child Seats (4-7): {reservationInfo.childSeats}</p>
-                    )}
-                    {reservationInfo.babySeats > 0 && (
-                      <p className="break-words">Baby Seats (0-3): {reservationInfo.babySeats}</p>
-                    )}
-                    {reservationInfo.skiEquipment > 0 && (
-                      <p className="break-words">Ski Equipment: {reservationInfo.skiEquipment}</p>
-                    )}
-                    {reservationInfo.paymentDetails && (
-                      <>
-                        <p className="mt-4 text-sm text-zinc-400">Payment Information:</p>
-                        <p className="text-sm break-words">Method: {reservationInfo.paymentDetails.method}</p>
-                        <p className="text-sm break-words">Amount: {reservationInfo.paymentDetails.currency} {reservationInfo.paymentDetails.amount}</p>
-                        <p className="text-sm break-words">Reference: {reservationInfo.paymentDetails.reference}</p>
-                      </>
-                    )}
-                  </>
-                )}
+            {/* Vehicle Details Section - Hidden for Special Requests */}
+            {!reservationInfo.isSpecialRequest && (
+              <div className="bg-black/20 p-6 rounded-lg h-full">
+                <h3 className="text-gold font-medium mb-4 flex items-center gap-2">
+                  <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M21 12v-2h-2V7l-3-3-2 2-2-2-2 2-2-2-3 3v3H3v2h2v7h14v-7h2zm-5-3.5l2 2V10h-4V8.5l2-2zm-4 0l2 2V10h-4V8.5l2-2zm-4 0l2 2V10H6V8.5l2-2z"/>
+                  </svg>
+                  Vehicle Details
+                </h3>
+                <div className="space-y-2 text-zinc-300">
+                  <p className="break-words">Vehicle: {reservationInfo.selectedVehicle?.name}</p>
+                  <p className="break-words">Passengers: {reservationInfo.passengers}</p>
+                  <p className="break-words">Bags: {reservationInfo.bags}</p>
+                  {reservationInfo.childSeats > 0 && (
+                    <p className="break-words">Child Seats (4-7): {reservationInfo.childSeats}</p>
+                  )}
+                  {reservationInfo.babySeats > 0 && (
+                    <p className="break-words">Baby Seats (0-3): {reservationInfo.babySeats}</p>
+                  )}
+                  {reservationInfo.skiEquipment > 0 && (
+                    <p className="break-words">Ski Equipment: {reservationInfo.skiEquipment}</p>
+                  )}
+                </div>
               </div>
-            </div>
+            )}
 
+            {/* Customer Details Section */}
             <div className="bg-black/20 p-6 rounded-lg h-full">
               <h3 className="text-gold font-medium mb-4 flex items-center gap-2">
                 <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
@@ -181,7 +193,7 @@ const ThankYou = ({ scrollUp }) => {
                 )}
                 {reservationInfo.additionalRequests && (
                   <>
-                    <p className="mt-4 text-sm text-zinc-400">Additional Requests:</p>
+                    <p className="mt-4 text-sm text-zinc-400">{reservationInfo.isSpecialRequest ? 'Special Request Details' : 'Additional Requests'}:</p>
                     <p className="text-sm break-words">{reservationInfo.additionalRequests}</p>
                   </>
                 )}
