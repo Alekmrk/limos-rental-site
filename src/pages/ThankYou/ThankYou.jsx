@@ -191,14 +191,29 @@ const ThankYou = ({ scrollUp }) => {
                 {reservationInfo.flightNumber && (
                   <p className="break-words">Flight Number: {reservationInfo.flightNumber}</p>
                 )}
-                {reservationInfo.additionalRequests && (
+                {reservationInfo.additionalRequests &&  !reservationInfo.isSpecialRequest &&(
                   <>
-                    <p className="mt-4 text-sm text-zinc-400">{reservationInfo.isSpecialRequest ? 'Special Request Details' : 'Additional Requests'}:</p>
+                    <p className="mt-4 text-sm text-zinc-400">{ 'Additional Requests'}:</p>
                     <p className="text-sm break-words">{reservationInfo.additionalRequests}</p>
                   </>
                 )}
               </div>
             </div>
+
+            {/* Additional/Special Information Section - Only shown for Special Requests */}
+            {reservationInfo.isSpecialRequest && reservationInfo.additionalRequests && (
+              <div className="bg-black/20 p-6 rounded-lg h-full">
+                <h3 className="text-gold font-medium mb-4 flex items-center gap-2">
+                  <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-7 9h-2V5h2v6zm0 4h-2v-2h2v2z"/>
+                  </svg>
+                  Request Information
+                </h3>
+                <div className="space-y-2 text-zinc-300">
+                  <p className="text-sm break-words">{reservationInfo.additionalRequests}</p>
+                </div>
+              </div>
+            )}
           </div>
 
           <div className="text-center text-zinc-400">
