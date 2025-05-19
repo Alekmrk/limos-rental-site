@@ -52,7 +52,7 @@ const PaymentPage = ({ scrollUp }) => {
     );
     
     //setPrice(calculatedPrice || 0);
-    setPrice(0);
+    setPrice(0.5);
   }, [reservationInfo]);
 
   const handlePaymentMethodSelect = (method) => {
