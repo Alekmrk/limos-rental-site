@@ -2,6 +2,7 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import dotenv from 'dotenv'
 import { ViteImageOptimizer } from 'vite-plugin-image-optimizer'
+import { splitVendorChunkPlugin } from 'vite'
 
 // Load environment variables
 dotenv.config()
@@ -71,21 +72,19 @@ export default defineConfig({
       },
       cache: false, // Disable cache in development
       cacheLocation: '.vite-plugin-image-optimizer-cache',
-    })
+    }),
+    splitVendorChunkPlugin()
   ],
   build: {
     target: 'esnext',
     minify: 'terser',
-    terserOptions: {
-      compress: {
-        drop_console: true,
-        drop_debugger: true
-      }
-    },
+    cssMinify: true,
     rollupOptions: {
       output: {
         manualChunks: {
+          'google-maps': ['@googlemaps/js-api-loader'],
           'react-vendor': ['react', 'react-dom', 'react-router-dom'],
+          'utils': ['date-fns', 'lodash'],
           'maps-vendor': ['@react-google-maps/api'],
           'stripe-vendor': ['@stripe/stripe-js', '@stripe/react-stripe-js'],
           'ui-vendor': ['@fortawesome/react-fontawesome', '@fortawesome/free-solid-svg-icons', '@fortawesome/free-brands-svg-icons'],
@@ -105,6 +104,13 @@ export default defineConfig({
           return 'assets/[name]-[hash][extname]';
         }
       }
+    },
+    chunkSizeWarningLimit: 1000,
+    terserOptions: {
+      compress: {
+        drop_console: true,
+        drop_debugger: true
+      }
     }
   },
   define: {
@@ -119,5 +125,8 @@ export default defineConfig({
     headers: {
       'Cache-Control': 'public, max-age=31536000'
     }
+  },
+  optimizeDeps: {
+    include: ['@googlemaps/js-api-loader']
   }
 })

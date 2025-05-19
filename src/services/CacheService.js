@@ -1,201 +1,102 @@
 // CacheService.js
 
+const CACHE_DURATION = 24 * 60 * 60 * 1000; // 24 hours
+const GEOCODE_CACHE_KEY = 'geocode_cache';
+const ROUTE_CACHE_KEY = 'route_cache';
+
 class CacheService {
   constructor() {
-    // Initialize caches with size limits
-    this.routeCache = new Map();
-    this.placeCache = new Map();
-    this.geocodeCache = new Map();
-    this.partialMatchCache = new Map();
-    
-    // Cache configuration
-    this.MAX_CACHE_SIZE = 100;
-    this.CACHE_DURATION = 24 * 60 * 60 * 1000; // 24 hours
-    this.FREQUENTLY_USED_THRESHOLD = 5;
-    
-    // Start cleanup interval
-    this.cleanupInterval = setInterval(this.cleanup.bind(this), 3600000); // Every hour
+    // Initialize caches
+    this.geocodeCache = {};
+    this.routeCache = {};
     
     // Load persisted cache from localStorage if available
-    this.loadPersistedCache();
+    this.loadCache();
   }
 
-  loadPersistedCache() {
+  loadCache() {
     try {
-      const persistedCache = localStorage.getItem('routeCache');
-      if (persistedCache) {
-        const { routes, timestamp } = JSON.parse(persistedCache);
-        if (Date.now() - timestamp < this.CACHE_DURATION) {
-          routes.forEach(([key, value]) => this.routeCache.set(key, value));
-        } else {
-          localStorage.removeItem('routeCache');
-        }
-      }
+      this.geocodeCache = JSON.parse(localStorage.getItem(GEOCODE_CACHE_KEY)) || {};
+      this.routeCache = JSON.parse(localStorage.getItem(ROUTE_CACHE_KEY)) || {};
+      
+      // Clean expired entries
+      this.cleanCache();
     } catch (error) {
-      console.warn('Failed to load persisted cache:', error);
+      console.warn('Error loading cache:', error);
+      this.geocodeCache = {};
+      this.routeCache = {};
     }
   }
 
-  persistCache() {
+  cleanCache() {
+    const now = Date.now();
+    Object.keys(this.geocodeCache).forEach(key => {
+      if (now - this.geocodeCache[key].timestamp > CACHE_DURATION) {
+        delete this.geocodeCache[key];
+      }
+    });
+    Object.keys(this.routeCache).forEach(key => {
+      if (now - this.routeCache[key].timestamp > CACHE_DURATION) {
+        delete this.routeCache[key];
+      }
+    });
+    this.saveCache();
+  }
+
+  saveCache() {
     try {
-      const routes = Array.from(this.routeCache.entries());
-      localStorage.setItem('routeCache', JSON.stringify({
-        routes,
-        timestamp: Date.now()
-      }));
+      localStorage.setItem(GEOCODE_CACHE_KEY, JSON.stringify(this.geocodeCache));
+      localStorage.setItem(ROUTE_CACHE_KEY, JSON.stringify(this.routeCache));
     } catch (error) {
-      console.warn('Failed to persist cache:', error);
+      console.warn('Error saving cache:', error);
     }
   }
 
   // Generate a unique key for a route
-  getRouteKey(origin, destination, waypoints = []) {
-    const waypointStr = waypoints
-      .filter(wp => wp && wp.trim())
-      .sort()
-      .join('|');
-    return `${origin}|${destination}|${waypointStr}`;
-  }
-
-  // Cache a route result
-  cacheRoute(origin, destination, waypoints = [], result) {
-    const key = this.getRouteKey(origin, destination, waypoints);
-    this.routeCache.set(key, {
-      data: result,
-      timestamp: Date.now(),
-      accessCount: 0
+  getCacheKey(origin, destination, extraStops = []) {
+    return JSON.stringify({
+      origin,
+      destination,
+      extraStops: extraStops.sort()
     });
-    
-    // Persist updated cache
-    this.persistCache();
-    
-    // Maintain cache size limit
-    if (this.routeCache.size > this.MAX_CACHE_SIZE) {
-      this.trimCache(this.routeCache);
-    }
   }
 
   // Get a cached route
-  getCachedRoute(origin, destination, waypoints = []) {
-    const key = this.getRouteKey(origin, destination, waypoints);
-    const cached = this.routeCache.get(key);
-    
-    if (cached && (Date.now() - cached.timestamp) < this.CACHE_DURATION) {
-      cached.accessCount++;
-      cached.lastAccessed = Date.now();
+  getCachedRoute(origin, destination, extraStops = []) {
+    const key = this.getCacheKey(origin, destination, extraStops);
+    const cached = this.routeCache[key];
+    if (cached && Date.now() - cached.timestamp < CACHE_DURATION) {
       return cached.data;
     }
-    
-    this.routeCache.delete(key);
     return null;
   }
 
-  normalizeAddress(address) {
-    return address.toLowerCase().trim().replace(/\s+/g, ' ');
+  // Cache a route result
+  cacheRoute(origin, destination, extraStops = [], routeInfo) {
+    const key = this.getCacheKey(origin, destination, extraStops);
+    this.routeCache[key] = {
+      data: routeInfo,
+      timestamp: Date.now()
+    };
+    this.saveCache();
   }
 
-  generatePartialKey(address) {
-    return this.normalizeAddress(address).split(' ')[0];
-  }
-
-  // Cache place details
-  cachePlaceDetails(placeId, details) {
-    this.placeCache.set(placeId, {
-      data: details,
-      timestamp: Date.now(),
-      accessCount: 0,
-      lastAccessed: Date.now()
-    });
-    
-    if (this.placeCache.size > this.MAX_CACHE_SIZE) {
-      this.trimCache(this.placeCache);
-    }
-  }
-
-  // Get cached place details
-  getCachedPlaceDetails(placeId) {
-    const cached = this.placeCache.get(placeId);
-    
-    if (cached && (Date.now() - cached.timestamp) < this.CACHE_DURATION) {
-      cached.accessCount++;
-      cached.lastAccessed = Date.now();
+  // Get cached geocode data
+  getCachedGeocode(address) {
+    const cached = this.geocodeCache[address];
+    if (cached && Date.now() - cached.timestamp < CACHE_DURATION) {
       return cached.data;
     }
-    
-    this.placeCache.delete(placeId);
     return null;
   }
 
-  trimCache(cache) {
-    // Remove least recently used items, but keep frequently accessed items
-    const entries = Array.from(cache.entries());
-    entries.sort((a, b) => {
-      const aFrequent = a[1].accessCount >= this.FREQUENTLY_USED_THRESHOLD;
-      const bFrequent = b[1].accessCount >= this.FREQUENTLY_USED_THRESHOLD;
-      
-      if (aFrequent !== bFrequent) return bFrequent - aFrequent;
-      return (b[1].lastAccessed || 0) - (a[1].lastAccessed || 0);
-    });
-    
-    const itemsToRemove = entries.slice(Math.floor(this.MAX_CACHE_SIZE * 0.8));
-    itemsToRemove.forEach(([key]) => cache.delete(key));
-  }
-
-  // Clear expired cache entries
-  clearExpiredCache() {
-    const now = Date.now();
-    
-    for (const [key, value] of this.routeCache.entries()) {
-      if (now - value.timestamp > this.CACHE_DURATION) {
-        this.routeCache.delete(key);
-      }
-    }
-    
-    for (const [key, value] of this.placeCache.entries()) {
-      if (now - value.timestamp > this.CACHE_DURATION) {
-        this.placeCache.delete(key);
-      }
-    }
-    
-    for (const [key, value] of this.geocodeCache.entries()) {
-      if (now - value.timestamp > this.CACHE_DURATION) {
-        this.geocodeCache.delete(key);
-      }
-    }
-  }
-
-  cleanup() {
-    const now = Date.now();
-    
-    // Clear expired entries from all caches
-    [this.routeCache, this.placeCache, this.geocodeCache].forEach(cache => {
-      for (const [key, value] of cache.entries()) {
-        const age = now - value.timestamp;
-        const isFrequentlyUsed = value.accessCount >= this.FREQUENTLY_USED_THRESHOLD;
-        const maxAge = isFrequentlyUsed ? this.CACHE_DURATION * 2 : this.CACHE_DURATION;
-        
-        if (age > maxAge) {
-          cache.delete(key);
-        }
-      }
-    });
-    
-    // Clear partial matches cache
-    for (const [key, addresses] of this.partialMatchCache.entries()) {
-      if (addresses.size === 0) {
-        this.partialMatchCache.delete(key);
-      }
-    }
-    
-    // Persist current cache state
-    this.persistCache();
-  }
-
-  dispose() {
-    if (this.cleanupInterval) {
-      clearInterval(this.cleanupInterval);
-    }
-    this.persistCache();
+  // Cache geocode data
+  cacheGeocode(address, placeInfo) {
+    this.geocodeCache[address] = {
+      data: placeInfo,
+      timestamp: Date.now()
+    };
+    this.saveCache();
   }
 }
 

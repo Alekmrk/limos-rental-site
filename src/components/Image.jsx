@@ -1,8 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 const Image = ({ 
   src, 
-  alt,
+  alt, 
   className = '',
   sizes = '100vw',
   loading = 'lazy',
@@ -14,6 +14,32 @@ const Image = ({
   const [imageSrc, setImageSrc] = useState(null);
   const [srcSet, setSrcSet] = useState(null);
   const [error, setError] = useState(false);
+  const [isIntersecting, setIsIntersecting] = useState(false);
+  const imgRef = useRef(null);
+
+  useEffect(() => {
+    if (priority) {
+      setIsIntersecting(true);
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIsIntersecting(entry.isIntersecting);
+      },
+      {
+        rootMargin: '50px',
+      }
+    );
+
+    if (imgRef.current) {
+      observer.observe(imgRef.current);
+    }
+
+    return () => {
+      observer.disconnect();
+    };
+  }, [priority]);
 
   useEffect(() => {
     const loadImage = async () => {
@@ -53,8 +79,10 @@ const Image = ({
       }
     };
 
-    loadImage();
-  }, [src, imageType]);
+    if (isIntersecting) {
+      loadImage();
+    }
+  }, [src, imageType, isIntersecting]);
 
   const handleLoad = () => {
     setLoaded(true);
@@ -67,6 +95,15 @@ const Image = ({
     } else {
       setError(true);
     }
+  };
+
+  const generateSourceUrl = (url, format) => {
+    if (url.includes('/optimized/')) {
+      // Already an optimized image, just change format
+      return url.replace(/\.(jpg|jpeg|png|webp)$/, `.${format}`);
+    }
+    // For non-optimized images, use original
+    return url;
   };
 
   const combinedClassName = `
@@ -100,24 +137,32 @@ const Image = ({
   }
 
   return (
-    <picture>
-      {srcSet && (
-        <source
-          type="image/webp"
-          srcSet={srcSet}
-          sizes={sizes}
-        />
+    <picture className={className}>
+      {isIntersecting && (
+        <>
+          <source
+            type="image/avif"
+            srcSet={generateSourceUrl(src, 'avif')}
+            sizes={sizes}
+          />
+          <source
+            type="image/webp"
+            srcSet={generateSourceUrl(src, 'webp')}
+            sizes={sizes}
+          />
+          <img
+            ref={imgRef}
+            src={src}
+            alt={alt}
+            className={`transition-opacity duration-300 ${loaded ? 'opacity-100' : 'opacity-0'}`}
+            onLoad={handleLoad}
+            onError={handleError}
+            loading={priority ? 'eager' : 'lazy'}
+            sizes={sizes}
+            {...props}
+          />
+        </>
       )}
-      <img
-        src={imageSrc}
-        alt={alt}
-        className={combinedClassName}
-        loading={priority ? 'eager' : loading}
-        onLoad={handleLoad}
-        onError={handleError}
-        sizes={sizes}
-        {...props}
-      />
     </picture>
   );
 };

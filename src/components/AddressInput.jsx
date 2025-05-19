@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, useCallback } from "react";
+import { useState, useRef, useEffect, useCallback, useMemo } from "react";
 
 const AddressInput = ({ value, onChange, name, placeholder, onPlaceSelected, className }) => {
   const [error, setError] = useState(null);
@@ -9,50 +9,40 @@ const AddressInput = ({ value, onChange, name, placeholder, onPlaceSelected, cla
   const sessionTokenRef = useRef(null);
   const lastSelectedRef = useRef(value);
   const isSelectingRef = useRef(false);
-  const observerRef = useRef(null);
-  const typingTimeoutRef = useRef(null);
-
-  const setupAutocomplete = useCallback(() => {
-    if (!window.google || !inputRef.current) return;
-
-    if (autocompleteRef.current) {
-      window.google.maps.event.clearInstanceListeners(autocompleteRef.current);
+  
+  // Memoize the bounds to prevent recreating on every render
+  const switzerlandBounds = useMemo(() => {
+    if (window.google) {
+      return new window.google.maps.LatLngBounds(
+        { lat: 45.8179, lng: 5.9566 },
+        { lat: 47.8084, lng: 10.4915 }
+      );
     }
+    return null;
+  }, []);
+
+  // Memoize autocomplete options
+  const autocompleteOptions = useMemo(() => ({
+    fields: ["formatted_address", "geometry", "place_id", "address_components", "name", "types"],
+    bounds: switzerlandBounds,
+    strictBounds: false,
+    componentRestrictions: { country: ['ch', 'de', 'fr', 'it', 'at', 'li'] }
+  }), [switzerlandBounds]);
+
+  // Setup autocomplete once when component mounts
+  useEffect(() => {
+    if (!window.google || !inputRef.current || autocompleteRef.current) return;
 
     sessionTokenRef.current = new window.google.maps.places.AutocompleteSessionToken();
+    autocompleteRef.current = new window.google.maps.places.Autocomplete(
+      inputRef.current,
+      {
+        ...autocompleteOptions,
+        sessionToken: sessionTokenRef.current
+      }
+    );
 
-    const options = {
-      fields: ["formatted_address", "geometry", "place_id", "address_components", "name", "types"],
-      sessionToken: sessionTokenRef.current,
-      bounds: new window.google.maps.LatLngBounds(
-        { lat: 45.8179, lng: 5.9566 },  // Southwest corner of Switzerland
-        { lat: 47.8084, lng: 10.4915 }  // Northeast corner of Switzerland
-      ),
-      strictBounds: false,
-      // Remove the country restriction to allow other European countries
-      componentRestrictions: { country: ['ch', 'de', 'fr', 'it', 'at', 'li'] }
-    };
-
-    autocompleteRef.current = new window.google.maps.places.Autocomplete(inputRef.current, options);
-    
-    // Bias the results towards Switzerland without restricting to it
-    const switzerlandCenter = new window.google.maps.LatLng(46.8182, 8.2275);
-    autocompleteRef.current.setBounds(new window.google.maps.LatLngBounds(
-      switzerlandCenter,  // Center point
-      switzerlandCenter  // Center point
-    ).extend(new window.google.maps.LatLng(45.8179, 5.9566))  // Extend to cover Switzerland
-     .extend(new window.google.maps.LatLng(47.8084, 10.4915)));
-
-    // Add a listener for when the input starts receiving predictions
-    const pacContainer = document.querySelector('.pac-container');
-    if (pacContainer) {
-      const observer = new MutationObserver(() => {
-        setIsTyping(true);
-      });
-      observer.observe(pacContainer, { childList: true, subtree: true });
-    }
-
-    autocompleteRef.current.addListener("place_changed", () => {
+    const handlePlaceChange = () => {
       const place = autocompleteRef.current.getPlace();
       isSelectingRef.current = true;
       setError(null);
@@ -75,7 +65,6 @@ const AddressInput = ({ value, onChange, name, placeholder, onPlaceSelected, cla
       );
 
       const displayName = isSpecialLocation ? place.name : place.formatted_address;
-
       const placeInfo = {
         formattedAddress: displayName,
         location: {
@@ -91,8 +80,7 @@ const AddressInput = ({ value, onChange, name, placeholder, onPlaceSelected, cla
 
       lastSelectedRef.current = displayName;
       setIsLocationSelected(true);
-
-      // Call onChange with both the displayName and placeInfo
+      
       onChange({
         target: {
           name,
@@ -107,30 +95,22 @@ const AddressInput = ({ value, onChange, name, placeholder, onPlaceSelected, cla
 
       sessionTokenRef.current = new window.google.maps.places.AutocompleteSessionToken();
       isSelectingRef.current = false;
-    });
-  }, [name, onChange, onPlaceSelected]);
+    };
 
-  // Handle autocomplete setup
-  useEffect(() => {
-    setupAutocomplete();
+    autocompleteRef.current.addListener("place_changed", handlePlaceChange);
+
     return () => {
-      if (window.google && autocompleteRef.current) {
+      if (autocompleteRef.current) {
         window.google.maps.event.clearInstanceListeners(autocompleteRef.current);
-      }
-      if (typingTimeoutRef.current) {
-        clearTimeout(typingTimeoutRef.current);
+        autocompleteRef.current = null;
       }
     };
-  }, [setupAutocomplete]);
+  }, [autocompleteOptions, name, onChange, onPlaceSelected]);
 
   // Handle styles observer
   useEffect(() => {
     const setupStyleObserver = () => {
-      if (observerRef.current) {
-        observerRef.current.disconnect();
-      }
-
-      observerRef.current = new MutationObserver((mutations) => {
+      const observer = new MutationObserver((mutations) => {
         mutations.forEach((mutation) => {
           mutation.addedNodes.forEach((node) => {
             if (node.classList && node.classList.contains('pac-container')) {
@@ -169,7 +149,7 @@ const AddressInput = ({ value, onChange, name, placeholder, onPlaceSelected, cla
         });
       });
 
-      observerRef.current.observe(document.body, {
+      observer.observe(document.body, {
         childList: true,
         subtree: true
       });

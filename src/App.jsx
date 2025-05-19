@@ -1,15 +1,13 @@
 // Test deployment - Frontend workflow update - May 2, 2025 - v2
-import { lazy, Suspense } from 'react';
-import { Route, Routes } from 'react-router-dom';
-import { useEffect, useCallback } from "react";
+import { Suspense, lazy, useCallback, useState } from "react";
+import { Route, Routes } from "react-router-dom";
+import { useGoogleMapsApi } from "./hooks/useGoogleMapsApi";
 import Footer from "./components/Footer/Footer";
 import Header from "./components/Header/Header";
 import BackToTopButton from "./components/BackToTopButton";
-import { useState } from "react";
-import cars from "./data/cars";
-import { ReservationContextProvider } from "./contexts/ReservationContext";
-import { useGoogleMapsApi } from "./hooks/useGoogleMapsApi";
 import LoadingSpinner from './components/LoadingSpinner';
+import ReservationContextProvider from "./contexts/ReservationContext";
+import cars from "./data/cars";
 
 // Lazy load route components with proper paths
 const Home = lazy(() => import('./pages/Home/Home'));
