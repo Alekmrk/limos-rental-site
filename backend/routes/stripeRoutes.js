@@ -3,18 +3,15 @@ const router = express.Router();
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
 // Create a payment intent
-router.post('/create-payment-intent', async (req, res) => {
+router.post('/create-payment-intent', express.json(), async (req, res) => {
   try {
-    // Override amount to fixed 1 CHF
-    const amount = 0.5;
-    const currency = 'chf';
+    const { amount, currency = 'chf' } = req.body;
     console.log('Creating payment intent:', { amount, currency });
 
-    // Create PaymentIntent with only card payments enabled
     const paymentIntent = await stripe.paymentIntents.create({
-      amount: Math.round(amount * 100), // Convert to cents
+      amount: Math.round(amount * 100),
       currency: currency.toLowerCase(),
-      payment_method_types: ['card'], // Only enable card payments for now
+      payment_method_types: ['card'],
       metadata: {
         orderID: `ORDER-${Date.now()}`,
       }
@@ -50,7 +47,8 @@ router.post('/webhook', async (req, res) => {
   console.log('Received webhook:', {
     timestamp: new Date().toISOString(),
     signature: sig ? '(present)' : '(missing)',
-    bodyLength: req.body?.length || 0
+    bodyLength: req.body?.length || 0,
+    contentType: req.headers['content-type']
   });
 
   if (!sig) {

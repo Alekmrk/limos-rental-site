@@ -34,14 +34,8 @@ app.use(cors({
   credentials: true
 }));
 
-// Add request logging middleware with Swiss time
-app.use((req, res, next) => {
-  console.log(`[${getSwissTime()}] ${req.method} ${req.path}`);
-  next();
-});
-
-// Raw body parsing for Stripe webhooks
-app.use('/api/stripe/webhook', express.raw({ type: 'application/json' }));
+// Stripe webhook needs raw body for signature verification
+app.use('/api/stripe/webhook', express.raw({ type: 'application/json' }), stripeRoutes);
 
 // Regular body parsing for other routes
 app.use(express.json({ limit: '50mb' }));
