@@ -168,11 +168,38 @@ const sendEmail = async (to, subject, content, from = 'noreply', attempt = 1) =>
  */
 const sendToAdmin = async (reservationInfo) => {
   const isSpecialRequest = reservationInfo.isSpecialRequest;
-  const subject = isSpecialRequest 
-    ? '🔔 New Special Request Received'
-    : `🚘 New Booking: ${formatDateTime(reservationInfo.date, reservationInfo.time)}`;
+  const isUrgent = reservationInfo.isUrgent;
   
-  const content = generateEmailContent(reservationInfo, 'admin');
+  let subject = isUrgent 
+    ? reservationInfo.subject // Use provided subject for urgent matters
+    : isSpecialRequest 
+      ? '🔔 New Special Request Received'
+      : `🚘 New Booking: ${formatDateTime(reservationInfo.date, reservationInfo.time)}`;
+  
+  let content;
+  if (isUrgent && reservationInfo.details) {
+    // Special handling for urgent notifications like disputes
+    content = `
+    <!DOCTYPE html>
+    <html>
+    <body>
+      <div style="max-width: 600px; margin: 0 auto; font-family: Arial, sans-serif;">
+        <h1 style="color: #ef4444; margin-bottom: 20px;">${subject}</h1>
+        <div style="background: #fee2e2; border: 1px solid #ef4444; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+          ${Object.entries(reservationInfo.details).map(([key, value]) => `
+            <p style="margin: 10px 0;"><strong>${key}:</strong> ${value}</p>
+          `).join('')}
+        </div>
+        <p style="color: #ef4444; font-weight: bold;">Please address this dispute immediately to avoid any issues with charge reversal.</p>
+        <p>You can respond to this dispute in your Stripe Dashboard.</p>
+      </div>
+    </body>
+    </html>
+    `;
+  } else {
+    content = generateEmailContent(reservationInfo, 'admin');
+  }
+  
   return await sendEmail(process.env.ADMIN_EMAIL, subject, content, 'info');
 };
 

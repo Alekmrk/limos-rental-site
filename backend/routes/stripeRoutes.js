@@ -43,15 +43,32 @@ router.post('/create-payment-intent', async (req, res) => {
   }
 });
 
-// Webhook handler with signature verification
-router.post('/webhook', express.raw({ type: 'application/json' }), async (req, res) => {
+// Webhook handler for Stripe events
+router.post('/webhook', async (req, res) => {
+  const sig = req.headers['stripe-signature'];
+  
   console.log('Received webhook:', {
     timestamp: new Date().toISOString(),
-    signature: req.headers['stripe-signature'] ? '(present)' : '(missing)',
+    signature: sig ? '(present)' : '(missing)',
     bodyLength: req.body?.length || 0
   });
 
-  const sig = req.headers['stripe-signature'];
+  if (!sig) {
+    console.error('No Stripe signature found in webhook request');
+    return res.status(400).json({ 
+      error: 'No signature',
+      message: 'Missing Stripe signature'
+    });
+  }
+
+  if (!process.env.STRIPE_WEBHOOK_SECRET) {
+    console.error('STRIPE_WEBHOOK_SECRET not configured');
+    return res.status(500).json({ 
+      error: 'Configuration Error',
+      message: 'Webhook secret not configured'
+    });
+  }
+
   let event;
 
   try {
@@ -61,13 +78,14 @@ router.post('/webhook', express.raw({ type: 'application/json' }), async (req, r
       process.env.STRIPE_WEBHOOK_SECRET
     );
 
-    console.log('Webhook signature verified:', {
+    console.log('Webhook event verified:', {
       type: event.type,
       id: event.id,
       timestamp: new Date(event.created * 1000).toISOString()
     });
 
-    // Handle the event
+    const emailService = require('../services/emailService');
+
     switch (event.type) {
       case 'payment_intent.succeeded':
         const paymentIntent = event.data.object;
@@ -78,13 +96,18 @@ router.post('/webhook', express.raw({ type: 'application/json' }), async (req, r
           status: paymentIntent.status,
           metadata: paymentIntent.metadata,
           paymentMethod: paymentIntent.payment_method,
-          customer: paymentIntent.customer,
           timestamp: new Date().toISOString()
         });
-        // Handle successful payment
+        
+        // Don't send email here since frontend handles success emails
+        res.json({ 
+          received: true,
+          type: 'payment_intent.succeeded',
+          paymentIntentId: paymentIntent.id
+        });
         break;
 
-      case 'payment_intent.failed':
+      case 'payment_intent.payment_failed':
         const failedIntent = event.data.object;
         const errorDetails = failedIntent.last_payment_error;
         console.error('Payment failed:', {
@@ -96,42 +119,81 @@ router.post('/webhook', express.raw({ type: 'application/json' }), async (req, r
           declineCode: errorDetails?.decline_code,
           timestamp: new Date().toISOString()
         });
-        
-        // Handle specific failure reasons
-        switch (errorDetails?.code) {
-          case 'card_declined':
-            // Card was declined - could notify the user to try another card
-            break;
-          case 'expired_card':
-            // Card is expired
-            break;
-          case 'incorrect_cvc':
-            // Wrong CVC entered
-            break;
-          case 'processing_error':
-            // Temporary processing error - could be retried
-            break;
-          default:
-            // Other errors
-            console.error('Unhandled payment failure reason:', errorDetails?.code);
+
+        // Send failure notification
+        try {
+          await emailService.sendToAdmin({
+            isUrgent: true,
+            subject: `❌ Payment Failed - ${failedIntent.amount/100} ${failedIntent.currency.toUpperCase()}`,
+            details: {
+              paymentId: failedIntent.id,
+              amount: `${failedIntent.amount/100} ${failedIntent.currency.toUpperCase()}`,
+              status: 'Failed',
+              error: errorDetails?.message || 'Unknown error',
+              errorCode: errorDetails?.code,
+              declineCode: errorDetails?.decline_code
+            }
+          });
+        } catch (emailError) {
+          console.error('Failed to send payment failure notification:', emailError);
         }
+
+        res.json({ 
+          received: true,
+          type: 'payment_intent.payment_failed',
+          paymentIntentId: failedIntent.id,
+          error: errorDetails?.code || 'unknown_error'
+        });
         break;
 
-      case 'payment_intent.requires_action':
-        const actionRequired = event.data.object;
-        console.log('Payment requires action:', {
-          id: actionRequired.id,
-          status: actionRequired.status,
-          nextAction: actionRequired.next_action?.type,
+      case 'charge.dispute.created':
+        const dispute = event.data.object;
+        const charge = dispute.charge;
+        console.error('Dispute created:', {
+          id: dispute.id,
+          amount: dispute.amount,
+          currency: dispute.currency,
+          charge: dispute.charge,
+          reason: dispute.reason,
+          status: dispute.status,
           timestamp: new Date().toISOString()
+        });
+
+        // Try to send an urgent email notification to admin
+        try {
+          await emailService.sendToAdmin({
+            isUrgent: true,
+            subject: `⚠️ URGENT: Payment Dispute Received - ${dispute.amount/100} ${dispute.currency.toUpperCase()}`,
+            details: {
+              disputeId: dispute.id,
+              chargeId: charge,
+              amount: `${dispute.amount/100} ${dispute.currency.toUpperCase()}`,
+              reason: dispute.reason,
+              status: dispute.status,
+              evidence_details: dispute.evidence_details,
+              due_by: dispute.evidence_details?.due_by ? new Date(dispute.evidence_details.due_by * 1000).toISOString() : 'Not specified'
+            }
+          });
+        } catch (emailError) {
+          console.error('Failed to send dispute notification email:', emailError);
+        }
+
+        res.json({ 
+          received: true,
+          type: 'charge.dispute.created',
+          disputeId: dispute.id,
+          chargeId: charge
         });
         break;
 
       default:
-        console.log(`Unhandled event type ${event.type}`);
+        console.log(`Ignoring unhandled event type: ${event.type}`);
+        res.json({ 
+          received: true,
+          type: event.type,
+          handled: false
+        });
     }
-
-    res.json({ received: true });
   } catch (err) {
     console.error('Webhook error:', {
       message: err.message,
@@ -140,7 +202,6 @@ router.post('/webhook', express.raw({ type: 'application/json' }), async (req, r
       timestamp: new Date().toISOString()
     });
     
-    // Check for specific types of webhook errors
     if (err.type === 'StripeSignatureVerificationError') {
       return res.status(400).json({ 
         error: 'Invalid signature',
