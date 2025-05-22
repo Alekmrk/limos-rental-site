@@ -22,7 +22,7 @@ const deploymentId = Math.random().toString(36).substring(7);
 // Initialize express app
 const app = express();
 
-// Set up middleware
+// Set up CORS
 app.use(cors({
   origin: [
     'https://elitewaylimo.ch', 
@@ -35,16 +35,14 @@ app.use(cors({
   maxAge: 86400 // 24 hours
 }));
 
-// Create a separate router for Stripe webhooks
-const webhookRouter = express.Router();
-webhookRouter.post('/', express.raw({ type: 'application/json' }), stripeRoutes);
+// Webhook route must come before any body parsers
+app.post('/api/stripe/webhook', express.raw({type: 'application/json'}), require('./routes/webhookHandler'));
 
 // Regular body parsing for other routes
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
 // Define routes
-app.use('/api/stripe/webhook', webhookRouter); // Webhook route must be before JSON body parser
 app.use('/api/email', emailRoutes);
 app.use('/api/stripe', stripeRoutes);
 
