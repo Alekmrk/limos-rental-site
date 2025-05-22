@@ -4,6 +4,7 @@ import ReservationContext from "../../contexts/ReservationContext";
 import Button from "../../components/Button";
 import ProgressBar from "../../components/ProgressBar";
 import { calculatePrice, formatPrice } from "../../services/PriceCalculationService";
+import { sendPaymentConfirmation } from "../../services/EmailService";
 import StripePayment from '../../components/StripePayment';
 
 const PaymentPage = ({ scrollUp }) => {
@@ -151,6 +152,17 @@ const PaymentPage = ({ scrollUp }) => {
         swissTimestamp: swissTime,
         reference: `USDT-${Math.random().toString(36).substr(2, 9).toUpperCase()}`
       };
+
+      // Send payment confirmation emails
+      try {
+        await sendPaymentConfirmation({
+          ...reservationInfo,
+          paymentDetails
+        });
+      } catch (emailError) {
+        console.error("Error sending payment confirmation:", emailError);
+        // Don't block the flow for email errors
+      }
 
       await handleInput({
         target: {
