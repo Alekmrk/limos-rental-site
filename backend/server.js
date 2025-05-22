@@ -31,17 +31,20 @@ app.use(cors({
   ],
   methods: ['GET', 'POST', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'Stripe-Signature'],
-  credentials: true
+  credentials: true,
+  maxAge: 86400 // 24 hours
 }));
 
-// Stripe webhook needs raw body for signature verification
-app.use('/api/stripe/webhook', express.raw({ type: 'application/json' }), stripeRoutes);
+// Create a separate router for Stripe webhooks
+const webhookRouter = express.Router();
+webhookRouter.post('/', express.raw({ type: 'application/json' }), stripeRoutes);
 
 // Regular body parsing for other routes
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
 // Define routes
+app.use('/api/stripe/webhook', webhookRouter); // Webhook route must be before JSON body parser
 app.use('/api/email', emailRoutes);
 app.use('/api/stripe', stripeRoutes);
 

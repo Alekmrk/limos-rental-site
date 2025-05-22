@@ -41,14 +41,15 @@ router.post('/create-payment-intent', express.json(), async (req, res) => {
 });
 
 // Webhook handler for Stripe events
-router.post('/webhook', async (req, res) => {
+router.use(async (req, res) => {
   const sig = req.headers['stripe-signature'];
   
   console.log('Received webhook:', {
     timestamp: new Date().toISOString(),
     signature: sig ? '(present)' : '(missing)',
     bodyLength: req.body?.length || 0,
-    contentType: req.headers['content-type']
+    contentType: req.headers['content-type'],
+    rawBody: typeof req.body === 'string' || Buffer.isBuffer(req.body)
   });
 
   if (!sig) {
@@ -70,6 +71,14 @@ router.post('/webhook', async (req, res) => {
   let event;
 
   try {
+    // Log webhook secret length for debugging (not the actual secret)
+    console.log('Webhook configuration:', {
+      secretLength: process.env.STRIPE_WEBHOOK_SECRET.length,
+      bodyType: typeof req.body,
+      isBuffer: Buffer.isBuffer(req.body),
+      contentLength: req.headers['content-length']
+    });
+
     event = stripe.webhooks.constructEvent(
       req.body,
       sig,
