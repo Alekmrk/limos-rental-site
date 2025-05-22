@@ -279,6 +279,7 @@ const sendPaymentReceiptToCustomer = async (reservationInfo) => {
  */
 const generateEmailContent = (reservationInfo, type = 'customer') => {
   const isSpecialRequest = reservationInfo.isSpecialRequest;
+  const isHourly = reservationInfo.isHourly;
   const hasPayment = !!reservationInfo.paymentDetails;
   
   // Shared CSS styles
@@ -333,47 +334,49 @@ const generateEmailContent = (reservationInfo, type = 'customer') => {
       <p>Preferred Time: ${reservationInfo.time} (CET)</p>
       <div class="subsection">
         <p class="subsection-title">Special Request:</p>
-        <p>${reservationInfo.specialRequestDetails}</p>
+        <p>${reservationInfo.specialRequestDetails || 'No details provided'}</p>
       </div>
     `
     : `
       <p>Date: ${formatDate(reservationInfo.date)}</p>
       <p>Pick Up Time: ${reservationInfo.time} (CET)</p>
-      <p>From: ${reservationInfo.pickup}</p>
-      ${!reservationInfo.isHourly ? reservationInfo.extraStops?.map(stop => stop ? `<p class="indent">• ${stop}</p>` : '').join('') : ''}
-      ${!reservationInfo.isHourly 
-        ? `<p>To: ${reservationInfo.dropoff}</p>`
-        : `<p>Duration: ${reservationInfo.hours} hours</p>`
-      }
-      ${reservationInfo.isHourly && reservationInfo.plannedActivities ? `
-        <div class="subsection">
-          <p class="subsection-title">Planned Activities:</p>
-          <p>${reservationInfo.plannedActivities}</p>
-        </div>
-      ` : ''}
-      ${!reservationInfo.isHourly && reservationInfo.routeInfo ? `
-        <div class="subsection">
-          <p class="subsection-title">Route Information:</p>
-          <p>Distance: ${reservationInfo.routeInfo.distance}</p>
-          <p>Duration: ${reservationInfo.routeInfo.duration}</p>
-        </div>
-      ` : ''}
-    `;
+      <p>From: ${reservationInfo.pickup || 'Not specified'}</p>
+      ${isHourly 
+        ? `<p>Duration: ${reservationInfo.hours || '2'} hours</p>
+           ${reservationInfo.plannedActivities ? `
+             <div class="subsection">
+               <p class="subsection-title">Planned Activities:</p>
+               <p>${reservationInfo.plannedActivities}</p>
+             </div>
+           ` : ''}`
+        : `${(reservationInfo.extraStops || []).filter(Boolean).map(stop => 
+            `<p class="indent">• ${stop}</p>`
+          ).join('')}
+          <p>To: ${reservationInfo.dropoff || 'Not specified'}</p>
+          ${reservationInfo.routeInfo ? `
+            <div class="subsection">
+              <p class="subsection-title">Route Information:</p>
+              <p>Distance: ${reservationInfo.routeInfo.distance || 'Not calculated'}</p>
+              <p>Duration: ${reservationInfo.routeInfo.duration || 'Not calculated'}</p>
+            </div>
+          ` : ''}`
+      }`;
 
-  // Generate vehicle details section
+  // Vehicle details section
   const vehicleDetails = !isSpecialRequest ? `
-    <p>Vehicle: ${reservationInfo.selectedVehicle?.name}</p>
-    <p>Passengers: ${reservationInfo.passengers}</p>
-    <p>Bags: ${reservationInfo.bags}</p>
-    ${reservationInfo.childSeats > 0 ? `<p>Child Seats (4-7): ${reservationInfo.childSeats}</p>` : ''}
-    ${reservationInfo.babySeats > 0 ? `<p>Baby Seats (0-3): ${reservationInfo.babySeats}</p>` : ''}
-    ${reservationInfo.skiEquipment > 0 ? `<p>Ski Equipment: ${reservationInfo.skiEquipment}</p>` : ''}
+    <p>Vehicle: ${reservationInfo.selectedVehicle?.name || 'Not selected'}</p>
+    <p>Passengers: ${reservationInfo.passengers || '0'}</p>
+    <p>Bags: ${reservationInfo.bags || '0'}</p>
+    ${Number(reservationInfo.childSeats) > 0 ? `<p>Child Seats (4-7): ${reservationInfo.childSeats}</p>` : ''}
+    ${Number(reservationInfo.babySeats) > 0 ? `<p>Baby Seats (0-3): ${reservationInfo.babySeats}</p>` : ''}
+    ${Number(reservationInfo.skiEquipment) > 0 ? `<p>Ski Equipment: ${reservationInfo.skiEquipment}</p>` : ''}
   ` : '';
 
-  // Generate customer details section
+  // Customer details section
   const customerDetails = `
-    <p>Email: ${reservationInfo.email}</p>
-    <p>Phone: ${reservationInfo.phone}</p>
+    <p>Email: ${reservationInfo.email || 'Not provided'}</p>
+    <p>Phone: ${reservationInfo.phone || 'Not provided'}</p>
+    ${reservationInfo.firstName ? `<p>Name: ${reservationInfo.firstName}</p>` : ''}
     ${reservationInfo.flightNumber ? `<p>Flight Number: ${reservationInfo.flightNumber}</p>` : ''}
     ${reservationInfo.additionalRequests ? `
       <div class="subsection">

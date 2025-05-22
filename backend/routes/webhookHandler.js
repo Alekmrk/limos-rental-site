@@ -52,33 +52,41 @@ module.exports = async (req, res) => {
         });
         
         try {
-          // Send payment confirmation to admin
-          await emailService.sendPaymentConfirmationToAdmin({
+          // Prepare reservation info from metadata
+          const reservationInfo = {
+            email: paymentIntent.metadata.email,
+            firstName: paymentIntent.metadata.firstName,
+            phone: paymentIntent.metadata.phone,
+            date: paymentIntent.metadata.date,
+            time: paymentIntent.metadata.time,
+            pickup: paymentIntent.metadata.pickup,
+            dropoff: paymentIntent.metadata.dropoff,
+            isHourly: paymentIntent.metadata.isHourly === 'true',
+            hours: paymentIntent.metadata.hours,
+            plannedActivities: paymentIntent.metadata.plannedActivities,
+            selectedVehicle: {
+              name: paymentIntent.metadata.vehicleName
+            },
+            passengers: parseInt(paymentIntent.metadata.passengers) || 0,
+            bags: parseInt(paymentIntent.metadata.bags) || 0,
+            childSeats: parseInt(paymentIntent.metadata.childSeats) || 0,
+            babySeats: parseInt(paymentIntent.metadata.babySeats) || 0,
+            skiEquipment: parseInt(paymentIntent.metadata.skiEquipment) || 0,
             paymentDetails: {
               method: 'stripe',
               amount: paymentIntent.amount / 100,
               currency: paymentIntent.currency.toUpperCase(),
               timestamp: new Date().toISOString(),
               reference: paymentIntent.id
-            },
-            orderReference: paymentIntent.metadata?.orderID,
-            ...paymentIntent.metadata
-          });
+            }
+          };
 
-          // Send receipt to customer if email exists in metadata
-          if (paymentIntent.metadata?.email) {
-            await emailService.sendPaymentReceiptToCustomer({
-              email: paymentIntent.metadata.email,
-              paymentDetails: {
-                method: 'stripe',
-                amount: paymentIntent.amount / 100,
-                currency: paymentIntent.currency.toUpperCase(),
-                timestamp: new Date().toISOString(),
-                reference: paymentIntent.id
-              },
-              orderReference: paymentIntent.metadata?.orderID,
-              ...paymentIntent.metadata
-            });
+          // Send confirmation to admin
+          await emailService.sendPaymentConfirmationToAdmin(reservationInfo);
+
+          // Send receipt to customer if email exists
+          if (reservationInfo.email) {
+            await emailService.sendPaymentReceiptToCustomer(reservationInfo);
           }
         } catch (emailError) {
           console.error('Failed to send payment confirmation emails:', emailError);
