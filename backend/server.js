@@ -23,12 +23,16 @@ const deploymentId = Math.random().toString(36).substring(7);
 const app = express();
 
 // Set up CORS
+const corsOrigins = process.env.NODE_ENV === 'production' 
+  ? [
+      'https://elitewaylimo.ch', 
+      'https://www.elitewaylimo.ch',
+      'https://api.elitewaylimo.ch'
+    ]
+  : ['http://localhost:5173', 'http://127.0.0.1:5173']; // Vite's default dev server ports
+
 app.use(cors({
-  origin: [
-    'https://elitewaylimo.ch', 
-    'https://www.elitewaylimo.ch',
-    'https://api.elitewaylimo.ch'
-  ],
+  origin: corsOrigins,
   methods: ['GET', 'POST', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'Stripe-Signature'],
   credentials: true,

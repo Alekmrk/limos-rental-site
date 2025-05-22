@@ -169,6 +169,160 @@ module.exports = async (req, res) => {
         break;
       }
 
+      case 'charge.dispute.closed': {
+        const dispute = event.data.object;
+        console.log('Dispute closed:', {
+          id: dispute.id,
+          status: dispute.status,
+          outcome: dispute.status === 'won' ? 'in your favor' : 'not in your favor'
+        });
+
+        try {
+          await emailService.sendToAdmin({
+            isUrgent: true,
+            subject: `📌 Dispute ${dispute.status === 'won' ? 'Won' : 'Lost'} - ${dispute.amount/100} ${dispute.currency.toUpperCase()}`,
+            details: {
+              disputeId: dispute.id,
+              chargeId: dispute.charge,
+              amount: `${dispute.amount/100} ${dispute.currency.toUpperCase()}`,
+              status: dispute.status,
+              outcome: dispute.outcome
+            }
+          });
+        } catch (emailError) {
+          console.error('Failed to send dispute resolution notification:', emailError);
+        }
+
+        res.json({
+          received: true,
+          type: 'charge.dispute.closed',
+          disputeId: dispute.id,
+          status: dispute.status
+        });
+        break;
+      }
+
+      case 'charge.refunded': {
+        const charge = event.data.object;
+        console.log('Charge refunded:', {
+          id: charge.id,
+          amount_refunded: charge.amount_refunded,
+          currency: charge.currency
+        });
+
+        try {
+          // Notify admin about the refund
+          await emailService.sendToAdmin({
+            subject: `💰 Refund Processed - ${charge.amount_refunded/100} ${charge.currency.toUpperCase()}`,
+            details: {
+              chargeId: charge.id,
+              amount: `${charge.amount_refunded/100} ${charge.currency.toUpperCase()}`,
+              reason: charge.refunds?.data[0]?.reason || 'No reason provided'
+            }
+          });
+
+          // If we have customer email in metadata, notify them too
+          if (charge.metadata?.email) {
+            await emailService.sendPaymentReceiptToCustomer({
+              email: charge.metadata.email,
+              paymentDetails: {
+                method: 'stripe',
+                type: 'refund',
+                amount: charge.amount_refunded / 100,
+                currency: charge.currency.toUpperCase(),
+                timestamp: new Date().toISOString(),
+                reference: charge.id
+              }
+            });
+          }
+        } catch (emailError) {
+          console.error('Failed to send refund notification:', emailError);
+        }
+
+        res.json({
+          received: true,
+          type: 'charge.refunded',
+          chargeId: charge.id
+        });
+        break;
+      }
+
+      case 'payment_intent.requires_action': {
+        const paymentIntent = event.data.object;
+        console.log('Payment requires action:', {
+          id: paymentIntent.id,
+          status: paymentIntent.status,
+          next_action: paymentIntent.next_action?.type
+        });
+
+        // No need to send notifications for this event as it's handled by the frontend
+        res.json({
+          received: true,
+          type: 'payment_intent.requires_action',
+          paymentIntentId: paymentIntent.id
+        });
+        break;
+      }
+
+      case 'payment_intent.canceled': {
+        const paymentIntent = event.data.object;
+        console.log('Payment canceled:', {
+          id: paymentIntent.id,
+          cancellation_reason: paymentIntent.cancellation_reason
+        });
+
+        try {
+          await emailService.sendToAdmin({
+            subject: `❌ Payment Canceled - ${paymentIntent.amount/100} ${paymentIntent.currency.toUpperCase()}`,
+            details: {
+              paymentId: paymentIntent.id,
+              amount: `${paymentIntent.amount/100} ${paymentIntent.currency.toUpperCase()}`,
+              reason: paymentIntent.cancellation_reason || 'No reason provided',
+              metadata: paymentIntent.metadata
+            }
+          });
+        } catch (emailError) {
+          console.error('Failed to send cancellation notification:', emailError);
+        }
+
+        res.json({
+          received: true,
+          type: 'payment_intent.canceled',
+          paymentIntentId: paymentIntent.id
+        });
+        break;
+      }
+
+      case 'charge.expired': {
+        const charge = event.data.object;
+        console.log('Charge expired:', {
+          id: charge.id,
+          amount: charge.amount,
+          currency: charge.currency
+        });
+
+        try {
+          await emailService.sendToAdmin({
+            subject: `⏰ Payment Expired - ${charge.amount/100} ${charge.currency.toUpperCase()}`,
+            details: {
+              chargeId: charge.id,
+              amount: `${charge.amount/100} ${charge.currency.toUpperCase()}`,
+              created: new Date(charge.created * 1000).toISOString(),
+              metadata: charge.metadata
+            }
+          });
+        } catch (emailError) {
+          console.error('Failed to send expiration notification:', emailError);
+        }
+
+        res.json({
+          received: true,
+          type: 'charge.expired',
+          chargeId: charge.id
+        });
+        break;
+      }
+
       default:
         console.log(`Ignoring unhandled event type: ${event.type}`);
         res.json({ 

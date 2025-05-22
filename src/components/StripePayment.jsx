@@ -8,7 +8,14 @@ import {
 } from '@stripe/react-stripe-js';
 import Button from './Button';
 
-const stripePromise = loadStripe('pk_live_51RPJz2IRGMq7s4cbNNd3aY9KVzfvowhFoKbfjlysxRsOPadnd5ZSH2z8veaVZeSyNYr7qv54Pks7odMTAHazJMsg00kOYlEBrQ');
+
+//const stripePromise = loadStripe('pk_live_51RPJz2IRGMq7s4cbNNd3aY9KVzfvowhFoKbfjlysxRsOPadnd5ZSH2z8veaVZeSyNYr7qv54Pks7odMTAHazJMsg00kOYlEBrQ');
+const stripePromise = loadStripe('pk_test_51RPJz2IRGMq7s4cbaQg30MCxAjFGhLfs6SCrNsrbMmklgHSM3LXUfumQb8OvwdGTaERwurFjPKTF6xZXmUt7hGF900CAhtFQ1c');
+
+// API base URL - dynamically set based on environment
+const API_BASE_URL = import.meta.env.PROD 
+  ? 'https://api.elitewaylimo.ch'
+  : 'http://localhost:3001';
 
 const CheckoutForm = ({ amount, onSuccess, onError }) => {
   const stripe = useStripe();
@@ -146,7 +153,7 @@ const StripePayment = ({ amount, onSuccess, onError, reservationInfo }) => {
 
     const createPaymentIntent = async () => {
       try {
-        const response = await fetch('https://api.elitewaylimo.ch/api/stripe/create-payment-intent', {
+        const response = await fetch(`${API_BASE_URL}/api/stripe/create-payment-intent`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ 
