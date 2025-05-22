@@ -35,22 +35,15 @@ jobs:
       with:
         creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-    - name: Deploy to Azure Web App
-      uses: azure/webapps-deploy@v2
-      with:
-        app-name: 'limos-rental-api'
-        slot-name: production
-        package: backend
-
     - name: Configure App Settings
       uses: azure/CLI@v1
       with:
         inlineScript: |
+          echo "Configuring app settings..."
           az webapp config appsettings set --name limos-rental-api --resource-group limos-rental-rg --settings \
           PORT="8080" \
           NODE_ENV="production" \
           CORS_ORIGIN="https://www.elitewaylimo.ch" \
-          MY_POS_PRIVATE_KEY="${{ secrets.MY_POS_PRIVATE_KEY }}" \
           COMMUNICATION_CONNECTION_STRING="${{ secrets.COMMUNICATION_CONNECTION_STRING }}" \
           EMAIL_FROM="info@elitewaylimo.ch" \
           EMAIL_INFO="info@elitewaylimo.ch" \
@@ -63,8 +56,16 @@ jobs:
           STRIPE_WEBHOOK_SECRET="${{ secrets.STRIPE_WEBHOOK_SECRET }}" \
           WEBSITE_NODE_DEFAULT_VERSION="~18" \
           FRONTEND_URL="https://www.elitewaylimo.ch"
+          echo "App settings configured successfully"
 
-    - name: Wait for app to start
+    - name: Deploy to Azure Web App
+      uses: azure/webapps-deploy@v2
+      with:
+        app-name: 'limos-rental-api'
+        slot-name: production
+        package: backend
+
+    - name: Wait for app to start and verify settings
       run: |
         echo "Waiting for service to start..."
         sleep 45
@@ -75,7 +76,15 @@ jobs:
           response=$(curl -s -o /dev/null -w "%{http_code}" https://limos-rental-api.azurewebsites.net/health)
           if [ "$response" = "200" ]; then
             echo "Service is healthy"
-            exit 0
+            # Verify Stripe settings are correct
+            settings=$(az webapp config appsettings list --name limos-rental-api --resource-group limos-rental-rg --query "[?name=='STRIPE_SECRET_KEY']")
+            if [ -n "$settings" ]; then
+              echo "Stripe configuration verified"
+              exit 0
+            else
+              echo "Stripe configuration missing"
+              exit 1
+            fi
           fi
           echo "Health check failed with status $response, retrying in 30 seconds..."
           sleep 30
