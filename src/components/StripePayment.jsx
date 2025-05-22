@@ -137,7 +137,7 @@ const CheckoutForm = ({ amount, onSuccess, onError }) => {
   );
 };
 
-const StripePayment = ({ amount, onSuccess, onError }) => {
+const StripePayment = ({ amount, onSuccess, onError, reservationInfo }) => {
   const [clientSecret, setClientSecret] = useState('');
   const [initError, setInitError] = useState('');
 
@@ -149,7 +149,22 @@ const StripePayment = ({ amount, onSuccess, onError }) => {
         const response = await fetch('https://api.elitewaylimo.ch/api/stripe/create-payment-intent', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ amount, currency: 'chf' })
+          body: JSON.stringify({ 
+            amount,
+            currency: 'chf',
+            metadata: {
+              email: reservationInfo.email,
+              name: reservationInfo.name,
+              phone: reservationInfo.phone,
+              date: reservationInfo.date,
+              time: reservationInfo.time,
+              pickup: reservationInfo.pickup,
+              dropoff: reservationInfo.dropoff,
+              vehicle: reservationInfo.selectedVehicle?.name,
+              isHourly: reservationInfo.isHourly,
+              hours: reservationInfo.hours,
+            }
+          })
         });
 
         if (!isMounted) return;
@@ -173,7 +188,7 @@ const StripePayment = ({ amount, onSuccess, onError }) => {
     return () => {
       isMounted = false;
     };
-  }, [amount, onError]);
+  }, [amount, onError, reservationInfo]);
 
   if (initError) {
     return (

@@ -4,7 +4,6 @@ import ReservationContext from "../../contexts/ReservationContext";
 import Button from "../../components/Button";
 import ProgressBar from "../../components/ProgressBar";
 import { calculatePrice, formatPrice } from "../../services/PriceCalculationService";
-import { sendPaymentConfirmation } from "../../services/EmailService";
 import StripePayment from '../../components/StripePayment';
 
 const PaymentPage = ({ scrollUp }) => {
@@ -87,7 +86,7 @@ const PaymentPage = ({ scrollUp }) => {
         second: '2-digit',
         hour12: false
       });
-
+      
       const paymentDetails = {
         method: 'stripe',
         amount: price,
@@ -104,23 +103,9 @@ const PaymentPage = ({ scrollUp }) => {
         }
       });
 
-      // Send confirmation emails
-      console.log('Sending payment confirmation emails...');
-      const emailResult = await sendPaymentConfirmation({
-        ...reservationInfo,
-        paymentDetails
-      });
-
-      if (!emailResult.success) {
-        console.warn('Payment confirmation emails may not have been sent properly:', emailResult.message);
-      } else {
-        console.log('Payment confirmation emails sent successfully!');
-      }
-
       navigate('/thankyou');
     } catch (error) {
       console.error("Error processing successful payment:", error);
-      alert("Payment was successful. If you don't receive a confirmation email within 5 minutes, please contact our support.");
       navigate('/thankyou');
     }
   };
@@ -173,19 +158,6 @@ const PaymentPage = ({ scrollUp }) => {
           value: paymentDetails
         }
       });
-
-      // Send confirmation emails
-      console.log('Sending payment confirmation emails...');
-      const emailResult = await sendPaymentConfirmation({
-        ...reservationInfo,
-        paymentDetails
-      });
-
-      if (!emailResult.success) {
-        console.warn('Payment confirmation emails may not have been sent properly:', emailResult.message);
-      } else {
-        console.log('Payment confirmation emails sent successfully!');
-      }
 
       navigate('/thankyou');
     } catch (error) {
@@ -329,6 +301,7 @@ const PaymentPage = ({ scrollUp }) => {
                 amount={price}
                 onSuccess={handlePaymentSuccess}
                 onError={handlePaymentError}
+                reservationInfo={reservationInfo}
               />
               
               <div className="mt-4 text-sm text-zinc-400">

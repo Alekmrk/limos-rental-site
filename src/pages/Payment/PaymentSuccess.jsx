@@ -1,7 +1,6 @@
 import React, { useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import ReservationContext from "../../contexts/ReservationContext";
-import { sendPaymentConfirmation } from "../../services/EmailService";
 
 const PaymentSuccess = () => {
   const navigate = useNavigate();
@@ -45,16 +44,6 @@ const PaymentSuccess = () => {
             value: paymentDetails
           }
         });
-
-        // Send confirmation emails
-        const emailResult = await sendPaymentConfirmation({
-          ...reservationInfo,
-          paymentDetails
-        });
-
-        if (!emailResult.success) {
-          console.warn('Payment confirmation emails may not have been sent properly:', emailResult.message);
-        }
 
         // Navigate to thank you page
         navigate('/thankyou', { replace: true });

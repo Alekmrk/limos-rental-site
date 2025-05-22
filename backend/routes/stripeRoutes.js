@@ -5,8 +5,8 @@ const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 // Create a payment intent
 router.post('/create-payment-intent', express.json(), async (req, res) => {
   try {
-    const { amount, currency = 'chf' } = req.body;
-    console.log('Creating payment intent:', { amount, currency });
+    const { amount, currency = 'chf', metadata = {} } = req.body;
+    console.log('Creating payment intent:', { amount, currency, metadata });
 
     const paymentIntent = await stripe.paymentIntents.create({
       amount: Math.round(amount * 100),
@@ -14,6 +14,7 @@ router.post('/create-payment-intent', express.json(), async (req, res) => {
       payment_method_types: ['card'],
       metadata: {
         orderID: `ORDER-${Date.now()}`,
+        ...metadata
       }
     });
 
@@ -106,7 +107,39 @@ router.use(async (req, res) => {
           timestamp: new Date().toISOString()
         });
         
-        // Don't send email here since frontend handles success emails
+        try {
+          // Send payment confirmation to admin
+          await emailService.sendPaymentConfirmationToAdmin({
+            paymentDetails: {
+              method: 'stripe',
+              amount: paymentIntent.amount / 100,
+              currency: paymentIntent.currency.toUpperCase(),
+              timestamp: new Date().toISOString(),
+              reference: paymentIntent.id
+            },
+            orderReference: paymentIntent.metadata?.orderID,
+            ...paymentIntent.metadata
+          });
+
+          // Send receipt to customer if email exists in metadata
+          if (paymentIntent.metadata?.email) {
+            await emailService.sendPaymentReceiptToCustomer({
+              email: paymentIntent.metadata.email,
+              paymentDetails: {
+                method: 'stripe',
+                amount: paymentIntent.amount / 100,
+                currency: paymentIntent.currency.toUpperCase(),
+                timestamp: new Date().toISOString(),
+                reference: paymentIntent.id
+              },
+              orderReference: paymentIntent.metadata?.orderID,
+              ...paymentIntent.metadata
+            });
+          }
+        } catch (emailError) {
+          console.error('Failed to send payment confirmation emails:', emailError);
+        }
+
         res.json({ 
           received: true,
           type: 'payment_intent.succeeded',
