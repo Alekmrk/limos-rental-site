@@ -160,16 +160,27 @@ const StripePayment = ({ amount, onSuccess, onError, reservationInfo }) => {
             amount,
             currency: 'chf',
             metadata: {
-              email: reservationInfo.email,
-              name: reservationInfo.name,
-              phone: reservationInfo.phone,
-              date: reservationInfo.date,
-              time: reservationInfo.time,
-              pickup: reservationInfo.pickup,
-              dropoff: reservationInfo.dropoff,
-              vehicle: reservationInfo.selectedVehicle?.name,
-              isHourly: reservationInfo.isHourly,
-              hours: reservationInfo.hours,
+              email: reservationInfo.email || '',
+              firstName: reservationInfo.firstName || '',
+              phone: reservationInfo.phone || '',
+              date: reservationInfo.date || '',
+              time: reservationInfo.time || '',
+              pickup: reservationInfo.pickup || '',
+              dropoff: reservationInfo.dropoff || '',
+              vehicleName: reservationInfo.selectedVehicle?.name || '',
+              isHourly: String(!!reservationInfo.isHourly),
+              isSpecialRequest: String(!!reservationInfo.isSpecialRequest),
+              hours: reservationInfo.hours || '',
+              passengers: String(reservationInfo.passengers || '0'),
+              bags: String(reservationInfo.bags || '0'),
+              childSeats: String(reservationInfo.childSeats || '0'),
+              babySeats: String(reservationInfo.babySeats || '0'),
+              skiEquipment: String(reservationInfo.skiEquipment || '0'),
+              flightNumber: reservationInfo.flightNumber || '',
+              // Split long text fields to stay within 500 char limit
+              plannedActivities: reservationInfo.plannedActivities?.substring(0, 450) || '',
+              specialRequestDetails: reservationInfo.specialRequestDetails?.substring(0, 450) || '',
+              additionalRequests: reservationInfo.additionalRequests?.substring(0, 450) || ''
             }
           })
         });

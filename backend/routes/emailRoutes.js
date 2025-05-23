@@ -292,6 +292,46 @@ router.post('/payment-confirmation', async (req, res) => {
 });
 
 /**
+ * @route   POST /api/email/crypto-payment
+ * @desc    Send crypto payment confirmation email
+ * @access  Public
+ */
+router.post('/crypto-payment', async (req, res) => {
+  try {
+    const { reservationInfo } = req.body;
+    
+    if (!reservationInfo) {
+      return res.status(400).json({ 
+        success: false, 
+        message: 'Reservation information is required' 
+      });
+    }
+
+    // Send payment confirmation to admin
+    const adminEmailResult = await emailService.sendPaymentConfirmationToAdmin(reservationInfo);
+    
+    // Send payment receipt to customer if email is provided
+    let customerEmailResult = { success: false, message: 'No customer email provided' };
+    if (reservationInfo.email) {
+      customerEmailResult = await emailService.sendPaymentReceiptToCustomer(reservationInfo);
+    }
+
+    res.status(200).json({
+      success: true,
+      adminEmail: adminEmailResult,
+      customerEmail: customerEmailResult
+    });
+  } catch (error) {
+    console.error('Error sending crypto payment confirmation:', error);
+    res.status(500).json({ 
+      success: false, 
+      message: 'Failed to send payment confirmation', 
+      error: error.message 
+    });
+  }
+});
+
+/**
  * @route   GET /api/email/inbox
  * @desc    Get recent emails from inbox
  * @access  Private

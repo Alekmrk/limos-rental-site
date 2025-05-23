@@ -4,7 +4,7 @@ import ReservationContext from "../../contexts/ReservationContext";
 import Button from "../../components/Button";
 import ProgressBar from "../../components/ProgressBar";
 import { calculatePrice, formatPrice } from "../../services/PriceCalculationService";
-import { sendPaymentConfirmation } from "../../services/EmailService";
+import { sendPaymentConfirmation, sendCryptoPaymentConfirmation } from "../../services/EmailService";
 import StripePayment from '../../components/StripePayment';
 
 const PaymentPage = ({ scrollUp }) => {
@@ -153,17 +153,7 @@ const PaymentPage = ({ scrollUp }) => {
         reference: `USDT-${Math.random().toString(36).substr(2, 9).toUpperCase()}`
       };
 
-      // Send payment confirmation emails
-      try {
-        await sendPaymentConfirmation({
-          ...reservationInfo,
-          paymentDetails
-        });
-      } catch (emailError) {
-        console.error("Error sending payment confirmation:", emailError);
-        // Don't block the flow for email errors
-      }
-
+      // Update reservation context
       await handleInput({
         target: {
           name: 'paymentDetails',
@@ -171,16 +161,22 @@ const PaymentPage = ({ scrollUp }) => {
         }
       });
 
+      // Send crypto-specific payment confirmation
+      try {
+        await sendCryptoPaymentConfirmation({
+          ...reservationInfo,
+          paymentDetails
+        });
+      } catch (emailError) {
+        console.error("Error sending crypto payment confirmation:", emailError);
+        // Don't block the flow for email errors
+      }
+
       navigate('/thankyou');
     } catch (error) {
       console.error("Error processing crypto payment:", error);
       setErrorMessage("There was a problem processing your payment. Please try again or contact support.");
       setIsProcessing(false);
-      // Still navigate to thank you page if it was just an email error
-      if (error.message?.includes('email')) {
-        alert("Payment recorded but confirmation email may be delayed. Please contact support if you don't receive it within 5 minutes.");
-        navigate('/thankyou');
-      }
     }
   };
 

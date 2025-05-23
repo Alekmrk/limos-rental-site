@@ -191,3 +191,69 @@ export const sendPaymentConfirmation = async (reservationInfo) => {
     }
   }
 };
+
+/**
+ * Send crypto payment confirmation emails (to both admin and customer if email provided)
+ * @param {Object} reservationInfo - The reservation information including payment details
+ * @returns {Promise} - A promise that resolves when the emails are sent
+ */
+export const sendCryptoPaymentConfirmation = async (reservationInfo) => {
+  console.log('Sending crypto payment confirmation emails via backend API');
+  
+  const sanitizedReservationInfo = prepareReservationData(reservationInfo);
+  console.log('API URL:', `${API_BASE_URL}/crypto-payment`);
+
+  const maxRetries = 3;
+  let attempt = 0;
+  
+  while (attempt < maxRetries) {
+    try {
+      attempt++;
+      console.log(`Attempt ${attempt} of ${maxRetries}...`);
+      
+      const response = await fetch(`${API_BASE_URL}/crypto-payment`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ reservationInfo: sanitizedReservationInfo }),
+        timeout: 30000 // 30 second timeout
+      });
+      
+      if (!response.ok) {
+        const errorText = await response.text();
+        try {
+          const errorJson = JSON.parse(errorText);
+          throw new Error(errorJson.message || 'Failed to send crypto payment confirmation');
+        } catch (parseError) {
+          throw new Error(`Failed to send crypto payment confirmation: ${errorText || response.statusText}`);
+        }
+      }
+      
+      const result = await response.json();
+      
+      if (result.success) {
+        return {
+          success: true,
+          adminEmail: result.adminEmail,
+          customerEmail: result.customerEmail
+        };
+      }
+      
+      throw new Error(result.message || 'Failed to send confirmation emails');
+      
+    } catch (error) {
+      console.error(`Error sending crypto payment confirmation (attempt ${attempt}):`, error);
+      
+      if (attempt === maxRetries) {
+        return {
+          success: false,
+          message: 'Failed to send crypto payment confirmation after multiple attempts',
+          error: error.message
+        };
+      }
+      
+      await new Promise(resolve => setTimeout(resolve, Math.pow(2, attempt) * 1000));
+    }
+  }
+};

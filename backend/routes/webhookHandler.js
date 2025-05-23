@@ -62,6 +62,7 @@ module.exports = async (req, res) => {
             pickup: paymentIntent.metadata.pickup,
             dropoff: paymentIntent.metadata.dropoff,
             isHourly: paymentIntent.metadata.isHourly === 'true',
+            isSpecialRequest: paymentIntent.metadata.isSpecialRequest === 'true',
             hours: paymentIntent.metadata.hours,
             plannedActivities: paymentIntent.metadata.plannedActivities,
             selectedVehicle: {
@@ -72,6 +73,9 @@ module.exports = async (req, res) => {
             childSeats: parseInt(paymentIntent.metadata.childSeats) || 0,
             babySeats: parseInt(paymentIntent.metadata.babySeats) || 0,
             skiEquipment: parseInt(paymentIntent.metadata.skiEquipment) || 0,
+            flightNumber: paymentIntent.metadata.flightNumber,
+            specialRequestDetails: paymentIntent.metadata.specialRequestDetails,
+            additionalRequests: paymentIntent.metadata.additionalRequests,
             paymentDetails: {
               method: 'stripe',
               amount: paymentIntent.amount / 100,

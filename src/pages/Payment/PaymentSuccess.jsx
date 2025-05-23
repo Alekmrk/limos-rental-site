@@ -37,7 +37,7 @@ const PaymentSuccess = () => {
           reference: `PAY-${Math.random().toString(36).substr(2, 9).toUpperCase()}`
         };
 
-        // Update reservation context
+        // Just update reservation context - emails will be sent by webhook
         await handleInput({
           target: {
             name: 'paymentDetails',

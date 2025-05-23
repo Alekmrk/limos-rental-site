@@ -330,13 +330,33 @@ const generateEmailContent = (reservationInfo, type = 'customer') => {
   // Generate transfer/request details section
   const transferDetails = isSpecialRequest 
     ? `
-      <p>Date: ${formatDate(reservationInfo.date)}</p>
-      <p>Preferred Time: ${reservationInfo.time} (CET)</p>
-      <div class="subsection">
-        <p class="subsection-title">Special Request:</p>
-        <p>${reservationInfo.specialRequestDetails || 'No details provided'}</p>
+    <p>Date: ${formatDate(reservationInfo.date)}</p>
+    <p>Preferred Time: ${reservationInfo.time} (CET)</p>
+    <div class="subsection">
+      <p class="subsection-title">Special Request Details:</p>
+      <p>${reservationInfo.specialRequestDetails || 'No specific request provided'}</p>
+      ${reservationInfo.additionalRequests ? `
+        <div class="mt-4">
+          <p class="subsection-title">Additional Information:</p>
+          <p>${reservationInfo.additionalRequests}</p>
+        </div>
+      ` : ''}
+    </div>
+    ${reservationInfo.passengers ? `
+      <div class="mt-4">
+        <p class="subsection-title">Group Details:</p>
+        <p>Number of Passengers: ${reservationInfo.passengers}</p>
+        ${reservationInfo.bags ? `<p>Number of Bags: ${reservationInfo.bags}</p>` : ''}
       </div>
-    `
+    ` : ''}
+    ${reservationInfo.pickup ? `
+      <div class="mt-4">
+        <p class="subsection-title">Location Details:</p>
+        <p>Pick Up Location: ${reservationInfo.pickup}</p>
+        ${reservationInfo.dropoff ? `<p>Drop Off Location: ${reservationInfo.dropoff}</p>` : ''}
+      </div>
+    ` : ''}
+  `
     : `
       <p>Date: ${formatDate(reservationInfo.date)}</p>
       <p>Pick Up Time: ${reservationInfo.time} (CET)</p>
