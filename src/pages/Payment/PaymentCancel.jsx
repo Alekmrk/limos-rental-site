@@ -26,7 +26,7 @@ const PaymentCancel = () => {
             <p className="text-lg">Your payment was not completed successfully. This could be due to:</p>
             <ul className="text-left list-disc list-inside space-y-2 text-zinc-300">
               <li>The payment was cancelled</li>
-              <li>There was an issue with your card</li>
+              <li>The card was declined</li>
               <li>The transaction was declined by your bank</li>
               <li>A technical error occurred during processing</li>
             </ul>

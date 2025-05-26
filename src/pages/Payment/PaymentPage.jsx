@@ -277,7 +277,7 @@ const PaymentPage = ({ scrollUp }) => {
                   <svg className="w-8 h-8" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/>
                   </svg>
-                  <span>Credit Card</span>
+                  <span>Card</span>
                 </div>
               </button>
 
@@ -313,7 +313,7 @@ const PaymentPage = ({ scrollUp }) => {
               />
               
               <div className="mt-4 text-sm text-zinc-400">
-                <p>• Secure payment powered by Stripe</p>
+                <p>• Secure card payment powered by Stripe</p>
                 <p>• Your card will be charged immediately</p>
                 <p>• You will receive a confirmation email</p>
                 <p>• In case of issues, contact our support</p>

@@ -32,14 +32,14 @@ const CheckoutForm = ({ amount, onSuccess, onError }) => {
 
   const getReadableErrorMessage = (technicalMessage) => {
     const errorMap = {
-      'card_declined': 'Your card was declined. Please try another card.',
+      'card_declined': 'This card was declined. Please try another card.',
       'expired_card': 'This card has expired. Please use a different card.',
       'incorrect_cvc': 'The security code (CVC) is incorrect. Please check and try again.',
       'insufficient_funds': 'Insufficient funds on this card. Please use a different card.',
       'invalid_expiry_year': 'The expiration year is invalid. Please check and try again.',
       'invalid_expiry_month': 'The expiration month is invalid. Please check and try again.',
-      'invalid_number': 'This card number is invalid. Please check and try again.',
-      'processing_error': 'There was an error processing your card. Please try again in a few moments.',
+      'invalid_number': 'The card number is invalid. Please check and try again.',
+      'processing_error': 'There was an error processing this card. Please try again in a few moments.',
       'authentication_required': 'This payment requires authentication. Please follow the prompts from your bank.',
       'try_again_later': 'The payment system is temporarily unavailable. Please try again in a few moments.',
       'rate_limit': 'Too many payment attempts. Please wait a few minutes before trying again.',
@@ -124,19 +124,33 @@ const CheckoutForm = ({ amount, onSuccess, onError }) => {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      <div className="min-h-[200px]">
-        <PaymentElement />
+    <form onSubmit={handleSubmit} className="space-y-3">
+      <div className="min-h-[160px]">
+        <PaymentElement options={{
+          layout: "accordion",
+          fields: {
+            billingDetails: {
+              address: 'never',
+              email: 'never',
+              name: 'never',
+              phone: 'never'
+            }
+          },
+          wallets: {
+            applePay: 'never',
+            googlePay: 'never'
+          }
+        }} />
       </div>
       {errorMessage && (
-        <div className="text-red-500 text-sm bg-red-500/10 px-3 py-2 rounded border border-red-500/20">
+        <div className="text-red-500 text-sm bg-red-500/10 px-2 py-1.5 rounded border border-red-500/20">
           {errorMessage}
         </div>
       )}
       <Button
         type="submit"
         disabled={!stripe || isProcessing}
-        className="w-full"
+        className="w-full py-2.5"
       >
         {isProcessing ? 'Processing Payment...' : `Pay ${amount} CHF`}
       </Button>
