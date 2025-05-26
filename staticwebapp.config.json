@@ -1,11 +1,46 @@
 {
   "routes": [
     {
+      "route": "/",
+      "serve": "/index.html",
+      "allowedRoles": ["anonymous"]
+    },
+    {
       "route": "/*",
-      "serve": "/index.html"
+      "serve": "/index.html",
+      "allowedRoles": ["anonymous"]
     }
   ],
   "navigationFallback": {
     "rewrite": "/index.html"
+  },
+  "responseOverrides": {
+    "400": {
+      "rewrite": "/index.html"
+    },
+    "401": {
+      "redirect": "/index.html",
+      "statusCode": 302
+    },
+    "403": {
+      "rewrite": "/index.html"
+    },
+    "404": {
+      "rewrite": "/index.html"
+    }
+  },
+  "globalHeaders": {
+    "Strict-Transport-Security": "max-age=31536000; includeSubDomains",
+    "X-Frame-Options": "DENY",
+    "X-Content-Type-Options": "nosniff"
+  },
+  "forwardingGateway": {
+    "allowedForwardedHosts": ["elitewaylimo.ch"],
+    "requiredHeaders": [],
+    "responseOverrides": {
+      "hostname": "elitewaylimo.ch",
+      "redirect": "https://www.elitewaylimo.ch{path}",
+      "statusCode": 301
+    }
   }
 }
