@@ -9,20 +9,21 @@
   "navigationFallback": {
     "rewrite": "/index.html"
   },
-  "responseOverrides": {
-    "404": {
-      "rewrite": "/index.html"
-    }
-  },
   "globalHeaders": {
     "Strict-Transport-Security": "max-age=31536000; includeSubDomains",
     "X-Frame-Options": "DENY",
     "X-Content-Type-Options": "nosniff"
   },
-  "platformErrorOverrides": [
-    {
-      "errorType": "NotFound",
-      "serve": "/index.html"
-    }
-  ]
+  "customDomains": {
+    "domains": [
+      {
+        "domain": "elitewaylimo.ch",
+        "ssl": true
+      },
+      {
+        "domain": "www.elitewaylimo.ch",
+        "ssl": true
+      }
+    ]
+  }
 }
