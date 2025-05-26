@@ -13,17 +13,5 @@
     "Strict-Transport-Security": "max-age=31536000; includeSubDomains",
     "X-Frame-Options": "DENY",
     "X-Content-Type-Options": "nosniff"
-  },
-  "customDomains": {
-    "domains": [
-      {
-        "domain": "elitewaylimo.ch",
-        "ssl": true
-      },
-      {
-        "domain": "www.elitewaylimo.ch",
-        "ssl": true
-      }
-    ]
   }
 }
