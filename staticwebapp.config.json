@@ -3,7 +3,10 @@
     {
       "route": "/*",
       "serve": "/index.html",
-      "allowedRoles": ["anonymous"]
+      "allowedRoles": ["anonymous"],
+      "headers": {
+        "Cache-Control": "must-revalidate, max-age=30"
+      }
     }
   ],
   "navigationFallback": {
@@ -13,5 +16,28 @@
     "Strict-Transport-Security": "max-age=31536000; includeSubDomains",
     "X-Frame-Options": "DENY",
     "X-Content-Type-Options": "nosniff"
+  },
+  "responseOverrides": {
+    "404": {
+      "rewrite": "/index.html"
+    }
+  },
+  "customDomains": {
+    "elitewaylimo.ch": {
+      "ssl": {
+        "certificateType": "CustomDomainVerifiedCertificate",
+        "minimumTlsVersion": "1.2"
+      },
+      "redirectConfig": {
+        "targetDomain": "www.elitewaylimo.ch",
+        "redirectType": "Permanent"
+      }
+    },
+    "www.elitewaylimo.ch": {
+      "ssl": {
+        "certificateType": "CustomDomainVerifiedCertificate",
+        "minimumTlsVersion": "1.2"
+      }
+    }
   }
 }
