@@ -1,11 +1,41 @@
 {
   "routes": [
     {
+      "route": "/static/*",
+      "headers": {
+        "Cache-Control": "public, max-age=3600, must-revalidate"
+      }
+    },
+    {
+      "route": "/assets/*",
+      "headers": {
+        "Cache-Control": "public, max-age=3600, must-revalidate"
+      }
+    },
+    {
+      "route": "/*.{jpg,jpeg,png,gif,webp,svg,ico}",
+      "headers": {
+        "Cache-Control": "public, max-age=3600, must-revalidate"
+      }
+    },
+    {
+      "route": "/*.{js,css,woff,woff2,ttf}",
+      "headers": {
+        "Cache-Control": "public, max-age=3600, must-revalidate"
+      }
+    },
+    {
+      "route": "/api/*",
+      "headers": {
+        "Cache-Control": "no-cache, no-store, must-revalidate"
+      }
+    },
+    {
       "route": "/*",
       "serve": "/index.html",
       "allowedRoles": ["anonymous"],
       "headers": {
-        "Cache-Control": "must-revalidate, max-age=30"
+        "Cache-Control": "public, max-age=900, must-revalidate"
       }
     }
   ],
@@ -15,7 +45,8 @@
   "globalHeaders": {
     "Strict-Transport-Security": "max-age=31536000; includeSubDomains",
     "X-Frame-Options": "DENY",
-    "X-Content-Type-Options": "nosniff"
+    "X-Content-Type-Options": "nosniff",
+    "Referrer-Policy": "strict-origin-when-cross-origin"
   },
   "responseOverrides": {
     "404": {
