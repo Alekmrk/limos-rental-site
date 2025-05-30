@@ -26,8 +26,14 @@ const ThankYou = ({ scrollUp }) => {
   useEffect(() => {
     const sendEmails = async () => {
       try {
-        console.log('Attempting to send confirmation emails...');
-        // The backend will handle sending to both admin and customer as needed
+        // Only send emails for special requests or when no payment was needed
+        // Regular bookings with payment have emails sent by the webhook handler
+        if (!reservationInfo.isSpecialRequest && reservationInfo.paymentDetails) {
+          console.log('Payment details found, skipping emails (already sent by webhook)');
+          return;
+        }
+
+        console.log('Sending confirmation emails for non-payment booking');
         const result = await sendTransferConfirmationToAdmin(reservationInfo);
         console.log('Email sending result:', result);
         setEmailStatus({ sent: result.success, error: null });
@@ -43,14 +49,8 @@ const ThankYou = ({ scrollUp }) => {
       }
     };
 
-    // Send emails only if this is not coming from a payment completion
-    // Payment confirmations are sent from the PaymentPage
-    if (!reservationInfo.paymentDetails) {
-      console.log('No payment details found, sending confirmation emails');
-      sendEmails();
-    } else {
-      console.log('Payment details found, skipping emails (should be sent from payment page)');
-    }
+    // Send emails only for special requests or non-payment bookings
+    sendEmails();
   }, [reservationInfo]);
 
   // Format date to dd-mm-yyyy

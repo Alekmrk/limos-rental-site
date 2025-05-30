@@ -52,8 +52,8 @@ const StripePayment = ({ amount, onSuccess, onError, reservationInfo }) => {
         throw new Error(data.error);
       }
 
-      // Open Stripe Checkout in a new window
-      window.open(data.url, '_blank');
+      // Redirect in the same window instead of opening a new one
+      window.location.href = data.url;
       
     } catch (err) {
       onError({ message: err.message, userMessage: 'Unable to start payment process. Please try again or contact support.' });

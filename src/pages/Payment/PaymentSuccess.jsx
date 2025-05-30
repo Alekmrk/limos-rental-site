@@ -8,7 +8,7 @@ const API_BASE_URL = import.meta.env.PROD
 
 const PaymentSuccess = () => {
   const navigate = useNavigate();
-  const { reservationInfo, handleInput } = useContext(ReservationContext);
+  const { handleInput } = useContext(ReservationContext);
 
   useEffect(() => {
     const verifySession = async () => {
@@ -31,13 +31,16 @@ const PaymentSuccess = () => {
           return;
         }
 
-        // Update reservation context with payment details
-        await handleInput({
-          target: {
-            name: 'paymentDetails',
-            value: data.reservationInfo.paymentDetails
-          }
-        });
+        // Update the entire reservation info with the data from backend
+        const { reservationInfo } = data;
+        for (const key in reservationInfo) {
+          await handleInput({
+            target: {
+              name: key,
+              value: reservationInfo[key]
+            }
+          });
+        }
 
         // Navigate to thank you page
         navigate('/thankyou', { replace: true });

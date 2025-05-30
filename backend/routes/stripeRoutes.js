@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
-const emailService = require('../services/emailService');
 
 // Create a checkout session
 router.post('/create-checkout-session', express.json(), async (req, res) => {
@@ -74,16 +73,6 @@ router.get('/verify-session/:sessionId', async (req, res) => {
           reference: session.payment_intent || session.id
         }
       };
-
-      // Send confirmation emails
-      try {
-        await emailService.sendPaymentConfirmationToAdmin(reservationInfo);
-        if (reservationInfo.email) {
-          await emailService.sendPaymentReceiptToCustomer(reservationInfo);
-        }
-      } catch (emailError) {
-        console.error('Failed to send confirmation emails:', emailError);
-      }
 
       res.json({ success: true, reservationInfo });
     } else {
