@@ -29,9 +29,36 @@ console.log('Email Service Configuration:', {
 // Initialize Azure Communication Services client
 const emailClient = new EmailClient(process.env.COMMUNICATION_CONNECTION_STRING);
 
+const getSwissDate = () => {
+  return new Date().toLocaleDateString('en-CH', {
+    timeZone: 'Europe/Zurich',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit'
+  }).split('.').reverse().join('-');
+};
+
+const getSwissTime = () => {
+  return new Date().toLocaleTimeString('en-CH', {
+    timeZone: 'Europe/Zurich',
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false
+  });
+};
+
 // Format date and time for email
 const formatDateTime = (date, time) => {
   try {
+    if (!date || !time) {
+      const now = new Date();
+      return now.toLocaleString('en-CH', {
+        timeZone: 'Europe/Zurich',
+        dateStyle: 'short',
+        timeStyle: 'short'
+      });
+    }
+
     // Create a Date object from the date and time
     const [year, month, day] = date.split('-').map(Number);
     const [hours, minutes] = time.split(':').map(Number);
@@ -51,12 +78,16 @@ const formatDateTime = (date, time) => {
     return `${formattedDate}, ${formattedTime} (CET)`;
   } catch (error) {
     console.error('Error formatting Swiss date/time:', error);
-    return `${date} ${time} CET`;
+    return new Date().toLocaleString('en-CH', {
+      timeZone: 'Europe/Zurich',
+      dateStyle: 'short',
+      timeStyle: 'short'
+    });
   }
 };
 
 const formatPaymentDateTime = (timestamp) => {
-  const date = new Date(timestamp);
+  const date = new Date(timestamp || Date.now());
   return date.toLocaleString('en-CH', {
     timeZone: 'Europe/Zurich',
     day: 'numeric',
@@ -69,36 +100,27 @@ const formatPaymentDateTime = (timestamp) => {
   });
 };
 
-const formatSwissDateTime = (date, time) => {
-  try {
-    // Create a Date object from the date and time
-    const [year, month, day] = date.split('-').map(Number);
-    const [hours, minutes] = time.split(':').map(Number);
-    const dt = new Date(year, month - 1, day, hours, minutes);
-
-    // Format time in Swiss timezone
-    const swissTime = dt.toLocaleString('en-CH', {
-      timeZone: 'Europe/Zurich',
-      weekday: 'long',
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-      hour12: false,
-      timeZoneName: 'short'
-    });
-
-    return swissTime;
-  } catch (error) {
-    console.error('Error formatting Swiss date/time:', error);
-    return `${date} ${time} CET`;
-  }
-};
-
 const formatDate = (dateString) => {
-  const [year, month, day] = dateString.split('-');
-  return `${day}-${month}-${year}`;
+  try {
+    if (!dateString) {
+      return new Date().toLocaleDateString('en-CH', {
+        timeZone: 'Europe/Zurich',
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric'
+      });
+    }
+    const [year, month, day] = dateString.split('-');
+    return `${day}-${month}-${year}`;
+  } catch (error) {
+    console.error('Error formatting date:', error);
+    return new Date().toLocaleDateString('en-CH', {
+      timeZone: 'Europe/Zurich',
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric'
+    });
+  }
 };
 
 // Send email using Azure Communication Services

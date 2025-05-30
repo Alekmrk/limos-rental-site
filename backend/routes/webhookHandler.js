@@ -44,38 +44,77 @@ module.exports = async (req, res) => {
     switch (event.type) {
       case 'payment_intent.succeeded': {
         const paymentIntent = event.data.object;
-        console.log('Payment succeeded:', {
+        console.log('Payment intent succeeded:', {
           id: paymentIntent.id,
           amount: paymentIntent.amount,
           currency: paymentIntent.currency,
-          metadata: paymentIntent.metadata
+          metadata: paymentIntent.metadata,
+          hasEmail: !!paymentIntent.metadata?.email,
+          timestamp: new Date().toISOString()
         });
         
+        // Skip if this payment intent has already been processed
+        if (paymentIntent.metadata?.emailsSent === 'true') {
+          console.log('Skipping email sending - already processed:', paymentIntent.id);
+          res.json({ 
+            received: true,
+            type: 'payment_intent.succeeded',
+            paymentIntentId: paymentIntent.id,
+            status: 'skipped_already_processed'
+          });
+          break;
+        }
+        
         try {
+          // Get the checkout session to ensure we have all metadata
+          const sessions = await stripe.checkout.sessions.list({
+            payment_intent: paymentIntent.id,
+            limit: 1,
+            expand: ['data.customer']
+          });
+
+          // Log session data for debugging
+          console.log('Found checkout session:', {
+            sessionId: sessions.data[0]?.id,
+            hasMetadata: !!sessions.data[0]?.metadata,
+            metadata: sessions.data[0]?.metadata
+          });
+          
+          // Use metadata from session if available, otherwise use current date/time
+          const metadata = sessions.data.length > 0 ? sessions.data[0].metadata : {
+            date: new Date().toISOString().split('T')[0],
+            time: new Date().toLocaleTimeString('en-CH', {
+              timeZone: 'Europe/Zurich',
+              hour: '2-digit',
+              minute: '2-digit',
+              hour12: false
+            })
+          };
+
           // Prepare reservation info from metadata
           const reservationInfo = {
-            email: paymentIntent.metadata.email,
-            firstName: paymentIntent.metadata.firstName,
-            phone: paymentIntent.metadata.phone,
-            date: paymentIntent.metadata.date,
-            time: paymentIntent.metadata.time,
-            pickup: paymentIntent.metadata.pickup,
-            dropoff: paymentIntent.metadata.dropoff,
-            isHourly: paymentIntent.metadata.isHourly === 'true',
-            isSpecialRequest: paymentIntent.metadata.isSpecialRequest === 'true',
-            hours: paymentIntent.metadata.hours,
-            plannedActivities: paymentIntent.metadata.plannedActivities,
+            email: metadata.email,
+            firstName: metadata.firstName,
+            phone: metadata.phone,
+            date: metadata.date,
+            time: metadata.time,
+            pickup: metadata.pickup,
+            dropoff: metadata.dropoff,
+            isHourly: metadata.isHourly === 'true',
+            isSpecialRequest: metadata.isSpecialRequest === 'true',
+            hours: metadata.hours,
+            plannedActivities: metadata.plannedActivities,
             selectedVehicle: {
-              name: paymentIntent.metadata.vehicleName
+              name: metadata.vehicleName
             },
-            passengers: parseInt(paymentIntent.metadata.passengers) || 0,
-            bags: parseInt(paymentIntent.metadata.bags) || 0,
-            childSeats: parseInt(paymentIntent.metadata.childSeats) || 0,
-            babySeats: parseInt(paymentIntent.metadata.babySeats) || 0,
-            skiEquipment: parseInt(paymentIntent.metadata.skiEquipment) || 0,
-            flightNumber: paymentIntent.metadata.flightNumber,
-            specialRequestDetails: paymentIntent.metadata.specialRequestDetails,
-            additionalRequests: paymentIntent.metadata.additionalRequests,
+            passengers: parseInt(metadata.passengers) || 0,
+            bags: parseInt(metadata.bags) || 0,
+            childSeats: parseInt(metadata.childSeats) || 0,
+            babySeats: parseInt(metadata.babySeats) || 0,
+            skiEquipment: parseInt(metadata.skiEquipment) || 0,
+            flightNumber: metadata.flightNumber,
+            specialRequestDetails: metadata.specialRequestDetails,
+            additionalRequests: metadata.additionalRequests,
             paymentDetails: {
               method: 'stripe',
               amount: paymentIntent.amount / 100,
@@ -85,15 +124,43 @@ module.exports = async (req, res) => {
             }
           };
 
+          console.log('Attempting to send confirmation emails for payment:', {
+            email: reservationInfo.email,
+            paymentId: paymentIntent.id,
+            amount: reservationInfo.paymentDetails.amount,
+            currency: reservationInfo.paymentDetails.currency,
+            hasEmail: !!reservationInfo.email,
+            hasDate: !!reservationInfo.date,
+            hasTime: !!reservationInfo.time
+          });
+
           // Send confirmation to admin
           await emailService.sendPaymentConfirmationToAdmin(reservationInfo);
+          console.log('Admin confirmation email sent successfully');
 
           // Send receipt to customer if email exists
           if (reservationInfo.email) {
             await emailService.sendPaymentReceiptToCustomer(reservationInfo);
+            console.log('Customer receipt email sent successfully');
           }
+
+          // Mark this payment intent as processed
+          await stripe.paymentIntents.update(paymentIntent.id, {
+            metadata: { 
+              ...metadata,
+              emailsSent: 'true',
+              emailSentTimestamp: new Date().toISOString()
+            }
+          });
+          console.log('Payment intent marked as processed');
+
         } catch (emailError) {
-          console.error('Failed to send payment confirmation emails:', emailError);
+          console.error('Failed to send payment confirmation emails:', {
+            error: emailError.message,
+            stack: emailError.stack,
+            paymentId: paymentIntent.id,
+            timestamp: new Date().toISOString()
+          });
         }
 
         res.json({ 
