@@ -196,15 +196,15 @@ const PaymentPage = ({ scrollUp }) => {
             <div className="grid md:grid-cols-3 gap-6 mb-6">
               <div>
                 <p className="text-zinc-400 text-sm mb-1">Vehicle</p>
-                <p className="font-medium">{reservationInfo.selectedVehicle?.name}</p>
+                <p className="font-medium break-words">{reservationInfo.selectedVehicle?.name}</p>
               </div>
               <div>
                 <p className="text-zinc-400 text-sm mb-1">Date</p>
-                <p className="font-medium">{formatDate(reservationInfo.date)}</p>
+                <p className="font-medium break-words">{formatDate(reservationInfo.date)}</p>
               </div>
               <div>
                 <p className="text-zinc-400 text-sm mb-1">Time</p>
-                <p className="font-medium">{reservationInfo.time} (CET)</p>
+                <p className="font-medium break-words">{reservationInfo.time} (CET)</p>
               </div>
             </div>
 
@@ -214,24 +214,24 @@ const PaymentPage = ({ scrollUp }) => {
               <div className="grid md:grid-cols-2 gap-6">
                 <div>
                   <p className="text-zinc-400 text-sm mb-1">Pick Up</p>
-                  <p className="font-medium">{reservationInfo.pickup}</p>
+                  <p className="font-medium break-words">{reservationInfo.pickup}</p>
                 </div>
                 {!reservationInfo.isHourly && (
                   <div>
                     <p className="text-zinc-400 text-sm mb-1">Drop Off</p>
-                    <p className="font-medium">{reservationInfo.dropoff}</p>
+                    <p className="font-medium break-words">{reservationInfo.dropoff}</p>
                   </div>
                 )}
                 {reservationInfo.isHourly && (
                   <div>
                     <p className="text-zinc-400 text-sm mb-1">Duration</p>
-                    <p className="font-medium">{reservationInfo.hours} hours</p>
+                    <p className="font-medium break-words">{reservationInfo.hours} hours</p>
                   </div>
                 )}
                 {reservationInfo.flightNumber && (
                   <div>
                     <p className="text-zinc-400 text-sm mb-1">Flight Number</p>
-                    <p className="font-medium">{reservationInfo.flightNumber}</p>
+                    <p className="font-medium break-words">{reservationInfo.flightNumber}</p>
                   </div>
                 )}
               </div>
