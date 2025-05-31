@@ -96,9 +96,9 @@ const ThankYou = ({ scrollUp }) => {
                   Payment Information
                 </h3>
                 <div className="space-y-2 text-zinc-300">
-                  <p>Method: {reservationInfo.paymentDetails.method}</p>
-                  <p>Amount: {reservationInfo.paymentDetails.currency} {reservationInfo.paymentDetails.amount}</p>
-                  <p>Reference: {reservationInfo.paymentDetails.reference}</p>
+                  <p className="break-words">Method: {reservationInfo.paymentDetails.method}</p>
+                  <p className="break-words">Amount: {reservationInfo.paymentDetails.currency} {reservationInfo.paymentDetails.amount}</p>
+                  <p className="break-words">Reference: {reservationInfo.paymentDetails.reference}</p>
                 </div>
               </div>
             </div>
