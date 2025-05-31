@@ -211,23 +211,59 @@ const PaymentPage = ({ scrollUp }) => {
             {/* Transfer Details */}
             <div className="border-t border-zinc-700/50 pt-6 mb-6">
               <h3 className="text-lg font-medium mb-4">Transfer Details</h3>
-              <div className="grid md:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <p className="text-zinc-400 text-sm mb-1">Pick Up</p>
                   <p className="font-medium break-words">{reservationInfo.pickup}</p>
                 </div>
-                {!reservationInfo.isHourly && (
-                  <div>
-                    <p className="text-zinc-400 text-sm mb-1">Drop Off</p>
-                    <p className="font-medium break-words">{reservationInfo.dropoff}</p>
-                  </div>
-                )}
-                {reservationInfo.isHourly && (
+                {!reservationInfo.isHourly ? (
+                  <>
+                    {/* Extra stops */}
+                    {reservationInfo.extraStops.map((stop, index) => (
+                      stop && (
+                        <div key={index} className="col-span-1 md:col-span-2 pl-4">
+                          <p className="font-medium break-words">• {stop}</p>
+                        </div>
+                      )
+                    ))}
+                    <div>
+                      <p className="text-zinc-400 text-sm mb-1">Drop Off</p>
+                      <p className="font-medium break-words">{reservationInfo.dropoff}</p>
+                    </div>
+                    {/* Route Information */}
+                    {reservationInfo.routeInfo && (
+                      <div className="col-span-1 md:col-span-2 mt-4">
+                        <p className="text-zinc-400 text-sm mb-2">Route Information</p>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-black/20 p-3 rounded-lg">
+                          <p className="text-sm break-words">Distance: {reservationInfo.routeInfo.distance}</p>
+                          <p className="text-sm break-words">Duration: {reservationInfo.routeInfo.duration}</p>
+                        </div>
+                      </div>
+                    )}
+                  </>
+                ) : (
                   <div>
                     <p className="text-zinc-400 text-sm mb-1">Duration</p>
                     <p className="font-medium break-words">{reservationInfo.hours} hours</p>
                   </div>
                 )}
+                {/* Passenger Details */}
+                <div className="col-span-1 md:col-span-2 mt-4">
+                  <p className="text-zinc-400 text-sm mb-2">Passenger Details</p>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-black/20 p-3 rounded-lg">
+                    <p className="text-sm break-words">Passengers: {reservationInfo.passengers}</p>
+                    <p className="text-sm break-words">Bags: {reservationInfo.bags}</p>
+                    {reservationInfo.childSeats > 0 && (
+                      <p className="text-sm break-words">Child Seats (4-7): {reservationInfo.childSeats}</p>
+                    )}
+                    {reservationInfo.babySeats > 0 && (
+                      <p className="text-sm break-words">Baby Seats (0-3): {reservationInfo.babySeats}</p>
+                    )}
+                    {reservationInfo.skiEquipment > 0 && (
+                      <p className="text-sm break-words">Ski Equipment: {reservationInfo.skiEquipment}</p>
+                    )}
+                  </div>
+                </div>
                 {reservationInfo.flightNumber && (
                   <div>
                     <p className="text-zinc-400 text-sm mb-1">Flight Number</p>
@@ -238,13 +274,13 @@ const PaymentPage = ({ scrollUp }) => {
               {reservationInfo.isHourly && reservationInfo.plannedActivities && (
                 <div className="mt-6">
                   <p className="text-zinc-400 text-sm mb-2">Planned Activities</p>
-                  <p className="text-sm bg-black/20 p-3 rounded-lg">{reservationInfo.plannedActivities}</p>
+                  <p className="text-sm bg-black/20 p-3 rounded-lg break-words">{reservationInfo.plannedActivities}</p>
                 </div>
               )}
               {reservationInfo.additionalRequests && (
                 <div className="mt-6">
                   <p className="text-zinc-400 text-sm mb-2">{reservationInfo.isSpecialRequest ? 'Special Request Details' : 'Additional Requests'}</p>
-                  <p className="text-sm bg-black/20 p-3 rounded-lg">{reservationInfo.additionalRequests}</p>
+                  <p className="text-sm bg-black/20 p-3 rounded-lg break-words">{reservationInfo.additionalRequests}</p>
                 </div>
               )}
             </div>
