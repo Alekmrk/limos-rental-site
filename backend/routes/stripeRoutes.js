@@ -43,34 +43,58 @@ router.get('/verify-session/:sessionId', async (req, res) => {
     if (session.payment_status === 'paid') {
       // Create reservation info from session metadata
       const reservationInfo = {
+        // Customer Details
         email: session.metadata.email,
         firstName: session.metadata.firstName,
         phone: session.metadata.phone,
+
+        // Booking Core Details
         date: session.metadata.date,
         time: session.metadata.time,
         pickup: session.metadata.pickup,
         dropoff: session.metadata.dropoff,
+        extraStops: session.metadata.extraStops ? JSON.parse(session.metadata.extraStops) : [],
+
+        // Service Type
         isHourly: session.metadata.isHourly === 'true',
         isSpecialRequest: session.metadata.isSpecialRequest === 'true',
         hours: session.metadata.hours,
-        plannedActivities: session.metadata.plannedActivities,
+
+        // Vehicle Info
         selectedVehicle: {
+          id: session.metadata.vehicleId,
           name: session.metadata.vehicleName
         },
+
+        // Passenger Details
         passengers: parseInt(session.metadata.passengers) || 0,
         bags: parseInt(session.metadata.bags) || 0,
         childSeats: parseInt(session.metadata.childSeats) || 0,
         babySeats: parseInt(session.metadata.babySeats) || 0,
         skiEquipment: parseInt(session.metadata.skiEquipment) || 0,
+
+        // Additional Details
         flightNumber: session.metadata.flightNumber,
+        plannedActivities: session.metadata.plannedActivities,
         specialRequestDetails: session.metadata.specialRequestDetails,
         additionalRequests: session.metadata.additionalRequests,
+
+        // Route Information
+        routeInfo: session.metadata.routeDistance && session.metadata.routeDuration ? {
+          distance: session.metadata.routeDistance,
+          duration: session.metadata.routeDuration
+        } : null,
+
+        // Payment Details
         paymentDetails: {
           method: 'stripe',
           amount: session.amount_total / 100,
           currency: session.currency.toUpperCase(),
           timestamp: new Date().toISOString(),
-          reference: session.payment_intent || session.id
+          reference: session.payment_intent || session.id,
+          bookingSource: session.metadata.bookingSource || 'website',
+          bookingTimestamp: session.metadata.bookingTimestamp || new Date().toISOString(),
+          locale: session.metadata.locale || 'en-CH'
         }
       };
 

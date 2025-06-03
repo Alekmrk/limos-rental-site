@@ -14,6 +14,10 @@ const StripePayment = ({ amount, onSuccess, onError, reservationInfo }) => {
     setIsProcessing(true);
 
     try {
+      // Get route info values safely
+      const distance = reservationInfo.routeInfo?.distance || '';
+      const duration = reservationInfo.routeInfo?.duration || '';
+      
       const response = await fetch(`${API_BASE_URL}/api/stripe/create-checkout-session`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -21,27 +25,48 @@ const StripePayment = ({ amount, onSuccess, onError, reservationInfo }) => {
           amount,
           currency: 'chf',
           metadata: {
+            // Customer Details
             email: reservationInfo.email || '',
             firstName: reservationInfo.firstName || '',
             phone: reservationInfo.phone || '',
+            
+            // Booking Details
             date: reservationInfo.date || '',
             time: reservationInfo.time || '',
             pickup: reservationInfo.pickup || '',
             dropoff: reservationInfo.dropoff || '',
-            vehicleName: reservationInfo.selectedVehicle?.name || '',
+            extraStops: JSON.stringify(reservationInfo.extraStops || []),
+            
+            // Service Type
             isHourly: String(!!reservationInfo.isHourly),
             isSpecialRequest: String(!!reservationInfo.isSpecialRequest),
             hours: reservationInfo.hours || '',
+            
+            // Vehicle Details
+            vehicleName: reservationInfo.selectedVehicle?.name || '',
+            vehicleId: reservationInfo.selectedVehicle?.id || '',
+            
+            // Passenger Details
             passengers: String(reservationInfo.passengers || '0'),
             bags: String(reservationInfo.bags || '0'),
             childSeats: String(reservationInfo.childSeats || '0'),
             babySeats: String(reservationInfo.babySeats || '0'),
             skiEquipment: String(reservationInfo.skiEquipment || '0'),
+            
+            // Additional Information
             flightNumber: reservationInfo.flightNumber || '',
-            // Split long text fields to stay within 500 char limit
             plannedActivities: reservationInfo.plannedActivities?.substring(0, 450) || '',
             specialRequestDetails: reservationInfo.specialRequestDetails?.substring(0, 450) || '',
-            additionalRequests: reservationInfo.additionalRequests?.substring(0, 450) || ''
+            additionalRequests: reservationInfo.additionalRequests?.substring(0, 450) || '',
+            
+            // Route Information
+            routeDistance: distance,
+            routeDuration: duration,
+            
+            // Booking Metadata
+            bookingTimestamp: new Date().toISOString(),
+            bookingSource: 'website',
+            locale: 'en-CH'
           }
         })
       });

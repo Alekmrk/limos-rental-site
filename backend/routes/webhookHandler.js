@@ -93,34 +93,58 @@ module.exports = async (req, res) => {
 
           // Prepare reservation info from metadata
           const reservationInfo = {
+            // Customer Details
             email: metadata.email,
             firstName: metadata.firstName,
             phone: metadata.phone,
+
+            // Booking Core Details
             date: metadata.date,
             time: metadata.time,
             pickup: metadata.pickup,
             dropoff: metadata.dropoff,
+            extraStops: metadata.extraStops ? JSON.parse(metadata.extraStops) : [],
+
+            // Service Type
             isHourly: metadata.isHourly === 'true',
             isSpecialRequest: metadata.isSpecialRequest === 'true',
             hours: metadata.hours,
-            plannedActivities: metadata.plannedActivities,
+
+            // Vehicle Info
             selectedVehicle: {
+              id: metadata.vehicleId,
               name: metadata.vehicleName
             },
+
+            // Passenger Details
             passengers: parseInt(metadata.passengers) || 0,
             bags: parseInt(metadata.bags) || 0,
             childSeats: parseInt(metadata.childSeats) || 0,
             babySeats: parseInt(metadata.babySeats) || 0,
             skiEquipment: parseInt(metadata.skiEquipment) || 0,
+
+            // Additional Details
             flightNumber: metadata.flightNumber,
+            plannedActivities: metadata.plannedActivities,
             specialRequestDetails: metadata.specialRequestDetails,
             additionalRequests: metadata.additionalRequests,
+
+            // Route Information
+            routeInfo: metadata.routeDistance && metadata.routeDuration ? {
+              distance: metadata.routeDistance,
+              duration: metadata.routeDuration
+            } : null,
+
+            // Payment Details
             paymentDetails: {
               method: 'stripe',
               amount: paymentIntent.amount / 100,
               currency: paymentIntent.currency.toUpperCase(),
               timestamp: new Date().toISOString(),
-              reference: paymentIntent.id
+              reference: paymentIntent.id,
+              bookingSource: metadata.bookingSource || 'website',
+              bookingTimestamp: metadata.bookingTimestamp || new Date().toISOString(),
+              locale: metadata.locale || 'en-CH'
             }
           };
 
