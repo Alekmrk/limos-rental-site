@@ -27,6 +27,7 @@ const ReservationCard = () => {
 
   useEffect(() => {
     if (!isLoaded || !window.google) return;
+    if (reservationInfo.isHourly || reservationInfo.isSpecialRequest) return; // Don't initialize if in hourly or special mode
 
     // Swiss bounds
     const switzerlandBounds = {
@@ -42,6 +43,8 @@ const ReservationCard = () => {
     );
 
     const setupAutocomplete = (inputRef, autocompleteRef, type) => {
+      if (!inputRef.current) return; // Don't initialize if input doesn't exist
+      
       if (autocompleteRef.current) {
         window.google.maps.event.clearInstanceListeners(autocompleteRef.current);
       }
@@ -86,7 +89,9 @@ const ReservationCard = () => {
     };
 
     setupAutocomplete(pickupRef, pickupAutocomplete, 'pickup');
-    setupAutocomplete(dropoffRef, dropoffAutocomplete, 'dropoff');
+    if (!reservationInfo.isHourly) {
+      setupAutocomplete(dropoffRef, dropoffAutocomplete, 'dropoff');
+    }
 
     return () => {
       if (window.google) {
@@ -98,7 +103,7 @@ const ReservationCard = () => {
         }
       }
     };
-  }, [isLoaded, handlePlaceSelection]);
+  }, [isLoaded, handlePlaceSelection, reservationInfo.isHourly, reservationInfo.isSpecialRequest]);
 
   const handleModeChange = (mode) => {
     if (mode === 'hourly') {
@@ -257,87 +262,161 @@ const ReservationCard = () => {
       <div className="space-y-5 mt-2 min-h-[250px]">
         {!reservationInfo.isSpecialRequest ? (
           <>
-            <div className="relative">
-              <input
-                ref={pickupRef}
-                type="text"
-                placeholder="Pick Up Address"
-                name="pickup"
-                defaultValue={reservationInfo.pickup}
-                className={`bg-zinc-800/30 rounded-xl py-3 px-4 w-full border text-white transition-all duration-200 hover:border-zinc-600 focus:border-gold/50 focus:shadow-[0_0_15px_rgba(212,175,55,0.1)] ${
-                  errors.pickup ? 'border-red-500' : 'border-zinc-700/50'
-                }`}
-                autoComplete="off"
-              />
-              {errors.pickup && <span className="text-red-500 text-sm absolute -bottom-5">{errors.pickup}</span>}
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm uppercase mb-2 tracking-wide" htmlFor="pickup">
+                  Pick-up point
+                </label>
+                <div className="relative">
+                  <input
+                    ref={pickupRef}
+                    type="text"
+                    placeholder="WRITE YOUR LOCATION..."
+                    name="pickup"
+                    id="pickup"
+                    defaultValue={reservationInfo.pickup}
+                    className={`bg-zinc-800/30 rounded-xl py-3 px-4 w-full border text-white transition-all duration-200 hover:border-zinc-600 focus:border-gold/50 focus:shadow-[0_0_15px_rgba(212,175,55,0.1)] ${
+                      errors.pickup ? 'border-red-500' : 'border-zinc-700/50'
+                    }`}
+                    autoComplete="off"
+                  />
+                  {errors.pickup && <span className="text-red-500 text-sm absolute -bottom-5">{errors.pickup}</span>}
+                </div>
+              </div>
+
+              {!reservationInfo.isHourly && (
+                <div>
+                  <label className="block text-sm uppercase mb-2 tracking-wide" htmlFor="dropoff">
+                    Drop-off point
+                  </label>
+                  <div className="relative">
+                    <input
+                      ref={dropoffRef}
+                      type="text"
+                      placeholder="WRITE YOUR LOCATION..."
+                      name="dropoff"
+                      id="dropoff"
+                      defaultValue={reservationInfo.dropoff}
+                      className={`bg-zinc-800/30 rounded-xl py-3 px-4 w-full border text-white transition-all duration-200 hover:border-zinc-600 focus:border-gold/50 focus:shadow-[0_0_15px_rgba(212,175,55,0.1)] ${
+                        errors.dropoff ? 'border-red-500' : 'border-zinc-700/50'
+                      }`}
+                      autoComplete="off"
+                    />
+                    {errors.dropoff && <span className="text-red-500 text-sm absolute -bottom-5">{errors.dropoff}</span>}
+                  </div>
+                </div>
+              )}
+
+              {reservationInfo.isHourly && (
+                <div>
+                  <label className="block text-sm uppercase mb-2 tracking-wide" htmlFor="hours">
+                    Duration (hours)
+                  </label>
+                  <div className="relative">
+                    <input
+                      type="number"
+                      min="2"
+                      max="24"
+                      name="hours"
+                      id="hours"
+                      value={reservationInfo.hours || ''}
+                      onChange={handleInput}
+                      className="bg-zinc-800/30 rounded-xl py-3 px-4 w-full border border-zinc-700/50 text-white transition-all duration-200 hover:border-zinc-600 focus:border-gold/50 focus:shadow-[0_0_15px_rgba(212,175,55,0.1)]"
+                      placeholder="Enter hours (2-24)"
+                    />
+                    {errors.hours && <span className="text-red-500 text-sm absolute -bottom-5">{errors.hours}</span>}
+                  </div>
+                </div>
+              )}
+
+              <div>
+                <label className="block text-sm uppercase mb-2 tracking-wide" htmlFor="date">
+                  Date
+                </label>
+                <div className="relative">
+                  <DateInput
+                    value={reservationInfo.date}
+                    onChange={handleInput}
+                    name="date"
+                    id="date"
+                    className="bg-zinc-800/30 rounded-xl py-3 px-4 w-full border border-zinc-700/50 text-white transition-all duration-200 hover:border-zinc-600 focus:border-gold/50 focus:shadow-[0_0_15px_rgba(212,175,55,0.1)]"
+                  />
+                  {errors.date && <span className="text-red-500 text-sm absolute -bottom-5">{errors.date}</span>}
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm uppercase mb-2 tracking-wide" htmlFor="time">
+                  When do you want to be picked up?
+                </label>
+                <div className="relative">
+                  <TimeInput
+                    value={reservationInfo.time}
+                    onChange={handleInput}
+                    name="time"
+                    id="time"
+                    className="bg-zinc-800/30 rounded-xl py-3 px-4 w-full border border-zinc-700/50 text-white transition-all duration-200 hover:border-zinc-600 focus:border-gold/50 focus:shadow-[0_0_15px_rgba(212,175,55,0.1)]"
+                  />
+                  {errors.time && <span className="text-red-500 text-sm absolute -bottom-5">{errors.time}</span>}
+                </div>
+              </div>
+
+              <div className="text-sm text-neutral-400 mt-4">
+                <p>For non-airport rides the chauffeur will wait 15m at no cost.</p>
+                <p>For airport transfers the chauffeur will wait 60m at no cost.</p>
+                {reservationInfo.isHourly && (
+                  <p className="mt-2">For hourly bookings, the vehicle and chauffeur will remain at your disposal throughout the duration.</p>
+                )}
+              </div>
             </div>
-
-            {!reservationInfo.isHourly && (
-              <div className="relative">
-                <input
-                  ref={dropoffRef}
-                  type="text"
-                  placeholder="Drop Off Address"
-                  name="dropoff"
-                  defaultValue={reservationInfo.dropoff}
-                  className={`bg-zinc-800/30 rounded-xl py-3 px-4 w-full border text-white transition-all duration-200 hover:border-zinc-600 focus:border-gold/50 focus:shadow-[0_0_15px_rgba(212,175,55,0.1)] ${
-                    errors.dropoff ? 'border-red-500' : 'border-zinc-700/50'
-                  }`}
-                  autoComplete="off"
-                />
-                {errors.dropoff && <span className="text-red-500 text-sm absolute -bottom-5">{errors.dropoff}</span>}
-              </div>
-            )}
-
-            {reservationInfo.isHourly && (
-              <div className="relative">
-                <input
-                  type="number"
-                  min="2"
-                  max="24"
-                  name="hours"
-                  value={reservationInfo.hours || ''}
-                  onChange={handleInput}
-                  className="bg-zinc-800/30 rounded-xl py-3 px-4 w-full border border-zinc-700/50 text-white transition-all duration-200 hover:border-zinc-600 focus:border-gold/50 focus:shadow-[0_0_15px_rgba(212,175,55,0.1)]"
-                  placeholder="Enter hours (2-24)"
-                />
-                {errors.hours && <span className="text-red-500 text-sm absolute -bottom-5">{errors.hours}</span>}
-              </div>
-            )}
           </>
         ) : (
-          <div className="mb-4 text-neutral-400 text-sm border border-gold/20 rounded-xl p-4 bg-gold/5 min-h-[116px] flex flex-col justify-center">
-            <p>Enter your preferred date and time.</p>
-            <p>We'll discuss your requirements in the next step.</p>
-          </div>
+          <>
+            <div className="mb-4 text-neutral-400 text-sm border border-gold/20 rounded-xl p-4 bg-gold/5">
+              <p>Enter your preferred date and time.</p>
+              <p>We'll discuss your requirements in the next step.</p>
+              <p className="mt-2">Perfect for:</p>
+              <ul className="list-disc ml-5 mt-1">
+                <li>Multi-city tours</li>
+                <li>Wedding transportation</li>
+                <li>Corporate events</li>
+                <li>Custom itineraries</li>
+              </ul>
+            </div>
+
+            <div>
+              <label className="block text-sm uppercase mb-2 tracking-wide" htmlFor="date">
+                Date
+              </label>
+              <div className="relative">
+                <DateInput
+                  value={reservationInfo.date}
+                  onChange={handleInput}
+                  name="date"
+                  id="date"
+                  className="bg-zinc-800/30 rounded-xl py-3 px-4 w-full border border-zinc-700/50 text-white transition-all duration-200 hover:border-zinc-600 focus:border-gold/50 focus:shadow-[0_0_15px_rgba(212,175,55,0.1)]"
+                />
+                {errors.date && <span className="text-red-500 text-sm absolute -bottom-5">{errors.date}</span>}
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm uppercase mb-2 tracking-wide" htmlFor="time">
+                Preferred pick-up time
+              </label>
+              <div className="relative">
+                <TimeInput
+                  value={reservationInfo.time}
+                  onChange={handleInput}
+                  name="time"
+                  id="time"
+                  className="bg-zinc-800/30 rounded-xl py-3 px-4 w-full border border-zinc-700/50 text-white transition-all duration-200 hover:border-zinc-600 focus:border-gold/50 focus:shadow-[0_0_15px_rgba(212,175,55,0.1)]"
+                />
+                {errors.time && <span className="text-red-500 text-sm absolute -bottom-5">{errors.time}</span>}
+              </div>
+            </div>
+          </>
         )}
-
-        <div className="relative">
-          <DateInput
-            value={reservationInfo.date}
-            onChange={handleInput}
-            name="date"
-            id="date"
-            className="bg-zinc-800/30 rounded-xl py-3 px-4 w-full border border-zinc-700/50 text-white transition-all duration-200 hover:border-zinc-600 focus:border-gold/50 focus:shadow-[0_0_15px_rgba(212,175,55,0.1)]"
-          />
-          {errors.date && <span className="text-red-500 text-sm absolute -bottom-5">{errors.date}</span>}
-        </div>
-
-        <div className="relative">
-          <div className="flex items-center gap-3">
-            <label className="text-neutral-400 w-5/12 pl-2" htmlFor="time">
-              {reservationInfo.isSpecialRequest ? 'Preferred Time' : 'Pick Up Time'}
-            </label>
-            <TimeInput
-              value={reservationInfo.time}
-              onChange={handleInput}
-              name="time"
-              id="time"
-              className="bg-zinc-800/30 rounded-xl py-3 px-4 w-7/12 border border-zinc-700/50 text-white transition-all duration-200 hover:border-zinc-600 focus:border-gold/50 focus:shadow-[0_0_15px_rgba(212,175,55,0.1)]"
-            />
-          </div>
-          {errors.time && <span className="text-red-500 text-sm absolute -bottom-5">{errors.time}</span>}
-        </div>
 
         <div className="flex justify-center mt-8">
           <Button 
