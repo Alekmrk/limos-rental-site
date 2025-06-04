@@ -12,7 +12,7 @@ const getInitialTime = () => {
     hour: '2-digit',
     minute: '2-digit'
   });
-  return swissTime;
+  return "13:15";
 };
 
 const getInitialDate = () => {
