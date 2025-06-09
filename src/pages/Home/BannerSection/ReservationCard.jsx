@@ -149,7 +149,7 @@ const ReservationCard = () => {
         minAllowedTime.setHours(swissNow.getHours() + 3);
         
         if (selectedTime < minAllowedTime) {
-          newErrors.time = "Booking must be at least 3 hours in advance";
+          newErrors.time = "Must book 3h in advance";
         }
       }
     }
@@ -271,7 +271,7 @@ const ReservationCard = () => {
                   <input
                     ref={pickupRef}
                     type="text"
-                    placeholder="WRITE YOUR LOCATION..."
+                    placeholder="TYPE LOCATION..."
                     name="pickup"
                     id="pickup"
                     defaultValue={reservationInfo.pickup}
@@ -280,8 +280,8 @@ const ReservationCard = () => {
                     }`}
                     autoComplete="off"
                   />
-                  {errors.pickup && (
-                    <div className="absolute right-0 bottom-0 w-1/2 translate-y-1/2 bg-zinc-800/40 text-red-500 text-[11px] py-1 px-3 rounded-2xl z-10 text-right backdrop-blur-sm">
+                  {errors.pickup && errors.pickup !== "At least one location must be in Switzerland" && (
+                    <div className="absolute left-1/8 right-0 bottom-0 w-4/4 translate-y-1/2 bg-zinc-800/40 text-red-500 text-[11px] py-1 px-3 rounded-2xl z-10 text-right backdrop-blur-sm">
                       {errors.pickup}
                     </div>
                   )}
@@ -297,7 +297,7 @@ const ReservationCard = () => {
                     <input
                       ref={dropoffRef}
                       type="text"
-                      placeholder="WRITE YOUR LOCATION..."
+                      placeholder="TYPE LOCATION..."
                       name="dropoff"
                       id="dropoff"
                       defaultValue={reservationInfo.dropoff}
@@ -306,8 +306,8 @@ const ReservationCard = () => {
                       }`}
                       autoComplete="off"
                     />
-                    {errors.dropoff && (
-                      <div className="absolute right-0 bottom-0 w-1/2 translate-y-1/2 bg-zinc-800/40 text-red-500 text-[11px] py-1 px-3 rounded-2xl z-10 text-right backdrop-blur-sm">
+                    {errors.dropoff && errors.dropoff !== "At least one location must be in Switzerland" && (
+                      <div className="absolute left-1/8 right-0 bottom-0 w-4/4 translate-y-1/2 bg-zinc-800/40 text-red-500 text-[11px] py-1 px-3 rounded-2xl z-10 text-right backdrop-blur-sm">
                         {errors.dropoff}
                       </div>
                     )}
@@ -335,7 +335,7 @@ const ReservationCard = () => {
                       placeholder="Enter hours (2-24)"
                     />
                     {errors.hours && (
-                      <div className="absolute right-0 bottom-0 w-1/2 translate-y-1/2 bg-zinc-800/40 text-red-500 text-[11px] py-1 px-3 rounded-2xl z-10 text-right backdrop-blur-sm">
+                      <div className="absolute left-1/8 right-0 bottom-0 w-4/4 translate-y-1/2 bg-zinc-800/40 text-red-500 text-[11px] py-1 px-3 rounded-2xl z-10 text-right backdrop-blur-sm">
                         {errors.hours}
                       </div>
                     )}
@@ -358,7 +358,7 @@ const ReservationCard = () => {
                     }`}
                   />
                   {errors.date && (
-                    <div className="absolute right-0 bottom-0 w-1/2 translate-y-1/2 bg-zinc-800/40 text-red-500 text-[11px] py-1 px-3 rounded-2xl z-10 text-right backdrop-blur-sm">
+                    <div className="absolute left-1/8 right-0 bottom-0 w-4/4 translate-y-1/2 bg-zinc-800/40 text-red-500 text-[11px] py-1 px-3 rounded-2xl z-10 text-right backdrop-blur-sm">
                       {errors.date}
                     </div>
                   )}
@@ -380,7 +380,7 @@ const ReservationCard = () => {
                     }`}
                   />
                   {errors.time && (
-                    <div className="absolute left-1/5 right-0 bottom-0 translate-y-1/2 bg-zinc-800/40 text-red-500 text-[11px] py-1 px-3 rounded-2xl z-10 text-right backdrop-blur-sm">
+                    <div className="absolute left-1/8 right-0 bottom-0 w-4/4 translate-y-1/2 bg-zinc-800/40 text-red-500 text-[11px] py-1 px-3 rounded-2xl z-10 text-right backdrop-blur-sm">
                       {errors.time}
                     </div>
                   )}
