@@ -276,11 +276,15 @@ const ReservationCard = () => {
                     id="pickup"
                     defaultValue={reservationInfo.pickup}
                     className={`bg-zinc-800/30 rounded-xl py-3 px-4 w-full border text-white transition-all duration-200 hover:border-zinc-600 focus:border-gold/50 focus:shadow-[0_0_15px_rgba(212,175,55,0.1)] ${
-                      errors.pickup ? 'border-red-500' : 'border-zinc-700/50'
+                      errors.pickup ? 'border-red-500 ring-1 ring-red-500/50 animate-shake' : 'border-zinc-700/50'
                     }`}
                     autoComplete="off"
                   />
-                  {errors.pickup && <span className="text-red-500 text-sm absolute -bottom-5">{errors.pickup}</span>}
+                  {errors.pickup && (
+                    <div className="absolute right-0 bottom-0 w-1/2 translate-y-1/2 bg-zinc-800/40 text-red-500 text-[11px] py-1 px-3 rounded-2xl z-10 text-right backdrop-blur-sm">
+                      {errors.pickup}
+                    </div>
+                  )}
                 </div>
               </div>
 
@@ -298,11 +302,15 @@ const ReservationCard = () => {
                       id="dropoff"
                       defaultValue={reservationInfo.dropoff}
                       className={`bg-zinc-800/30 rounded-xl py-3 px-4 w-full border text-white transition-all duration-200 hover:border-zinc-600 focus:border-gold/50 focus:shadow-[0_0_15px_rgba(212,175,55,0.1)] ${
-                        errors.dropoff ? 'border-red-500' : 'border-zinc-700/50'
+                        errors.dropoff ? 'border-red-500 ring-1 ring-red-500/50 animate-shake' : 'border-zinc-700/50'
                       }`}
                       autoComplete="off"
                     />
-                    {errors.dropoff && <span className="text-red-500 text-sm absolute -bottom-5">{errors.dropoff}</span>}
+                    {errors.dropoff && (
+                      <div className="absolute right-0 bottom-0 w-1/2 translate-y-1/2 bg-zinc-800/40 text-red-500 text-[11px] py-1 px-3 rounded-2xl z-10 text-right backdrop-blur-sm">
+                        {errors.dropoff}
+                      </div>
+                    )}
                   </div>
                 </div>
               )}
@@ -321,10 +329,16 @@ const ReservationCard = () => {
                       id="hours"
                       value={reservationInfo.hours || ''}
                       onChange={handleInput}
-                      className="bg-zinc-800/30 rounded-xl py-3 px-4 w-full border border-zinc-700/50 text-white transition-all duration-200 hover:border-zinc-600 focus:border-gold/50 focus:shadow-[0_0_15px_rgba(212,175,55,0.1)]"
+                      className={`bg-zinc-800/30 rounded-xl py-3 px-4 w-full border text-white transition-all duration-200 hover:border-zinc-600 focus:border-gold/50 focus:shadow-[0_0_15px_rgba(212,175,55,0.1)] ${
+                        errors.hours ? 'border-red-500 ring-1 ring-red-500/50 animate-shake' : 'border-zinc-700/50'
+                      }`}
                       placeholder="Enter hours (2-24)"
                     />
-                    {errors.hours && <span className="text-red-500 text-sm absolute -bottom-5">{errors.hours}</span>}
+                    {errors.hours && (
+                      <div className="absolute right-0 bottom-0 w-1/2 translate-y-1/2 bg-zinc-800/40 text-red-500 text-[11px] py-1 px-3 rounded-2xl z-10 text-right backdrop-blur-sm">
+                        {errors.hours}
+                      </div>
+                    )}
                   </div>
                 </div>
               )}
@@ -339,9 +353,15 @@ const ReservationCard = () => {
                     onChange={handleInput}
                     name="date"
                     id="date"
-                    className="bg-zinc-800/30 rounded-xl py-3 px-4 w-full border border-zinc-700/50 text-white transition-all duration-200 hover:border-zinc-600 focus:border-gold/50 focus:shadow-[0_0_15px_rgba(212,175,55,0.1)]"
+                    className={`bg-zinc-800/30 rounded-xl py-3 px-4 w-full border text-white transition-all duration-200 hover:border-zinc-600 focus:border-gold/50 focus:shadow-[0_0_15px_rgba(212,175,55,0.1)] ${
+                      errors.date ? 'border-red-500 ring-1 ring-red-500/50 animate-shake' : 'border-zinc-700/50'
+                    }`}
                   />
-                  {errors.date && <span className="text-red-500 text-sm absolute -bottom-5">{errors.date}</span>}
+                  {errors.date && (
+                    <div className="absolute right-0 bottom-0 w-1/2 translate-y-1/2 bg-zinc-800/40 text-red-500 text-[11px] py-1 px-3 rounded-2xl z-10 text-right backdrop-blur-sm">
+                      {errors.date}
+                    </div>
+                  )}
                 </div>
               </div>
 
@@ -355,9 +375,15 @@ const ReservationCard = () => {
                     onChange={handleInput}
                     name="time"
                     id="time"
-                    className="bg-zinc-800/30 rounded-xl py-3 px-4 w-full border border-zinc-700/50 text-white transition-all duration-200 hover:border-zinc-600 focus:border-gold/50 focus:shadow-[0_0_15px_rgba(212,175,55,0.1)]"
+                    className={`bg-zinc-800/30 rounded-xl py-3 px-4 w-full border text-white transition-all duration-200 hover:border-zinc-600 focus:border-gold/50 focus:shadow-[0_0_15px_rgba(212,175,55,0.1)] ${
+                      errors.time ? 'border-red-500 ring-1 ring-red-500/50 animate-shake' : 'border-zinc-700/50'
+                    }`}
                   />
-                  {errors.time && <span className="text-red-500 text-sm absolute -bottom-5">{errors.time}</span>}
+                  {errors.time && (
+                    <div className="absolute left-1/5 right-0 bottom-0 translate-y-1/2 bg-zinc-800/40 text-red-500 text-[11px] py-1 px-3 rounded-2xl z-10 text-right backdrop-blur-sm">
+                      {errors.time}
+                    </div>
+                  )}
                 </div>
               </div>
 
@@ -396,7 +422,12 @@ const ReservationCard = () => {
                   id="date"
                   className="bg-zinc-800/30 rounded-xl py-3 px-4 w-full border border-zinc-700/50 text-white transition-all duration-200 hover:border-zinc-600 focus:border-gold/50 focus:shadow-[0_0_15px_rgba(212,175,55,0.1)]"
                 />
-                {errors.date && <span className="text-red-500 text-sm absolute -bottom-5">{errors.date}</span>}
+                {errors.date && (
+                  <div className="absolute -right-2 top-1/2 transform translate-x-full -translate-y-1/2 bg-zinc-800 text-white text-xs py-2 px-3 rounded shadow-lg z-10 w-max max-w-[200px] animate-fadeIn">
+                    {errors.date}
+                    <div className="absolute left-0 top-1/2 -translate-x-1 -translate-y-1/2 w-2 h-2 bg-zinc-800 transform rotate-45"></div>
+                  </div>
+                )}
               </div>
             </div>
 
@@ -412,7 +443,12 @@ const ReservationCard = () => {
                   id="time"
                   className="bg-zinc-800/30 rounded-xl py-3 px-4 w-full border border-zinc-700/50 text-white transition-all duration-200 hover:border-zinc-600 focus:border-gold/50 focus:shadow-[0_0_15px_rgba(212,175,55,0.1)]"
                 />
-                {errors.time && <span className="text-red-500 text-sm absolute -bottom-5">{errors.time}</span>}
+                {errors.time && (
+                  <div className="absolute -right-2 top-1/2 transform translate-x-full -translate-y-1/2 bg-zinc-800 text-white text-xs py-2 px-3 rounded shadow-lg z-10 w-max max-w-[200px] animate-fadeIn">
+                    {errors.time}
+                    <div className="absolute left-0 top-1/2 -translate-x-1 -translate-y-1/2 w-2 h-2 bg-zinc-800 transform rotate-45"></div>
+                  </div>
+                )}
               </div>
             </div>
           </>
