@@ -11,7 +11,7 @@ const ReservationCard = () => {
   const navigate = useNavigate();
   const { 
     reservationInfo, 
-    handleInput, 
+    handleInput: originalHandleInput, 
     setIsHourly, 
     setIsSpecialRequest,
     handlePlaceSelection 
@@ -58,6 +58,8 @@ const ReservationCard = () => {
 
       autocompleteRef.current = new window.google.maps.places.Autocomplete(inputRef.current, options);
       autocompleteRef.current.addListener("place_changed", () => {
+        // Clear error when place is selected
+        setErrors(prev => ({ ...prev, [type]: undefined }));
         const place = autocompleteRef.current.getPlace();
         if (place.geometry) {
           const countryComponent = place.address_components?.find(
@@ -106,6 +108,9 @@ const ReservationCard = () => {
   }, [isLoaded, handlePlaceSelection, reservationInfo.isHourly, reservationInfo.isSpecialRequest]);
 
   const handleModeChange = (mode) => {
+    // Clear all errors when switching modes
+    setErrors({});
+    
     if (mode === 'hourly') {
       setIsHourly(true);
     } else if (mode === 'special') {
@@ -191,6 +196,12 @@ const ReservationCard = () => {
     return Object.keys(newErrors).length === 0;
   };
 
+  const handleInput = (e) => {
+    // Clear error for the field being typed in
+    setErrors(prev => ({ ...prev, [e.target.name]: undefined }));
+    originalHandleInput(e);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (isValidating) return;
@@ -221,7 +232,8 @@ const ReservationCard = () => {
           e.preventDefault();
         }
       }}
-      className="reservation reserve-card w-[90%] max-w-[420px] p-8 sm:p-8 mx-auto md:mx-0 md:absolute md:bottom-12 md:right-8 lg:right-16 shadow-2xl bg-zinc-800/70 backdrop-blur-md border border-zinc-700/30 rounded-[2rem] text-left text-[14px] transition-all hover:shadow-[0_20px_50px_rgba(0,0,0,0.5)] hover:border-zinc-600/40">
+      className="reservation reserve-card w-[90%] max-w-[420px] p-8 sm:p-8 mx-auto md:mx-0 md:absolute md:bottom-12 md:right-8 lg:right-16 shadow-2xl bg-zinc-800/70 backdrop-blur-md border border-zinc-700/30 rounded-[2rem] text-left text-[14px] transition-all hover:shadow-[0_20px_50px_rgba(0,0,0,0.5)] hover:border-zinc-600/40 z-50"
+    >
       <div className="flex justify-center gap-3 pb-4 relative">
         <button
           type="button"
@@ -275,6 +287,7 @@ const ReservationCard = () => {
                     name="pickup"
                     id="pickup"
                     defaultValue={reservationInfo.pickup}
+                    onChange={handleInput}
                     className={`bg-zinc-800/30 rounded-xl py-3 px-4 w-full border text-white transition-all duration-200 hover:border-zinc-600 focus:border-gold/50 focus:shadow-[0_0_15px_rgba(212,175,55,0.1)] ${
                       errors.pickup ? 'border-red-500 ring-1 ring-red-500/50 animate-shake' : 'border-zinc-700/50'
                     }`}
@@ -301,6 +314,7 @@ const ReservationCard = () => {
                       name="dropoff"
                       id="dropoff"
                       defaultValue={reservationInfo.dropoff}
+                      onChange={handleInput}
                       className={`bg-zinc-800/30 rounded-xl py-3 px-4 w-full border text-white transition-all duration-200 hover:border-zinc-600 focus:border-gold/50 focus:shadow-[0_0_15px_rgba(212,175,55,0.1)] ${
                         errors.dropoff ? 'border-red-500 ring-1 ring-red-500/50 animate-shake' : 'border-zinc-700/50'
                       }`}
@@ -323,12 +337,18 @@ const ReservationCard = () => {
                   <div className="relative">
                     <input
                       type="number"
+                      onInvalid={(e) => e.preventDefault()}
                       min="2"
                       max="24"
                       name="hours"
                       id="hours"
                       value={reservationInfo.hours || ''}
-                      onChange={handleInput}
+                      onChange={(e) => {
+                        const value = parseInt(e.target.value);
+                        // Only clear the error, validation will happen on form submit
+                        setErrors(prev => ({ ...prev, hours: undefined }));
+                        handleInput(e);
+                      }}
                       className={`bg-zinc-800/30 rounded-xl py-3 px-4 w-full border text-white transition-all duration-200 hover:border-zinc-600 focus:border-gold/50 focus:shadow-[0_0_15px_rgba(212,175,55,0.1)] ${
                         errors.hours ? 'border-red-500 ring-1 ring-red-500/50 animate-shake' : 'border-zinc-700/50'
                       }`}
@@ -350,7 +370,10 @@ const ReservationCard = () => {
                 <div className="relative">
                   <DateInput
                     value={reservationInfo.date}
-                    onChange={handleInput}
+                    onChange={(e) => {
+                      setErrors(prev => ({ ...prev, date: undefined }));
+                      handleInput(e);
+                    }}
                     name="date"
                     id="date"
                     className={`bg-zinc-800/30 rounded-xl py-3 px-4 w-full border text-white transition-all duration-200 hover:border-zinc-600 focus:border-gold/50 focus:shadow-[0_0_15px_rgba(212,175,55,0.1)] ${
@@ -372,7 +395,10 @@ const ReservationCard = () => {
                 <div className="relative">
                   <TimeInput
                     value={reservationInfo.time}
-                    onChange={handleInput}
+                    onChange={(e) => {
+                      setErrors(prev => ({ ...prev, time: undefined }));
+                      handleInput(e);
+                    }}
                     name="time"
                     id="time"
                     className={`bg-zinc-800/30 rounded-xl py-3 px-4 w-full border text-white transition-all duration-200 hover:border-zinc-600 focus:border-gold/50 focus:shadow-[0_0_15px_rgba(212,175,55,0.1)] ${
@@ -417,15 +443,19 @@ const ReservationCard = () => {
               <div className="relative">
                 <DateInput
                   value={reservationInfo.date}
-                  onChange={handleInput}
+                  onChange={(e) => {
+                    setErrors(prev => ({ ...prev, date: undefined }));
+                    handleInput(e);
+                  }}
                   name="date"
                   id="date"
-                  className="bg-zinc-800/30 rounded-xl py-3 px-4 w-full border border-zinc-700/50 text-white transition-all duration-200 hover:border-zinc-600 focus:border-gold/50 focus:shadow-[0_0_15px_rgba(212,175,55,0.1)]"
+                  className={`bg-zinc-800/30 rounded-xl py-3 px-4 w-full border text-white transition-all duration-200 hover:border-zinc-600 focus:border-gold/50 focus:shadow-[0_0_15px_rgba(212,175,55,0.1)] ${
+                    errors.date ? 'border-red-500 ring-1 ring-red-500/50 animate-shake' : 'border-zinc-700/50'
+                  }`}
                 />
                 {errors.date && (
-                  <div className="absolute -right-2 top-1/2 transform translate-x-full -translate-y-1/2 bg-zinc-800 text-white text-xs py-2 px-3 rounded shadow-lg z-10 w-max max-w-[200px] animate-fadeIn">
+                  <div className="absolute left-1/8 right-0 bottom-0 w-4/4 translate-y-1/2 bg-zinc-800/40 text-red-500 text-[11px] py-1 px-3 rounded-2xl z-10 text-right backdrop-blur-sm">
                     {errors.date}
-                    <div className="absolute left-0 top-1/2 -translate-x-1 -translate-y-1/2 w-2 h-2 bg-zinc-800 transform rotate-45"></div>
                   </div>
                 )}
               </div>
@@ -438,15 +468,19 @@ const ReservationCard = () => {
               <div className="relative">
                 <TimeInput
                   value={reservationInfo.time}
-                  onChange={handleInput}
+                  onChange={(e) => {
+                    setErrors(prev => ({ ...prev, time: undefined }));
+                    handleInput(e);
+                  }}
                   name="time"
                   id="time"
-                  className="bg-zinc-800/30 rounded-xl py-3 px-4 w-full border border-zinc-700/50 text-white transition-all duration-200 hover:border-zinc-600 focus:border-gold/50 focus:shadow-[0_0_15px_rgba(212,175,55,0.1)]"
+                  className={`bg-zinc-800/30 rounded-xl py-3 px-4 w-full border text-white transition-all duration-200 hover:border-zinc-600 focus:border-gold/50 focus:shadow-[0_0_15px_rgba(212,175,55,0.1)] ${
+                    errors.time ? 'border-red-500 ring-1 ring-red-500/50 animate-shake' : 'border-zinc-700/50'
+                  }`}
                 />
                 {errors.time && (
-                  <div className="absolute -right-2 top-1/2 transform translate-x-full -translate-y-1/2 bg-zinc-800 text-white text-xs py-2 px-3 rounded shadow-lg z-10 w-max max-w-[200px] animate-fadeIn">
+                  <div className="absolute left-1/8 right-0 bottom-0 w-4/4 translate-y-1/2 bg-zinc-800/40 text-red-500 text-[11px] py-1 px-3 rounded-2xl z-10 text-right backdrop-blur-sm">
                     {errors.time}
-                    <div className="absolute left-0 top-1/2 -translate-x-1 -translate-y-1/2 w-2 h-2 bg-zinc-800 transform rotate-45"></div>
                   </div>
                 )}
               </div>
