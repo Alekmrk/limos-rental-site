@@ -289,7 +289,7 @@ const ReservationCard = () => {
                     defaultValue={reservationInfo.pickup}
                     onChange={handleInput}
                     className={`bg-zinc-800/30 rounded-xl py-3 px-4 w-full border text-white transition-all duration-200 hover:border-zinc-600 focus:border-gold/50 focus:shadow-[0_0_15px_rgba(212,175,55,0.1)] ${
-                      errors.pickup ? 'border-red-500 ring-1 ring-red-500/50 animate-shake' : 'border-zinc-700/50'
+                      errors.pickup && errors.pickup !== "At least one location must be in Switzerland" ? 'border-red-500 ring-1 ring-red-500/50 animate-shake' : 'border-zinc-700/50'
                     }`}
                     autoComplete="off"
                   />
@@ -316,7 +316,7 @@ const ReservationCard = () => {
                       defaultValue={reservationInfo.dropoff}
                       onChange={handleInput}
                       className={`bg-zinc-800/30 rounded-xl py-3 px-4 w-full border text-white transition-all duration-200 hover:border-zinc-600 focus:border-gold/50 focus:shadow-[0_0_15px_rgba(212,175,55,0.1)] ${
-                        errors.dropoff ? 'border-red-500 ring-1 ring-red-500/50 animate-shake' : 'border-zinc-700/50'
+                        errors.dropoff && errors.dropoff !== "At least one location must be in Switzerland" ? 'border-red-500 ring-1 ring-red-500/50 animate-shake' : 'border-zinc-700/50'
                       }`}
                       autoComplete="off"
                     />
@@ -488,15 +488,29 @@ const ReservationCard = () => {
           </>
         )}
 
-        <div className="flex justify-center mt-8">
-          <Button 
-            type="submit" 
-            variant="secondary" 
-            className="w-full py-4 text-base font-medium tracking-wide transition-all duration-200 hover:shadow-[0_0_20px_rgba(212,175,55,0.15)]"
-            disabled={isValidating}
-          >
-            {isValidating ? "Validating..." : (reservationInfo.isSpecialRequest ? "Continue to Request Details" : "Reserve Now")}
-          </Button>
+        {/* Error container with error on the button's top border */}
+        <div className="relative">
+          <div className="flex justify-center mt-8">
+            <div className="relative w-full">
+              {(errors.pickup === "At least one location must be in Switzerland" || errors.dropoff === "At least one location must be in Switzerland") && (
+                <div className="absolute left-1/8 right-0 top-0 w-4/4 translate-y-[-50%] bg-zinc-800/40 text-red-500 text-[11px] py-1 px-3 rounded-2xl z-10 text-right backdrop-blur-sm">
+                  At least one location must be in Switzerland
+                </div>
+              )}
+              <Button 
+                type="submit" 
+                variant="secondary" 
+                className={`w-full py-4 text-base font-medium tracking-wide transition-all duration-200 hover:shadow-[0_0_20px_rgba(212,175,55,0.15)] ${
+                  (errors.pickup === "At least one location must be in Switzerland" || errors.dropoff === "At least one location must be in Switzerland")
+                    ? 'border-red-500 ring-1 ring-red-500/50 animate-shake'
+                    : ''
+                }`}
+                disabled={isValidating}
+              >
+                {isValidating ? "Validating..." : (reservationInfo.isSpecialRequest ? "Continue to Request Details" : "Reserve Now")}
+              </Button>
+            </div>
+          </div>
         </div>
       </div>
     </form>
