@@ -1,5 +1,6 @@
 import { useState, useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { DateTime } from 'luxon';
 import ReservationContext from "../../contexts/ReservationContext";
 import Button from "../../components/Button";
 import ProgressBar from "../../components/ProgressBar";
@@ -71,39 +72,33 @@ const PaymentPage = ({ scrollUp }) => {
   };
 
   const formatDate = (dateString) => {
-    const [year, month, day] = dateString.split('-');
-    return `${day}-${month}-${year}`;
+    if (!dateString) return '';
+    try {
+      return DateTime.fromFormat(dateString, 'yyyy-MM-dd', { zone: 'Europe/Zurich' }).toFormat('dd-MM-yyyy');
+    } catch {
+      return dateString;
+    }
   };
 
   const handlePaymentSuccess = async () => {
     try {
       setIsProcessing(true);
-
-      const now = new Date();
-      const swissTime = now.toLocaleString('en-CH', {
-        timeZone: 'Europe/Zurich',
-        hour: '2-digit',
-        minute: '2-digit',
-        second: '2-digit',
-        hour12: false
-      });
-      
+      const now = DateTime.now().setZone('Europe/Zurich');
+      const swissTime = now.toFormat('HH:mm:ss');
       const paymentDetails = {
         method: 'stripe',
         amount: price,
         currency: 'CHF',
-        timestamp: now.toISOString(),
+        timestamp: now.toISO(),
         swissTimestamp: swissTime,
         reference: `PAY-${Math.random().toString(36).substr(2, 9).toUpperCase()}`
       };
-
       await handleInput({
         target: {
           name: 'paymentDetails',
           value: paymentDetails
         }
       });
-
       navigate('/thankyou');
     } catch (error) {
       console.error("Error processing successful payment:", error);
@@ -204,7 +199,7 @@ const PaymentPage = ({ scrollUp }) => {
               </div>
               <div>
                 <p className="text-zinc-400 text-sm mb-1">Time</p>
-                <p className="font-medium break-words">{reservationInfo.time} (CET)</p>
+                <p className="font-medium break-words">{reservationInfo.time} (Swiss time)</p>
               </div>
             </div>
 

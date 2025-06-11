@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { DateTime } from 'luxon';
 
 const DateInput = ({ value, onChange, name, id, className }) => {
   const [displayValue, setDisplayValue] = useState('');
@@ -10,14 +11,8 @@ const DateInput = ({ value, onChange, name, id, className }) => {
   
   const formatDisplayDate = (dateString) => {
     if (!dateString) return '';
-    
     try {
-      const [year, month, day] = dateString.split('-');
-      const monthIndex = parseInt(month, 10) - 1;
-      
-      if (isNaN(monthIndex) || monthIndex < 0 || monthIndex > 11) return dateString;
-      
-      return `${day} ${monthNames[monthIndex]} ${year}`;
+      return DateTime.fromFormat(dateString, 'yyyy-MM-dd', { zone: 'Europe/Zurich' }).toFormat('dd-MM-yyyy');
     } catch (err) {
       return dateString;
     }
@@ -88,7 +83,7 @@ const DateInput = ({ value, onChange, name, id, className }) => {
 
   const handleDateSelect = (dateInfo) => {
     const { year, month, day } = dateInfo;
-    // Format the date string directly instead of using Date object to avoid timezone issues
+    // Format the date string as yyyy-MM-dd for storage, but display as dd-MM-yyyy
     const formattedDate = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
     onChange({
       target: {

@@ -3,6 +3,7 @@ import ProgressBar from "../../components/ProgressBar";
 import { useContext } from "react";
 import ReservationContext from "../../contexts/ReservationContext";
 import { sendTransferConfirmationToAdmin } from "../../services/EmailService";
+import { DateTime } from 'luxon';
 
 const ThankYou = ({ scrollUp }) => {
   const [emailStatus, setEmailStatus] = useState({
@@ -53,10 +54,14 @@ const ThankYou = ({ scrollUp }) => {
     sendEmails();
   }, [reservationInfo]);
 
-  // Format date to dd-mm-yyyy
+  // Format date to dd-MM-yyyy (Swiss format)
   const formatDate = (dateString) => {
-    const [year, month, day] = dateString.split('-');
-    return `${day}-${month}-${year}`;
+    if (!dateString) return '';
+    try {
+      return DateTime.fromFormat(dateString, 'yyyy-MM-dd', { zone: 'Europe/Zurich' }).toFormat('dd-MM-yyyy');
+    } catch {
+      return dateString;
+    }
   };
 
   return (
@@ -116,7 +121,7 @@ const ThankYou = ({ scrollUp }) => {
               </h3>
               <div className="space-y-2 text-zinc-300">
                 <p className="break-words">Date: {formatDate(reservationInfo.date)}</p>
-                <p className="break-words">{reservationInfo.isSpecialRequest ? 'Preferred Time' : 'Pick Up Time'}: {reservationInfo.time} (CET)</p>
+                <p className="break-words">{reservationInfo.isSpecialRequest ? 'Preferred Time' : 'Pick Up Time'}: {reservationInfo.time} (Swiss time)</p>
                 {!reservationInfo.isSpecialRequest && (
                   <>
                     <p className="break-words">From: {reservationInfo.pickup}</p>

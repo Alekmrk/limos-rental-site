@@ -1,30 +1,16 @@
 import { createContext, useState, useCallback } from "react";
+import { DateTime } from 'luxon';
 import { calculateRoute, getPlaceDetails } from "../services/GoogleMapsService";
 
 export const ReservationContext = createContext(null);
 
 const getInitialTime = () => {
-  const now = new Date();
-  // Convert to Swiss time
-  const swissTime = now.toLocaleTimeString('en-CH', {
-    timeZone: 'Europe/Zurich',
-    hour12: false,
-    hour: '2-digit',
-    minute: '2-digit'
-  });
+  // return DateTime.now().setZone('Europe/Zurich').toFormat('HH:mm');
   return "13:15";
 };
 
 const getInitialDate = () => {
-  const now = new Date();
-  // Convert to Swiss date in YYYY-MM-DD format
-  const swissDate = now.toLocaleDateString('en-CH', {
-    timeZone: 'Europe/Zurich',
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit'
-  }).split('.').reverse().join('-');
-  return swissDate;
+  return DateTime.now().setZone('Europe/Zurich').toFormat('yyyy-MM-dd');
 };
 
 export const ReservationContextProvider = ({ children }) => {

@@ -1,4 +1,5 @@
 const { EmailClient } = require('@azure/communication-email');
+const { DateTime } = require('luxon');
 require('dotenv').config();
 
 // Email sender addresses configuration
@@ -30,96 +31,49 @@ console.log('Email Service Configuration:', {
 const emailClient = new EmailClient(process.env.COMMUNICATION_CONNECTION_STRING);
 
 const getSwissDate = () => {
-  return new Date().toLocaleDateString('en-CH', {
-    timeZone: 'Europe/Zurich',
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit'
-  }).split('.').reverse().join('-');
+  return DateTime.now().setZone('Europe/Zurich').toFormat('yyyy-MM-dd');
 };
 
 const getSwissTime = () => {
-  return new Date().toLocaleTimeString('en-CH', {
-    timeZone: 'Europe/Zurich',
-    hour: '2-digit',
-    minute: '2-digit',
-    hour12: false
-  });
+  return DateTime.now().setZone('Europe/Zurich').toFormat('HH:mm');
 };
 
 // Format date and time for email
 const formatDateTime = (date, time) => {
   try {
     if (!date || !time) {
-      const now = new Date();
-      return now.toLocaleString('en-CH', {
-        timeZone: 'Europe/Zurich',
-        dateStyle: 'short',
-        timeStyle: 'short'
-      });
+      return DateTime.now().setZone('Europe/Zurich').toLocaleString(DateTime.DATETIME_SHORT);
     }
-
-    // Create a Date object from the date and time
-    const [year, month, day] = date.split('-').map(Number);
-    const [hours, minutes] = time.split(':').map(Number);
-    const dt = new Date(year, month - 1, day, hours, minutes);
-    
-    // Format date as dd-mm-yyyy
-    const formattedDate = `${day.toString().padStart(2, '0')}-${month.toString().padStart(2, '0')}-${year}`;
-    
-    // Format time separately to ensure HH:mm format
-    const formattedTime = dt.toLocaleTimeString('en-CH', {
-      timeZone: 'Europe/Zurich',
-      hour: '2-digit',
-      minute: '2-digit',
-      hour12: false
-    });
-    
-    return `${formattedDate}, ${formattedTime} (CET)`;
+    // Parse date and time in Swiss timezone
+    const dt = DateTime.fromFormat(`${date} ${time}`, 'yyyy-MM-dd HH:mm', { zone: 'Europe/Zurich' });
+    // Format date as dd-MM-yyyy
+    const formattedDate = dt.toFormat('dd-MM-yyyy');
+    // Format time as HH:mm
+    const formattedTime = dt.toFormat('HH:mm');
+    return `${formattedDate}, ${formattedTime} (Swiss Time)`;
   } catch (error) {
     console.error('Error formatting Swiss date/time:', error);
-    return new Date().toLocaleString('en-CH', {
-      timeZone: 'Europe/Zurich',
-      dateStyle: 'short',
-      timeStyle: 'short'
-    });
+    return DateTime.now().setZone('Europe/Zurich').toLocaleString(DateTime.DATETIME_SHORT);
   }
 };
 
 const formatPaymentDateTime = (timestamp) => {
-  const date = new Date(timestamp || Date.now());
-  return date.toLocaleString('en-CH', {
-    timeZone: 'Europe/Zurich',
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit',
-    hour12: false
-  });
+  const dt = timestamp
+    ? DateTime.fromMillis(Number(timestamp), { zone: 'Europe/Zurich' })
+    : DateTime.now().setZone('Europe/Zurich');
+  return dt.toFormat('d LLLL yyyy, HH:mm:ss');
 };
 
 const formatDate = (dateString) => {
   try {
     if (!dateString) {
-      return new Date().toLocaleDateString('en-CH', {
-        timeZone: 'Europe/Zurich',
-        day: '2-digit',
-        month: '2-digit',
-        year: 'numeric'
-      });
+      return DateTime.now().setZone('Europe/Zurich').toFormat('dd-MM-yyyy');
     }
-    const [year, month, day] = dateString.split('-');
-    return `${day}-${month}-${year}`;
+    const dt = DateTime.fromFormat(dateString, 'yyyy-MM-dd', { zone: 'Europe/Zurich' });
+    return dt.toFormat('dd-MM-yyyy');
   } catch (error) {
     console.error('Error formatting date:', error);
-    return new Date().toLocaleDateString('en-CH', {
-      timeZone: 'Europe/Zurich',
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric'
-    });
+    return DateTime.now().setZone('Europe/Zurich').toFormat('dd-MM-yyyy');
   }
 };
 
@@ -353,7 +307,7 @@ const generateEmailContent = (reservationInfo, type = 'customer') => {
   const transferDetails = isSpecialRequest 
     ? `
     <p>Date: ${formatDate(reservationInfo.date)}</p>
-    <p>Preferred Time: ${reservationInfo.time} (CET)</p>
+    <p>Preferred Time: ${reservationInfo.time} (Swiss time)</p>
     <div class="subsection">
       <p class="subsection-title">Special Request Details:</p>
       <p>${reservationInfo.specialRequestDetails || 'No specific request provided'}</p>
@@ -381,7 +335,7 @@ const generateEmailContent = (reservationInfo, type = 'customer') => {
   `
     : `
       <p>Date: ${formatDate(reservationInfo.date)}</p>
-      <p>Pick Up Time: ${reservationInfo.time} (CET)</p>
+      <p>Pick Up Time: ${reservationInfo.time} (Swiss time)</p>
       <p>From: ${reservationInfo.pickup || 'Not specified'}</p>
       ${isHourly 
         ? `<p>Duration: ${reservationInfo.hours || '2'} hours</p>
@@ -481,7 +435,7 @@ Reference: ${reservationInfo.paymentDetails.reference}
 
 ${isSpecialRequest ? 'REQUEST DETAILS' : 'TRANSFER DETAILS'}
 Date: ${formatDate(reservationInfo.date)}
-${isSpecialRequest ? 'Preferred' : 'Pick Up'} Time: ${reservationInfo.time} (CET)
+${isSpecialRequest ? 'Preferred' : 'Pick Up'} Time: ${reservationInfo.time} (Swiss time)
 ${!isSpecialRequest ? `From: ${reservationInfo.pickup}
 ${!reservationInfo.isHourly ? reservationInfo.extraStops?.map(stop => stop ? `• ${stop}` : '').join('\n') : ''}
 ${!reservationInfo.isHourly ? `To: ${reservationInfo.dropoff}` : `Duration: ${reservationInfo.hours} hours`}` : ''}
@@ -568,13 +522,13 @@ Date: ${formatPaymentDateTime(reservationInfo.paymentDetails.timestamp)}
 TRANSFER DETAILS
 ${reservationInfo.isSpecialRequest 
   ? `Date: ${formatDate(reservationInfo.date)}
-Preferred Time: ${reservationInfo.time} (CET)
+Preferred Time: ${reservationInfo.time} (Swiss time)
 ${reservationInfo.specialRequestDetails ? `Special Request: ${reservationInfo.specialRequestDetails}` : ''}`
   : `From: ${reservationInfo.pickup}
 ${reservationInfo.extraStops?.map(stop => stop ? `• ${stop}` : '').join('\n') || ''}
 To: ${reservationInfo.dropoff}
 Date: ${formatDate(reservationInfo.date)}
-Time: ${reservationInfo.time} (CET)`}
+Time: ${reservationInfo.time} (Swiss time)`}
 
 ${!reservationInfo.isSpecialRequest ? `VEHICLE DETAILS
 Vehicle: ${reservationInfo.selectedVehicle?.name}

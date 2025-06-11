@@ -6,6 +6,7 @@ import TimeInput from "../../../components/TimeInput";
 import DateInput from "../../../components/DateInput";
 import { validateAddresses } from "../../../services/GoogleMapsService";
 import { useGoogleMapsApi } from "../../../hooks/useGoogleMapsApi";
+import { DateTime } from 'luxon';
 
 const ReservationCard = () => {
   const navigate = useNavigate();
@@ -121,6 +122,16 @@ const ReservationCard = () => {
     }
   };
 
+  // Format date to dd-MM-yyyy (Swiss format)
+  const formatDate = (dateString) => {
+    if (!dateString) return '';
+    try {
+      return DateTime.fromFormat(dateString, 'yyyy-MM-dd', { zone: 'Europe/Zurich' }).toFormat('dd-MM-yyyy');
+    } catch {
+      return dateString;
+    }
+  };
+
   const validateForm = async () => {
     const newErrors = {};
     
@@ -128,31 +139,19 @@ const ReservationCard = () => {
     if (!reservationInfo.date) {
       newErrors.date = "Date is required";
     } else {
-      const selectedDate = new Date(reservationInfo.date);
-      const now = new Date();
-      
-      // Convert current time to Swiss timezone
-      const swissNow = new Date(now.toLocaleString('en-US', { timeZone: 'Europe/Zurich' }));
-      
-      // Set both dates to start of day for comparison
-      const selectedDateStart = new Date(selectedDate);
-      selectedDateStart.setHours(0, 0, 0, 0);
-      const swissNowStart = new Date(swissNow);
-      swissNowStart.setHours(0, 0, 0, 0);
-      
+      // Use luxon for Swiss time comparison
+      const selectedDate = DateTime.fromFormat(reservationInfo.date, 'yyyy-MM-dd', { zone: 'Europe/Zurich' });
+      const swissNow = DateTime.now().setZone('Europe/Zurich');
+      const selectedDateStart = selectedDate.startOf('day');
+      const swissNowStart = swissNow.startOf('day');
       if (selectedDateStart < swissNowStart) {
         newErrors.date = "Date cannot be in the past";
       }
-      
       // If date is today, check if time is at least 3 hours in advance
-      if (reservationInfo.time && selectedDateStart.getTime() === swissNowStart.getTime()) {
+      if (reservationInfo.time && selectedDateStart.equals(swissNowStart)) {
         const [hours, minutes] = reservationInfo.time.split(':').map(Number);
-        const selectedTime = new Date(selectedDate);
-        selectedTime.setHours(hours, minutes);
-        
-        const minAllowedTime = new Date(swissNow);
-        minAllowedTime.setHours(swissNow.getHours() + 3);
-        
+        const selectedTime = selectedDate.set({ hour: hours, minute: minutes });
+        const minAllowedTime = swissNow.plus({ hours: 3 });
         if (selectedTime < minAllowedTime) {
           newErrors.time = "Must book 3h in advance";
         }
