@@ -36,13 +36,13 @@ const Header = () => {
 
   return (
     <header
-      className={`py-6 fixed z-50 bg-zinc-900/95 backdrop-blur-sm border-b border-zinc-800 left-0 right-0 top-0 ${
+      className={`py-3 fixed z-[100] bg-zinc-900/95 backdrop-blur-sm border-b border-zinc-800 left-0 right-0 top-0 ${
         shadowVisible && "shadow-default"
       }`}
     >
       <div className="container-big flex justify-between">
         <a href="/">
-          <img className="w-28" src={logo} alt="LIMO-logo" />
+          <img className="w-20" src={logo} alt="LIMO-logo" />
         </a>
         <PrimaryNav 
           screenSize={screenSize} 

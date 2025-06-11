@@ -6,7 +6,7 @@ import bannerImage from "../../../assets/banner-image.jpg";
 const BannerSection = () => {
   return (
     <div 
-      className="banner relative container-big rounded-[1.5rem] text-center mt-24 pb-32 md:pb-0"
+      className="banner relative container-big rounded-[1.5rem] text-center mt-16 pb-32 md:pb-0"
       style={{
         backgroundImage: `url(${bannerImage})`,
         backgroundSize: 'cover',
