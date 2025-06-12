@@ -11,6 +11,7 @@ const MapPreview = ({ origin, destination, extraStops = [], onRouteCalculated })
   const { routeInfo, isCalculating, error } = useRouteCalculation(origin, destination, extraStops);
   const mapInitializedRef = useRef(false);
   const directionsRendererRef = useRef(null);
+  const hourlyMarkerRef = useRef(null);
 
   // Check if any stops are being edited (empty)
   const hasEmptyStops = extraStops.some(stop => !stop || !stop.trim());
@@ -67,31 +68,80 @@ const MapPreview = ({ origin, destination, extraStops = [], onRouteCalculated })
       directionsRendererRef.current = newDirectionsRenderer;
       setDirectionsRenderer(newDirectionsRenderer);
     }
+  }, [map, origin, destination, isLoaded, directionsServiceAvailable]);
 
-    // For hourly mode (no destination), just show a marker at the pickup location
-    if (!destination && map) {
+  // Handle hourly mode marker separately
+  useEffect(() => {
+    if (!isLoaded || !map || !origin) {
+      return;
+    }
+
+    // For hourly mode (no destination), show a prominent marker at the pickup location
+    if (!destination) {
       const geocoder = new window.google.maps.Geocoder();
       geocoder.geocode({ address: origin }, (results, status) => {
         if (status === 'OK') {
-          new window.google.maps.Marker({
+          // Clear any existing hourly marker
+          if (hourlyMarkerRef.current) {
+            hourlyMarkerRef.current.setMap(null);
+          }
+
+          // Clear any route display when switching to hourly mode
+          if (directionsRendererRef.current) {
+            directionsRendererRef.current.setDirections({ routes: [] });
+          }
+
+          // Create a prominent, animated marker for hourly pickup location
+          hourlyMarkerRef.current = new window.google.maps.Marker({
             map: map,
             position: results[0].geometry.location,
             icon: {
               path: window.google.maps.SymbolPath.CIRCLE,
               fillColor: '#D4AF37',
-              fillOpacity: 1,
-              strokeColor: '#D4AF37',
-              strokeWeight: 2,
-              scale: 7,
-            }
+              fillOpacity: 0.9,
+              strokeColor: '#ffffff',
+              strokeWeight: 3,
+              scale: 12,
+            },
+            title: `Pickup Location: ${origin}`,
+            animation: window.google.maps.Animation.BOUNCE
           });
+
+          // Create an info window to show pickup details
+          const infoWindow = new window.google.maps.InfoWindow({
+            content: `
+              <div style="padding: 8px; font-family: system-ui, -apple-system, sans-serif;">
+                <div style="font-weight: 600; color: #D4AF37; margin-bottom: 4px;">Pickup Location</div>
+                <div style="color: #374151; font-size: 14px;">${origin}</div>
+                <div style="color: #6B7280; font-size: 12px; margin-top: 4px;">Vehicle will wait at your disposal</div>
+              </div>
+            `
+          });
+
+          // Show info window initially and on marker click
+          infoWindow.open(map, hourlyMarkerRef.current);
+          
+          hourlyMarkerRef.current.addListener('click', () => {
+            infoWindow.open(map, hourlyMarkerRef.current);
+          });
+
+          // Stop the bounce animation after 3 seconds
+          setTimeout(() => {
+            if (hourlyMarkerRef.current) {
+              hourlyMarkerRef.current.setAnimation(null);
+            }
+          }, 3000);
           
           map.setCenter(results[0].geometry.location);
-          map.setZoom(15);
+          map.setZoom(8); // Reduced zoom for better context view
         }
       });
+    } else if (destination && hourlyMarkerRef.current) {
+      // Clear hourly marker when switching to route mode
+      hourlyMarkerRef.current.setMap(null);
+      hourlyMarkerRef.current = null;
     }
-  }, [map, origin, destination, isLoaded, directionsServiceAvailable]);
+  }, [map, origin, destination, isLoaded]);
 
   // Update route on map when routeInfo changes
   useEffect(() => {
