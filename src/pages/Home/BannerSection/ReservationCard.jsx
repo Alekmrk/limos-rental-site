@@ -19,7 +19,9 @@ const ReservationCard = () => {
   } = useContext(ReservationContext);
   const { isLoaded } = useGoogleMapsApi();
   const [errors, setErrors] = useState({});
-  
+  const [pickupInput, setPickupInput] = useState(reservationInfo.pickup || "");
+  const [dropoffInput, setDropoffInput] = useState(reservationInfo.dropoff || "");
+
   const pickupRef = useRef(null);
   const dropoffRef = useRef(null);
   const pickupAutocomplete = useRef(null);
@@ -84,8 +86,8 @@ const ReservationCard = () => {
             originalName: place.name,
             types: place.types
           });
-          
-          inputRef.current.value = displayName;
+          if (type === 'pickup') setPickupInput(displayName);
+          if (type === 'dropoff') setDropoffInput(displayName);
         }
       });
     };
@@ -109,6 +111,14 @@ const ReservationCard = () => {
       }
     };
   }, [isLoaded, handlePlaceSelection, reservationInfo.isHourly, reservationInfo.isSpecialRequest]);
+
+  useEffect(() => {
+    setPickupInput(reservationInfo.pickup || "");
+  }, [reservationInfo.pickup]);
+
+  useEffect(() => {
+    setDropoffInput(reservationInfo.dropoff || "");
+  }, [reservationInfo.dropoff]);
 
   const handleModeChange = (mode) => {
     // Clear all errors when switching modes
@@ -219,6 +229,16 @@ const ReservationCard = () => {
     originalHandleInput(e);
   };
 
+  const handlePickupInput = (e) => {
+    setPickupInput(e.target.value);
+    setErrors(prev => ({ ...prev, pickup: undefined }));
+  };
+
+  const handleDropoffInput = (e) => {
+    setDropoffInput(e.target.value);
+    setErrors(prev => ({ ...prev, dropoff: undefined }));
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     
@@ -300,8 +320,8 @@ const ReservationCard = () => {
                     placeholder="TYPE LOCATION..."
                     name="pickup"
                     id="pickup"
-                    defaultValue={reservationInfo.pickup}
-                    onChange={handleInput}
+                    value={pickupInput}
+                    onChange={handlePickupInput}
                     className={`bg-zinc-800/30 rounded-xl py-3 px-4 w-full border text-white transition-all duration-200 hover:border-zinc-600 focus:border-gold/50 focus:shadow-[0_0_15px_rgba(212,175,55,0.1)] ${
                       errors.pickup && errors.pickup !== "At least one location must be in Switzerland" ? 'border-red-500 ring-1 ring-red-500/50 animate-shake' : 'border-zinc-700/50'
                     }`}
@@ -327,8 +347,8 @@ const ReservationCard = () => {
                       placeholder="TYPE LOCATION..."
                       name="dropoff"
                       id="dropoff"
-                      defaultValue={reservationInfo.dropoff}
-                      onChange={handleInput}
+                      value={dropoffInput}
+                      onChange={handleDropoffInput}
                       className={`bg-zinc-800/30 rounded-xl py-3 px-4 w-full border text-white transition-all duration-200 hover:border-zinc-600 focus:border-gold/50 focus:shadow-[0_0_15px_rgba(212,175,55,0.1)] ${
                         errors.dropoff && errors.dropoff !== "At least one location must be in Switzerland" ? 'border-red-500 ring-1 ring-red-500/50 animate-shake' : 'border-zinc-700/50'
                       }`}
