@@ -19,7 +19,6 @@ const ReservationCard = () => {
   } = useContext(ReservationContext);
   const { isLoaded } = useGoogleMapsApi();
   const [errors, setErrors] = useState({});
-  const [isValidating, setIsValidating] = useState(false);
   
   const pickupRef = useRef(null);
   const dropoffRef = useRef(null);
@@ -28,7 +27,7 @@ const ReservationCard = () => {
 
   useEffect(() => {
     if (!isLoaded || !window.google) return;
-    if (reservationInfo.isHourly || reservationInfo.isSpecialRequest) return; // Don't initialize if in hourly or special mode
+    if (reservationInfo.isSpecialRequest) return; // Don't initialize if in special mode
 
     // Swiss bounds
     const switzerlandBounds = {
@@ -91,7 +90,10 @@ const ReservationCard = () => {
       });
     };
 
+    // Always setup pickup autocomplete for distance and hourly modes
     setupAutocomplete(pickupRef, pickupAutocomplete, 'pickup');
+    
+    // Only setup dropoff autocomplete for distance mode
     if (!reservationInfo.isHourly) {
       setupAutocomplete(dropoffRef, dropoffAutocomplete, 'dropoff');
     }
@@ -174,19 +176,35 @@ const ReservationCard = () => {
         }
       }
 
-      // Validate Switzerland location requirement only if addresses are provided
-      if (!Object.keys(newErrors).length && reservationInfo.pickupPlaceInfo) {
-        try {
-          const validation = await validateAddresses(
-            reservationInfo.pickupPlaceInfo,
-            reservationInfo.dropoffPlaceInfo
-          );
-          if (!validation.isValid) {
-            newErrors.pickup = validation.error;
+      // Switzerland validation - check if we have locations to validate
+      const hasPickupValue = pickupRef.current?.value?.trim();
+      const hasDropoffValue = !reservationInfo.isHourly ? dropoffRef.current?.value?.trim() : null;
+      
+      if (hasPickupValue || hasDropoffValue) {
+        // If we have autocomplete data (distance mode), use the existing validation
+        if (reservationInfo.pickupPlaceInfo || reservationInfo.dropoffPlaceInfo) {
+          try {
+            const validation = await validateAddresses(
+              reservationInfo.pickupPlaceInfo,
+              reservationInfo.dropoffPlaceInfo
+            );
+            if (!validation.isValid) {
+              newErrors.pickup = validation.error;
+            }
+          } catch (error) {
+            console.error('Error validating addresses:', error);
+            newErrors.pickup = "Error validating addresses. Please try again.";
           }
-        } catch (error) {
-          console.error('Error validating addresses:', error);
-          newErrors.pickup = "Error validating addresses. Please try again.";
+        } else {
+          // For hourly mode or when autocomplete data is missing, do basic Switzerland check
+          // This is a simplified check - if the user typed locations but we don't have place info,
+          // we require them to select from autocomplete suggestions
+          if (hasPickupValue && !reservationInfo.pickupPlaceInfo) {
+            newErrors.pickup = "Please select a location from the suggestions";
+          }
+          if (hasDropoffValue && !reservationInfo.dropoffPlaceInfo) {
+            newErrors.dropoff = "Please select a location from the suggestions";
+          }
         }
       }
     }
@@ -203,11 +221,8 @@ const ReservationCard = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (isValidating) return;
-
-    setIsValidating(true);
+    
     const isValid = await validateForm();
-    setIsValidating(false);
 
     if (isValid) {
       if (reservationInfo.isSpecialRequest) {
@@ -337,11 +352,9 @@ const ReservationCard = () => {
                     <input
                       type="number"
                       onInvalid={(e) => e.preventDefault()}
-                      min="2"
-                      max="24"
                       name="hours"
                       id="hours"
-                      value={reservationInfo.hours || ''}
+                      value={reservationInfo.hours}
                       onChange={(e) => {
                         const value = parseInt(e.target.value);
                         // Only clear the error, validation will happen on form submit
@@ -491,11 +504,6 @@ const ReservationCard = () => {
         <div className="relative">
           <div className="flex justify-center mt-8">
             <div className="relative w-full">
-              {(errors.pickup === "At least one location must be in Switzerland" || errors.dropoff === "At least one location must be in Switzerland") && (
-                <div className="absolute left-1/8 right-0 top-0 w-4/4 translate-y-[-50%] bg-zinc-800/40 text-red-500 text-[11px] py-1 px-3 rounded-2xl z-10 text-right backdrop-blur-sm">
-                  At least one location must be in Switzerland
-                </div>
-              )}
               <Button 
                 type="submit" 
                 variant="secondary" 
@@ -504,10 +512,14 @@ const ReservationCard = () => {
                     ? 'border-red-500 ring-1 ring-red-500/50 animate-shake'
                     : ''
                 }`}
-                disabled={isValidating}
               >
-                {isValidating ? "Validating..." : (reservationInfo.isSpecialRequest ? "Continue to Request Details" : "Reserve Now")}
+                {reservationInfo.isSpecialRequest ? "Continue to Request Details" : "Reserve Now"}
               </Button>
+              {(errors.pickup === "At least one location must be in Switzerland" || errors.dropoff === "At least one location must be in Switzerland") && (
+                <div className="absolute left-1/8 right-0 top-0 w-4/4 translate-y-[-50%] bg-zinc-800/40 text-red-500 text-[11px] py-1 px-3 rounded-2xl z-10 text-right backdrop-blur-sm">
+                  At least one location must be in Switzerland
+                </div>
+              )}
             </div>
           </div>
         </div>
