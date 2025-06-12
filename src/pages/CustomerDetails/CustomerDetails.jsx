@@ -236,7 +236,7 @@ const CustomerDetails = ({ scrollUp }) => {
                 <p className="text-zinc-300">{reservationInfo.specialRequestDetails}</p>
                 <div className="mt-3 text-sm text-zinc-400">
                   <p>Date: {reservationInfo.date}</p>
-                  <p>Preferred Time: {reservationInfo.time} (CET)</p>
+                  <p>Preferred Time: {reservationInfo.time} (Swiss time)</p>
                 </div>
               </div>
               

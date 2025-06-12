@@ -279,7 +279,7 @@ const VehicleSelection = ({ scrollUp }) => {
         <div className="bg-zinc-800/30 p-6 rounded-xl border border-zinc-700/50">
           <div className="mb-4">
             <p className="text-sm">{formatDate(reservationInfo.date)}</p>
-            <p className="text-sm">{reservationInfo.time} (CET)</p>
+            <p className="text-sm">{reservationInfo.time} (Swiss Time)</p>
             <div className="flex items-center gap-2 text-sm">
               <span className="inline-flex items-center">
                 <svg className="w-4 h-4 mr-1" viewBox="0 0 24 24" fill="currentColor">
