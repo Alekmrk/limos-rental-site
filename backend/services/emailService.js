@@ -249,6 +249,165 @@ const sendPaymentReceiptToCustomer = async (reservationInfo) => {
 };
 
 /**
+ * Send email notification to admin about route calculation errors
+ * @param {Object} routeErrorInfo - Route error details
+ * @returns {Object} - Email send result
+ */
+const sendRouteErrorToAdmin = async (routeErrorInfo) => {
+  const subject = `🚨 Route Calculation Error - ${routeErrorInfo.errorType === 'no_route_found' ? 'No Route Found' : 'API Error'}`;
+  
+  const content = generateRouteErrorEmailContent(routeErrorInfo);
+  
+  return await sendEmail(process.env.ADMIN_EMAIL, subject, content, 'info');
+};
+
+/**
+ * Generate email content for route error notifications
+ * @param {Object} routeErrorInfo - Route error details
+ * @returns {Object} - Email content with text and HTML versions
+ */
+const generateRouteErrorEmailContent = (routeErrorInfo) => {
+  const errorTypeText = routeErrorInfo.errorType === 'no_route_found' 
+    ? 'No Route Found' 
+    : 'Google Maps API Error';
+  
+  const timestamp = DateTime.now().setZone('Europe/Zurich').toFormat('dd-MM-yyyy, HH:mm:ss');
+  
+  // Generate HTML content
+  const htmlContent = `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; color: #e5e5e5; background-color: #1a1a1a; }
+        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+        .header { background-color: #dc2626; color: white; padding: 20px; text-align: center; border-radius: 8px 8px 0 0; }
+        .content { padding: 20px; background-color: #2a2a2a; border-radius: 0 0 8px 8px; }
+        .error-section { background-color: rgba(220, 38, 38, 0.1); border: 1px solid rgba(220, 38, 38, 0.2); padding: 20px; border-radius: 8px; margin-bottom: 20px; }
+        .detail-section { background-color: rgba(0, 0, 0, 0.4); padding: 20px; border-radius: 8px; margin-bottom: 20px; }
+        .section-title { color: #f59e0b; font-size: 16px; font-weight: 600; margin-bottom: 12px; }
+        .detail-row { margin-bottom: 8px; }
+        .detail-label { color: #d1d5db; font-weight: 500; }
+        .detail-value { color: #ffffff; margin-left: 8px; }
+        .footer { text-align: center; margin-top: 20px; color: #888; font-size: 12px; }
+      </style>
+    </head>
+    <body>
+      <div class="container">
+        <div class="header">
+          <h2>🚨 Route Calculation Error Alert</h2>
+        </div>
+        <div class="content">
+          <div class="error-section">
+            <h3 style="color: #dc2626; margin-bottom: 16px;">Error Details</h3>
+            <div class="detail-row">
+              <span class="detail-label">Error Type:</span>
+              <span class="detail-value">${errorTypeText}</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">Timestamp:</span>
+              <span class="detail-value">${timestamp} (Swiss Time)</span>
+            </div>
+            ${routeErrorInfo.errorMessage ? `
+            <div class="detail-row">
+              <span class="detail-label">Technical Error:</span>
+              <span class="detail-value">${routeErrorInfo.errorMessage}</span>
+            </div>
+            ` : ''}
+          </div>
+
+          <div class="detail-section">
+            <h3 class="section-title">Customer Booking Details</h3>
+            <div class="detail-row">
+              <span class="detail-label">Pickup Location:</span>
+              <span class="detail-value">${routeErrorInfo.pickup || 'Not specified'}</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">Dropoff Location:</span>
+              <span class="detail-value">${routeErrorInfo.dropoff || 'Not specified'}</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">Date:</span>
+              <span class="detail-value">${formatDate(routeErrorInfo.date)}</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">Time:</span>
+              <span class="detail-value">${routeErrorInfo.time} (Swiss Time)</span>
+            </div>
+          </div>
+
+          <div class="detail-section">
+            <h3 class="section-title">Recommended Actions</h3>
+            <ul style="color: #e5e5e5; margin: 0; padding-left: 20px;">
+              ${routeErrorInfo.errorType === 'no_route_found' ? `
+                <li>Verify if the addresses are correct and accessible by road</li>
+                <li>Check for geographic restrictions or ferry connections</li>
+                <li>Consider suggesting hourly booking or special request options</li>
+                <li>Contact customer to discuss alternative routes or meeting points</li>
+              ` : `
+                <li>Check Google Maps API status and quotas</li>
+                <li>Verify API keys and billing account status</li>
+                <li>Monitor for service restoration</li>
+                <li>Consider implementing backup routing service</li>
+              `}
+            </ul>
+          </div>
+
+          <div style="text-align: center; color: #ccc; margin-top: 32px;">
+            <p>This is an automated notification from the Elite Way Limo booking system.</p>
+            <p>Please investigate and take appropriate action if needed.</p>
+          </div>
+        </div>
+        <div class="footer">
+          <p>© ${new Date().getFullYear()} Elite Way Limo - Route Error Monitoring System</p>
+        </div>
+      </div>
+    </body>
+    </html>
+  `;
+
+  // Generate plain text version
+  const textContent = `
+ROUTE CALCULATION ERROR ALERT
+
+Error Details:
+- Error Type: ${errorTypeText}
+- Timestamp: ${timestamp} (Swiss Time)
+${routeErrorInfo.errorMessage ? `- Technical Error: ${routeErrorInfo.errorMessage}` : ''}
+
+Customer Booking Details:
+- Pickup Location: ${routeErrorInfo.pickup || 'Not specified'}
+- Dropoff Location: ${routeErrorInfo.dropoff || 'Not specified'}
+- Date: ${formatDate(routeErrorInfo.date)}
+- Time: ${routeErrorInfo.time} (Swiss Time)
+
+Recommended Actions:
+${routeErrorInfo.errorType === 'no_route_found' ? `
+- Verify if the addresses are correct and accessible by road
+- Check for geographic restrictions or ferry connections
+- Consider suggesting hourly booking or special request options
+- Contact customer to discuss alternative routes or meeting points
+` : `
+- Check Google Maps API status and quotas
+- Verify API keys and billing account status
+- Monitor for service restoration
+- Consider implementing backup routing service
+`}
+
+This is an automated notification from the Elite Way Limo booking system.
+Please investigate and take appropriate action if needed.
+
+Best regards,
+Elite Way Limo System
+`.trim();
+
+  return {
+    text: textContent,
+    html: htmlContent
+  };
+};
+
+/**
  * Generate email content for admin notifications
  * @param {Object} reservationInfo - Reservation details
  * @returns {Object} - Email content with text and HTML versions
@@ -556,6 +715,7 @@ module.exports = {
   sendToCustomer,
   sendPaymentConfirmationToAdmin,
   sendPaymentReceiptToCustomer,
+  sendRouteErrorToAdmin,
   generateEmailContent,
   sendEmail
 };

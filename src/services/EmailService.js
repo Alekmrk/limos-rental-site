@@ -2,8 +2,8 @@
 
 // API base URL - dynamically set based on environment
 const API_BASE_URL = import.meta.env.PROD 
-  ? 'https://limos-rental-api.azurewebsites.net/api/email'
-  : 'http://localhost:5000/api/email';
+  ? 'https://api.elitewaylimo.ch/api/email'  // Updated to match your actual production domain
+  : 'http://localhost:3001/api/email';       // Updated to match your backend port
 
 /**
  * Prepares reservation data for sending by removing large unnecessary fields

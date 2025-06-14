@@ -26,9 +26,7 @@
     },
     {
       "route": "/api/*",
-      "headers": {
-        "Cache-Control": "no-cache, no-store, must-revalidate"
-      }
+      "rewrite": "https://api.elitewaylimo.ch/api/*"
     },
     {
       "route": "/*",

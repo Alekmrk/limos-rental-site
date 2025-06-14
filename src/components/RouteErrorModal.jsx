@@ -1,8 +1,50 @@
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
 import ReservationContext from '../contexts/ReservationContext';
+
+// API base URL - use relative URLs in production to work with Azure Static Web Apps proxy
+const API_BASE_URL = import.meta.env.PROD 
+  ? '/api/email'  // Production: relative URL (proxied to api.elitewaylimo.ch)
+  : 'http://localhost:3001/api/email';
 
 const RouteErrorModal = ({ isOpen, onClose, errorType, onSwitchToHourly, onSwitchToSpecial }) => {
   const { reservationInfo } = useContext(ReservationContext);
+
+  // Send route error notification to admin when modal opens
+  useEffect(() => {
+    if (isOpen && errorType && reservationInfo.pickup && reservationInfo.dropoff) {
+      sendRouteErrorNotification();
+    }
+  }, [isOpen, errorType, reservationInfo.pickup, reservationInfo.dropoff]);
+
+  const sendRouteErrorNotification = async () => {
+    try {
+      const routeErrorInfo = {
+        errorType,
+        pickup: reservationInfo.pickup,
+        dropoff: reservationInfo.dropoff,
+        date: reservationInfo.date,
+        time: reservationInfo.time,
+        errorMessage: errorType === 'api_error' ? 'Google Maps API service unavailable' : undefined
+      };
+
+      const response = await fetch(`${API_BASE_URL}/route-error`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ routeErrorInfo }),
+      });
+
+      if (response.ok) {
+        console.log('Route error notification sent to admin');
+      } else {
+        console.error('Failed to send route error notification');
+      }
+    } catch (error) {
+      console.error('Error sending route error notification:', error);
+      // Silent failure - don't show error to user
+    }
+  };
 
   if (!isOpen) return null;
 

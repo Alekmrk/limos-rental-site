@@ -449,4 +449,53 @@ router.post('/calendar/create', async (req, res) => {
   }
 });
 
+/**
+ * @route   POST /api/email/route-error
+ * @desc    Send route error notification to admin
+ * @access  Public
+ */
+router.post('/route-error', async (req, res) => {
+  try {
+    const { routeErrorInfo } = req.body;
+    
+    if (!routeErrorInfo) {
+      return res.status(400).json({ 
+        success: false, 
+        message: 'Route error information is required' 
+      });
+    }
+
+    // Validate required fields
+    if (!routeErrorInfo.errorType || !routeErrorInfo.pickup || !routeErrorInfo.dropoff) {
+      return res.status(400).json({ 
+        success: false, 
+        message: 'Missing required fields: errorType, pickup, dropoff' 
+      });
+    }
+
+    console.log('Sending route error notification to admin:', {
+      errorType: routeErrorInfo.errorType,
+      pickup: routeErrorInfo.pickup,
+      dropoff: routeErrorInfo.dropoff,
+      timestamp: new Date().toISOString()
+    });
+
+    // Send email to admin
+    const adminEmailResult = await emailService.sendRouteErrorToAdmin(routeErrorInfo);
+
+    res.status(200).json({
+      success: true,
+      message: 'Route error notification sent to admin',
+      adminEmail: adminEmailResult
+    });
+  } catch (error) {
+    console.error('Error sending route error notification:', error);
+    res.status(500).json({ 
+      success: false, 
+      message: 'Failed to send route error notification', 
+      error: error.message 
+    });
+  }
+});
+
 module.exports = router;
