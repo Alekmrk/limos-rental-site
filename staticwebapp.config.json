@@ -25,6 +25,11 @@
       }
     },
     {
+      "route": "/api/email/route-error",
+      "methods": ["POST", "OPTIONS"],
+      "rewrite": "https://api.elitewaylimo.ch/api/email/route-error"
+    },
+    {
       "route": "/api/*",
       "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
       "rewrite": "https://api.elitewaylimo.ch/api/*"

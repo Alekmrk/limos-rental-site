@@ -1,10 +1,10 @@
 import { useContext, useEffect } from 'react';
 import ReservationContext from '../contexts/ReservationContext';
 
-// API base URL - use relative URLs in production to work with Azure Static Web Apps proxy
+// API base URL - call backend directly in production to avoid Azure Static Web Apps limitations
 const API_BASE_URL = import.meta.env.PROD 
-  ? '/api/email'  // Production: relative URL (proxied to api.elitewaylimo.ch)
-  : 'http://localhost:3001/api/email';
+  ? 'https://api.elitewaylimo.ch/api/email'  // Production: direct call to backend
+  : 'http://localhost:3001/api/email';       // Development: local backend
 
 const RouteErrorModal = ({ isOpen, onClose, errorType, onSwitchToHourly, onSwitchToSpecial }) => {
   const { reservationInfo } = useContext(ReservationContext);
