@@ -443,6 +443,29 @@ const ReservationCard = () => {
     setShowRouteErrorModal(false);
   };
 
+  // TEMPORARY: Test trigger for route error modal
+  useEffect(() => {
+    const handleKeyPress = (e) => {
+      // Press Ctrl+Shift+E to test "no_route_found" error
+      if (e.ctrlKey && e.shiftKey && e.key === 'E') {
+        e.preventDefault();
+        console.log('🧪 TEST: Triggering no_route_found error modal');
+        setRouteErrorType('no_route_found');
+        setShowRouteErrorModal(true);
+      }
+      // Press Ctrl+Shift+A to test "api_error" 
+      if (e.ctrlKey && e.shiftKey && e.key === 'A') {
+        e.preventDefault();
+        console.log('🧪 TEST: Triggering api_error modal');
+        setRouteErrorType('api_error');
+        setShowRouteErrorModal(true);
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyPress);
+    return () => document.removeEventListener('keydown', handleKeyPress);
+  }, []);
+
   if (!isLoaded) {
     return <div>Loading...</div>;
   }
