@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import ReservationContext from "../../../contexts/ReservationContext";
 import TimeInput from "../../../components/TimeInput";
 import DateInput from "../../../components/DateInput";
+import RouteErrorModal from "../../../components/RouteErrorModal";
 import { validateAddresses } from "../../../services/GoogleMapsService";
 import { useGoogleMapsApi } from "../../../hooks/useGoogleMapsApi";
 import { DateTime } from 'luxon';
@@ -21,6 +22,8 @@ const ReservationCard = () => {
   const [errors, setErrors] = useState({});
   const [pickupInput, setPickupInput] = useState(reservationInfo.pickup || "");
   const [dropoffInput, setDropoffInput] = useState(reservationInfo.dropoff || "");
+  const [showRouteErrorModal, setShowRouteErrorModal] = useState(false);
+  const [routeErrorType, setRouteErrorType] = useState(null);
 
   // Debug logging refs
   const debugRef = useRef({
@@ -342,6 +345,29 @@ const ReservationCard = () => {
     });
 
     if (isValid) {
+      // For distance mode, check if route calculation failed
+      if (!reservationInfo.isHourly && !reservationInfo.isSpecialRequest) {
+        console.log('🗺️ Checking route calculation status for distance mode...');
+        
+        if (reservationInfo.routeInfo === null) {
+          // API error - Google services down
+          console.log('❌ Route calculation failed due to API error');
+          setRouteErrorType('api_error');
+          setShowRouteErrorModal(true);
+          console.groupEnd();
+          return;
+        } else if (reservationInfo.routeInfo?.noRouteFound) {
+          // No route exists between locations
+          console.log('❌ No route found between locations');
+          setRouteErrorType('no_route_found');
+          setShowRouteErrorModal(true);
+          console.groupEnd();
+          return;
+        }
+        
+        console.log('✅ Route calculation successful - proceeding with navigation');
+      }
+      
       console.log('✅ Form valid - navigating...');
       if (reservationInfo.isSpecialRequest) {
         console.log('🎯 Navigating to customer-details (special request)');
@@ -402,6 +428,19 @@ const ReservationCard = () => {
       console.log('🧹 Cleared dropoff error, new errors:', newErrors);
       return newErrors;
     });
+  };
+
+  // Modal action handlers
+  const handleSwitchToHourly = () => {
+    console.log('🔄 Switching to hourly mode from route error modal');
+    setIsHourly(true);
+    setShowRouteErrorModal(false);
+  };
+
+  const handleSwitchToSpecial = () => {
+    console.log('🔄 Switching to special request mode from route error modal');
+    setIsSpecialRequest(true);
+    setShowRouteErrorModal(false);
   };
 
   if (!isLoaded) {
@@ -694,6 +733,15 @@ const ReservationCard = () => {
             </div>
           </div>
         </div>
+
+        {/* Route error modal */}
+        <RouteErrorModal 
+          isOpen={showRouteErrorModal} 
+          onClose={() => setShowRouteErrorModal(false)} 
+          errorType={routeErrorType}
+          onSwitchToHourly={handleSwitchToHourly}
+          onSwitchToSpecial={handleSwitchToSpecial}
+        />
       </div>
     </form>
   );
