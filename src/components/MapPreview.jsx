@@ -2,13 +2,22 @@ import { useEffect, useRef, useState } from 'react';
 import { useRouteCalculation } from '../hooks/useRouteCalculation';
 import { useGoogleMapsApi } from '../hooks/useGoogleMapsApi';
 
-const MapPreview = ({ origin, destination, extraStops = [], onRouteCalculated }) => {
+const MapPreview = ({ origin, destination, extraStops = [], onRouteCalculated, routeInfo: preCalculatedRoute }) => {
   const mapRef = useRef(null);
   const [map, setMap] = useState(null);
   const [directionsRenderer, setDirectionsRenderer] = useState(null);
   const { isLoaded } = useGoogleMapsApi();
   const [directionsServiceAvailable, setDirectionsServiceAvailable] = useState(false);
-  const { routeInfo, isCalculating, error } = useRouteCalculation(origin, destination, extraStops);
+  
+  // Only use useRouteCalculation if no pre-calculated route is provided
+  const { routeInfo: hookRouteInfo, isCalculating, error } = useRouteCalculation(
+    preCalculatedRoute ? null : origin, 
+    preCalculatedRoute ? null : destination, 
+    preCalculatedRoute ? [] : extraStops
+  );
+  
+  // Use pre-calculated route if available, otherwise use hook result
+  const routeInfo = preCalculatedRoute || hookRouteInfo;
   const mapInitializedRef = useRef(false);
   const directionsRendererRef = useRef(null);
   const hourlyMarkerRef = useRef(null);

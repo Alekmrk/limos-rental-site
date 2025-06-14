@@ -89,6 +89,10 @@ export const calculateRoute = async (origin, destination, extraStops = []) => {
             } else if (status === 'OVER_QUERY_LIMIT' && retryCount < maxRetries) {
               retryCount++;
               setTimeout(tryCalculateRoute, 1000 * retryCount); // Exponential backoff
+            } else if (status === 'ZERO_RESULTS') {
+              // Handle the case where no route can be found
+              console.warn(`No route found between ${origin} and ${destination || origin}`);
+              resolve(null); // Return null instead of rejecting
             } else {
               reject(new Error(status === 'OVER_QUERY_LIMIT' 
                 ? 'Rate limit exceeded. Please try again in a few moments.'
@@ -99,6 +103,26 @@ export const calculateRoute = async (origin, destination, extraStops = []) => {
 
         tryCalculateRoute();
       });
+
+      // If no route was found, return a default response
+      if (!result) {
+        const defaultRouteInfo = {
+          route: null,
+          distance: 'Unable to calculate',
+          duration: 'Unable to calculate',
+          distanceValue: 0,
+          durationValue: 0,
+          waypoints: [],
+          noRouteFound: true
+        };
+
+        console.log('📍 No route found - returning default info:', defaultRouteInfo);
+        
+        // Cache the result even if no route found to avoid repeated API calls
+        cacheService.cacheRoute(origin, destination, extraStops, defaultRouteInfo);
+        
+        return defaultRouteInfo;
+      }
 
       // Calculate total distance and duration across all legs
       const totalDistance = result.routes[0].legs.reduce((acc, leg) => acc + leg.distance.value, 0);

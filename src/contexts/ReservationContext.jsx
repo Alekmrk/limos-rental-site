@@ -49,68 +49,138 @@ export const ReservationContextProvider = ({ children }) => {
 
   const handleInput = async (e) => {
     const { name, value } = e.target;
-    setReservationInfo(prev => ({
-      ...prev,
-      [name]: value
-    }));
+    
+    console.log('🔄 [ReservationContext] handleInput called:', {
+      field: name,
+      value: value,
+      hasPlaceInfo: !!e.target.placeInfo,
+      placeInfo: e.target.placeInfo
+    });
+    
+    setReservationInfo(prev => {
+      const newInfo = {
+        ...prev,
+        [name]: value
+      };
+      
+      console.log('📊 [ReservationContext] State update:', {
+        field: name,
+        oldValue: prev[name],
+        newValue: value,
+        fullNewState: newInfo
+      });
+      
+      return newInfo;
+    });
   };
 
   const handlePlaceSelection = async (type, placeInfo) => {
+    console.group(`📍 [ReservationContext] Place selection: ${type}`);
+    console.log('Place info received:', placeInfo);
+    
     let newReservationInfo = { ...reservationInfo };
 
     switch (type) {
       case 'pickup':
+        console.log('🚗 Setting pickup location');
         newReservationInfo.pickup = placeInfo.formattedAddress;
         newReservationInfo.pickupPlaceInfo = placeInfo;
         newReservationInfo.pickupDetails = placeInfo;
         break;
       case 'dropoff':
+        console.log('🏁 Setting dropoff location');
         newReservationInfo.dropoff = placeInfo.formattedAddress;
         newReservationInfo.dropoffPlaceInfo = placeInfo;
         newReservationInfo.dropoffDetails = placeInfo;
         break;
-      case 'route':
-        // Just update route info without recalculating
-        setReservationInfo(prev => ({
-          ...prev,
-          routeInfo: placeInfo.routeInfo,
-          distance: placeInfo.routeInfo?.distance || '',
-          duration: placeInfo.routeInfo?.duration || '',
-          optimizedWaypoints: placeInfo.routeInfo?.waypoints || null,
-          totalDistance: placeInfo.routeInfo?.distanceValue || 0,
-          totalDuration: placeInfo.routeInfo?.durationValue || 0
-        }));
-        return;
       default:
-        break;
+        console.log('⚠️ Unknown place selection type:', type);
+        console.groupEnd();
+        return;
     }
 
-    // Update state
+    console.log('📊 Updated reservation info:', newReservationInfo);
     setReservationInfo(newReservationInfo);
 
-    // Calculate route if we have both pickup and dropoff
-    if (!reservationInfo.isHourly && newReservationInfo.pickup && newReservationInfo.dropoff) {
+    // Calculate route if we have pickup and dropoff for distance mode
+    if (!reservationInfo.isHourly && 
+        newReservationInfo.pickup && 
+        newReservationInfo.dropoff && 
+        type !== 'route') {
+      console.log('🗺️ Triggering route calculation...');
+      console.log('📍 Route calculation inputs:', {
+        pickupDisplay: newReservationInfo.pickup,
+        dropoffDisplay: newReservationInfo.dropoff,
+        pickupPlaceInfo: newReservationInfo.pickupPlaceInfo,
+        dropoffPlaceInfo: newReservationInfo.dropoffPlaceInfo
+      });
+      
       try {
+        // Use routing addresses (full formatted addresses) for more reliable international routing
+        const originData = newReservationInfo.pickupPlaceInfo?.routingAddress || 
+                          newReservationInfo.pickupPlaceInfo?.formattedAddress || 
+                          newReservationInfo.pickup;
+        const destinationData = newReservationInfo.dropoffPlaceInfo?.routingAddress || 
+                               newReservationInfo.dropoffPlaceInfo?.formattedAddress || 
+                               newReservationInfo.dropoff;
+        
+        console.log('🎯 Using full addresses for routing:', {
+          origin: originData,
+          destination: destinationData,
+          pickupRouting: newReservationInfo.pickupPlaceInfo?.routingAddress,
+          dropoffRouting: newReservationInfo.dropoffPlaceInfo?.routingAddress
+        });
+        
         const route = await calculateRoute(
-          newReservationInfo.pickup,
-          newReservationInfo.dropoff,
+          originData,
+          destinationData,
           newReservationInfo.extraStops || []
         );
         
+        console.log('✅ Route calculated:', route);
+        
+        if (route.noRouteFound) {
+          console.log('⚠️ No route found between locations - proceeding without route info');
+          setReservationInfo(prev => ({
+            ...prev,
+            [`${type}Details`]: placeInfo,
+            routeInfo: route,
+            distance: 'Route not available',
+            duration: 'Route not available',
+            totalDistance: 0,
+            totalDuration: 0,
+            optimizedWaypoints: []
+          }));
+        } else {
+          setReservationInfo(prev => ({
+            ...prev,
+            [`${type}Details`]: placeInfo,
+            routeInfo: route,
+            distance: route.distance,
+            duration: route.duration,
+            totalDistance: route.distanceValue,
+            totalDuration: route.durationValue,
+            optimizedWaypoints: route.waypoints
+          }));
+        }
+      } catch (error) {
+        console.error('💥 Error calculating route:', error);
+        // Don't block the form submission if route calculation fails
+        console.log('🔄 Proceeding without route calculation due to error');
         setReservationInfo(prev => ({
           ...prev,
           [`${type}Details`]: placeInfo,
-          routeInfo: route,
-          distance: route.distance,
-          duration: route.duration,
-          totalDistance: route.distanceValue,
-          totalDuration: route.durationValue,
-          optimizedWaypoints: route.waypoints
+          routeInfo: null,
+          distance: 'Unable to calculate',
+          duration: 'Unable to calculate',
+          totalDistance: 0,
+          totalDuration: 0,
+          optimizedWaypoints: []
         }));
-      } catch (error) {
-        console.error('Error calculating route:', error);
       }
     }
+    
+    console.groupEnd();
   };
 
   // Memoize handlers to prevent unnecessary rerenders

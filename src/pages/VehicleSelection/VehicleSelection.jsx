@@ -272,6 +272,7 @@ const VehicleSelection = ({ scrollUp }) => {
               origin={reservationInfo.pickup}
               destination={!reservationInfo.isHourly ? reservationInfo.dropoff : null}
               extraStops={!reservationInfo.isHourly ? reservationInfo.extraStops : []}
+              routeInfo={reservationInfo.routeInfo}
             />
           )}
         </div>

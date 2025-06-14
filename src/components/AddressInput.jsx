@@ -12,8 +12,20 @@ const AddressInput = ({ value, onChange, name, placeholder, onPlaceSelected, cla
   const observerRef = useRef(null);
   const typingTimeoutRef = useRef(null);
 
+  // Debug logging
+  const debugRef = useRef({
+    inputChanges: 0,
+    placeSelections: 0,
+    lastAction: null
+  });
+
   const setupAutocomplete = useCallback(() => {
-    if (!window.google || !inputRef.current) return;
+    console.log('🔧 [AddressInput] Setting up autocomplete for field:', name);
+    
+    if (!window.google || !inputRef.current) {
+      console.log('⚠️ [AddressInput] Google Maps or input ref not available');
+      return;
+    }
 
     if (autocompleteRef.current) {
       window.google.maps.event.clearInstanceListeners(autocompleteRef.current);
@@ -53,15 +65,24 @@ const AddressInput = ({ value, onChange, name, placeholder, onPlaceSelected, cla
     }
 
     autocompleteRef.current.addListener("place_changed", () => {
+      debugRef.current.placeSelections++;
+      const selectionId = `selection-${Date.now()}-${debugRef.current.placeSelections}`;
+      
+      console.group(`📍 [${selectionId}] Place selection for field: ${name}`);
+      
       const place = autocompleteRef.current.getPlace();
       isSelectingRef.current = true;
       setError(null);
       setIsTyping(false);
 
+      console.log('📊 Place object:', place);
+
       if (!place.geometry) {
+        console.log('❌ No geometry found - invalid place');
         setError("Please select a location from the suggestions");
         isSelectingRef.current = false;
         setIsLocationSelected(false);
+        console.groupEnd();
         return;
       }
 
@@ -70,11 +91,9 @@ const AddressInput = ({ value, onChange, name, placeholder, onPlaceSelected, cla
       );
 
       const isSwiss = countryComponent?.short_name === "CH";
-      const isSpecialLocation = place.types?.some(type => 
-        ['airport', 'train_station', 'transit_station', 'premise', 'point_of_interest'].includes(type)
-      );
-
-      const displayName = isSpecialLocation ? place.name : place.formatted_address;
+      
+      // Always use the full formatted address for consistency
+      const displayName = place.formatted_address;
 
       const placeInfo = {
         formattedAddress: displayName,
@@ -89,8 +108,16 @@ const AddressInput = ({ value, onChange, name, placeholder, onPlaceSelected, cla
         isConfirmed: true
       };
 
+      console.log('✅ Valid place selected:', {
+        displayName,
+        isSwiss,
+        placeInfo,
+        alwaysUsingFullAddress: true
+      });
+
       lastSelectedRef.current = displayName;
       setIsLocationSelected(true);
+      debugRef.current.lastAction = { type: 'place_selected', timestamp: Date.now(), placeInfo };
 
       // Call onChange with both the displayName and placeInfo
       onChange({
@@ -107,6 +134,8 @@ const AddressInput = ({ value, onChange, name, placeholder, onPlaceSelected, cla
 
       sessionTokenRef.current = new window.google.maps.places.AutocompleteSessionToken();
       isSelectingRef.current = false;
+      
+      console.groupEnd();
     });
   }, [name, onChange, onPlaceSelected]);
 
@@ -193,7 +222,20 @@ const AddressInput = ({ value, onChange, name, placeholder, onPlaceSelected, cla
   }, [value]);
 
   const handleInputChange = useCallback((e) => {
+    debugRef.current.inputChanges++;
+    const changeId = `input-${Date.now()}-${debugRef.current.inputChanges}`;
+    
+    console.group(`⌨️ [${changeId}] Input change for field: ${name}`);
+    
     const newValue = e.target.value;
+    console.log('📝 Input details:', {
+      newValue,
+      previousValue: value,
+      isSelecting: isSelectingRef.current,
+      lastSelected: lastSelectedRef.current,
+      isLocationSelected
+    });
+    
     setIsTyping(true);
     
     // Clear any existing typing timeout
@@ -202,6 +244,9 @@ const AddressInput = ({ value, onChange, name, placeholder, onPlaceSelected, cla
     }
 
     if (!isSelectingRef.current) {
+      console.log('🔄 Triggering onChange with manual input');
+      debugRef.current.lastAction = { type: 'manual_input', timestamp: Date.now(), value: newValue };
+      
       onChange({
         target: {
           name,
@@ -214,9 +259,12 @@ const AddressInput = ({ value, onChange, name, placeholder, onPlaceSelected, cla
       });
       setError(null);
       setIsLocationSelected(false);
+    } else {
+      console.log('⏭️ Skipping onChange - place selection in progress');
     }
 
     if (!newValue) {
+      console.log('🧹 Empty value - clearing selections');
       lastSelectedRef.current = null;
       isSelectingRef.current = false;
       setIsLocationSelected(false);
@@ -225,20 +273,39 @@ const AddressInput = ({ value, onChange, name, placeholder, onPlaceSelected, cla
 
     // Set a timeout to clear the typing state
     typingTimeoutRef.current = setTimeout(() => {
+      console.log('⏰ Typing timeout - clearing typing state');
       setIsTyping(false);
     }, 1000);
-  }, [onChange, name]);
+    
+    console.groupEnd();
+  }, [onChange, name, value, isLocationSelected]);
 
   const handleKeyDown = (e) => {
+    console.log('⌨️ [AddressInput] Key pressed:', {
+      key: e.key,
+      field: name,
+      currentValue: value
+    });
+    
     // Get the active element
     const pacContainer = document.querySelector('.pac-container');
     const hasSuggestions = pacContainer && pacContainer.children.length > 0;
-
+    
+    console.log('🔍 Suggestions state:', {
+      hasSuggestions,
+      pacContainerExists: !!pacContainer,
+      suggestionsCount: pacContainer?.children?.length || 0
+    });
+    
     if (e.key === 'Enter') {
+      console.log('🔄 Enter key pressed');
       // Only prevent form submission if there are no suggestions
       // This allows the Google Places Autocomplete to handle selection on Enter
       if (!hasSuggestions) {
+        console.log('🛑 Preventing form submission - no suggestions available');
         e.preventDefault();
+      } else {
+        console.log('✅ Allowing autocomplete to handle Enter');
       }
     }
   };

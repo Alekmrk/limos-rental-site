@@ -22,6 +22,13 @@ const ReservationCard = () => {
   const [pickupInput, setPickupInput] = useState(reservationInfo.pickup || "");
   const [dropoffInput, setDropoffInput] = useState(reservationInfo.dropoff || "");
 
+  // Debug logging refs
+  const debugRef = useRef({
+    formSubmissions: 0,
+    validationAttempts: 0,
+    lastValidationResult: null
+  });
+
   const pickupRef = useRef(null);
   const dropoffRef = useRef(null);
   const pickupAutocomplete = useRef(null);
@@ -63,20 +70,38 @@ const ReservationCard = () => {
         // Clear error when place is selected
         setErrors(prev => ({ ...prev, [type]: undefined }));
         const place = autocompleteRef.current.getPlace();
+        
+        // Debug logging to see what Google returns
+        console.log(`🔍 [${type}] Google Place Selection Debug:`, {
+          userTyped: inputRef.current.value,
+          placeName: place.name,
+          formattedAddress: place.formatted_address,
+          types: place.types,
+          placeId: place.place_id
+        });
+        
         if (place.geometry) {
           const countryComponent = place.address_components?.find(
             component => component.types.includes("country")
           );
 
           const isSwiss = countryComponent?.short_name === "CH";
-          const isSpecialLocation = place.types?.some(type => 
-            ['airport', 'train_station', 'transit_station', 'premise', 'point_of_interest'].includes(type)
-          );
-
-          const displayName = isSpecialLocation ? place.name : place.formatted_address;
+          
+          // Always use the full formatted address - no more shortened names
+          const displayName = place.formatted_address;
+          const routingAddress = place.formatted_address;
+          
+          console.log(`📍 [${type}] Final display decision:`, {
+            selectedDisplayName: displayName,
+            routingAddress: routingAddress,
+            originalName: place.name,
+            formattedAddress: place.formatted_address,
+            alwaysUsingFullAddress: true
+          });
 
           handlePlaceSelection(type, {
             formattedAddress: displayName,
+            routingAddress: routingAddress,
             location: {
               lat: place.geometry.location.lat(),
               lng: place.geometry.location.lng()
@@ -120,7 +145,16 @@ const ReservationCard = () => {
     setDropoffInput(reservationInfo.dropoff || "");
   }, [reservationInfo.dropoff]);
 
+  // Debug logging for mode changes
   const handleModeChange = (mode) => {
+    console.log('🔄 Mode change:', {
+      newMode: mode,
+      previousMode: {
+        isHourly: reservationInfo.isHourly,
+        isSpecialRequest: reservationInfo.isSpecialRequest
+      }
+    });
+    
     // Clear all errors when switching modes
     setErrors({});
     
@@ -145,11 +179,31 @@ const ReservationCard = () => {
   };
 
   const validateForm = async () => {
+    debugRef.current.validationAttempts++;
+    const validationId = `validation-${Date.now()}-${debugRef.current.validationAttempts}`;
+    
+    console.group(`🔍 [${validationId}] Form Validation Started`);
+    console.log('📊 Validation Context:', {
+      isSpecialRequest: reservationInfo.isSpecialRequest,
+      isHourly: reservationInfo.isHourly,
+      pickupInput: pickupInput,
+      dropoffInput: dropoffInput,
+      reservationPickup: reservationInfo.pickup,
+      reservationDropoff: reservationInfo.dropoff,
+      pickupPlaceInfo: reservationInfo.pickupPlaceInfo,
+      dropoffPlaceInfo: reservationInfo.dropoffPlaceInfo,
+      date: reservationInfo.date,
+      time: reservationInfo.time,
+      hours: reservationInfo.hours
+    });
+
     const newErrors = {};
     
     // Date and time validation
+    console.log('📅 Validating date and time...');
     if (!reservationInfo.date) {
       newErrors.date = "Date is required";
+      console.log('❌ Date validation failed: Date is required');
     } else {
       // Use luxon for Swiss time comparison
       const selectedDate = DateTime.fromFormat(reservationInfo.date, 'yyyy-MM-dd', { zone: 'Europe/Zurich' });
@@ -158,7 +212,9 @@ const ReservationCard = () => {
       const swissNowStart = swissNow.startOf('day');
       if (selectedDateStart < swissNowStart) {
         newErrors.date = "Date cannot be in the past";
+        console.log('❌ Date validation failed: Date in the past');
       }
+
       // If date is today, check if time is at least 3 hours in advance
       if (reservationInfo.time && selectedDateStart.equals(swissNowStart)) {
         const [hours, minutes] = reservationInfo.time.split(':').map(Number);
@@ -166,23 +222,35 @@ const ReservationCard = () => {
         const minAllowedTime = swissNow.plus({ hours: 3 });
         if (selectedTime < minAllowedTime) {
           newErrors.time = "Must book 3h in advance";
+          console.log('❌ Time validation failed: Less than 3 hours in advance');
         }
       }
     }
     
     if (!reservationInfo.time) {
       newErrors.time = "Time is required";
+      console.log('❌ Time validation failed: Time is required');
     }
 
     if (!reservationInfo.isSpecialRequest) {
-      if (!pickupRef.current.value) newErrors.pickup = "Pick up location is required";
+      console.log('🚗 Validating non-special request fields...');
+      
+      // Location validation
+      if (!pickupRef.current.value) {
+        newErrors.pickup = "Pick up location is required";
+        console.log('❌ Pickup validation failed: No pickup location');
+      }
+      
       if (!reservationInfo.isHourly && !dropoffRef.current.value) {
         newErrors.dropoff = "Drop off location is required";
+        console.log('❌ Dropoff validation failed: No dropoff location');
       }
+      
       if (reservationInfo.isHourly) {
         const hours = parseInt(reservationInfo.hours) || 0;
         if (hours < 2 || hours > 24) {
           newErrors.hours = "Hours must be between 2 and 24";
+          console.log('❌ Hours validation failed:', hours);
         }
       }
 
@@ -190,67 +258,150 @@ const ReservationCard = () => {
       const hasPickupValue = pickupRef.current?.value?.trim();
       const hasDropoffValue = !reservationInfo.isHourly ? dropoffRef.current?.value?.trim() : null;
       
+      console.log('🇨🇭 Switzerland validation check:', {
+        hasPickupValue,
+        hasDropoffValue,
+        hasPickupPlaceInfo: !!reservationInfo.pickupPlaceInfo,
+        hasDropoffPlaceInfo: !!reservationInfo.dropoffPlaceInfo
+      });
+      
       if (hasPickupValue || hasDropoffValue) {
-        // If we have autocomplete data (distance mode), use the existing validation
-        if (reservationInfo.pickupPlaceInfo || reservationInfo.dropoffPlaceInfo) {
+        // First check: require autocomplete selection for any typed locations
+        if (hasPickupValue && !reservationInfo.pickupPlaceInfo) {
+          newErrors.pickup = "Please select a location from the suggestions";
+          console.log('❌ Pickup place info missing');
+        }
+        if (hasDropoffValue && !reservationInfo.dropoffPlaceInfo) {
+          newErrors.dropoff = "Please select a location from the suggestions";
+          console.log('❌ Dropoff place info missing');
+        }
+        
+        // Second check: if we have both place infos, validate Switzerland requirement
+        if (reservationInfo.pickupPlaceInfo && (!reservationInfo.isHourly ? reservationInfo.dropoffPlaceInfo : true)) {
+          console.log('🔄 Using address validation service...');
           try {
             const validation = await validateAddresses(
               reservationInfo.pickupPlaceInfo,
               reservationInfo.dropoffPlaceInfo
             );
+            console.log('📍 Address validation result:', validation);
             if (!validation.isValid) {
               newErrors.pickup = validation.error;
+              console.log('❌ Address validation failed:', validation.error);
             }
           } catch (error) {
-            console.error('Error validating addresses:', error);
+            console.error('💥 Error validating addresses:', error);
             newErrors.pickup = "Error validating addresses. Please try again.";
-          }
-        } else {
-          // For hourly mode or when autocomplete data is missing, do basic Switzerland check
-          // This is a simplified check - if the user typed locations but we don't have place info,
-          // we require them to select from autocomplete suggestions
-          if (hasPickupValue && !reservationInfo.pickupPlaceInfo) {
-            newErrors.pickup = "Please select a location from the suggestions";
-          }
-          if (hasDropoffValue && !reservationInfo.dropoffPlaceInfo) {
-            newErrors.dropoff = "Please select a location from the suggestions";
           }
         }
       }
     }
 
+    console.log('📋 Final validation errors:', newErrors);
     setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+    
+    const isValid = Object.keys(newErrors).length === 0;
+    debugRef.current.lastValidationResult = { isValid, errors: newErrors, timestamp: Date.now() };
+    
+    console.log(`✅ Validation ${isValid ? 'PASSED' : 'FAILED'}`);
+    console.groupEnd();
+    
+    return isValid;
+  };
+
+  const handleSubmit = async (e) => {
+    debugRef.current.formSubmissions++;
+    const submissionId = `submission-${Date.now()}-${debugRef.current.formSubmissions}`;
+    
+    console.group(`🚀 [${submissionId}] Form Submission Started`);
+    console.log('📝 Form submission event:', e);
+    console.log('🎯 preventDefault called');
+    e.preventDefault();
+    
+    console.log('📊 Pre-validation state:', {
+      pickupInput,
+      dropoffInput,
+      reservationInfo: {
+        pickup: reservationInfo.pickup,
+        dropoff: reservationInfo.dropoff,
+        pickupPlaceInfo: reservationInfo.pickupPlaceInfo,
+        dropoffPlaceInfo: reservationInfo.dropoffPlaceInfo,
+        isSpecialRequest: reservationInfo.isSpecialRequest,
+        isHourly: reservationInfo.isHourly
+      },
+      currentErrors: errors
+    });
+    
+    console.log('🔄 Calling validateForm...');
+    const isValid = await validateForm();
+    
+    console.log('📊 Post-validation state:', {
+      isValid,
+      lastValidationResult: debugRef.current.lastValidationResult,
+      willNavigate: isValid
+    });
+
+    if (isValid) {
+      console.log('✅ Form valid - navigating...');
+      if (reservationInfo.isSpecialRequest) {
+        console.log('🎯 Navigating to customer-details (special request)');
+        navigate('/customer-details');
+      } else {
+        console.log('🎯 Navigating to vehicle-selection');
+        navigate('/vehicle-selection');
+      }
+    } else {
+      console.log('❌ Form invalid - staying on page');
+      console.log('🔧 Current errors that prevent submission:', debugRef.current.lastValidationResult?.errors);
+    }
+    
+    console.groupEnd();
   };
 
   const handleInput = (e) => {
+    console.log('📝 Input change:', {
+      field: e.target.name,
+      value: e.target.value,
+      previousErrors: errors
+    });
+    
     // Clear error for the field being typed in
-    setErrors(prev => ({ ...prev, [e.target.name]: undefined }));
+    setErrors(prev => {
+      const newErrors = { ...prev, [e.target.name]: undefined };
+      console.log('🧹 Cleared error for field:', e.target.name, 'New errors:', newErrors);
+      return newErrors;
+    });
     originalHandleInput(e);
   };
 
   const handlePickupInput = (e) => {
+    console.log('📍 Pickup input change:', {
+      value: e.target.value,
+      previousPickupInput: pickupInput,
+      hasPlaceInfo: !!reservationInfo.pickupPlaceInfo
+    });
+    
     setPickupInput(e.target.value);
-    setErrors(prev => ({ ...prev, pickup: undefined }));
+    setErrors(prev => {
+      const newErrors = { ...prev, pickup: undefined };
+      console.log('🧹 Cleared pickup error, new errors:', newErrors);
+      return newErrors;
+    });
   };
 
   const handleDropoffInput = (e) => {
-    setDropoffInput(e.target.value);
-    setErrors(prev => ({ ...prev, dropoff: undefined }));
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+    console.log('📍 Dropoff input change:', {
+      value: e.target.value,
+      previousDropoffInput: dropoffInput,
+      hasPlaceInfo: !!reservationInfo.dropoffPlaceInfo
+    });
     
-    const isValid = await validateForm();
-
-    if (isValid) {
-      if (reservationInfo.isSpecialRequest) {
-        navigate('/customer-details');
-      } else {
-        navigate('/vehicle-selection');
-      }
-    }
+    setDropoffInput(e.target.value);
+    setErrors(prev => {
+      const newErrors = { ...prev, dropoff: undefined };
+      console.log('🧹 Cleared dropoff error, new errors:', newErrors);
+      return newErrors;
+    });
   };
 
   if (!isLoaded) {
