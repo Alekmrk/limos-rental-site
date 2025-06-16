@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 const GOOGLE_MAPS_API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
 let loadPromise = null;
 
-// Helper to preload Google Maps API
+// Helper to preload Google Maps API with new Places API
 const preloadGoogleMaps = () => {
   if (!loadPromise && typeof window !== 'undefined') {
     const callbackName = 'googleMapsCallback_' + Math.random().toString(36).substr(2, 9);
@@ -23,7 +23,8 @@ const preloadGoogleMaps = () => {
       };
 
       const script = document.createElement('script');
-      script.src = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_API_KEY}&callback=${callbackName}&libraries=places`;
+      // Use beta channel to get access to new Places API features
+      script.src = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_API_KEY}&callback=${callbackName}&libraries=places&v=beta`;
       script.async = true;
       script.defer = true;
       

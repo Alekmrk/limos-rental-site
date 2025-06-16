@@ -82,7 +82,7 @@ const NumberDropdown = ({
       />
       
       {showPicker && (
-        <div className="absolute z-50 mt-2 bg-zinc-800/95 backdrop-blur-sm rounded-lg shadow-lg border border-zinc-700/50 w-[90%] left-[5%]">
+        <div className="absolute z-50 mt-2 bg-zinc-800/95 backdrop-blur-sm rounded-lg shadow-lg border border-zinc-700/50 w-[90%] left-[5%] top-full -mt-3">
           <div className="p-2">
             <div ref={numbersRef} className="h-[200px] overflow-y-auto scrollbar-thin scrollbar-thumb-zinc-600 scrollbar-track-transparent">
               <div className="text-center text-sm text-zinc-400 pb-2 border-b border-zinc-700/50">{label || 'Select'}</div>

@@ -86,7 +86,7 @@ const TimeInput = ({ value, onChange, name, id, className }) => {
       />
       
       {showPicker && (
-        <div className="absolute z-50 mt-2 bg-zinc-800/95 backdrop-blur-sm rounded-lg shadow-lg border border-zinc-700/50 w-full">
+        <div className="absolute z-50 w-full top-full -mt-0 bg-zinc-800/95 backdrop-blur-sm rounded-lg shadow-lg border border-zinc-700/50">
           <div className="p-2 flex">
             {/* Hours column */}
             <div ref={hoursRef} className="flex-1 h-[200px] overflow-y-auto scrollbar-thin scrollbar-thumb-zinc-600 scrollbar-track-transparent border-r border-zinc-700/50">

@@ -5,8 +5,8 @@ import ReservationContext from "../../../contexts/ReservationContext";
 import TimeInput from "../../../components/TimeInput";
 import DateInput from "../../../components/DateInput";
 import RouteErrorModal from "../../../components/RouteErrorModal";
+import AddressInput from "../../../components/AddressInput";
 import { validateAddresses } from "../../../services/GoogleMapsService";
-import { useGoogleMapsApi } from "../../../hooks/useGoogleMapsApi";
 import { DateTime } from 'luxon';
 
 const ReservationCard = () => {
@@ -18,10 +18,7 @@ const ReservationCard = () => {
     setIsSpecialRequest,
     handlePlaceSelection 
   } = useContext(ReservationContext);
-  const { isLoaded } = useGoogleMapsApi();
   const [errors, setErrors] = useState({});
-  const [pickupInput, setPickupInput] = useState(reservationInfo.pickup || "");
-  const [dropoffInput, setDropoffInput] = useState(reservationInfo.dropoff || "");
   const [showRouteErrorModal, setShowRouteErrorModal] = useState(false);
   const [routeErrorType, setRouteErrorType] = useState(null);
 
@@ -32,121 +29,34 @@ const ReservationCard = () => {
     lastValidationResult: null
   });
 
-  const pickupRef = useRef(null);
-  const dropoffRef = useRef(null);
-  const pickupAutocomplete = useRef(null);
-  const dropoffAutocomplete = useRef(null);
-
-  useEffect(() => {
-    if (!isLoaded || !window.google) return;
-    if (reservationInfo.isSpecialRequest) return; // Don't initialize if in special mode
-
-    // Swiss bounds
-    const switzerlandBounds = {
-      north: 47.8084,
-      south: 45.8179,
-      west: 5.9566,
-      east: 10.4915
-    };
-
-    const bounds = new window.google.maps.LatLngBounds(
-      { lat: switzerlandBounds.south, lng: switzerlandBounds.west },
-      { lat: switzerlandBounds.north, lng: switzerlandBounds.east }
-    );
-
-    const setupAutocomplete = (inputRef, autocompleteRef, type) => {
-      if (!inputRef.current) return; // Don't initialize if input doesn't exist
-      
-      if (autocompleteRef.current) {
-        window.google.maps.event.clearInstanceListeners(autocompleteRef.current);
-      }
-
-      const options = {
-        bounds,
-        fields: ["formatted_address", "geometry", "place_id", "address_components", "name", "types"],
-        strictBounds: false,
-        componentRestrictions: { country: ['ch', 'de', 'fr', 'it', 'at', 'li'] }
-      };
-
-      autocompleteRef.current = new window.google.maps.places.Autocomplete(inputRef.current, options);
-      autocompleteRef.current.addListener("place_changed", () => {
-        // Clear error when place is selected
-        setErrors(prev => ({ ...prev, [type]: undefined }));
-        const place = autocompleteRef.current.getPlace();
-        
-        // Debug logging to see what Google returns
-        console.log(`🔍 [${type}] Google Place Selection Debug:`, {
-          userTyped: inputRef.current.value,
-          placeName: place.name,
-          formattedAddress: place.formatted_address,
-          types: place.types,
-          placeId: place.place_id
-        });
-        
-        if (place.geometry) {
-          const countryComponent = place.address_components?.find(
-            component => component.types.includes("country")
-          );
-
-          const isSwiss = countryComponent?.short_name === "CH";
-          
-          // Always use the full formatted address - no more shortened names
-          const displayName = place.formatted_address;
-          const routingAddress = place.formatted_address;
-          
-          console.log(`📍 [${type}] Final display decision:`, {
-            selectedDisplayName: displayName,
-            routingAddress: routingAddress,
-            originalName: place.name,
-            formattedAddress: place.formatted_address,
-            alwaysUsingFullAddress: true
-          });
-
-          handlePlaceSelection(type, {
-            formattedAddress: displayName,
-            routingAddress: routingAddress,
-            location: {
-              lat: place.geometry.location.lat(),
-              lng: place.geometry.location.lng()
-            },
-            placeId: place.place_id,
-            isSwiss,
-            originalName: place.name,
-            types: place.types
-          });
-          if (type === 'pickup') setPickupInput(displayName);
-          if (type === 'dropoff') setDropoffInput(displayName);
-        }
-      });
-    };
-
-    // Always setup pickup autocomplete for distance and hourly modes
-    setupAutocomplete(pickupRef, pickupAutocomplete, 'pickup');
+  const handleInput = (e) => {
+    console.log('📝 Input change:', {
+      field: e.target.name,
+      value: e.target.value,
+      previousErrors: errors
+    });
     
-    // Only setup dropoff autocomplete for distance mode
-    if (!reservationInfo.isHourly) {
-      setupAutocomplete(dropoffRef, dropoffAutocomplete, 'dropoff');
-    }
+    // Clear error for the field being typed in
+    setErrors(prev => {
+      const newErrors = { ...prev, [e.target.name]: undefined };
+      console.log('🧹 Cleared error for field:', e.target.name, 'New errors:', newErrors);
+      return newErrors;
+    });
+    originalHandleInput(e);
+  };
 
-    return () => {
-      if (window.google) {
-        if (pickupAutocomplete.current) {
-          window.google.maps.event.clearInstanceListeners(pickupAutocomplete.current);
-        }
-        if (dropoffAutocomplete.current) {
-          window.google.maps.event.clearInstanceListeners(dropoffAutocomplete.current);
-        }
-      }
-    };
-  }, [isLoaded, handlePlaceSelection, reservationInfo.isHourly, reservationInfo.isSpecialRequest]);
+  // Modal action handlers
+  const handleSwitchToHourly = () => {
+    console.log('🔄 Switching to hourly mode from route error modal');
+    setIsHourly(true);
+    setShowRouteErrorModal(false);
+  };
 
-  useEffect(() => {
-    setPickupInput(reservationInfo.pickup || "");
-  }, [reservationInfo.pickup]);
-
-  useEffect(() => {
-    setDropoffInput(reservationInfo.dropoff || "");
-  }, [reservationInfo.dropoff]);
+  const handleSwitchToSpecial = () => {
+    console.log('🔄 Switching to special request mode from route error modal');
+    setIsSpecialRequest(true);
+    setShowRouteErrorModal(false);
+  };
 
   // Debug logging for mode changes
   const handleModeChange = (mode) => {
@@ -189,8 +99,6 @@ const ReservationCard = () => {
     console.log('📊 Validation Context:', {
       isSpecialRequest: reservationInfo.isSpecialRequest,
       isHourly: reservationInfo.isHourly,
-      pickupInput: pickupInput,
-      dropoffInput: dropoffInput,
       reservationPickup: reservationInfo.pickup,
       reservationDropoff: reservationInfo.dropoff,
       pickupPlaceInfo: reservationInfo.pickupPlaceInfo,
@@ -217,7 +125,7 @@ const ReservationCard = () => {
         newErrors.date = "Date cannot be in the past";
         console.log('❌ Date validation failed: Date in the past');
       }
-
+      
       // If date is today, check if time is at least 3 hours in advance
       if (reservationInfo.time && selectedDateStart.equals(swissNowStart)) {
         const [hours, minutes] = reservationInfo.time.split(':').map(Number);
@@ -239,12 +147,12 @@ const ReservationCard = () => {
       console.log('🚗 Validating non-special request fields...');
       
       // Location validation
-      if (!pickupRef.current.value) {
+      if (!reservationInfo.pickup) {
         newErrors.pickup = "Pick up location is required";
         console.log('❌ Pickup validation failed: No pickup location');
       }
       
-      if (!reservationInfo.isHourly && !dropoffRef.current.value) {
+      if (!reservationInfo.isHourly && !reservationInfo.dropoff) {
         newErrors.dropoff = "Drop off location is required";
         console.log('❌ Dropoff validation failed: No dropoff location');
       }
@@ -258,8 +166,8 @@ const ReservationCard = () => {
       }
 
       // Switzerland validation - check if we have locations to validate
-      const hasPickupValue = pickupRef.current?.value?.trim();
-      const hasDropoffValue = !reservationInfo.isHourly ? dropoffRef.current?.value?.trim() : null;
+      const hasPickupValue = reservationInfo.pickup?.trim();
+      const hasDropoffValue = !reservationInfo.isHourly ? reservationInfo.dropoff?.trim() : null;
       
       console.log('🇨🇭 Switzerland validation check:', {
         hasPickupValue,
@@ -270,17 +178,18 @@ const ReservationCard = () => {
       
       if (hasPickupValue || hasDropoffValue) {
         // First check: require autocomplete selection for any typed locations
-        if (hasPickupValue && !reservationInfo.pickupPlaceInfo) {
+        if (hasPickupValue && !reservationInfo.pickupPlaceInfo?.isConfirmed) {
           newErrors.pickup = "Please select a location from the suggestions";
           console.log('❌ Pickup place info missing');
         }
-        if (hasDropoffValue && !reservationInfo.dropoffPlaceInfo) {
+        if (hasDropoffValue && !reservationInfo.dropoffPlaceInfo?.isConfirmed) {
           newErrors.dropoff = "Please select a location from the suggestions";
           console.log('❌ Dropoff place info missing');
         }
         
         // Second check: if we have both place infos, validate Switzerland requirement
-        if (reservationInfo.pickupPlaceInfo && (!reservationInfo.isHourly ? reservationInfo.dropoffPlaceInfo : true)) {
+        if (reservationInfo.pickupPlaceInfo?.isConfirmed && 
+            (!reservationInfo.isHourly ? reservationInfo.dropoffPlaceInfo?.isConfirmed : true)) {
           console.log('🔄 Using address validation service...');
           try {
             const validation = await validateAddresses(
@@ -322,8 +231,6 @@ const ReservationCard = () => {
     e.preventDefault();
     
     console.log('📊 Pre-validation state:', {
-      pickupInput,
-      dropoffInput,
       reservationInfo: {
         pickup: reservationInfo.pickup,
         dropoff: reservationInfo.dropoff,
@@ -384,92 +291,6 @@ const ReservationCard = () => {
     console.groupEnd();
   };
 
-  const handleInput = (e) => {
-    console.log('📝 Input change:', {
-      field: e.target.name,
-      value: e.target.value,
-      previousErrors: errors
-    });
-    
-    // Clear error for the field being typed in
-    setErrors(prev => {
-      const newErrors = { ...prev, [e.target.name]: undefined };
-      console.log('🧹 Cleared error for field:', e.target.name, 'New errors:', newErrors);
-      return newErrors;
-    });
-    originalHandleInput(e);
-  };
-
-  const handlePickupInput = (e) => {
-    console.log('📍 Pickup input change:', {
-      value: e.target.value,
-      previousPickupInput: pickupInput,
-      hasPlaceInfo: !!reservationInfo.pickupPlaceInfo
-    });
-    
-    setPickupInput(e.target.value);
-    setErrors(prev => {
-      const newErrors = { ...prev, pickup: undefined };
-      console.log('🧹 Cleared pickup error, new errors:', newErrors);
-      return newErrors;
-    });
-  };
-
-  const handleDropoffInput = (e) => {
-    console.log('📍 Dropoff input change:', {
-      value: e.target.value,
-      previousDropoffInput: dropoffInput,
-      hasPlaceInfo: !!reservationInfo.dropoffPlaceInfo
-    });
-    
-    setDropoffInput(e.target.value);
-    setErrors(prev => {
-      const newErrors = { ...prev, dropoff: undefined };
-      console.log('🧹 Cleared dropoff error, new errors:', newErrors);
-      return newErrors;
-    });
-  };
-
-  // Modal action handlers
-  const handleSwitchToHourly = () => {
-    console.log('🔄 Switching to hourly mode from route error modal');
-    setIsHourly(true);
-    setShowRouteErrorModal(false);
-  };
-
-  const handleSwitchToSpecial = () => {
-    console.log('🔄 Switching to special request mode from route error modal');
-    setIsSpecialRequest(true);
-    setShowRouteErrorModal(false);
-  };
-
-  // TEMPORARY: Test trigger for route error modal
-  useEffect(() => {
-    const handleKeyPress = (e) => {
-      // Press Ctrl+Shift+E to test "no_route_found" error
-      if (e.ctrlKey && e.shiftKey && e.key === 'E') {
-        e.preventDefault();
-        console.log('🧪 TEST: Triggering no_route_found error modal');
-        setRouteErrorType('no_route_found');
-        setShowRouteErrorModal(true);
-      }
-      // Press Ctrl+Shift+A to test "api_error" 
-      if (e.ctrlKey && e.shiftKey && e.key === 'A') {
-        e.preventDefault();
-        console.log('🧪 TEST: Triggering api_error modal');
-        setRouteErrorType('api_error');
-        setShowRouteErrorModal(true);
-      }
-    };
-
-    document.addEventListener('keydown', handleKeyPress);
-    return () => document.removeEventListener('keydown', handleKeyPress);
-  }, []);
-
-  if (!isLoaded) {
-    return <div>Loading...</div>;
-  }
-
   return (
     <form 
       onSubmit={handleSubmit} 
@@ -527,18 +348,17 @@ const ReservationCard = () => {
                   Pick-up point
                 </label>
                 <div className="relative">
-                  <input
-                    ref={pickupRef}
-                    type="text"
-                    placeholder="TYPE LOCATION..."
+                  <AddressInput
+                    value={reservationInfo.pickup}
+                    onChange={handleInput}
+                    onPlaceSelected={(placeInfo) => handlePlaceSelection('pickup', placeInfo)}
                     name="pickup"
-                    id="pickup"
-                    value={pickupInput}
-                    onChange={handlePickupInput}
-                    className={`bg-zinc-800/30 rounded-xl py-3 px-4 w-full border text-white transition-all duration-200 hover:border-zinc-600 focus:border-gold/50 focus:shadow-[0_0_15px_rgba(212,175,55,0.1)] ${
-                      errors.pickup && errors.pickup !== "At least one location must be in Switzerland" ? 'border-red-500 ring-1 ring-red-500/50 animate-shake' : 'border-zinc-700/50'
+                    placeholder="TYPE LOCATION..."
+                    className={`${
+                      errors.pickup && errors.pickup !== "At least one location must be in Switzerland" 
+                        ? 'border-red-500 ring-1 ring-red-500/50 animate-shake' 
+                        : 'border-zinc-700/50'
                     }`}
-                    autoComplete="off"
                   />
                   {errors.pickup && errors.pickup !== "At least one location must be in Switzerland" && (
                     <div className="absolute left-1/8 right-0 bottom-0 w-4/4 translate-y-1/2 bg-zinc-800/40 text-red-500 text-[11px] py-1 px-3 rounded-2xl z-10 text-right backdrop-blur-sm">
@@ -554,18 +374,17 @@ const ReservationCard = () => {
                     Drop-off point
                   </label>
                   <div className="relative">
-                    <input
-                      ref={dropoffRef}
-                      type="text"
-                      placeholder="TYPE LOCATION..."
+                    <AddressInput
+                      value={reservationInfo.dropoff}
+                      onChange={handleInput}
+                      onPlaceSelected={(placeInfo) => handlePlaceSelection('dropoff', placeInfo)}
                       name="dropoff"
-                      id="dropoff"
-                      value={dropoffInput}
-                      onChange={handleDropoffInput}
-                      className={`bg-zinc-800/30 rounded-xl py-3 px-4 w-full border text-white transition-all duration-200 hover:border-zinc-600 focus:border-gold/50 focus:shadow-[0_0_15px_rgba(212,175,55,0.1)] ${
-                        errors.dropoff && errors.dropoff !== "At least one location must be in Switzerland" ? 'border-red-500 ring-1 ring-red-500/50 animate-shake' : 'border-zinc-700/50'
+                      placeholder="TYPE LOCATION..."
+                      className={`${
+                        errors.dropoff && errors.dropoff !== "At least one location must be in Switzerland" 
+                          ? 'border-red-500 ring-1 ring-red-500/50 animate-shake' 
+                          : 'border-zinc-700/50'
                       }`}
-                      autoComplete="off"
                     />
                     {errors.dropoff && errors.dropoff !== "At least one location must be in Switzerland" && (
                       <div className="absolute left-1/8 right-0 bottom-0 w-4/4 translate-y-1/2 bg-zinc-800/40 text-red-500 text-[11px] py-1 px-3 rounded-2xl z-10 text-right backdrop-blur-sm">
@@ -607,10 +426,12 @@ const ReservationCard = () => {
                   </div>
                 </div>
               )}
+            </div>
 
+            <div className="space-y-4">
               <div>
                 <label className="block text-sm uppercase mb-2 tracking-wide" htmlFor="date">
-                  Date
+                  When will the service take place?
                 </label>
                 <div className="relative">
                   <DateInput

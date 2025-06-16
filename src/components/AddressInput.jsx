@@ -1,16 +1,18 @@
 import { useState, useRef, useEffect, useCallback } from "react";
+import { useGoogleMapsApi } from "../hooks/useGoogleMapsApi";
 
 const AddressInput = ({ value, onChange, name, placeholder, onPlaceSelected, className }) => {
   const [error, setError] = useState(null);
   const [isLocationSelected, setIsLocationSelected] = useState(false);
-  const [isTyping, setIsTyping] = useState(false);
+  const [predictions, setPredictions] = useState([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const [activeSuggestionIndex, setActiveSuggestionIndex] = useState(-1);
   const inputRef = useRef(null);
-  const autocompleteRef = useRef(null);
+  const suggestionsRef = useRef(null);
   const sessionTokenRef = useRef(null);
   const lastSelectedRef = useRef(value);
   const isSelectingRef = useRef(false);
-  const observerRef = useRef(null);
-  const typingTimeoutRef = useRef(null);
+  const { isLoaded } = useGoogleMapsApi();
 
   // Debug logging
   const debugRef = useRef({
@@ -19,107 +21,171 @@ const AddressInput = ({ value, onChange, name, placeholder, onPlaceSelected, cla
     lastAction: null
   });
 
-  const setupAutocomplete = useCallback(() => {
-    console.log('🔧 [AddressInput] Setting up autocomplete for field:', name);
+  // Initialize session token
+  useEffect(() => {
+    if (isLoaded && window.google?.maps?.places) {
+      sessionTokenRef.current = new window.google.maps.places.AutocompleteSessionToken();
+    }
+  }, [isLoaded]);
+
+  // Helper function to highlight matching text
+  const highlightMatch = (text, searchTerm) => {
+    if (!text || !searchTerm) return text;
     
-    if (!window.google || !inputRef.current) {
-      console.log('⚠️ [AddressInput] Google Maps or input ref not available');
+    const regex = new RegExp(`(${searchTerm.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+    const parts = text.split(regex);
+    
+    return parts.map((part, index) => {
+      if (part.toLowerCase() === searchTerm.toLowerCase()) {
+        return (
+          <span key={index} className="text-gold font-semibold">
+            {part}
+          </span>
+        );
+      }
+      return part;
+    });
+  };
+
+  // Fetch autocomplete suggestions using new Places API
+  const fetchSuggestions = useCallback(async (input) => {
+    if (!isLoaded || !window.google?.maps?.places || !input.trim()) {
+      setPredictions([]);
+      setShowSuggestions(false);
       return;
     }
 
-    if (autocompleteRef.current) {
-      window.google.maps.event.clearInstanceListeners(autocompleteRef.current);
-    }
+    try {
+      console.log('🔍 [AddressInput] Fetching suggestions for:', input);
 
-    sessionTokenRef.current = new window.google.maps.places.AutocompleteSessionToken();
+      // Use the correct request structure for the new Places API
+      const request = {
+        input: input.trim(),
+        sessionToken: sessionTokenRef.current,
+        locationBias: {
+          center: { lat: 46.8182, lng: 8.2275 }, // Switzerland center
+          radius: 50000 // 50km radius (maximum allowed)
+        },
+        // Restrict to Switzerland and bordering countries only
+        includedRegionCodes: ['CH', 'DE', 'FR', 'IT', 'AT', 'LI']
+      };
 
-    const options = {
-      fields: ["formatted_address", "geometry", "place_id", "address_components", "name", "types"],
-      sessionToken: sessionTokenRef.current,
-      bounds: new window.google.maps.LatLngBounds(
-        { lat: 45.8179, lng: 5.9566 },  // Southwest corner of Switzerland
-        { lat: 47.8084, lng: 10.4915 }  // Northeast corner of Switzerland
-      ),
-      strictBounds: false,
-      // Remove the country restriction to allow other European countries
-      componentRestrictions: { country: ['ch', 'de', 'fr', 'it', 'at', 'li'] }
-    };
-
-    autocompleteRef.current = new window.google.maps.places.Autocomplete(inputRef.current, options);
-    
-    // Bias the results towards Switzerland without restricting to it
-    const switzerlandCenter = new window.google.maps.LatLng(46.8182, 8.2275);
-    autocompleteRef.current.setBounds(new window.google.maps.LatLngBounds(
-      switzerlandCenter,  // Center point
-      switzerlandCenter  // Center point
-    ).extend(new window.google.maps.LatLng(45.8179, 5.9566))  // Extend to cover Switzerland
-     .extend(new window.google.maps.LatLng(47.8084, 10.4915)));
-
-    // Add a listener for when the input starts receiving predictions
-    const pacContainer = document.querySelector('.pac-container');
-    if (pacContainer) {
-      const observer = new MutationObserver(() => {
-        setIsTyping(true);
-      });
-      observer.observe(pacContainer, { childList: true, subtree: true });
-    }
-
-    autocompleteRef.current.addListener("place_changed", () => {
-      debugRef.current.placeSelections++;
-      const selectionId = `selection-${Date.now()}-${debugRef.current.placeSelections}`;
+      const { suggestions } = await window.google.maps.places.AutocompleteSuggestion.fetchAutocompleteSuggestions(request);
       
-      console.group(`📍 [${selectionId}] Place selection for field: ${name}`);
-      
-      const place = autocompleteRef.current.getPlace();
+      console.log('📍 [AddressInput] Received suggestions:', suggestions.length);
+      setPredictions(suggestions);
+      setShowSuggestions(suggestions.length > 0);
+      setActiveSuggestionIndex(-1);
+
+    } catch (error) {
+      console.error('💥 Error fetching autocomplete suggestions:', error);
+      setPredictions([]);
+      setShowSuggestions(false);
+    }
+  }, [isLoaded]);
+
+  // Handle place selection
+  const selectPlace = useCallback(async (suggestion) => {
+    if (!suggestion) return;
+
+    try {
       isSelectingRef.current = true;
-      setError(null);
-      setIsTyping(false);
+      console.log('📍 [AddressInput] Selecting place:', suggestion);
+      console.log('📍 [AddressInput] Suggestion text structure:', {
+        mainText: suggestion.placePrediction.structuredFormat?.mainText?.text,
+        secondaryText: suggestion.placePrediction.structuredFormat?.secondaryText?.text,
+        fullText: suggestion.placePrediction.text?.text
+      });
 
-      console.log('📊 Place object:', place);
+      // Convert suggestion to place using new API
+      const place = await suggestion.placePrediction.toPlace();
+      
+      console.log('🔍 [AddressInput] Place object:', place);
+      
+      // Fetch required fields with correct field names for new API
+      await place.fetchFields({
+        fields: ['location', 'formattedAddress', 'displayName', 'addressComponents', 'types', 'id', 'internationalPhoneNumber', 'nationalPhoneNumber', 'businessStatus']
+      });
 
-      if (!place.geometry) {
-        console.log('❌ No geometry found - invalid place');
-        setError("Please select a location from the suggestions");
-        isSelectingRef.current = false;
-        setIsLocationSelected(false);
-        console.groupEnd();
-        return;
+      console.log('📋 [AddressInput] Place after fetchFields:', {
+        location: place.location,
+        formattedAddress: place.formattedAddress,
+        displayName: place.displayName,
+        addressComponents: place.addressComponents,
+        types: place.types,
+        id: place.id
+      });
+
+      // Use the exact suggestion text that user sees in dropdown
+      const suggestionMainText = suggestion.placePrediction.structuredFormat?.mainText?.text;
+      const suggestionSecondaryText = suggestion.placePrediction.structuredFormat?.secondaryText?.text;
+      const suggestionFullText = suggestion.placePrediction.text?.text;
+      
+      // Build display name using the exact text shown to user
+      let displayName;
+      
+      // Priority 1: Use the full suggestion text if available (most descriptive)
+      if (suggestionFullText && suggestionFullText.length > 0) {
+        displayName = suggestionFullText;
+      }
+      // Priority 2: Combine main + secondary text (what user sees in dropdown)
+      else if (suggestionMainText && suggestionSecondaryText) {
+        displayName = `${suggestionMainText}, ${suggestionSecondaryText}`;
+      }
+      // Priority 3: Just main text
+      else if (suggestionMainText) {
+        displayName = suggestionMainText;
+      }
+      // Priority 4: Fallback to place data
+      else if (place.formattedAddress && place.formattedAddress !== "Switzerland" && place.formattedAddress.length > 10) {
+        displayName = place.formattedAddress;
+      }
+      // Priority 5: Last resort
+      else {
+        displayName = place.displayName || "Selected Location";
       }
 
-      const countryComponent = place.address_components?.find(
+      console.log('🎯 [AddressInput] Display name decision:', {
+        chosen: displayName,
+        suggestionFullText,
+        suggestionMainText,
+        suggestionSecondaryText,
+        placeFormattedAddress: place.formattedAddress,
+        placeDisplayName: place.displayName
+      });
+
+      const countryComponent = place.addressComponents?.find(
         component => component.types.includes("country")
       );
 
-      const isSwiss = countryComponent?.short_name === "CH";
-      
-      // Always use the full formatted address for consistency
-      const displayName = place.formatted_address;
+      const isSwiss = countryComponent?.shortText === "CH";
 
       const placeInfo = {
         formattedAddress: displayName,
+        routingAddress: displayName,
         location: {
-          lat: place.geometry.location.lat(),
-          lng: place.geometry.location.lng()
+          lat: place.location?.lat() || 0,
+          lng: place.location?.lng() || 0
         },
-        placeId: place.place_id,
+        placeId: place.id,
         isSwiss,
-        originalName: place.name,
-        types: place.types,
+        originalName: place.displayName,
+        types: place.types || [],
         isConfirmed: true
       };
 
-      console.log('✅ Valid place selected:', {
-        displayName,
-        isSwiss,
-        placeInfo,
-        alwaysUsingFullAddress: true
-      });
+      console.log('✅ [AddressInput] Place selected:', placeInfo);
 
       lastSelectedRef.current = displayName;
       setIsLocationSelected(true);
-      debugRef.current.lastAction = { type: 'place_selected', timestamp: Date.now(), placeInfo };
+      setShowSuggestions(false);
+      setPredictions([]);
+      setError(null);
 
-      // Call onChange with both the displayName and placeInfo
+      // Create new session token for next request
+      sessionTokenRef.current = new window.google.maps.places.AutocompleteSessionToken();
+
+      // Call onChange with the place info
       onChange({
         target: {
           name,
@@ -132,95 +198,16 @@ const AddressInput = ({ value, onChange, name, placeholder, onPlaceSelected, cla
         onPlaceSelected(placeInfo);
       }
 
-      sessionTokenRef.current = new window.google.maps.places.AutocompleteSessionToken();
       isSelectingRef.current = false;
-      
-      console.groupEnd();
-    });
+
+    } catch (error) {
+      console.error('💥 Error selecting place:', error);
+      setError("Error loading place details. Please try again.");
+      isSelectingRef.current = false;
+    }
   }, [name, onChange, onPlaceSelected]);
 
-  // Handle autocomplete setup
-  useEffect(() => {
-    setupAutocomplete();
-    return () => {
-      if (window.google && autocompleteRef.current) {
-        window.google.maps.event.clearInstanceListeners(autocompleteRef.current);
-      }
-      if (typingTimeoutRef.current) {
-        clearTimeout(typingTimeoutRef.current);
-      }
-    };
-  }, [setupAutocomplete]);
-
-  // Handle styles observer
-  useEffect(() => {
-    const setupStyleObserver = () => {
-      if (observerRef.current) {
-        observerRef.current.disconnect();
-      }
-
-      observerRef.current = new MutationObserver((mutations) => {
-        mutations.forEach((mutation) => {
-          mutation.addedNodes.forEach((node) => {
-            if (node.classList && node.classList.contains('pac-container')) {
-              node.classList.add(
-                'dark:bg-zinc-800/85',
-                'backdrop-blur-xl',
-                'border',
-                'border-zinc-700/50',
-                'rounded-2xl',
-                'shadow-xl',
-                'mt-2',
-                'overflow-hidden'
-              );
-
-              node.querySelectorAll('.pac-item').forEach(item => {
-                item.classList.add(
-                  'text-white',
-                  'hover:bg-gold/20',
-                  'cursor-pointer',
-                  'px-6',
-                  'py-3',
-                  'border-zinc-700/50'
-                );
-              });
-
-              node.querySelectorAll('.pac-item-query').forEach(query => {
-                query.classList.add('text-white');
-              });
-
-              node.style.border = 'none';
-              node.style.background = 'transparent';
-              node.style.boxShadow = 'none';
-              node.style.marginTop = '8px';
-            }
-          });
-        });
-      });
-
-      observerRef.current.observe(document.body, {
-        childList: true,
-        subtree: true
-      });
-    };
-
-    setupStyleObserver();
-
-    return () => {
-      if (observerRef.current) {
-        observerRef.current.disconnect();
-      }
-    };
-  }, []);
-
-  // Handle value sync
-  useEffect(() => {
-    if (!isSelectingRef.current) {
-      lastSelectedRef.current = value;
-      setIsLocationSelected(!!value && value === lastSelectedRef.current);
-    }
-  }, [value]);
-
+  // Handle input changes
   const handleInputChange = useCallback((e) => {
     debugRef.current.inputChanges++;
     const changeId = `input-${Date.now()}-${debugRef.current.inputChanges}`;
@@ -231,22 +218,10 @@ const AddressInput = ({ value, onChange, name, placeholder, onPlaceSelected, cla
     console.log('📝 Input details:', {
       newValue,
       previousValue: value,
-      isSelecting: isSelectingRef.current,
-      lastSelected: lastSelectedRef.current,
-      isLocationSelected
+      isSelecting: isSelectingRef.current
     });
-    
-    setIsTyping(true);
-    
-    // Clear any existing typing timeout
-    if (typingTimeoutRef.current) {
-      clearTimeout(typingTimeoutRef.current);
-    }
 
     if (!isSelectingRef.current) {
-      console.log('🔄 Triggering onChange with manual input');
-      debugRef.current.lastAction = { type: 'manual_input', timestamp: Date.now(), value: newValue };
-      
       onChange({
         target: {
           name,
@@ -257,58 +232,78 @@ const AddressInput = ({ value, onChange, name, placeholder, onPlaceSelected, cla
           }
         }
       });
+      
       setError(null);
       setIsLocationSelected(false);
-    } else {
-      console.log('⏭️ Skipping onChange - place selection in progress');
-    }
-
-    if (!newValue) {
-      console.log('🧹 Empty value - clearing selections');
-      lastSelectedRef.current = null;
-      isSelectingRef.current = false;
-      setIsLocationSelected(false);
-      setIsTyping(false);
-    }
-
-    // Set a timeout to clear the typing state
-    typingTimeoutRef.current = setTimeout(() => {
-      console.log('⏰ Typing timeout - clearing typing state');
-      setIsTyping(false);
-    }, 1000);
-    
-    console.groupEnd();
-  }, [onChange, name, value, isLocationSelected]);
-
-  const handleKeyDown = (e) => {
-    console.log('⌨️ [AddressInput] Key pressed:', {
-      key: e.key,
-      field: name,
-      currentValue: value
-    });
-    
-    // Get the active element
-    const pacContainer = document.querySelector('.pac-container');
-    const hasSuggestions = pacContainer && pacContainer.children.length > 0;
-    
-    console.log('🔍 Suggestions state:', {
-      hasSuggestions,
-      pacContainerExists: !!pacContainer,
-      suggestionsCount: pacContainer?.children?.length || 0
-    });
-    
-    if (e.key === 'Enter') {
-      console.log('🔄 Enter key pressed');
-      // Only prevent form submission if there are no suggestions
-      // This allows the Google Places Autocomplete to handle selection on Enter
-      if (!hasSuggestions) {
-        console.log('🛑 Preventing form submission - no suggestions available');
-        e.preventDefault();
+      
+      // Fetch suggestions for new input
+      if (newValue.trim()) {
+        fetchSuggestions(newValue);
       } else {
-        console.log('✅ Allowing autocomplete to handle Enter');
+        setPredictions([]);
+        setShowSuggestions(false);
       }
     }
-  };
+
+    console.groupEnd();
+  }, [onChange, name, fetchSuggestions, value]);
+
+  // Handle keyboard navigation
+  const handleKeyDown = useCallback((e) => {
+    if (!showSuggestions || predictions.length === 0) {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+      }
+      return;
+    }
+
+    switch (e.key) {
+      case 'ArrowDown':
+        e.preventDefault();
+        setActiveSuggestionIndex(prev => 
+          prev < predictions.length - 1 ? prev + 1 : 0
+        );
+        break;
+      case 'ArrowUp':
+        e.preventDefault();
+        setActiveSuggestionIndex(prev => 
+          prev > 0 ? prev - 1 : predictions.length - 1
+        );
+        break;
+      case 'Enter':
+        e.preventDefault();
+        if (activeSuggestionIndex >= 0 && predictions[activeSuggestionIndex]) {
+          selectPlace(predictions[activeSuggestionIndex]);
+        }
+        break;
+      case 'Escape':
+        setShowSuggestions(false);
+        setActiveSuggestionIndex(-1);
+        break;
+    }
+  }, [showSuggestions, predictions, activeSuggestionIndex, selectPlace]);
+
+  // Handle click outside to close suggestions
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (suggestionsRef.current && !suggestionsRef.current.contains(event.target) &&
+          inputRef.current && !inputRef.current.contains(event.target)) {
+        setShowSuggestions(false);
+        setActiveSuggestionIndex(-1);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  // Handle value sync
+  useEffect(() => {
+    if (!isSelectingRef.current) {
+      lastSelectedRef.current = value;
+      setIsLocationSelected(!!value && value === lastSelectedRef.current);
+    }
+  }, [value]);
 
   return (
     <div className="relative">
@@ -320,17 +315,83 @@ const AddressInput = ({ value, onChange, name, placeholder, onPlaceSelected, cla
         onKeyDown={handleKeyDown}
         name={name}
         placeholder={placeholder || "Enter location"}
-        className={`bg-zinc-800/30 mb-3 rounded-[0.6rem] py-2 px-4 w-full border text-white transition-colors ${
-          error ? 'border-red-500' : isLocationSelected ? 'border-gold' : isTyping ? 'border-zinc-500' : className || 'border-zinc-700/50'
-        }`}
+        className={`bg-zinc-800/30 mb-3 py-2 px-4 w-full border text-white transition-colors ${
+          error ? 'border-red-500' : isLocationSelected ? 'border-gold' : 'border-zinc-700/50'
+        } ${className || ''} ${showSuggestions ? 'rounded-t-xl rounded-b-none' : 'rounded-xl'}`}
         autoComplete="off"
         aria-label={placeholder || "Location input"}
         aria-invalid={!!error}
         aria-describedby={error ? `${name}-error` : undefined}
         role="combobox"
         aria-autocomplete="list"
-        aria-expanded="false"
+        aria-expanded={showSuggestions}
+        aria-activedescendant={activeSuggestionIndex >= 0 ? `suggestion-${activeSuggestionIndex}` : undefined}
       />
+      
+      {/* Custom suggestions dropdown - styled to match documentation */}
+      {showSuggestions && predictions.length > 0 && (
+        <div
+          ref={suggestionsRef}
+          className="absolute z-[9999] w-full top-full -mt-0 overflow-hidden"
+          style={{
+            background: 'rgba(39, 39, 42, 0.85)',
+            backdropFilter: 'blur(16px)',
+            borderRadius: '1rem',
+            border: '1px solid rgba(255, 255, 255, 0.1)',
+            boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)'
+          }}
+          role="listbox"
+        >
+          {predictions.map((suggestion, index) => (
+            <div
+              key={suggestion.placePrediction.placeId}
+              id={`suggestion-${index}`}
+              className={`flex items-center cursor-pointer transition-all duration-200 ${
+                index === activeSuggestionIndex 
+                  ? '' 
+                  : ''
+              } ${index !== 0 ? 'border-t border-white/5' : ''}`}
+              style={{
+                padding: '0.75rem 1.5rem',
+                fontSize: '14px',
+                lineHeight: '1.5',
+                background: index === activeSuggestionIndex 
+                  ? 'rgba(212, 175, 55, 0.2)' 
+                  : 'transparent'
+              }}
+              onMouseEnter={() => setActiveSuggestionIndex(index)}
+              onClick={() => selectPlace(suggestion)}
+              role="option"
+              aria-selected={index === activeSuggestionIndex}
+            >
+              <div 
+                className="mr-3 flex-shrink-0"
+                style={{
+                  filter: 'brightness(0) invert(1)',
+                  opacity: '0.5',
+                  marginTop: '2px'
+                }}
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 010-5 2.5 2.5 0 010 5z"/>
+                </svg>
+              </div>
+              <div className="flex-1 min-w-0">
+                <div style={{ color: 'white', fontSize: '14px', paddingRight: '3px' }}>
+                  {highlightMatch(suggestion.placePrediction.structuredFormat?.mainText?.text || 
+                   suggestion.placePrediction.text?.text, value)}
+                </div>
+                {suggestion.placePrediction.structuredFormat?.secondaryText?.text && (
+                  <div style={{ color: 'rgba(255, 255, 255, 0.5)', fontSize: '14px' }}>
+                    {suggestion.placePrediction.structuredFormat.secondaryText.text}
+                  </div>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
       {error && (
         <div 
           id={`${name}-error`}
