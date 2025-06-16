@@ -1,5 +1,6 @@
 import { useContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { DateTime } from 'luxon';
 import ReservationContext from "../../contexts/ReservationContext";
 import Button from "../../components/Button";
 import ProgressBar from "../../components/ProgressBar";
@@ -73,6 +74,15 @@ const CustomerDetails = ({ scrollUp }) => {
     }
   };
 
+  // Format date to dd-MM-yyyy (Swiss format)
+  const formatDate = (dateString) => {
+    if (!dateString) return '';
+    try {
+      return DateTime.fromFormat(dateString, 'yyyy-MM-dd', { zone: 'Europe/Zurich' }).toFormat('dd-MM-yyyy');
+    } catch {
+      return dateString;
+    }
+  };
 
   useEffect(() => {
     const ensureScrollUp = () => {
@@ -235,7 +245,7 @@ const CustomerDetails = ({ scrollUp }) => {
                 <h3 className="text-lg font-medium text-gold mb-2">Your Special Request</h3>
                 <p className="text-zinc-300">{reservationInfo.specialRequestDetails}</p>
                 <div className="mt-3 text-sm text-zinc-400">
-                  <p>Date: {reservationInfo.date}</p>
+                  <p>Date: {formatDate(reservationInfo.date)}</p>
                   <p>Preferred Time: {reservationInfo.time} (Swiss time)</p>
                 </div>
               </div>
