@@ -9,6 +9,7 @@ const CustomerDetails = ({ scrollUp }) => {
   const navigate = useNavigate();
   const { reservationInfo, handleInput } = useContext(ReservationContext);
   const [errors, setErrors] = useState({});
+  const [showAdditionalDetails, setShowAdditionalDetails] = useState(false);
 
   // Check if we have the required data from previous steps
   useEffect(() => {
@@ -94,6 +95,16 @@ const CustomerDetails = ({ scrollUp }) => {
     return () => clearTimeout(timeoutId); // Cleanup timeout on unmount
   }, []);
 
+  // Check if any additional details have values to auto-expand the section
+  useEffect(() => {
+    if (reservationInfo.childSeats > 0 || 
+        reservationInfo.babySeats > 0 || 
+        reservationInfo.skiEquipment > 0 || 
+        reservationInfo.flightNumber) {
+      setShowAdditionalDetails(true);
+    }
+  }, [reservationInfo.childSeats, reservationInfo.babySeats, reservationInfo.skiEquipment, reservationInfo.flightNumber]);
+
   return (
     <div className="container-default mt-28">
       <div className="max-w-6xl mx-auto">
@@ -123,7 +134,7 @@ const CustomerDetails = ({ scrollUp }) => {
                 name="email"
                 value={reservationInfo.email}
                 onChange={handleInput}
-                className="bg-zinc-800/30 rounded-lg py-2 px-4 w-full border border-zinc-700/50"
+                className="bg-zinc-800/30 rounded-lg py-2 px-4 w-full border border-zinc-700/50 focus:border-gold/40 focus:outline-none focus:ring-1 focus:ring-gold/20 transition-all duration-200"
                 required
               />
               {errors.email && (
@@ -141,7 +152,7 @@ const CustomerDetails = ({ scrollUp }) => {
                 name="phone"
                 value={reservationInfo.phone}
                 onChange={handleInput}
-                className="bg-zinc-800/30 rounded-lg py-2 px-4 w-full border border-zinc-700/50"
+                className="bg-zinc-800/30 rounded-lg py-2 px-4 w-full border border-zinc-700/50 focus:border-gold/40 focus:outline-none focus:ring-1 focus:ring-gold/20 transition-all duration-200"
                 required
               />
               {errors.phone && (
@@ -164,8 +175,8 @@ const CustomerDetails = ({ scrollUp }) => {
                     onChange={handleInput}
                     rows="4"
                     wrap="soft"
-                    className={`bg-zinc-800/30 rounded-lg py-2 px-4 w-full border whitespace-pre-wrap ${
-                      errors.plannedActivities ? 'border-red-500' : 'border-zinc-700/50'
+                    className={`bg-zinc-800/30 rounded-lg py-2 px-4 w-full border whitespace-pre-wrap focus:outline-none focus:ring-1 focus:ring-gold/20 transition-all duration-200 ${
+                      errors.plannedActivities ? 'border-red-500 focus:border-red-500' : 'border-zinc-700/50 focus:border-gold/40'
                     }`}
                     placeholder="Please describe your planned activities during the rental period..."
                     style={{ resize: 'vertical', minHeight: '100px' }}
@@ -176,66 +187,126 @@ const CustomerDetails = ({ scrollUp }) => {
                 </div>
               )}
 
-              <div className="grid md:grid-cols-2 gap-6 mb-8">
-                <div>
-                  <label className="block text-sm font-medium mb-2" htmlFor="flightNumber">
-                    Flight Number
-                  </label>
-                  <input
-                    type="text"
-                    id="flightNumber"
-                    name="flightNumber"
-                    value={reservationInfo.flightNumber}
-                    onChange={handleInput}
-                    className="bg-zinc-800/30 rounded-lg py-2 px-4 w-full border border-zinc-700/50"
-                  />
-                </div>
-                
-                <div>
-                  <label className="block text-sm font-medium mb-2" htmlFor="skiEquipment">
-                    Number of Ski Equipment
-                  </label>
-                  <input
-                    type="number"
-                    id="skiEquipment"
-                    name="skiEquipment"
-                    min="0"
-                    value={reservationInfo.skiEquipment}
-                    onChange={handleInput}
-                    className="bg-zinc-800/30 rounded-lg py-2 px-4 w-full border border-zinc-700/50"
-                  />
-                </div>
-              </div>
+              {/* Collapsible Additional Details Section */}
+              <div className="mb-8">
+                <button
+                  type="button"
+                  onClick={() => setShowAdditionalDetails(!showAdditionalDetails)}
+                  className="flex items-center justify-between w-full p-4 bg-zinc-800/20 rounded-lg border border-zinc-700/50 hover:bg-zinc-800/30 transition-all duration-200"
+                >
+                  <div className="flex items-center gap-3">
+                    <svg className="w-5 h-5 text-gold" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                      <circle cx="9" cy="7" r="4"/>
+                      <path d="m22 21-3-3"/>
+                    </svg>
+                    <span className="text-sm font-medium">Additional Passenger Details</span>
+                    <span className="text-xs text-zinc-400">(Flight number, child seats, ski equipment)</span>
+                  </div>
+                  <svg 
+                    className={`w-5 h-5 text-zinc-400 transition-transform duration-200 ${
+                      showAdditionalDetails ? 'rotate-180' : ''
+                    }`} 
+                    viewBox="0 0 24 24" 
+                    fill="none" 
+                    stroke="currentColor" 
+                    strokeWidth="2"
+                  >
+                    <path d="m6 9 6 6 6-6"/>
+                  </svg>
+                </button>
 
-              <div className="grid md:grid-cols-2 gap-6 mb-8">
-                <div>
-                  <label className="block text-sm font-medium mb-2" htmlFor="childSeats">
-                    Child Seats (Ages 4-7)
-                  </label>
-                  <input
-                    type="number"
-                    id="childSeats"
-                    name="childSeats"
-                    min="0"
-                    value={reservationInfo.childSeats}
-                    onChange={handleInput}
-                    className="bg-zinc-800/30 rounded-lg py-2 px-4 w-full border border-zinc-700/50"
-                  />
-                </div>
-                
-                <div>
-                  <label className="block text-sm font-medium mb-2" htmlFor="babySeats">
-                    Baby Seats (Ages 0-3)
-                  </label>
-                  <input
-                    type="number"
-                    id="babySeats"
-                    name="babySeats"
-                    min="0"
-                    value={reservationInfo.babySeats}
-                    onChange={handleInput}
-                    className="bg-zinc-800/30 rounded-lg py-2 px-4 w-full border border-zinc-700/50"
-                  />
+                {/* Expandable Content */}
+                <div className={`transition-all duration-500 ease-in-out ${
+                  showAdditionalDetails 
+                    ? 'max-h-[800px] opacity-100' 
+                    : 'max-h-0 opacity-0 overflow-hidden'
+                }`}>
+                  <div className={`pt-6 space-y-6 transform transition-transform duration-500 ease-in-out ${
+                    showAdditionalDetails ? 'translate-y-0' : '-translate-y-4'
+                  }`}>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div>
+                        <label className="block text-sm font-medium mb-2" htmlFor="flightNumber">
+                          Flight Number
+                        </label>
+                        <input
+                          type="text"
+                          id="flightNumber"
+                          name="flightNumber"
+                          value={reservationInfo.flightNumber}
+                          onChange={handleInput}
+                          className="bg-zinc-800/30 rounded-lg py-2 px-4 w-full border border-zinc-700/50 focus:border-gold/40 focus:outline-none focus:ring-1 focus:ring-gold/20 transition-all duration-200"
+                          placeholder="e.g., LX123"
+                        />
+                      </div>
+                      
+                      <div>
+                        <label className="block text-sm font-medium mb-2" htmlFor="skiEquipment">
+                          Number of Ski Equipment
+                        </label>
+                        <input
+                          type="number"
+                          id="skiEquipment"
+                          name="skiEquipment"
+                          min="0"
+                          max="20"
+                          value={reservationInfo.skiEquipment}
+                          onChange={handleInput}
+                          className="bg-zinc-800/30 rounded-lg py-2 px-4 w-full border border-zinc-700/50 focus:border-gold/40 focus:outline-none focus:ring-1 focus:ring-gold/20 transition-all duration-200"
+                          placeholder="0"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div>
+                        <label className="block text-sm font-medium mb-2" htmlFor="childSeats">
+                          Child Seats <span className="text-xs text-zinc-400">(Ages 4-7 / 15-36 kg)</span>
+                        </label>
+                        <input
+                          type="number"
+                          id="childSeats"
+                          name="childSeats"
+                          min="0"
+                          max="8"
+                          value={reservationInfo.childSeats}
+                          onChange={handleInput}
+                          className="bg-zinc-800/30 rounded-lg py-2 px-4 w-full border border-zinc-700/50 focus:border-gold/40 focus:outline-none focus:ring-1 focus:ring-gold/20 transition-all duration-200"
+                          placeholder="0"
+                        />
+                      </div>
+                      
+                      <div>
+                        <label className="block text-sm font-medium mb-2" htmlFor="babySeats">
+                          Baby Seats <span className="text-xs text-zinc-400">(Ages 0-3 / up to 18 kg)</span>
+                        </label>
+                        <input
+                          type="number"
+                          id="babySeats"
+                          name="babySeats"
+                          min="0"
+                          max="4"
+                          value={reservationInfo.babySeats}
+                          onChange={handleInput}
+                          className="bg-zinc-800/30 rounded-lg py-2 px-4 w-full border border-zinc-700/50 focus:border-gold/40 focus:outline-none focus:ring-1 focus:ring-gold/20 transition-all duration-200"
+                          placeholder="0"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="bg-blue-500/10 border border-blue-500/20 rounded-lg p-3">
+                      <div className="flex items-start gap-2">
+                        <svg className="w-4 h-4 text-blue-400 mt-0.5 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <circle cx="12" cy="12" r="10"/>
+                          <path d="m9 12 2 2 4-4"/>
+                        </svg>
+                        <p className="text-xs text-blue-200">
+                          Child and baby seats are provided free of charge. Please specify the exact number needed for your journey.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </>
@@ -260,8 +331,8 @@ const CustomerDetails = ({ scrollUp }) => {
                 onChange={handleInput}
                 rows="6"
                 wrap="soft"
-                className={`bg-zinc-800/30 rounded-lg py-2 px-4 w-full border whitespace-pre-wrap ${
-                  errors.additionalRequests ? 'border-red-500' : 'border-zinc-700/50'
+                className={`bg-zinc-800/30 rounded-lg py-2 px-4 w-full border whitespace-pre-wrap focus:outline-none focus:ring-1 focus:ring-gold/20 transition-all duration-200 ${
+                  errors.additionalRequests ? 'border-red-500 focus:border-red-500' : 'border-zinc-700/50 focus:border-gold/40'
                 }`}
                 placeholder="Please provide any additional details that would help us understand your requirements better (e.g., number of guests, event type, specific vehicle preferences, budget constraints, etc.)"
                 style={{ resize: 'vertical', minHeight: '150px' }}
@@ -275,7 +346,7 @@ const CustomerDetails = ({ scrollUp }) => {
           {!reservationInfo.isSpecialRequest && (
             <div className="mb-8">
               <label className="block text-sm font-medium mb-2" htmlFor="additionalRequests">
-                {reservationInfo.isSpecialRequest ? 'Special Request Details' : 'Additional Requests'}
+                Additional Requests
               </label>
               <textarea
                 id="additionalRequests"
@@ -284,10 +355,8 @@ const CustomerDetails = ({ scrollUp }) => {
                 onChange={handleInput}
                 rows="4"
                 wrap="soft"
-                className="bg-zinc-800/30 rounded-lg py-2 px-4 w-full border border-zinc-700/50 whitespace-pre-wrap"
-                placeholder={reservationInfo.isSpecialRequest 
-                  ? "Please provide any details about your special request..."
-                  : "Any special requirements or requests..."}
+                className="bg-zinc-800/30 rounded-lg py-2 px-4 w-full border border-zinc-700/50 whitespace-pre-wrap focus:border-gold/40 focus:outline-none focus:ring-1 focus:ring-gold/20 transition-all duration-200"
+                placeholder="Any special requirements or requests..."
                 style={{ resize: 'vertical', minHeight: '100px' }}
               ></textarea>
             </div>

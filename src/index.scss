@@ -96,6 +96,19 @@
     }
   }
 
+  /* Remove default browser focus styles and white flash */
+  input, textarea {
+    outline: none !important;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    
+    &:focus {
+      outline: none !important;
+      box-shadow: none !important;
+    }
+  }
+
   /* Force 24-hour time input format */
   input[type="time"].hour24::-webkit-datetime-edit-ampm-field {
     display: none;
