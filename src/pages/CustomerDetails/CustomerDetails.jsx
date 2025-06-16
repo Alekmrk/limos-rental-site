@@ -4,6 +4,7 @@ import { DateTime } from 'luxon';
 import ReservationContext from "../../contexts/ReservationContext";
 import Button from "../../components/Button";
 import ProgressBar from "../../components/ProgressBar";
+import NumberDropdown from "../../components/NumberDropdown";
 
 const CustomerDetails = ({ scrollUp }) => {
   const navigate = useNavigate();
@@ -242,55 +243,40 @@ const CustomerDetails = ({ scrollUp }) => {
                       </div>
                       
                       <div>
-                        <label className="block text-sm font-medium mb-2" htmlFor="skiEquipment">
-                          Number of Ski Equipment
-                        </label>
-                        <input
-                          type="number"
+                        <NumberDropdown
                           id="skiEquipment"
                           name="skiEquipment"
-                          min="0"
-                          max="20"
                           value={reservationInfo.skiEquipment}
                           onChange={handleInput}
-                          className="bg-zinc-800/30 rounded-lg py-2 px-4 w-full border border-zinc-700/50 focus:border-gold/40 focus:outline-none focus:ring-1 focus:ring-gold/20 transition-all duration-200"
-                          placeholder="0"
+                          min={0}
+                          max={20}
+                          label="Number of Ski Equipment"
                         />
                       </div>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div>
-                        <label className="block text-sm font-medium mb-2" htmlFor="childSeats">
-                          Child Seats <span className="text-xs text-zinc-400">(Ages 4-7 / 15-36 kg)</span>
-                        </label>
-                        <input
-                          type="number"
+                        <NumberDropdown
                           id="childSeats"
                           name="childSeats"
-                          min="0"
-                          max="8"
                           value={reservationInfo.childSeats}
                           onChange={handleInput}
-                          className="bg-zinc-800/30 rounded-lg py-2 px-4 w-full border border-zinc-700/50 focus:border-gold/40 focus:outline-none focus:ring-1 focus:ring-gold/20 transition-all duration-200"
-                          placeholder="0"
+                          min={0}
+                          max={8}
+                          label="Child Seats (Ages 4-7 / 15-36 kg)"
                         />
                       </div>
                       
                       <div>
-                        <label className="block text-sm font-medium mb-2" htmlFor="babySeats">
-                          Baby Seats <span className="text-xs text-zinc-400">(Ages 0-3 / up to 18 kg)</span>
-                        </label>
-                        <input
-                          type="number"
+                        <NumberDropdown
                           id="babySeats"
                           name="babySeats"
-                          min="0"
-                          max="4"
                           value={reservationInfo.babySeats}
                           onChange={handleInput}
-                          className="bg-zinc-800/30 rounded-lg py-2 px-4 w-full border border-zinc-700/50 focus:border-gold/40 focus:outline-none focus:ring-1 focus:ring-gold/20 transition-all duration-200"
-                          placeholder="0"
+                          min={0}
+                          max={4}
+                          label="Baby Seats (Ages 0-3 / up to 18 kg)"
                         />
                       </div>
                     </div>

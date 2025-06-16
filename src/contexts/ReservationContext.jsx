@@ -23,8 +23,8 @@ export const ReservationContextProvider = ({ children }) => {
     extraStopsPlaceInfo: [],
     date: getInitialDate(), // Initialize with current Swiss date
     time: getInitialTime(), // Initialize with current Swiss time
-    passengers: 1,
-    bags: 0,
+    passengers: "", // Changed from 1 to empty string
+    bags: "", // Changed from 0 to empty string
     flightNumber: "",
     childSeats: 0,
     babySeats: 0,

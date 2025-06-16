@@ -4,6 +4,7 @@ import ReservationContext from "../../contexts/ReservationContext";
 import Button from "../../components/Button";
 import ProgressBar from "../../components/ProgressBar";
 import AddressInput from "../../components/AddressInput";
+import NumberDropdown from "../../components/NumberDropdown";
 import cars from "../../data/cars";
 import MapPreview from "../../components/MapPreview";
 import { calculatePrice, calculatePriceByDistance, addSurcharges, formatPrice } from "../../services/PriceCalculationService";
@@ -52,16 +53,18 @@ const VehicleSelection = ({ scrollUp }) => {
 
   const validateFormErrors = (stops = reservationInfo.extraStops) => {
     const newErrors = {};
-    const passengerCount = reservationInfo.passengers === '' ? 0 : reservationInfo.passengers;
-    const bagCount = reservationInfo.bags === '' ? 0 : reservationInfo.bags;
+    const passengerCount = reservationInfo.passengers === '' ? 0 : parseInt(reservationInfo.passengers);
+    const bagCount = reservationInfo.bags === '' ? 0 : parseInt(reservationInfo.bags);
     
-    if (passengerCount < 1) {
-      newErrors.passengers = "At least 1 passenger is required";
+    if (reservationInfo.passengers === '' || passengerCount < 1) {
+      newErrors.passengers = "Please select number of passengers";
     }
-    if (bagCount < 0) {
-      newErrors.bags = "Number of bags cannot be negative";
+    if (reservationInfo.bags === '') {
+      newErrors.bags = "Please select number of bags";
     }
-    if (!reservationInfo.selectedVehicle) {
+    if (hasNoAvailableVehicles) {
+      newErrors.noVehicles = "No vehicles available for this passenger/bag combination. Please adjust your selection.";
+    } else if (!reservationInfo.selectedVehicle && shouldShowVehicles) {
       newErrors.vehicle = "Please select a vehicle";
     }
     
@@ -148,13 +151,23 @@ const VehicleSelection = ({ scrollUp }) => {
 
   // Memoize available vehicles to prevent recalculation on every render
   const availableVehicles = useMemo(() => {
-    const passengerCount = reservationInfo.passengers === '' ? 0 : reservationInfo.passengers;
-    const bagCount = reservationInfo.bags === '' ? 0 : reservationInfo.bags;
+    const passengerCount = reservationInfo.passengers === '' ? 0 : parseInt(reservationInfo.passengers);
+    const bagCount = reservationInfo.bags === '' ? 0 : parseInt(reservationInfo.bags);
     return cars.filter(car => 
       car.seats >= passengerCount && 
       car.luggage >= bagCount
     );
   }, [reservationInfo.passengers, reservationInfo.bags]);
+
+  // Check if we should show vehicles (both passengers and bags must be selected)
+  const shouldShowVehicles = useMemo(() => {
+    return reservationInfo.passengers !== '' && reservationInfo.bags !== '';
+  }, [reservationInfo.passengers, reservationInfo.bags]);
+
+  // Check if no vehicles are available for the selected combination
+  const hasNoAvailableVehicles = useMemo(() => {
+    return shouldShowVehicles && availableVehicles.length === 0;
+  }, [shouldShowVehicles, availableVehicles.length]);
 
   // Effect to handle vehicle unselection when it becomes unavailable
   useEffect(() => {
@@ -258,6 +271,33 @@ const VehicleSelection = ({ scrollUp }) => {
     });
     setPrices(newPrices);
   }, [reservationInfo, availableVehicles]);
+
+  // Add handler to clear errors when dropdown values change
+  const handleDropdownChange = (e) => {
+    handleInput(e);
+    
+    // Clear specific errors when values are selected
+    if (hasAttemptedSubmit && errors) {
+      const { name } = e.target;
+      const newErrors = { ...errors };
+      
+      // Clear field-specific error when value is selected
+      if (name === 'passengers' && e.target.value !== '') {
+        delete newErrors.passengers;
+      }
+      if (name === 'bags' && e.target.value !== '') {
+        delete newErrors.bags;
+      }
+      
+      // Clear vehicle-related errors when selections change
+      if ((name === 'passengers' || name === 'bags') && e.target.value !== '') {
+        delete newErrors.noVehicles;
+        delete newErrors.vehicle;
+      }
+      
+      setErrors(newErrors);
+    }
+  };
 
   return (
     <div className="container-default mt-28">
@@ -439,81 +479,99 @@ const VehicleSelection = ({ scrollUp }) => {
           }}
         >
           <div className="grid md:grid-cols-2 gap-6 mb-8 mt-8">
-            <div>
-              <label className="block text-sm font-medium mb-2" htmlFor="passengers">
-                Number of Passengers *
-              </label>
-              <input
-                type="number"
-                id="passengers"
-                name="passengers"
-                min="1"
-                max="8"
-                value={reservationInfo.passengers}
-                onChange={handleInput}
-                className="bg-zinc-800/30 rounded-lg py-2 px-4 w-full border border-zinc-700/50"
-                required
-              />
-              {errors.passengers && (
-                <span className="text-red-500 text-sm">{errors.passengers}</span>
-              )}
-            </div>
+            <NumberDropdown
+              id="passengers"
+              name="passengers"
+              value={reservationInfo.passengers}
+              onChange={handleDropdownChange}
+              min={1}
+              max={8}
+              label="Number of Passengers *"
+              error={errors.passengers}
+            />
             
-            <div>
-              <label className="block text-sm font-medium mb-2" htmlFor="bags">
-                Number of Bags
-              </label>
-              <input
-                type="number"
-                id="bags"
-                name="bags"
-                min="0"
-                max="8"
-                value={reservationInfo.bags}
-                onChange={handleInput}
-                className="bg-zinc-800/30 rounded-lg py-2 px-4 w-full border border-zinc-700/50"
-              />
-              {errors.bags && (
-                <span className="text-red-500 text-sm">{errors.bags}</span>
-              )}
-            </div>
+            <NumberDropdown
+              id="bags"
+              name="bags"
+              value={reservationInfo.bags}
+              onChange={handleDropdownChange}
+              min={0}
+              max={8}
+              label="Number of Bags"
+              error={errors.bags}
+            />
           </div>
 
           <div className="mb-8">
             <h2 className="text-2xl font-medium mb-4">Available Vehicles</h2>
-            <div className="grid md:grid-cols-3 gap-6">
-              {availableVehicles.map((vehicle) => (
-                <div
-                  key={vehicle.id}
-                  onClick={() => handleVehicleSelect(vehicle)}
-                  className={`p-6 rounded-lg cursor-pointer transition-all ${
-                    reservationInfo.selectedVehicle?.id === vehicle.id
-                      ? "bg-gold/20 border-2 border-gold"
-                      : "bg-zinc-800/30 border border-zinc-700/50 hover:border-gold/50"
-                  }`}
-                >
-                  <img
-                    src={vehicle.image}
-                    alt={vehicle.name}
-                    className="w-full h-48 object-contain mb-4"
-                  />
-                  <h3 className="text-xl font-medium mb-2">{vehicle.name}</h3>
-                  <div className="text-sm text-zinc-400 mb-4">
-                    <p>Seats: {vehicle.seats}</p>
-                    <p>Luggage: {vehicle.luggage}</p>
-                  </div>
-                  <div className="mt-4 pt-4 border-t border-zinc-700/50">
-                    <div className="text-sm text-gold">
-                      {reservationInfo.isHourly ? (
-                        <p>{formatPrice(prices[vehicle.id] || 0)} for {reservationInfo.hours || 2} hours</p>
-                      ) : (
-                        <p>{formatPrice(prices[vehicle.id] || 0)}</p>
-                      )}
-                    </div>
+            {!shouldShowVehicles ? (
+              <div className="bg-zinc-800/20 border border-zinc-700/50 rounded-lg p-8 text-center">
+                <div className="flex flex-col items-center gap-4">
+                  <svg className="w-12 h-12 text-zinc-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M7 17m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"/>
+                    <path d="M17 17m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"/>
+                    <path d="M5 17h-2v-6l2-5h9l4 5h1a2 2 0 0 1 2 2v4h-2m-4 0h-6m-6 -6h15m-6 0v-5"/>
+                  </svg>
+                  <div>
+                    <p className="text-lg font-medium text-zinc-300 mb-2">Select Passenger and Bag Count</p>
+                    <p className="text-sm text-zinc-400">
+                      Please choose the number of passengers and bags above to see available vehicles.
+                    </p>
                   </div>
                 </div>
-              ))}
-            </div>
+              </div>
+            ) : hasNoAvailableVehicles ? (
+              <div className="bg-red-500/10 border border-red-500/30 rounded-lg p-8 text-center">
+                <div className="flex flex-col items-center gap-4">
+                  <svg className="w-12 h-12 text-red-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                    <line x1="12" y1="9" x2="12" y2="13"/>
+                    <line x1="12" y1="17" x2="12.01" y2="17"/>
+                  </svg>
+                  <div>
+                    <p className="text-lg font-medium text-red-300 mb-2">No Vehicles Available</p>
+                    <p className="text-sm text-red-200">
+                      Sorry, we don't have vehicles that can accommodate {reservationInfo.passengers} passengers and {reservationInfo.bags} bags.
+                      <br />Please adjust your passenger or bag count to see available options.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div className="grid md:grid-cols-3 gap-6">
+                {availableVehicles.map((vehicle) => (
+                  <div
+                    key={vehicle.id}
+                    onClick={() => handleVehicleSelect(vehicle)}
+                    className={`p-6 rounded-lg cursor-pointer transition-all ${
+                      reservationInfo.selectedVehicle?.id === vehicle.id
+                        ? "bg-gold/20 border-2 border-gold"
+                        : "bg-zinc-800/30 border border-zinc-700/50 hover:border-gold/50"
+                    }`}
+                  >
+                    <img
+                      src={vehicle.image}
+                      alt={vehicle.name}
+                      className="w-full h-48 object-contain mb-4"
+                    />
+                    <h3 className="text-xl font-medium mb-2">{vehicle.name}</h3>
+                    <div className="text-sm text-zinc-400 mb-4">
+                      <p>Seats: {vehicle.seats}</p>
+                      <p>Luggage: {vehicle.luggage}</p>
+                    </div>
+                    <div className="mt-4 pt-4 border-t border-zinc-700/50">
+                      <div className="text-sm text-gold">
+                        {reservationInfo.isHourly ? (
+                          <p>{formatPrice(prices[vehicle.id] || 0)} for {reservationInfo.hours || 2} hours</p>
+                        ) : (
+                          <p>{formatPrice(prices[vehicle.id] || 0)}</p>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
 
           <div className="flex flex-col gap-4">
