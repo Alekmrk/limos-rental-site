@@ -23,7 +23,7 @@ const PassengerInfo = () => {
         value={reservationInfo.bags}
         onChange={handleInput}
         min={0}
-        max={8}
+        max={6}
         label="Number of Bags"
       />
     </div>

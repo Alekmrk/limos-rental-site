@@ -485,7 +485,7 @@ const VehicleSelection = ({ scrollUp }) => {
               value={reservationInfo.passengers}
               onChange={handleDropdownChange}
               min={1}
-              max={8}
+              max={6}
               label="Number of Passengers *"
               error={errors.passengers}
             />
@@ -496,7 +496,7 @@ const VehicleSelection = ({ scrollUp }) => {
               value={reservationInfo.bags}
               onChange={handleDropdownChange}
               min={0}
-              max={8}
+              max={6}
               label="Number of Bags"
               error={errors.bags}
             />
