@@ -35,7 +35,7 @@ export const ReservationContextProvider = ({ children }) => {
     selectedVehicle: null,
     isHourly: false,
     isSpecialRequest: false,
-    hours: 2,
+    hours: 3,
     plannedActivities: "",
     specialRequestDetails: "",
     pickupDetails: null,
@@ -309,7 +309,7 @@ export const ReservationContextProvider = ({ children }) => {
       isHourly,
       isSpecialRequest: false,
       dropoff: isHourly ? '' : prev.dropoff,
-      hours: isHourly ? 2 : '', // Using number 2 instead of string '2'
+      hours: isHourly ? 3 : '', // Using number 3 instead of 2
       plannedActivities: isHourly ? prev.plannedActivities : '',
       extraStops: [],
       extraStopDetails: [],

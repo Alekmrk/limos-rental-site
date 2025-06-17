@@ -159,8 +159,8 @@ const ReservationCard = () => {
       
       if (reservationInfo.isHourly) {
         const hours = parseInt(reservationInfo.hours) || 0;
-        if (hours < 2 || hours > 24) {
-          newErrors.hours = "Hours must be between 2 and 24";
+        if (hours < 3 || hours > 24) {
+          newErrors.hours = "Hours must be between 3 and 24";
           console.log('❌ Hours validation failed:', hours);
         }
       }

@@ -7,58 +7,54 @@
 const VEHICLE_RATES = {
   // Base per km rates for point-to-point transfers
   BASE_KM_RATE: {
-    'Mersedes Benz S Class': 3.0,
-    'Mersedes Benz V Class': 3.5,
-    'Audi A8': 3.0,
-    'Cadillac Escalade': 4.0,
-    'Rolls Royce Ghost': 5.0
+    'Mercedes S first class': 5.5,
+    'Mercedes V first class Van': 4.5,
+    'Mercedes V business class Van': 4.0,
+    'Mercedes E business class': 3.8
   },
   
   // Hourly rates (CHF per hour)
   HOURLY_RATE: {
-    'Mersedes Benz S Class': 120,
-    'Mersedes Benz V Class': 150,
-    'Audi A8': 120,
-    'Cadillac Escalade': 180,
-    'Rolls Royce Ghost': 250
+    'Mercedes S first class': 130,
+    'Mercedes V first class Van': 110,
+    'Mercedes V business class Van': 100,
+    'Mercedes E business class': 90
   },
   
   // Minimum charges (in CHF) for point-to-point transfers
   MINIMUM_TRANSFER_CHARGE: {
-    'Mersedes Benz S Class': 150,
-    'Mersedes Benz V Class': 180,
-    'Audi A8': 150,
-    'Cadillac Escalade': 200,
-    'Rolls Royce Ghost': 300
+    'Mercedes S first class': 130,
+    'Mercedes V first class Van': 110,
+    'Mercedes V business class Van': 95,
+    'Mercedes E business class': 95
   },
   
   // Minimum hours for hourly bookings
-  MINIMUM_HOURS: 2
+  MINIMUM_HOURS: 3
 };
 
 // Legacy vehicle category mappings (for backward compatibility)
 const VEHICLE_CATEGORIES = {
-  'Mersedes Benz S Class': 'premium',
-  'Mersedes Benz V Class': 'premium',
-  'Audi A8': 'premium',
-  'Cadillac Escalade': 'suv',
-  'Rolls Royce Ghost': 'luxury'
+  'Mercedes S first class': 'luxury',
+  'Mercedes V first class Van': 'premium', 
+  'Mercedes V business class Van': 'premium',
+  'Mercedes E business class': 'business'
 };
 
 // Legacy price per km (for backward compatibility with calculatePriceByDistance)
 const PRICE_PER_KM = {
   standard: 3.0,
-  premium: 3.5,
-  luxury: 5.0,
-  suv: 4.0,
+  premium: 4.0,
+  luxury: 5.5,
+  business: 3.8,
 };
 
 // Legacy minimum charges (for backward compatibility with calculatePriceByDistance)
 const MINIMUM_CHARGES = {
-  standard: 150,
-  premium: 180,
-  luxury: 300,
-  suv: 200,
+  standard: 95,
+  premium: 95,
+  luxury: 130,
+  business: 95,
 };
 
 /**
@@ -72,7 +68,7 @@ const MINIMUM_CHARGES = {
  * @param {number} hours - Number of hours for hourly booking (default: 0)
  * @returns {number} - Calculated total price
  */
-export const calculatePrice = (distance = 0, duration = 0, vehicleType = 'Mersedes Benz S Class', extraStops = 0, isHourly = false, hours = 0) => {
+export const calculatePrice = (distance = 0, duration = 0, vehicleType = 'Mercedes V business class Van', extraStops = 0, isHourly = false, hours = 0) => {
   try {
     // Get rates for selected vehicle, fallback to highest rates if vehicle not found
     const kmRate = VEHICLE_RATES.BASE_KM_RATE[vehicleType] || 

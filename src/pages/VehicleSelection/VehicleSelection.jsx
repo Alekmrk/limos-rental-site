@@ -41,7 +41,7 @@ const VehicleSelection = ({ scrollUp }) => {
         (!reservationInfo.isHourly && !reservationInfo.dropoff) || 
         !reservationInfo.date || 
         !reservationInfo.time ||
-        (reservationInfo.isHourly && (!reservationInfo.hours || reservationInfo.hours < 2 || reservationInfo.hours > 24))
+        (reservationInfo.isHourly && (!reservationInfo.hours || reservationInfo.hours < 3 || reservationInfo.hours > 24))
     ) {
       navigate('/');
     }
@@ -243,7 +243,7 @@ const VehicleSelection = ({ scrollUp }) => {
           vehicle.name,
           0, // extra stops not used
           true, // isHourly
-          reservationInfo.hours || 2 // use current hours or minimum 2
+          reservationInfo.hours || 3 // use current hours or minimum 3
         );
       } else {
         // Calculate transfer price
@@ -329,7 +329,7 @@ const VehicleSelection = ({ scrollUp }) => {
                 </svg>
                 {reservationInfo.isHourly ? 'HOURLY TRANSFER' : 'DISTANCE TRANSFER'}
               </span>
-              <span>• {reservationInfo.isHourly ? `${reservationInfo.hours || 2} hours` : `${reservationInfo.distance || '46.5'} KM`}</span>
+              <span>• {reservationInfo.isHourly ? `${reservationInfo.hours || 3} hours` : `${reservationInfo.distance || '46.5'} KM`}</span>
             </div>
           </div>
 
@@ -460,7 +460,7 @@ const VehicleSelection = ({ scrollUp }) => {
                 <svg className="w-5 h-5 text-gold" viewBox="0 0 24 24" fill="currentColor">
                   <path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/>
                 </svg>
-                <span className="text-sm text-zinc-300">Duration: {reservationInfo.hours || 2} hours</span>
+                <span className="text-sm text-zinc-300">Duration: {reservationInfo.hours || 3} hours</span>
               </div>
               <p className="text-xs text-zinc-500 mt-2">
                 * For hourly bookings, the vehicle and chauffeur will remain at your disposal throughout the duration, starting from the pickup location.
@@ -562,7 +562,7 @@ const VehicleSelection = ({ scrollUp }) => {
                     <div className="mt-4 pt-4 border-t border-zinc-700/50">
                       <div className="text-sm text-gold">
                         {reservationInfo.isHourly ? (
-                          <p>{formatPrice(prices[vehicle.id] || 0)} for {reservationInfo.hours || 2} hours</p>
+                          <p>{formatPrice(prices[vehicle.id] || 0)} for {reservationInfo.hours || 3} hours</p>
                         ) : (
                           <p>{formatPrice(prices[vehicle.id] || 0)}</p>
                         )}

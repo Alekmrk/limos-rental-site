@@ -23,7 +23,7 @@ const CustomerDetails = ({ scrollUp }) => {
           (!reservationInfo.isHourly && !reservationInfo.dropoff) || 
           !reservationInfo.date || 
           !reservationInfo.time || 
-          (reservationInfo.isHourly && (!reservationInfo.hours || reservationInfo.hours < 2 || reservationInfo.hours > 24))
+          (reservationInfo.isHourly && (!reservationInfo.hours || reservationInfo.hours < 3 || reservationInfo.hours > 24))
       ) {
         navigate('/');
       } else if (!reservationInfo.selectedVehicle || !reservationInfo.passengers || reservationInfo.passengers < 1) {
