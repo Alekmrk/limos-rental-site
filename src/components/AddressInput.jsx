@@ -12,6 +12,8 @@ const AddressInput = ({ value, onChange, name, placeholder, onPlaceSelected, cla
   const sessionTokenRef = useRef(null);
   const lastSelectedRef = useRef(value);
   const isSelectingRef = useRef(false);
+  // Track the last confirmed address to detect manual edits
+  const lastConfirmedAddressRef = useRef(null);
   const { isLoaded } = useGoogleMapsApi();
 
   // Debug logging
@@ -177,6 +179,8 @@ const AddressInput = ({ value, onChange, name, placeholder, onPlaceSelected, cla
       console.log('✅ [AddressInput] Place selected:', placeInfo);
 
       lastSelectedRef.current = displayName;
+      // Store the confirmed address to detect future manual edits
+      lastConfirmedAddressRef.current = displayName;
       setIsLocationSelected(true);
       setShowSuggestions(false);
       setPredictions([]);
@@ -218,17 +222,30 @@ const AddressInput = ({ value, onChange, name, placeholder, onPlaceSelected, cla
     console.log('📝 Input details:', {
       newValue,
       previousValue: value,
-      isSelecting: isSelectingRef.current
+      isSelecting: isSelectingRef.current,
+      lastConfirmedAddress: lastConfirmedAddressRef.current
     });
 
     if (!isSelectingRef.current) {
+      // Check if this is a manual edit after a confirmed selection
+      const wasManuallyEdited = lastConfirmedAddressRef.current && 
+                               newValue !== lastConfirmedAddressRef.current && 
+                               newValue.trim() !== '';
+      
+      console.log('🔍 Manual edit detection:', {
+        wasManuallyEdited,
+        hasLastConfirmed: !!lastConfirmedAddressRef.current,
+        valueChanged: newValue !== lastConfirmedAddressRef.current
+      });
+
       onChange({
         target: {
           name,
           value: newValue,
           placeInfo: {
             formattedAddress: newValue,
-            isConfirmed: false
+            isConfirmed: false, // Always false for manual input
+            wasManuallyEdited // Flag to indicate this was manually edited after selection
           }
         }
       });
@@ -236,17 +253,40 @@ const AddressInput = ({ value, onChange, name, placeholder, onPlaceSelected, cla
       setError(null);
       setIsLocationSelected(false);
       
+      // If manually edited after confirmation, clear the confirmed address reference
+      if (wasManuallyEdited) {
+        lastConfirmedAddressRef.current = null;
+        console.log('🧹 Cleared confirmed address reference due to manual edit');
+      }
+      
       // Fetch suggestions for new input
       if (newValue.trim()) {
         fetchSuggestions(newValue);
       } else {
         setPredictions([]);
         setShowSuggestions(false);
+        // Clear confirmed reference when input is empty
+        lastConfirmedAddressRef.current = null;
       }
     }
 
     console.groupEnd();
   }, [onChange, name, fetchSuggestions, value]);
+
+  // Handle input focus - show suggestions if there's enough text
+  const handleInputFocus = useCallback(() => {
+    console.log('🎯 [AddressInput] Input focused:', {
+      currentValue: value,
+      valueLength: value?.length,
+      hasEnoughChars: value && value.trim().length >= 2
+    });
+    
+    // If there's enough text to trigger suggestions, fetch them
+    if (value && value.trim().length >= 2) {
+      console.log('🔍 [AddressInput] Refetching suggestions on focus');
+      fetchSuggestions(value);
+    }
+  }, [value, fetchSuggestions]);
 
   // Handle keyboard navigation
   const handleKeyDown = useCallback((e) => {
@@ -313,6 +353,7 @@ const AddressInput = ({ value, onChange, name, placeholder, onPlaceSelected, cla
         value={value}
         onChange={handleInputChange}
         onKeyDown={handleKeyDown}
+        onFocus={handleInputFocus}
         name={name}
         placeholder={placeholder || "Enter location"}
         className={`bg-zinc-800/30 mb-3 py-2 px-4 w-full border text-white transition-colors ${

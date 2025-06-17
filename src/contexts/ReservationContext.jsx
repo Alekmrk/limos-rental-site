@@ -48,13 +48,13 @@ export const ReservationContextProvider = ({ children }) => {
   });
 
   const handleInput = async (e) => {
-    const { name, value } = e.target;
+    const { name, value, placeInfo } = e.target;
     
     console.log('🔄 [ReservationContext] handleInput called:', {
       field: name,
       value: value,
-      hasPlaceInfo: !!e.target.placeInfo,
-      placeInfo: e.target.placeInfo
+      hasPlaceInfo: !!placeInfo,
+      placeInfo: placeInfo
     });
     
     setReservationInfo(prev => {
@@ -63,11 +63,21 @@ export const ReservationContextProvider = ({ children }) => {
         [name]: value
       };
       
+      // Handle placeInfo updates for address fields
+      if (placeInfo) {
+        if (name === 'pickup') {
+          newInfo.pickupPlaceInfo = placeInfo;
+        } else if (name === 'dropoff') {
+          newInfo.dropoffPlaceInfo = placeInfo;
+        }
+      }
+      
       console.log('📊 [ReservationContext] State update:', {
         field: name,
         oldValue: prev[name],
         newValue: value,
-        fullNewState: newInfo
+        placeInfoUpdate: placeInfo ? 'Updated' : 'None',
+        wasManuallyEdited: placeInfo?.wasManuallyEdited
       });
       
       return newInfo;

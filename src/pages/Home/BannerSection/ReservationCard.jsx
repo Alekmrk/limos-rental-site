@@ -173,23 +173,36 @@ const ReservationCard = () => {
         hasPickupValue,
         hasDropoffValue,
         hasPickupPlaceInfo: !!reservationInfo.pickupPlaceInfo,
-        hasDropoffPlaceInfo: !!reservationInfo.dropoffPlaceInfo
+        hasDropoffPlaceInfo: !!reservationInfo.dropoffPlaceInfo,
+        pickupIsConfirmed: reservationInfo.pickupPlaceInfo?.isConfirmed,
+        dropoffIsConfirmed: reservationInfo.dropoffPlaceInfo?.isConfirmed,
+        pickupWasManuallyEdited: reservationInfo.pickupPlaceInfo?.wasManuallyEdited,
+        dropoffWasManuallyEdited: reservationInfo.dropoffPlaceInfo?.wasManuallyEdited
       });
       
       if (hasPickupValue || hasDropoffValue) {
         // First check: require autocomplete selection for any typed locations
-        if (hasPickupValue && !reservationInfo.pickupPlaceInfo?.isConfirmed) {
+        // Also check if the address was manually edited after being confirmed
+        if (hasPickupValue && (!reservationInfo.pickupPlaceInfo?.isConfirmed || reservationInfo.pickupPlaceInfo?.wasManuallyEdited)) {
           newErrors.pickup = "Please select a location from the suggestions";
-          console.log('❌ Pickup place info missing');
+          console.log('❌ Pickup validation failed:', {
+            hasValue: hasPickupValue,
+            isConfirmed: reservationInfo.pickupPlaceInfo?.isConfirmed,
+            wasManuallyEdited: reservationInfo.pickupPlaceInfo?.wasManuallyEdited
+          });
         }
-        if (hasDropoffValue && !reservationInfo.dropoffPlaceInfo?.isConfirmed) {
+        if (hasDropoffValue && (!reservationInfo.dropoffPlaceInfo?.isConfirmed || reservationInfo.dropoffPlaceInfo?.wasManuallyEdited)) {
           newErrors.dropoff = "Please select a location from the suggestions";
-          console.log('❌ Dropoff place info missing');
+          console.log('❌ Dropoff validation failed:', {
+            hasValue: hasDropoffValue,
+            isConfirmed: reservationInfo.dropoffPlaceInfo?.isConfirmed,
+            wasManuallyEdited: reservationInfo.dropoffPlaceInfo?.wasManuallyEdited
+          });
         }
         
-        // Second check: if we have both place infos, validate Switzerland requirement
-        if (reservationInfo.pickupPlaceInfo?.isConfirmed && 
-            (!reservationInfo.isHourly ? reservationInfo.dropoffPlaceInfo?.isConfirmed : true)) {
+        // Second check: if we have both place infos and they're confirmed (not manually edited), validate Switzerland requirement
+        if (reservationInfo.pickupPlaceInfo?.isConfirmed && !reservationInfo.pickupPlaceInfo?.wasManuallyEdited && 
+            (!reservationInfo.isHourly ? (reservationInfo.dropoffPlaceInfo?.isConfirmed && !reservationInfo.dropoffPlaceInfo?.wasManuallyEdited) : true)) {
           console.log('🔄 Using address validation service...');
           try {
             const validation = await validateAddresses(
