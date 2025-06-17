@@ -79,6 +79,7 @@ router.get('/verify-session/:sessionId', async (req, res) => {
         plannedActivities: session.metadata.plannedActivities,
         specialRequestDetails: session.metadata.specialRequestDetails,
         additionalRequests: session.metadata.additionalRequests,
+        referenceNumber: session.metadata.referenceNumber,
 
         // Route Information
         routeInfo: session.metadata.routeDistance && session.metadata.routeDuration ? {

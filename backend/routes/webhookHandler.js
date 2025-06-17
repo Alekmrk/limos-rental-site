@@ -129,6 +129,7 @@ module.exports = async (req, res) => {
             plannedActivities: metadata.plannedActivities,
             specialRequestDetails: metadata.specialRequestDetails,
             additionalRequests: metadata.additionalRequests,
+            referenceNumber: metadata.referenceNumber,
 
             // Route Information
             routeInfo: metadata.routeDistance && metadata.routeDuration ? {

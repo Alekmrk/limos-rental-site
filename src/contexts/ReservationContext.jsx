@@ -31,6 +31,7 @@ export const ReservationContextProvider = ({ children }) => {
     babySeats: 0,
     skiEquipment: 0,
     additionalRequests: "",
+    referenceNumber: "",
     email: "",
     phone: "",
     selectedVehicle: null,

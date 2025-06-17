@@ -59,6 +59,7 @@ const StripePayment = ({ amount, onSuccess, onError, reservationInfo }) => {
             plannedActivities: reservationInfo.plannedActivities?.substring(0, 450) || '',
             specialRequestDetails: reservationInfo.specialRequestDetails?.substring(0, 450) || '',
             additionalRequests: reservationInfo.additionalRequests?.substring(0, 450) || '',
+            referenceNumber: reservationInfo.referenceNumber?.substring(0, 450) || '',
             
             // Route Information
             routeDistance: distance,

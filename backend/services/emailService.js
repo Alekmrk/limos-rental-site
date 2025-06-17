@@ -540,6 +540,12 @@ const generateEmailContent = (reservationInfo, type = 'customer') => {
         <p>${reservationInfo.additionalRequests}</p>
       </div>
     ` : ''}
+    ${reservationInfo.referenceNumber ? `
+      <div class="subsection">
+        <p class="subsection-title">Reference Number or Cost Center:</p>
+        <p>${reservationInfo.referenceNumber}</p>
+      </div>
+    ` : ''}
   `;
 
   // Generate HTML content
@@ -619,6 +625,7 @@ Phone: ${reservationInfo.phone}
 ${reservationInfo.flightNumber ? `Flight Number: ${reservationInfo.flightNumber}` : ''}
 ${reservationInfo.meetingBoard ? `Meeting Board Name: ${reservationInfo.meetingBoard}` : ''}
 ${reservationInfo.additionalRequests ? `${isSpecialRequest ? 'Special Request Details' : 'Additional Requests'}: ${reservationInfo.additionalRequests}` : ''}
+${reservationInfo.referenceNumber ? `Reference Number or Cost Center: ${reservationInfo.referenceNumber}` : ''}
 
 ${getEmailOutro(reservationInfo, type)}
 
@@ -705,6 +712,7 @@ Phone: ${reservationInfo.phone}
 ${reservationInfo.flightNumber ? `Flight Number: ${reservationInfo.flightNumber}` : ''}
 ${reservationInfo.meetingBoard ? `Meeting Board Name: ${reservationInfo.meetingBoard}` : ''}
 ${reservationInfo.additionalRequests ? `${reservationInfo.isSpecialRequest ? 'Special Request Details' : 'Additional Requests'}: ${reservationInfo.additionalRequests}` : ''}
+${reservationInfo.referenceNumber ? `Reference Number or Cost Center: ${reservationInfo.referenceNumber}` : ''}
 
 ${getEmailOutro(reservationInfo, type)}
 

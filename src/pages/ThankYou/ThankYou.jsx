@@ -206,6 +206,12 @@ const ThankYou = ({ scrollUp }) => {
                     <p className="text-sm break-words">{reservationInfo.additionalRequests}</p>
                   </>
                 )}
+                {reservationInfo.referenceNumber && (
+                  <>
+                    <p className="mt-4 text-sm text-zinc-400">Reference Number or Cost Center:</p>
+                    <p className="text-sm break-words">{reservationInfo.referenceNumber}</p>
+                  </>
+                )}
               </div>
             </div>
 
@@ -220,6 +226,21 @@ const ThankYou = ({ scrollUp }) => {
                 </h3>
                 <div className="space-y-2 text-zinc-300">
                   <p className="text-sm break-words">{reservationInfo.additionalRequests}</p>
+                </div>
+              </div>
+            )}
+
+            {/* Reference Number Section - Only shown if reference number exists */}
+            {reservationInfo.referenceNumber && (
+              <div className="bg-black/20 p-4 lg:p-6 rounded-lg">
+                <h3 className="text-gold font-medium mb-4 flex items-center gap-2">
+                  <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z"/>
+                  </svg>
+                  Reference Information
+                </h3>
+                <div className="space-y-2 text-zinc-300">
+                  <p className="text-sm break-words">{reservationInfo.referenceNumber}</p>
                 </div>
               </div>
             )}

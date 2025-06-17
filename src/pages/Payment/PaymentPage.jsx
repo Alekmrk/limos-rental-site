@@ -284,6 +284,12 @@ const PaymentPage = ({ scrollUp }) => {
                   <p className="text-sm bg-black/20 p-3 rounded-lg break-words">{reservationInfo.additionalRequests}</p>
                 </div>
               )}
+              {reservationInfo.referenceNumber && (
+                <div className="mt-6">
+                  <p className="text-zinc-400 text-sm mb-2">Reference Number or Cost Center</p>
+                  <p className="text-sm bg-black/20 p-3 rounded-lg break-words">{reservationInfo.referenceNumber}</p>
+                </div>
+              )}
             </div>
 
             {/* Price Summary */}
