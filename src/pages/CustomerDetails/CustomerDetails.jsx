@@ -264,7 +264,11 @@ const CustomerDetails = ({ scrollUp }) => {
                           onChange={handleInput}
                           min={0}
                           max={8}
-                          label="Child Seats (Ages 4-7 / 15-36 kg)"
+                          label={
+                            <span>
+                              Child Seats <span className="text-xs text-zinc-400 font-normal">(Ages 4-7 / 15-36 kg)</span>
+                            </span>
+                          }
                         />
                       </div>
                       
@@ -276,7 +280,11 @@ const CustomerDetails = ({ scrollUp }) => {
                           onChange={handleInput}
                           min={0}
                           max={4}
-                          label="Baby Seats (Ages 0-3 / up to 18 kg)"
+                          label={
+                            <span>
+                              Baby Seats <span className="text-xs text-zinc-400 font-normal">(Ages 0-3 / up to 18 kg)</span>
+                            </span>
+                          }
                         />
                       </div>
                     </div>
