@@ -42,7 +42,7 @@ const PaymentPage = ({ scrollUp }) => {
     if (!reservationInfo.selectedVehicle) return;
 
     const calculatedPrice = calculatePrice(
-      reservationInfo.totalDistance / 1000 || 46.5,
+      reservationInfo.totalDistance / 1000 || 0,
       0,
       reservationInfo.selectedVehicle.name,
       0,

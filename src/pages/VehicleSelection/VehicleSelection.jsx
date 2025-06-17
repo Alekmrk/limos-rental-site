@@ -248,7 +248,7 @@ const VehicleSelection = ({ scrollUp }) => {
       } else {
         // Calculate transfer price
         const basePrice = calculatePrice(
-          reservationInfo.totalDistance / 1000 || 46.5, // Convert meters to km or use default
+          reservationInfo.totalDistance / 1000 || 0, // Convert meters to km or use default
           0, // duration not used
           vehicle.name,
           reservationInfo.extraStops?.length || 0,
@@ -329,7 +329,7 @@ const VehicleSelection = ({ scrollUp }) => {
                 </svg>
                 {reservationInfo.isHourly ? 'HOURLY TRANSFER' : 'DISTANCE TRANSFER'}
               </span>
-              <span>• {reservationInfo.isHourly ? `${reservationInfo.hours || 3} hours` : `${reservationInfo.distance || '46.5'} KM`}</span>
+              <span>• {reservationInfo.isHourly ? `${reservationInfo.hours || 0} hours` : `${reservationInfo.distance || '0'} KM`}</span>
             </div>
           </div>
 
@@ -432,13 +432,13 @@ const VehicleSelection = ({ scrollUp }) => {
                     <svg className="w-5 h-5 text-gold" viewBox="0 0 24 24" fill="currentColor">
                       <path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/>
                     </svg>
-                    <span className="text-sm text-zinc-300">Total Distance: {reservationInfo.routeInfo?.distance || '46.5 km'}</span>
+                    <span className="text-sm text-zinc-300">Total Distance: {reservationInfo.routeInfo?.distance || '0 km'}</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <svg className="w-5 h-5 text-gold" viewBox="0 0 24 24" fill="currentColor">
                       <path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/>
                     </svg>
-                    <span className="text-sm text-zinc-300">Total Duration: {reservationInfo.routeInfo?.duration || '36 min'}</span>
+                    <span className="text-sm text-zinc-300">Total Duration: {reservationInfo.routeInfo?.duration || '0 min'}</span>
                   </div>
                 </div>
                 <p className="hidden text-xs text-zinc-500 mt-3">
