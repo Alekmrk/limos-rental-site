@@ -256,7 +256,7 @@ const CustomerDetails = ({ scrollUp }) => {
                       </div>
                       <div>
                         <label className="block text-sm font-medium mb-2" htmlFor="meetingBoard">
-                          Name for Meeting Board
+                          Meeting Board Name
                         </label>
                         <input
                           type="text"
