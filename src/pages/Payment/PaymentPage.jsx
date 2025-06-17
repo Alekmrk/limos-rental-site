@@ -265,6 +265,12 @@ const PaymentPage = ({ scrollUp }) => {
                     <p className="font-medium break-words">{reservationInfo.flightNumber}</p>
                   </div>
                 )}
+                {reservationInfo.meetingBoard && (
+                  <div>
+                    <p className="text-zinc-400 text-sm mb-1">Meeting Board Name</p>
+                    <p className="font-medium break-words">{reservationInfo.meetingBoard}</p>
+                  </div>
+                )}
               </div>
               {reservationInfo.isHourly && reservationInfo.plannedActivities && (
                 <div className="mt-6">

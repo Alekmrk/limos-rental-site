@@ -75,6 +75,7 @@ router.get('/verify-session/:sessionId', async (req, res) => {
 
         // Additional Details
         flightNumber: session.metadata.flightNumber,
+        meetingBoard: session.metadata.meetingBoard,
         plannedActivities: session.metadata.plannedActivities,
         specialRequestDetails: session.metadata.specialRequestDetails,
         additionalRequests: session.metadata.additionalRequests,

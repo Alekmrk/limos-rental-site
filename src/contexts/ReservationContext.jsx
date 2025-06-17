@@ -26,6 +26,7 @@ export const ReservationContextProvider = ({ children }) => {
     passengers: "", // Changed from 1 to empty string
     bags: "", // Changed from 0 to empty string
     flightNumber: "",
+    meetingBoard: "",
     childSeats: 0,
     babySeats: 0,
     skiEquipment: 0,

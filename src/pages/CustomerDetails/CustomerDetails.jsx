@@ -101,10 +101,11 @@ const CustomerDetails = ({ scrollUp }) => {
     if (reservationInfo.childSeats > 0 || 
         reservationInfo.babySeats > 0 || 
         reservationInfo.skiEquipment > 0 || 
+        reservationInfo.meetingBoard || 
         reservationInfo.flightNumber) {
       setShowAdditionalDetails(true);
     }
-  }, [reservationInfo.childSeats, reservationInfo.babySeats, reservationInfo.skiEquipment, reservationInfo.flightNumber]);
+  }, [reservationInfo.childSeats, reservationInfo.babySeats, reservationInfo.meetingBoard, reservationInfo.flightNumber]);
 
   return (
     <div className="container-default mt-28">
@@ -202,7 +203,7 @@ const CustomerDetails = ({ scrollUp }) => {
                       <path d="m22 21-3-3"/>
                     </svg>
                     <span className="text-sm font-medium">Additional Passenger Details</span>
-                    <span className="text-xs text-zinc-400">(Flight number, child seats, ski equipment)</span>
+                    <span className="text-xs text-zinc-400">(Flight number, meeting board, child seats)</span>
                   </div>
                   <svg 
                     className={`w-5 h-5 text-zinc-400 transition-transform duration-200 ${
@@ -242,7 +243,7 @@ const CustomerDetails = ({ scrollUp }) => {
                         />
                       </div>
                       
-                      <div>
+                      <div className= "hidden">
                         <NumberDropdown
                           id="skiEquipment"
                           name="skiEquipment"
@@ -251,6 +252,20 @@ const CustomerDetails = ({ scrollUp }) => {
                           min={0}
                           max={20}
                           label="Number of Ski Equipment"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium mb-2" htmlFor="meetingBoard">
+                          Name for Meeting Board
+                        </label>
+                        <input
+                          type="text"
+                          id="meetingBoard"
+                          name="meetingBoard"
+                          value={reservationInfo.meetingBoard}
+                          onChange={handleInput}
+                          className="bg-zinc-800/30 rounded-lg py-2 px-4 w-full border border-zinc-700/50 focus:border-gold/40 focus:outline-none focus:ring-1 focus:ring-gold/20 transition-all duration-200"
+                          placeholder="e.g., Mr. Smith, ABC Company"
                         />
                       </div>
                     </div>

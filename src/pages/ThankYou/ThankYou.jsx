@@ -197,6 +197,9 @@ const ThankYou = ({ scrollUp }) => {
                 {reservationInfo.flightNumber && (
                   <p className="break-words">Flight Number: {reservationInfo.flightNumber}</p>
                 )}
+                {reservationInfo.meetingBoard && (
+                  <p className="break-words">Meeting Board Name: {reservationInfo.meetingBoard}</p>
+                )}
                 {reservationInfo.additionalRequests &&  !reservationInfo.isSpecialRequest &&(
                   <>
                     <p className="mt-4 text-sm text-zinc-400">{ 'Additional Requests'}:</p>

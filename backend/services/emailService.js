@@ -533,6 +533,7 @@ const generateEmailContent = (reservationInfo, type = 'customer') => {
     <p>Phone: ${reservationInfo.phone || 'Not provided'}</p>
     ${reservationInfo.firstName ? `<p>Name: ${reservationInfo.firstName}</p>` : ''}
     ${reservationInfo.flightNumber ? `<p>Flight Number: ${reservationInfo.flightNumber}</p>` : ''}
+    ${reservationInfo.meetingBoard ? `<p>Meeting Board Name: ${reservationInfo.meetingBoard}</p>` : ''}
     ${reservationInfo.additionalRequests ? `
       <div class="subsection">
         <p class="subsection-title">${isSpecialRequest ? 'Special Request Details' : 'Additional Requests'}:</p>
@@ -616,6 +617,7 @@ CUSTOMER DETAILS
 Email: ${reservationInfo.email}
 Phone: ${reservationInfo.phone}
 ${reservationInfo.flightNumber ? `Flight Number: ${reservationInfo.flightNumber}` : ''}
+${reservationInfo.meetingBoard ? `Meeting Board Name: ${reservationInfo.meetingBoard}` : ''}
 ${reservationInfo.additionalRequests ? `${isSpecialRequest ? 'Special Request Details' : 'Additional Requests'}: ${reservationInfo.additionalRequests}` : ''}
 
 ${getEmailOutro(reservationInfo, type)}
@@ -701,6 +703,7 @@ CUSTOMER DETAILS
 Email: ${reservationInfo.email}
 Phone: ${reservationInfo.phone}
 ${reservationInfo.flightNumber ? `Flight Number: ${reservationInfo.flightNumber}` : ''}
+${reservationInfo.meetingBoard ? `Meeting Board Name: ${reservationInfo.meetingBoard}` : ''}
 ${reservationInfo.additionalRequests ? `${reservationInfo.isSpecialRequest ? 'Special Request Details' : 'Additional Requests'}: ${reservationInfo.additionalRequests}` : ''}
 
 ${getEmailOutro(reservationInfo, type)}

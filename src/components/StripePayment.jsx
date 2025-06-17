@@ -55,6 +55,7 @@ const StripePayment = ({ amount, onSuccess, onError, reservationInfo }) => {
             
             // Additional Information
             flightNumber: reservationInfo.flightNumber || '',
+            meetingBoard: reservationInfo.meetingBoard || '',
             plannedActivities: reservationInfo.plannedActivities?.substring(0, 450) || '',
             specialRequestDetails: reservationInfo.specialRequestDetails?.substring(0, 450) || '',
             additionalRequests: reservationInfo.additionalRequests?.substring(0, 450) || '',

@@ -125,6 +125,7 @@ module.exports = async (req, res) => {
 
             // Additional Details
             flightNumber: metadata.flightNumber,
+            meetingBoard: metadata.meetingBoard,
             plannedActivities: metadata.plannedActivities,
             specialRequestDetails: metadata.specialRequestDetails,
             additionalRequests: metadata.additionalRequests,
