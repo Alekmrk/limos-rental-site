@@ -7,7 +7,7 @@ const FeaturesSection = () => {
     <div className="container-default mt-32">
       <SectionHeading
         title="Why Choose Us"
-        text="At LIMOS we pride ourselves in delivering extensive services to fulfill all of your
+        text="At Elite Way we pride ourselves in delivering extensive services to fulfill all of your
          needs with first rate customer care"
       />
       <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-12">

@@ -1,4 +1,4 @@
-# Limos Rental Site - Backend TODO List
+# Elite Way Rental Site - Backend TODO List
 
 ## Email Service 📧
 - [ ] Set up Azure email service integration

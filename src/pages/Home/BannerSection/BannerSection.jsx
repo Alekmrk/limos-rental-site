@@ -15,10 +15,10 @@ const BannerSection = () => {
     >
       <div className="relative z-10">
         <h1 className="text-4xl sm:text-5xl md:text-8xl font-semibold pt-8 tracking-wide">
-          mozda i lale bre Limo
+          Elite Way Limo
         </h1>
         <p className="md:w-[42ch] mx-auto mb-8 px-4 md:px-0">
-          radi? andri offer professional car rental & limousine services in our range of
+          We offer professional chauffeur services in our range of
           high-end vehicles
         </p>
         <Link to={"/vehicles"}>

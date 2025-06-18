@@ -1,6 +1,6 @@
-# LIMOS Rental Site
+# Elite Way Rental Site
 
-LIMOS is a website for luxury limousine rentals, designed to provide customers with a premium transportation experience for any occasion.
+Elite Way is a website for professional chauffeur service, designed to provide customers with a premium transportation experience for any occasion.
 
 ![home-page](screenshots/home-page.png)
 
@@ -14,7 +14,7 @@ LIMOS is a website for luxury limousine rentals, designed to provide customers w
 
 ## How to Use
 
-1. Visit the LIMOS website at [limos](https://limos-rental-site.vercel.app/)
+1. Visit the Elite Way website at [elitewaylimo.ch](https://www.elitewaylimo.ch/)
 2. Browse the available limousine models and select the one that fits your needs
 
 ![vehicles-page](screenshots/vehicles-page.png)
@@ -23,11 +23,11 @@ LIMOS is a website for luxury limousine rentals, designed to provide customers w
 
 ![reservation-page](screenshots/reservation-page.png)
 
-4. Enjoy your premium transportation experience with LIMOS!
+4. Enjoy your premium transportation experience with Elite Way!
 
 ## Technology Stack
 
-LIMOS is built using the following technologies:
+Elite Way is built using the following technologies:
 
 - HTML
 - React.js

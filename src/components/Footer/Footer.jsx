@@ -67,7 +67,7 @@ const Footer = () => {
       </div>
 
       <div className="flex flex-col md:flex-row md:justify-between items-center">
-        <p className="font-medium mb-2">&copy; 2023 LIMOS</p>
+        <p className="font-medium mb-2">&copy; 2025 ELITE WAY</p>
 
         <ul className="bottom-links flex flex-col md:flex-row gap-4 text-neutral-400 font-normal">
           <FooterLink link={"#"}>Terms</FooterLink>
