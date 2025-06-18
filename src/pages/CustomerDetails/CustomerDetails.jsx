@@ -10,7 +10,7 @@ const CustomerDetails = ({ scrollUp }) => {
   const navigate = useNavigate();
   const { reservationInfo, handleInput } = useContext(ReservationContext);
   const [errors, setErrors] = useState({});
-  const [showAdditionalDetails, setShowAdditionalDetails] = useState(false);
+  const [showAdditionalDetails, setShowAdditionalDetails] = useState(false); // Start closed
 
   // Check if we have the required data from previous steps
   useEffect(() => {
@@ -91,21 +91,18 @@ const CustomerDetails = ({ scrollUp }) => {
       window.scrollTo(0, 0);
     };
 
-    const timeoutId = setTimeout(ensureScrollUp, 100); // Add a slightly longer delay for reliability
-
-    return () => clearTimeout(timeoutId); // Cleanup timeout on unmount
-  }, []);
-
-  // Check if any additional details have values to auto-expand the section
-  useEffect(() => {
-    if (reservationInfo.childSeats > 0 || 
-        reservationInfo.babySeats > 0 || 
-        reservationInfo.skiEquipment > 0 || 
-        reservationInfo.meetingBoard || 
-        reservationInfo.flightNumber) {
+    const timeoutId = setTimeout(ensureScrollUp, 100);
+    
+    // Trigger the animation to open Additional Details after page load
+    const animationTimeout = setTimeout(() => {
       setShowAdditionalDetails(true);
-    }
-  }, [reservationInfo.childSeats, reservationInfo.babySeats, reservationInfo.meetingBoard, reservationInfo.flightNumber]);
+    }, 500); // Wait 500ms after page load to start animation
+
+    return () => {
+      clearTimeout(timeoutId);
+      clearTimeout(animationTimeout);
+    };
+  }, []);
 
   return (
     <div className="container-default mt-28">
@@ -219,14 +216,20 @@ const CustomerDetails = ({ scrollUp }) => {
                 </button>
 
                 {/* Expandable Content */}
-                <div className={`transition-all duration-500 ease-in-out ${
-                  showAdditionalDetails 
-                    ? 'max-h-[800px] opacity-100' 
-                    : 'max-h-0 opacity-0 overflow-hidden'
-                }`}>
-                  <div className={`pt-6 space-y-6 transform transition-transform duration-500 ease-in-out ${
-                    showAdditionalDetails ? 'translate-y-0' : '-translate-y-4'
-                  }`}>
+                <div 
+                  className={`transition-all ease-in-out ${
+                    showAdditionalDetails 
+                      ? 'max-h-[800px] opacity-100' 
+                      : 'max-h-0 opacity-0 overflow-hidden'
+                  }`}
+                  style={{ transitionDuration: showAdditionalDetails ? '1s' : '0.4s' }}
+                >
+                  <div 
+                    className={`pt-6 space-y-6 transform transition-transform ease-in-out ${
+                      showAdditionalDetails ? 'translate-y-0' : '-translate-y-4'
+                    }`}
+                    style={{ transitionDuration: showAdditionalDetails ? '1s' : '0.4s' }}
+                  >
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div>
                         <label className="block text-sm font-medium mb-2" htmlFor="flightNumber">
