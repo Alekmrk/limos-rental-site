@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 const CookieConsent = () => {
   const [showBanner, setShowBanner] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
+  const [animateIn, setAnimateIn] = useState(false);
   const [preferences, setPreferences] = useState({
     essential: true, // Always true, can't be disabled
     analytics: true, // Default enabled
@@ -20,11 +21,33 @@ const CookieConsent = () => {
       
       @keyframes pulse-glow {
         0%, 100% {
-          box-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
+          box-shadow: 0 0 20px rgba(212,175,55,0.3);
         }
         50% {
-          box-shadow: 0 0 30px rgba(212, 175, 55, 0.6);
+          box-shadow: 0 0 30px rgba(212,175,55,0.6);
         }
+      }
+
+      .cookie-banner-enter {
+        transform: translateY(100%);
+        opacity: 0;
+      }
+
+      .cookie-banner-animate {
+        transform: translateY(0);
+        opacity: 1;
+        transition: transform 0.5s ease-out, opacity 0.5s ease-out;
+      }
+
+      .cookie-modal-enter {
+        transform: scale(0.9);
+        opacity: 0;
+      }
+
+      .cookie-modal-animate {
+        transform: scale(1);
+        opacity: 1;
+        transition: transform 0.3s ease-out, opacity 0.3s ease-out;
       }
     `;
     document.head.appendChild(style);
@@ -42,7 +65,11 @@ const CookieConsent = () => {
     const consent = localStorage.getItem('cookie-consent');
     if (!consent) {
       // Show banner after a short delay
-      const timer = setTimeout(() => setShowBanner(true), 1000);
+      const timer = setTimeout(() => {
+        setShowBanner(true);
+        // Start animation slightly after banner shows
+        setTimeout(() => setAnimateIn(true), 50);
+      }, 1000);
       return () => clearTimeout(timer);
     } else {
       try {
@@ -57,13 +84,19 @@ const CookieConsent = () => {
           initializeTracking(savedPreferences);
         } else {
           // Show banner again if they previously rejected important cookies
-          const timer = setTimeout(() => setShowBanner(true), 1000);
+          const timer = setTimeout(() => {
+            setShowBanner(true);
+            setTimeout(() => setAnimateIn(true), 50);
+          }, 1000);
           return () => clearTimeout(timer);
         }
       } catch (error) {
         console.error('Error loading cookie preferences:', error);
         // Show banner if there's an error parsing preferences
-        const timer = setTimeout(() => setShowBanner(true), 1000);
+        const timer = setTimeout(() => {
+          setShowBanner(true);
+          setTimeout(() => setAnimateIn(true), 50);
+        }, 1000);
         return () => clearTimeout(timer);
       }
     }
@@ -102,6 +135,7 @@ const CookieConsent = () => {
     initializeTracking(allAccepted);
     setShowBanner(false);
     setShowSettings(false);
+    setAnimateIn(false);
   };
 
   const handleAcceptSelected = () => {
@@ -115,6 +149,7 @@ const CookieConsent = () => {
     // Always hide banner and close settings modal when user saves preferences
     setShowBanner(false);
     setShowSettings(false);
+    setAnimateIn(false);
   };
 
   const handleRejectAll = () => {
@@ -146,7 +181,9 @@ const CookieConsent = () => {
   return (
     <>
       {/* Cookie Banner */}
-      <div className="fixed bottom-0 left-0 right-0 z-[300] bg-zinc-900/98 backdrop-blur-sm border-t border-gold/30 p-3 shadow-2xl">
+      <div className={`fixed bottom-0 left-0 right-0 z-[300] bg-zinc-900/98 backdrop-blur-sm border-t border-gold/30 p-3 shadow-2xl ${
+        animateIn ? 'cookie-banner-animate' : 'cookie-banner-enter'
+      }`}>
         <div className="container-default max-w-5xl mx-auto">
           <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
             {/* Content */}
@@ -182,7 +219,9 @@ const CookieConsent = () => {
       {/* Cookie Settings Modal */}
       {showSettings && (
         <div className="fixed inset-0 z-[350] flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
-          <div className="bg-zinc-800 border border-zinc-700/50 rounded-2xl shadow-2xl w-full max-w-2xl max-h-[80vh] overflow-y-auto">
+          <div className={`bg-zinc-800 border border-zinc-700/50 rounded-2xl shadow-2xl w-full max-w-2xl max-h-[80vh] overflow-y-auto ${
+            showSettings ? 'cookie-modal-animate' : 'cookie-modal-enter'
+          }`}>
             <div className="p-6">
               {/* Header */}
               <div className="flex items-center justify-between mb-6">
