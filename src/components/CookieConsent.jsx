@@ -105,19 +105,16 @@ const CookieConsent = () => {
   };
 
   const handleAcceptSelected = () => {
-    // Only hide popup if they accepted both analytics and marketing
-    if (preferences.analytics && preferences.marketing) {
-      localStorage.setItem('cookie-consent', JSON.stringify(preferences));
-      localStorage.setItem('cookie-consent-timestamp', new Date().toISOString());
-      initializeTracking(preferences);
-      setShowBanner(false);
-      setShowSettings(false);
-    } else {
-      // Save preferences but keep showing popup
-      localStorage.setItem('cookie-consent', JSON.stringify(preferences));
-      // Show a message encouraging them to enable tracking
-      alert('For the best experience, we recommend enabling analytics and marketing cookies. The popup will continue to appear until these are enabled.');
-    }
+    // Save preferences regardless of selection
+    localStorage.setItem('cookie-consent', JSON.stringify(preferences));
+    localStorage.setItem('cookie-consent-timestamp', new Date().toISOString());
+    
+    // Initialize tracking for whatever they accepted
+    initializeTracking(preferences);
+    
+    // Always hide banner and close settings modal when user saves preferences
+    setShowBanner(false);
+    setShowSettings(false);
   };
 
   const handleRejectAll = () => {
