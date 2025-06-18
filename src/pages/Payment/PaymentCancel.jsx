@@ -47,10 +47,10 @@ const PaymentCancel = () => {
             </div>
           </div>
 
-          <p className="mt-8 text-sm text-zinc-400">
+          <p className="mt-4 text-sm text-red-400">
             Need immediate assistance? Contact us at{' '}
-            <a href="tel:+41765880007" className="text-gold hover:underline">
-              +41 76 588 00 07
+            <a href="tel:+41782647970" className="text-gold hover:underline">
+              +41 78 264 79 70
             </a>
           </p>
         </div>

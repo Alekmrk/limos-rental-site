@@ -13,7 +13,9 @@ import ServicesPage from "./pages/ServicesPage/ServicesPage";
 import PaymentPage from "./pages/Payment/PaymentPage";
 import PaymentSuccess from "./pages/Payment/PaymentSuccess";
 import PaymentCancel from "./pages/Payment/PaymentCancel";
+import PrivacyPolicy from "./pages/PrivacyPolicy/PrivacyPolicy";
 import BackToTopButton from "./components/BackToTopButton";
+import CookieConsent from "./components/CookieConsent";
 import { useState } from "react";
 import cars from "./data/cars";
 import { ReservationContextProvider } from "./contexts/ReservationContext";
@@ -73,11 +75,13 @@ function App() {
             element={<PaymentCancel />} 
           />
           <Route path="/thankyou" element={<ThankYou scrollUp={scrollUp} />} />
+          <Route path="/privacy-policy" element={<PrivacyPolicy scrollUp={scrollUp} />} />
           <Route path="*" element={<NotFound scrollUp={scrollUp} />} />
         </Routes>
       </ReservationContextProvider>
       <Footer />
       <BackToTopButton scrollUp={scrollUp} />
+      <CookieConsent />
     </>
   );
 }

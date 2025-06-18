@@ -11,19 +11,22 @@
     - [ ] Custom/other reservation types
     - [ ] Service-specific pricing and options
 - [ ] 🔴 Implement billing flow and payment processing
-    - [ ] Integrate real credit card payment processing (currently just UI)
-        - [ ] Add Stripe/other payment provider integration
-        - [ ] Handle successful/failed payments
-        - [ ] Implement error handling and retry logic
+    - [x] Integrate real credit card payment processing (Stripe integration completed)
+        - [x] Add Stripe/other payment provider integration
+        - [x] Handle successful/failed payments
+        - [x] Implement error handling and retry logic
+        - [x] Webhook handling for payment events
+        - [x] Payment session verification
+        - [x] Payment success/cancel pages
     - [ ] Implement real crypto payment processing
         - [ ] Generate unique USDT addresses per transaction
         - [ ] Real-time crypto payment detection
         - [ ] Handle blockchain confirmations
         - [ ] Handle failed/incomplete crypto transfers
-    - [ ] Add payment receipt and invoice generation
+    - [x] Add payment receipt and invoice generation
+        - [x] Email delivery of receipts (via webhooks)
+        - [x] Store payment records (in reservation context)
         - [ ] PDF generation for invoices
-        - [ ] Email delivery of receipts
-        - [ ] Store payment records
     - [ ] Add payment expiry for crypto payments
         - [ ] Price locking mechanism
         - [ ] Handle expired payment sessions
@@ -32,8 +35,18 @@
         - [ ] Manual payment verification
         - [ ] Refund processing
 - [ ] 🟡 Update website content (images and text)
-- [ ] 🟢 Migrate location services from current API to Google Places API
-- [ ] 🟢 Add validation to ensure pickup OR drop-off location is within Switzerland
+- [x] Migrate location services from current API to Google Places API
+- [x] Add validation to ensure pickup OR drop-off location is within Switzerland
+- [ ] 🟡 GDPR & Privacy Compliance
+    - [x] Implement cookie consent banner and management system
+    - [ ] Create comprehensive privacy policy page
+    - [ ] Update privacy policy with correct email address (only info@elitewaylimo.ch)
+    - [ ] Add Google Analytics integration with cookie consent
+    - [ ] Implement marketing tracking (Google Ads, Facebook Pixel) based on consent
+    - [ ] Add data export/deletion functionality for customer requests
+    - [ ] Create cookie policy documentation
+    - [ ] Add consent management for newsletter subscriptions
+    - [ ] Implement data retention policies
 
 ## Completed ✅
 - [x] Add payment page UI with credit card and crypto options
@@ -45,6 +58,12 @@
     - [x] Minimum charge enforcement
 - [x] Update progress bar to include payment step
 - [x] Basic payment page navigation flow
+- [x] Cookie consent system implementation (June 18, 2025)
+    - [x] Cookie consent banner with accept/reject/customize options
+    - [x] Granular cookie category controls (Essential, Analytics, Marketing, Functional)
+    - [x] Settings modal for detailed cookie preferences
+    - [x] localStorage persistence for user choices
+    - [x] GDPR-compliant design matching brand colors
 
 ## Notes 📝
 - Priority levels: High (🔴), Medium (🟡), Low (🟢)

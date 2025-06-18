@@ -24,6 +24,12 @@ This is a luxury limousine rental booking platform with the following key featur
 - **Geographic Focus**: Switzerland (Zurich-based)
 - **Backend**: Node.js with email services and webhook handling
 
+### Important Business Information
+- **Primary Email**: info@elitewaylimo.ch (This is the ONLY official business email address)
+- **Contact Phone**: +41 78 264 79 70
+- **Service Area**: Switzerland (with pickup/dropoff requirement validation)
+- **Base Location**: Zurich, Switzerland
+
 ### Coding Environment
 The user asks questions about the following coding languages:
 - ReactJS (Primary framework)
