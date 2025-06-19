@@ -250,13 +250,17 @@ const CookieConsent = () => {
               </div>
 
               {/* Cookie Categories */}
-              <div className="space-y-6">
+              <div className="space-y-4">
                 {/* Essential Cookies */}
                 <div className="border border-zinc-700/50 rounded-lg p-4">
-                  <div className="flex items-center justify-between mb-2">
-                    <h3 className="text-lg font-medium text-white">Essential Cookies</h3>
-                    <div className="w-12 h-6 bg-gold rounded-full relative">
-                      <div className="absolute top-1 right-1 w-4 h-4 bg-black rounded-full"></div>
+                  <div className="flex items-start sm:items-center justify-between gap-3 mb-2">
+                    <div className="flex-1 min-w-0">
+                      <h3 className="text-lg font-medium text-white">Essential Cookies</h3>
+                    </div>
+                    <div className="flex-shrink-0">
+                      <div className="w-12 h-6 bg-gold rounded-full relative">
+                        <div className="absolute top-1 right-1 w-4 h-4 bg-black rounded-full"></div>
+                      </div>
                     </div>
                   </div>
                   <p className="text-zinc-400 text-sm">
@@ -267,21 +271,25 @@ const CookieConsent = () => {
 
                 {/* Analytics Cookies */}
                 <div className="border border-zinc-700/50 rounded-lg p-4">
-                  <div className="flex items-center justify-between mb-2">
-                    <h3 className="text-lg font-medium text-white flex items-center gap-2">
-                      Analytics Cookies
-                      <span className="text-xs bg-gold/20 text-gold px-2 py-1 rounded-full">Recommended</span>
-                    </h3>
-                    <button
-                      onClick={() => handlePreferenceChange('analytics')}
-                      className={`w-12 h-6 rounded-full relative transition-colors ${
-                        preferences.analytics ? 'bg-gold' : 'bg-zinc-600'
-                      }`}
-                    >
-                      <div className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-transform ${
-                        preferences.analytics ? 'translate-x-6' : 'translate-x-1'
-                      }`}></div>
-                    </button>
+                  <div className="flex items-start sm:items-center justify-between gap-3 mb-2">
+                    <div className="flex-1 min-w-0">
+                      <h3 className="text-lg font-medium text-white flex flex-wrap items-center gap-2">
+                        <span>Analytics Cookies</span>
+                        <span className="text-xs bg-gold/20 text-gold px-2 py-1 rounded-full whitespace-nowrap">Recommended</span>
+                      </h3>
+                    </div>
+                    <div className="flex-shrink-0">
+                      <button
+                        onClick={() => handlePreferenceChange('analytics')}
+                        className={`w-12 h-6 rounded-full relative transition-colors ${
+                          preferences.analytics ? 'bg-gold' : 'bg-zinc-600'
+                        }`}
+                      >
+                        <div className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-transform ${
+                          preferences.analytics ? 'translate-x-6' : 'translate-x-1'
+                        }`}></div>
+                      </button>
+                    </div>
                   </div>
                   <p className="text-zinc-400 text-sm">
                     Help us understand how visitors interact with our website and improve your experience.
@@ -290,21 +298,25 @@ const CookieConsent = () => {
 
                 {/* Marketing Cookies */}
                 <div className="border border-zinc-700/50 rounded-lg p-4">
-                  <div className="flex items-center justify-between mb-2">
-                    <h3 className="text-lg font-medium text-white flex items-center gap-2">
-                      Marketing Cookies
-                      <span className="text-xs bg-gold/20 text-gold px-2 py-1 rounded-full">Recommended</span>
-                    </h3>
-                    <button
-                      onClick={() => handlePreferenceChange('marketing')}
-                      className={`w-12 h-6 rounded-full relative transition-colors ${
-                        preferences.marketing ? 'bg-gold' : 'bg-zinc-600'
-                      }`}
-                    >
-                      <div className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-transform ${
-                        preferences.marketing ? 'translate-x-6' : 'translate-x-1'
-                      }`}></div>
-                    </button>
+                  <div className="flex items-start sm:items-center justify-between gap-3 mb-2">
+                    <div className="flex-1 min-w-0">
+                      <h3 className="text-lg font-medium text-white flex flex-wrap items-center gap-2">
+                        <span>Marketing Cookies</span>
+                        <span className="text-xs bg-gold/20 text-gold px-2 py-1 rounded-full whitespace-nowrap">Recommended</span>
+                      </h3>
+                    </div>
+                    <div className="flex-shrink-0">
+                      <button
+                        onClick={() => handlePreferenceChange('marketing')}
+                        className={`w-12 h-6 rounded-full relative transition-colors ${
+                          preferences.marketing ? 'bg-gold' : 'bg-zinc-600'
+                        }`}
+                      >
+                        <div className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-transform ${
+                          preferences.marketing ? 'translate-x-6' : 'translate-x-1'
+                        }`}></div>
+                      </button>
+                    </div>
                   </div>
                   <p className="text-zinc-400 text-sm">
                     Allow us to show you relevant offers and measure campaign effectiveness.
@@ -313,18 +325,22 @@ const CookieConsent = () => {
 
                 {/* Functional Cookies */}
                 <div className="border border-zinc-700/50 rounded-lg p-4">
-                  <div className="flex items-center justify-between mb-2">
-                    <h3 className="text-lg font-medium text-white">Functional Cookies</h3>
-                    <button
-                      onClick={() => handlePreferenceChange('functional')}
-                      className={`w-12 h-6 rounded-full relative transition-colors ${
-                        preferences.functional ? 'bg-gold' : 'bg-zinc-600'
-                      }`}
-                    >
-                      <div className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-transform ${
-                        preferences.functional ? 'translate-x-6' : 'translate-x-1'
-                      }`}></div>
-                    </button>
+                  <div className="flex items-start sm:items-center justify-between gap-3 mb-2">
+                    <div className="flex-1 min-w-0">
+                      <h3 className="text-lg font-medium text-white">Functional Cookies</h3>
+                    </div>
+                    <div className="flex-shrink-0">
+                      <button
+                        onClick={() => handlePreferenceChange('functional')}
+                        className={`w-12 h-6 rounded-full relative transition-colors ${
+                          preferences.functional ? 'bg-gold' : 'bg-zinc-600'
+                        }`}
+                      >
+                        <div className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-transform ${
+                          preferences.functional ? 'translate-x-6' : 'translate-x-1'
+                        }`}></div>
+                      </button>
+                    </div>
                   </div>
                   <p className="text-zinc-400 text-sm">
                     Enable enhanced functionality like chat widgets, language preferences, and personalized content.
