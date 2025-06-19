@@ -95,9 +95,51 @@ const VehicleSelection = ({ scrollUp }) => {
     setErrors(newErrors);
     if (Object.keys(newErrors).length > 0) {
       setHasAttemptedSubmit(true);
+      
+      // If there are errors, scroll to the first error field
+      const firstErrorField = Object.keys(newErrors)[0];
+      scrollToErrorField(firstErrorField);
+      
       return false;
     }
     return true;
+  };
+
+  // Function to scroll to the error field
+  const scrollToErrorField = (fieldName) => {
+    setTimeout(() => {
+      let fieldElement = null;
+      
+      // Handle different field types
+      if (fieldName === 'passengers' || fieldName === 'bags') {
+        // For NumberDropdown components, find by ID but don't focus
+        fieldElement = document.getElementById(fieldName);
+      } else if (fieldName === 'vehicle') {
+        // For vehicle selection, scroll to the specific error message by ID
+        fieldElement = document.getElementById('vehicle-error');
+        if (!fieldElement) {
+          // Fallback to vehicles section if error message not found
+          fieldElement = document.querySelector('h2[class*="text-2xl"]');
+        }
+      } else if (fieldName === 'extraStops') {
+        // For extra stops, find the first empty stop input
+        const stopInputs = document.querySelectorAll('[name^="extraStop-"]');
+        fieldElement = stopInputs[0];
+      }
+      
+      if (fieldElement) {
+        fieldElement.scrollIntoView({ 
+          behavior: 'smooth', 
+          block: 'center',
+          inline: 'nearest'
+        });
+        
+        // Only focus on specific input elements, not NumberDropdown components
+        if (fieldElement.tagName === 'INPUT' && fieldElement.name && fieldElement.name.startsWith('extraStop-')) {
+          fieldElement.focus();
+        }
+      }
+    }, 100); // Small delay to ensure error state is rendered
   };
 
   const handleSubmit = (e) => {
@@ -504,6 +546,17 @@ const VehicleSelection = ({ scrollUp }) => {
 
           <div className="mb-8">
             <h2 className="text-2xl font-medium mb-4">Available Vehicles</h2>
+            
+            {/* Vehicle Selection Error - positioned below Available Vehicles heading */}
+            {hasAttemptedSubmit && errors.vehicle && (
+              <div id="vehicle-error" className="mb-4 text-red-500 text-sm bg-red-500/10 px-4 py-3 rounded-lg border border-red-500/20">
+                <svg className="w-4 h-4 inline-block mr-2" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
+                </svg>
+                {errors.vehicle}
+              </div>
+            )}
+            
             {!shouldShowVehicles ? (
               <div className="bg-zinc-800/20 border border-zinc-700/50 rounded-lg p-8 text-center">
                 <div className="flex flex-col items-center gap-4">
@@ -584,15 +637,19 @@ const VehicleSelection = ({ scrollUp }) => {
                 Back
               </Button>
               <div className="flex flex-col items-end gap-2">
-                <Button type="submit" variant="secondary">
+                <Button 
+                  type="submit" 
+                  variant="secondary"
+                  className={hasAttemptedSubmit && (errors.vehicle || errors.extraStops || errors.passengers || errors.bags) ? 'border-red-500 ring-1 ring-red-500/50' : ''}
+                >
                   Continue
                 </Button>
-                {hasAttemptedSubmit && (errors.vehicle || errors.extraStops) && (
+                {hasAttemptedSubmit && errors.extraStops && (
                   <div className="text-red-500 text-sm bg-red-500/10 px-3 py-1.5 rounded border border-red-500/20">
                     <svg className="w-4 h-4 inline-block mr-1" viewBox="0 0 24 24" fill="currentColor">
                       <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
                     </svg>
-                    {errors.vehicle || "Please fill in or remove empty stops"}
+                    {"Please fill in or remove empty stops"}
                   </div>
                 )}
               </div>

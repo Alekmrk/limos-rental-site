@@ -32,6 +32,16 @@ const CustomerDetails = ({ scrollUp }) => {
     }
   }, [reservationInfo, navigate]);
 
+  // Add handler to clear errors when user types
+  const handleInputChange = (e) => {
+    // Clear the error for the field being edited
+    if (errors[e.target.name]) {
+      setErrors(prev => ({ ...prev, [e.target.name]: undefined }));
+    }
+    // Call the original handleInput
+    handleInput(e);
+  };
+
   const validateForm = () => {
     const newErrors = {};
     if (!reservationInfo.email) {
@@ -53,7 +63,30 @@ const CustomerDetails = ({ scrollUp }) => {
     }
     
     setErrors(newErrors);
+    
+    // If there are errors, scroll to the first error field
+    if (Object.keys(newErrors).length > 0) {
+      const firstErrorField = Object.keys(newErrors)[0];
+      scrollToErrorField(firstErrorField);
+    }
+    
     return Object.keys(newErrors).length === 0;
+  };
+
+  // Function to scroll to the error field
+  const scrollToErrorField = (fieldName) => {
+    setTimeout(() => {
+      const fieldElement = document.getElementById(fieldName);
+      if (fieldElement) {
+        fieldElement.scrollIntoView({ 
+          behavior: 'smooth', 
+          block: 'center',
+          inline: 'nearest'
+        });
+        // Optional: Focus on the field for better UX
+        fieldElement.focus();
+      }
+    }, 100); // Small delay to ensure error state is rendered
   };
 
   const handleSubmit = (e) => {
@@ -128,13 +161,15 @@ const CustomerDetails = ({ scrollUp }) => {
                 Email Address *
               </label>
               <input
-                type="email"
+                type="text"
                 id="email"
                 name="email"
                 value={reservationInfo.email}
-                onChange={handleInput}
-                className="bg-zinc-800/30 rounded-lg py-2 px-4 w-full border border-zinc-700/50 focus:border-gold/40 focus:outline-none focus:ring-1 focus:ring-gold/20 transition-all duration-200"
-                required
+                onChange={handleInputChange}
+                className={`bg-zinc-800/30 rounded-lg py-2 px-4 w-full border focus:outline-none focus:ring-1 focus:ring-gold/20 transition-all duration-200 ${
+                  errors.email ? 'border-red-500 focus:border-red-500' : 'border-zinc-700/50 focus:border-gold/40'
+                }`}
+                placeholder="Enter your email address"
               />
               {errors.email && (
                 <span className="text-red-500 text-sm">{errors.email}</span>
@@ -150,9 +185,10 @@ const CustomerDetails = ({ scrollUp }) => {
                 id="phone"
                 name="phone"
                 value={reservationInfo.phone}
-                onChange={handleInput}
-                className="bg-zinc-800/30 rounded-lg py-2 px-4 w-full border border-zinc-700/50 focus:border-gold/40 focus:outline-none focus:ring-1 focus:ring-gold/20 transition-all duration-200"
-                required
+                onChange={handleInputChange}
+                className={`bg-zinc-800/30 rounded-lg py-2 px-4 w-full border focus:outline-none focus:ring-1 focus:ring-gold/20 transition-all duration-200 ${
+                  errors.phone ? 'border-red-500 focus:border-red-500' : 'border-zinc-700/50 focus:border-gold/40'
+                }`}
               />
               {errors.phone && (
                 <span className="text-red-500 text-sm">{errors.phone}</span>
@@ -171,7 +207,7 @@ const CustomerDetails = ({ scrollUp }) => {
                     id="plannedActivities"
                     name="plannedActivities"
                     value={reservationInfo.plannedActivities}
-                    onChange={handleInput}
+                    onChange={handleInputChange}
                     rows="4"
                     wrap="soft"
                     className={`bg-zinc-800/30 rounded-lg py-2 px-4 w-full border whitespace-pre-wrap focus:outline-none focus:ring-1 focus:ring-gold/20 transition-all duration-200 ${
@@ -240,7 +276,7 @@ const CustomerDetails = ({ scrollUp }) => {
                           id="flightNumber"
                           name="flightNumber"
                           value={reservationInfo.flightNumber}
-                          onChange={handleInput}
+                          onChange={handleInputChange}
                           className="bg-zinc-800/30 rounded-lg py-2 px-4 w-full border border-zinc-700/50 focus:border-gold/40 focus:outline-none focus:ring-1 focus:ring-gold/20 transition-all duration-200"
                           placeholder="e.g., LX123"
                         />
@@ -266,7 +302,7 @@ const CustomerDetails = ({ scrollUp }) => {
                           id="meetingBoard"
                           name="meetingBoard"
                           value={reservationInfo.meetingBoard}
-                          onChange={handleInput}
+                          onChange={handleInputChange}
                           className="bg-zinc-800/30 rounded-lg py-2 px-4 w-full border border-zinc-700/50 focus:border-gold/40 focus:outline-none focus:ring-1 focus:ring-gold/20 transition-all duration-200"
                           placeholder="e.g., Mr. Smith, ABC Company"
                         />
@@ -279,7 +315,7 @@ const CustomerDetails = ({ scrollUp }) => {
                           id="childSeats"
                           name="childSeats"
                           value={reservationInfo.childSeats}
-                          onChange={handleInput}
+                          onChange={handleInputChange}
                           min={0}
                           max={8}
                           label={
@@ -295,7 +331,7 @@ const CustomerDetails = ({ scrollUp }) => {
                           id="babySeats"
                           name="babySeats"
                           value={reservationInfo.babySeats}
-                          onChange={handleInput}
+                          onChange={handleInputChange}
                           min={0}
                           max={4}
                           label={
@@ -340,7 +376,7 @@ const CustomerDetails = ({ scrollUp }) => {
                 id="additionalRequests"
                 name="additionalRequests"
                 value={reservationInfo.additionalRequests}
-                onChange={handleInput}
+                onChange={handleInputChange}
                 rows="6"
                 wrap="soft"
                 className={`bg-zinc-800/30 rounded-lg py-2 px-4 w-full border whitespace-pre-wrap focus:outline-none focus:ring-1 focus:ring-gold/20 transition-all duration-200 ${
@@ -364,7 +400,7 @@ const CustomerDetails = ({ scrollUp }) => {
                 id="additionalRequests"
                 name="additionalRequests"
                 value={reservationInfo.additionalRequests}
-                onChange={handleInput}
+                onChange={handleInputChange}
                 rows="4"
                 wrap="soft"
                 className="bg-zinc-800/30 rounded-lg py-2 px-4 w-full border border-zinc-700/50 whitespace-pre-wrap focus:border-gold/40 focus:outline-none focus:ring-1 focus:ring-gold/20 transition-all duration-200"
@@ -382,7 +418,7 @@ const CustomerDetails = ({ scrollUp }) => {
               id="referenceNumber"
               name="referenceNumber"
               value={reservationInfo.referenceNumber}
-              onChange={handleInput}
+              onChange={handleInputChange}
               rows="3"
               wrap="soft"
               className="bg-zinc-800/30 rounded-lg py-2 px-4 w-full border border-zinc-700/50 whitespace-pre-wrap focus:border-gold/40 focus:outline-none focus:ring-1 focus:ring-gold/20 transition-all duration-200"
