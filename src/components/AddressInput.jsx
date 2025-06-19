@@ -262,6 +262,28 @@ const AddressInput = ({ value, onChange, name, placeholder, onPlaceSelected, cla
       // Fetch suggestions for new input
       if (newValue.trim()) {
         fetchSuggestions(newValue);
+        
+        // Enhanced scrolling for pickup address on mobile when typing
+        if (window.innerWidth < 768 && name === 'pickup') {
+          setTimeout(() => {
+            if (inputRef.current) {
+              const inputRect = inputRef.current.getBoundingClientRect();
+              const viewportHeight = window.innerHeight;
+              
+              // More aggressive scrolling for pickup field - scroll higher up
+              const targetPosition = viewportHeight * 0.25; // Position at 25% from top instead of center
+              const currentPosition = inputRect.top;
+              
+              if (currentPosition > targetPosition) {
+                const scrollAmount = currentPosition - targetPosition;
+                window.scrollBy({
+                  top: scrollAmount,
+                  behavior: 'smooth'
+                });
+              }
+            }
+          }, 150); // Slight delay to ensure suggestions are about to appear
+        }
       } else {
         setPredictions([]);
         setShowSuggestions(false);
