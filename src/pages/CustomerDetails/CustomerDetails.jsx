@@ -317,7 +317,7 @@ const CustomerDetails = ({ scrollUp }) => {
                           value={reservationInfo.childSeats}
                           onChange={handleInputChange}
                           min={0}
-                          max={8}
+                          max={3}
                           label={
                             <span>
                               Child Seats <span className="text-xs text-zinc-400 font-normal">(Ages 4-7 / 15-36 kg)</span>
@@ -333,7 +333,7 @@ const CustomerDetails = ({ scrollUp }) => {
                           value={reservationInfo.babySeats}
                           onChange={handleInputChange}
                           min={0}
-                          max={4}
+                          max={3}
                           label={
                             <span>
                               Baby Seats <span className="text-xs text-zinc-400 font-normal">(Ages 0-3 / up to 18 kg)</span>

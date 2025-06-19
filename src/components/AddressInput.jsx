@@ -263,14 +263,14 @@ const AddressInput = ({ value, onChange, name, placeholder, onPlaceSelected, cla
       if (newValue.trim()) {
         fetchSuggestions(newValue);
         
-        // Enhanced scrolling for pickup address on mobile when typing
-        if (window.innerWidth < 768 && name === 'pickup') {
+        // Enhanced scrolling for address on mobile when typing
+        if (window.innerWidth < 768) {
           setTimeout(() => {
             if (inputRef.current) {
               const inputRect = inputRef.current.getBoundingClientRect();
               const viewportHeight = window.innerHeight;
               
-              // More aggressive scrolling for pickup field - scroll higher up
+              // More aggressive scrolling for address field - scroll higher up
               const targetPosition = viewportHeight * 0.25; // Position at 25% from top instead of center
               const currentPosition = inputRect.top;
               
