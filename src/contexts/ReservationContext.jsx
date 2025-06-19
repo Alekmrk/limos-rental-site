@@ -1,4 +1,4 @@
-import { createContext, useState, useCallback } from "react";
+import { createContext, useState, useCallback, useEffect } from "react";
 import { DateTime } from 'luxon';
 import { calculateRoute, getPlaceDetails } from "../services/GoogleMapsService";
 
@@ -13,18 +13,31 @@ const getInitialDate = () => {
   return DateTime.now().setZone('Europe/Zurich').toFormat('yyyy-MM-dd');
 };
 
-export const ReservationContextProvider = ({ children }) => {
-  const [reservationInfo, setReservationInfo] = useState({
+// Load reservation data from localStorage
+const loadReservationFromStorage = () => {
+  try {
+    const saved = localStorage.getItem('eliteway-reservation');
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      console.log('📥 Loaded reservation from localStorage:', parsed);
+      return parsed;
+    }
+  } catch (error) {
+    console.error('Error loading reservation from localStorage:', error);
+  }
+  
+  // Return default state if nothing in storage
+  return {
     pickup: "",
     pickupPlaceInfo: null,
     dropoff: "",
     dropoffPlaceInfo: null,
     extraStops: [],
     extraStopsPlaceInfo: [],
-    date: getInitialDate(), // Initialize with current Swiss date
-    time: getInitialTime(), // Initialize with current Swiss time
-    passengers: "", // Changed from 1 to empty string
-    bags: "", // Changed from 0 to empty string
+    date: getInitialDate(),
+    time: getInitialTime(),
+    passengers: "",
+    bags: "",
     flightNumber: "",
     meetingBoard: "",
     childSeats: 0,
@@ -47,9 +60,28 @@ export const ReservationContextProvider = ({ children }) => {
     optimizedWaypoints: null,
     totalDistance: 0,
     totalDuration: 0,
-  });
+  };
+};
 
-  const handleInput = async (e) => {
+// Save reservation data to localStorage
+const saveReservationToStorage = (reservationInfo) => {
+  try {
+    localStorage.setItem('eliteway-reservation', JSON.stringify(reservationInfo));
+    console.log('💾 Saved reservation to localStorage');
+  } catch (error) {
+    console.error('Error saving reservation to localStorage:', error);
+  }
+};
+
+export const ReservationContextProvider = ({ children }) => {
+  const [reservationInfo, setReservationInfo] = useState(loadReservationFromStorage);
+
+  // Save to localStorage whenever reservationInfo changes
+  useEffect(() => {
+    saveReservationToStorage(reservationInfo);
+  }, [reservationInfo]);
+
+  const handleInput = useCallback(async (e) => {
     const { name, value, placeInfo } = e.target;
     
     console.log('🔄 [ReservationContext] handleInput called:', {
@@ -84,7 +116,7 @@ export const ReservationContextProvider = ({ children }) => {
       
       return newInfo;
     });
-  };
+  }, []);
 
   const handlePlaceSelection = async (type, placeInfo) => {
     console.group(`📍 [ReservationContext] Place selection: ${type}`);
@@ -354,6 +386,17 @@ export const ReservationContextProvider = ({ children }) => {
     }));
   };
 
+  // Clear reservation data (used after successful booking completion)
+  const clearReservation = useCallback(() => {
+    console.log('🧹 Clearing reservation data');
+    try {
+      localStorage.removeItem('eliteway-reservation');
+      setReservationInfo(loadReservationFromStorage()); // This will return default state since storage is cleared
+    } catch (error) {
+      console.error('Error clearing reservation data:', error);
+    }
+  }, []);
+
   return (
     <ReservationContext.Provider value={{ 
       reservationInfo, 
@@ -365,7 +408,8 @@ export const ReservationContextProvider = ({ children }) => {
       setIsSpecialRequest,
       addExtraStop,
       removeExtraStop,
-      updateExtraStop
+      updateExtraStop,
+      clearReservation
     }}>
       {children}
     </ReservationContext.Provider>

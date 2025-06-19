@@ -21,6 +21,20 @@ const PaymentPage = ({ scrollUp }) => {
   const maxRetries = 3;
 
   useEffect(() => {
+    // Skip validation if user is retrying payment from cancel page
+    if (reservationInfo.isRetryingPayment) {
+      // Clear the retry flag after a short delay
+      setTimeout(() => {
+        handleInput({
+          target: {
+            name: 'isRetryingPayment',
+            value: false
+          }
+        });
+      }, 1000);
+      return;
+    }
+
     if (!reservationInfo.email ||
         !reservationInfo.pickup ||
         (!reservationInfo.isHourly && !reservationInfo.dropoff) ||
@@ -32,7 +46,7 @@ const PaymentPage = ({ scrollUp }) => {
     ) {
       navigate('/customer-details');
     }
-  }, [reservationInfo, navigate]);
+  }, [reservationInfo, navigate, handleInput]);
 
   useEffect(() => {
     scrollUp();

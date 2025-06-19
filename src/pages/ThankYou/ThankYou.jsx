@@ -1,16 +1,17 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
+import { useNavigate } from "react-router-dom";
 import ProgressBar from "../../components/ProgressBar";
-import { useContext } from "react";
 import ReservationContext from "../../contexts/ReservationContext";
 import { sendTransferConfirmationToAdmin } from "../../services/EmailService";
 import { DateTime } from 'luxon';
 
 const ThankYou = ({ scrollUp }) => {
+  const navigate = useNavigate();
+  const { reservationInfo, clearReservation } = useContext(ReservationContext);
   const [emailStatus, setEmailStatus] = useState({
     sent: false,
     error: null
   });
-  const { reservationInfo } = useContext(ReservationContext);
 
   useEffect(() => {
     scrollUp();
@@ -63,6 +64,19 @@ const ThankYou = ({ scrollUp }) => {
       return dateString;
     }
   };
+
+  // Clear reservation data after successful completion
+  useEffect(() => {
+    // Only clear if we have valid reservation data (to avoid clearing on direct access)
+    if (reservationInfo.email && (reservationInfo.paymentDetails || reservationInfo.isSpecialRequest)) {
+      const timer = setTimeout(() => {
+        console.log('✅ Booking completed successfully - clearing reservation data');
+        clearReservation();
+      }, 5000); // Clear after 5 seconds to allow user to see the thank you page
+
+      return () => clearTimeout(timer);
+    }
+  }, [reservationInfo, clearReservation]);
 
   return (
     <div className="container-default mt-28">

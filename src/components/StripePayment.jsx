@@ -79,7 +79,7 @@ const StripePayment = ({ amount, onSuccess, onError, reservationInfo }) => {
         throw new Error(data.error);
       }
 
-      // Redirect in the same window instead of opening a new one
+      // Redirect to Stripe checkout - session_id will be automatically added to cancel_url
       window.location.href = data.url;
       
     } catch (err) {
