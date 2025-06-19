@@ -12,20 +12,36 @@ const ThankYou = ({ scrollUp }) => {
     sent: false,
     error: null
   });
+  const [emailSent, setEmailSent] = useState(false); // Track if email was already sent
+  const [displayData, setDisplayData] = useState(null); // Frozen copy of reservation data for display
 
   useEffect(() => {
     scrollUp();
   }, [scrollUp]);
   
+  // Capture reservation data on first load and freeze it for display
+  useEffect(() => {
+    if (!displayData && reservationInfo.email) {
+      console.log('📸 Capturing reservation data for display');
+      setDisplayData({ ...reservationInfo }); // Create frozen copy
+    }
+  }, [reservationInfo, displayData]);
+  
   // Log reservation info for debugging
   useEffect(() => {
     console.log('ThankYou component loaded');
     console.log('reservationInfo:', reservationInfo);
+    console.log('displayData:', displayData);
     console.log('Has payment details?', !!reservationInfo.paymentDetails);
-  }, [reservationInfo]);
+  }, [reservationInfo, displayData]);
   
   // Send email confirmations when the component mounts
   useEffect(() => {
+    // Don't send emails if already sent or if no email address
+    if (emailSent || !reservationInfo.email) {
+      return;
+    }
+
     const sendEmails = async () => {
       try {
         // Only send emails for special requests or when no payment was needed
@@ -39,6 +55,7 @@ const ThankYou = ({ scrollUp }) => {
         const result = await sendTransferConfirmationToAdmin(reservationInfo);
         console.log('Email sending result:', result);
         setEmailStatus({ sent: result.success, error: null });
+        setEmailSent(true); // Mark email as sent
         
         if (!result.success) {
           console.warn("Email notification may not have been sent properly");
@@ -48,12 +65,13 @@ const ThankYou = ({ scrollUp }) => {
       } catch (error) {
         console.error("Error sending confirmation emails:", error);
         setEmailStatus({ sent: false, error: error.message });
+        setEmailSent(true); // Mark as attempted even if failed
       }
     };
 
     // Send emails only for special requests or non-payment bookings
     sendEmails();
-  }, [reservationInfo]);
+  }, [reservationInfo.email, reservationInfo.isSpecialRequest, reservationInfo.paymentDetails, emailSent]);
 
   // Format date to dd-MM-yyyy (Swiss format)
   const formatDate = (dateString) => {
@@ -78,12 +96,15 @@ const ThankYou = ({ scrollUp }) => {
     }
   }, [reservationInfo, clearReservation]);
 
+  // Use displayData for rendering instead of reservationInfo
+  const dataToShow = displayData || reservationInfo;
+
   return (
     <div className="container-default mt-28">
       <div className="max-w-6xl mx-auto">
         <h1 className="text-5xl md:text-7xl font-semibold mb-8 text-center">
           <span className="text-gold">
-            {reservationInfo.isSpecialRequest ? "Request Received!" : "Booking Confirmed!"}
+            {dataToShow.isSpecialRequest ? "Request Received!" : "Booking Confirmed!"}
           </span>
         </h1>
         
@@ -98,14 +119,14 @@ const ThankYou = ({ scrollUp }) => {
             </div>
             <h2 className="text-3xl font-medium mb-2">Thank You for Choosing Us!</h2>
             <p className="text-zinc-400 text-lg">
-              {reservationInfo.isSpecialRequest 
+              {dataToShow.isSpecialRequest 
                 ? "We'll review your request and get back to you shortly with a customized quote."
                 : "Your luxury transfer has been successfully booked."}
             </p>
           </div>
 
           {/* Payment Details Section - Shown at the top if payment exists */}
-          {reservationInfo.paymentDetails && (
+          {dataToShow.paymentDetails && (
             <div className="mb-8">
               <div className="bg-gold/10 p-6 rounded-lg border border-gold/20">
                 <h3 className="text-gold font-medium mb-4 flex items-center gap-2">
@@ -115,9 +136,9 @@ const ThankYou = ({ scrollUp }) => {
                   Payment Information
                 </h3>
                 <div className="space-y-2 text-zinc-300">
-                  <p className="break-words">Method: {reservationInfo.paymentDetails.method}</p>
-                  <p className="break-words">Amount: {reservationInfo.paymentDetails.currency} {reservationInfo.paymentDetails.amount}</p>
-                  <p className="break-words">Reference: {reservationInfo.paymentDetails.reference}</p>
+                  <p className="break-words">Method: {dataToShow.paymentDetails.method}</p>
+                  <p className="break-words">Amount: {dataToShow.paymentDetails.currency} {dataToShow.paymentDetails.amount}</p>
+                  <p className="break-words">Reference: {dataToShow.paymentDetails.reference}</p>
                 </div>
               </div>
             </div>
@@ -131,48 +152,48 @@ const ThankYou = ({ scrollUp }) => {
                 <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
                   <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
                 </svg>
-                {reservationInfo.isSpecialRequest ? 'Request Details' : 'Transfer Details'}
+                {dataToShow.isSpecialRequest ? 'Request Details' : 'Transfer Details'}
               </h3>
               <div className="space-y-2 text-zinc-300">
-                <p className="break-words">Date: {formatDate(reservationInfo.date)}</p>
-                <p className="break-words">{reservationInfo.isSpecialRequest ? 'Preferred Time' : 'Pick Up Time'}: {reservationInfo.time} (Swiss time)</p>
-                {!reservationInfo.isSpecialRequest && (
+                <p className="break-words">Date: {formatDate(dataToShow.date)}</p>
+                <p className="break-words">{dataToShow.isSpecialRequest ? 'Preferred Time' : 'Pick Up Time'}: {dataToShow.time} (Swiss time)</p>
+                {!dataToShow.isSpecialRequest && (
                   <>
-                    <p className="break-words">From: {reservationInfo.pickup}</p>
-                    {!reservationInfo.isHourly && reservationInfo.extraStops.map((stop, index) => (
+                    <p className="break-words">From: {dataToShow.pickup}</p>
+                    {!dataToShow.isHourly && dataToShow.extraStops?.map((stop, index) => (
                       stop && <p key={index} className="break-words pl-4">• {stop}</p>
                     ))}
-                    {!reservationInfo.isHourly ? (
-                      <p className="break-words">To: {reservationInfo.dropoff}</p>
+                    {!dataToShow.isHourly ? (
+                      <p className="break-words">To: {dataToShow.dropoff}</p>
                     ) : (
-                      <p className="break-words">Duration: {reservationInfo.hours} hours</p>
+                      <p className="break-words">Duration: {dataToShow.hours} hours</p>
                     )}
-                    {reservationInfo.isHourly && reservationInfo.plannedActivities && (
+                    {dataToShow.isHourly && dataToShow.plannedActivities && (
                       <>
                         <p className="mt-4 text-sm text-zinc-400">Planned Activities:</p>
-                        <p className="text-sm break-words">{reservationInfo.plannedActivities}</p>
+                        <p className="text-sm break-words">{dataToShow.plannedActivities}</p>
                       </>
                     )}
-                    {reservationInfo.routeInfo && !reservationInfo.isHourly && (
+                    {dataToShow.routeInfo && !dataToShow.isHourly && (
                       <>
                         <p className="mt-4 text-sm text-zinc-400">Route Information:</p>
-                        <p className="text-sm break-words">Distance: {reservationInfo.routeInfo.distance}</p>
-                        <p className="text-sm break-words">Duration: {reservationInfo.routeInfo.duration}</p>
+                        <p className="text-sm break-words">Distance: {dataToShow.routeInfo.distance}</p>
+                        <p className="text-sm break-words">Duration: {dataToShow.routeInfo.duration}</p>
                       </>
                     )}
                   </>
                 )}
-                {reservationInfo.isSpecialRequest && (
+                {dataToShow.isSpecialRequest && (
                   <>
                     <p className="mt-4 text-sm text-zinc-400">Special Request:</p>
-                    <p className="text-sm break-words">{reservationInfo.specialRequestDetails}</p>
+                    <p className="text-sm break-words">{dataToShow.specialRequestDetails}</p>
                   </>
                 )}
               </div>
             </div>
 
             {/* Vehicle Details Section - Hidden for Special Requests */}
-            {!reservationInfo.isSpecialRequest && (
+            {!dataToShow.isSpecialRequest && (
               <div className="bg-black/20 p-4 lg:p-6 rounded-lg">
                 <h3 className="text-gold font-medium mb-4 flex items-center gap-2">
                   <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
@@ -181,17 +202,17 @@ const ThankYou = ({ scrollUp }) => {
                   Vehicle Details
                 </h3>
                 <div className="space-y-2 text-zinc-300">
-                  <p className="break-words">Vehicle: {reservationInfo.selectedVehicle?.name}</p>
-                  <p className="break-words">Passengers: {reservationInfo.passengers}</p>
-                  <p className="break-words">Bags: {reservationInfo.bags}</p>
-                  {reservationInfo.childSeats > 0 && (
-                    <p className="break-words">Child Seats (4-7): {reservationInfo.childSeats}</p>
+                  <p className="break-words">Vehicle: {dataToShow.selectedVehicle?.name}</p>
+                  <p className="break-words">Passengers: {dataToShow.passengers}</p>
+                  <p className="break-words">Bags: {dataToShow.bags}</p>
+                  {dataToShow.childSeats > 0 && (
+                    <p className="break-words">Child Seats (4-7): {dataToShow.childSeats}</p>
                   )}
-                  {reservationInfo.babySeats > 0 && (
-                    <p className="break-words">Baby Seats (0-3): {reservationInfo.babySeats}</p>
+                  {dataToShow.babySeats > 0 && (
+                    <p className="break-words">Baby Seats (0-3): {dataToShow.babySeats}</p>
                   )}
-                  {reservationInfo.skiEquipment > 0 && (
-                    <p className="break-words">Ski Equipment: {reservationInfo.skiEquipment}</p>
+                  {dataToShow.skiEquipment > 0 && (
+                    <p className="break-words">Ski Equipment: {dataToShow.skiEquipment}</p>
                   )}
                 </div>
               </div>
@@ -206,31 +227,31 @@ const ThankYou = ({ scrollUp }) => {
                 Customer Details
               </h3>
               <div className="space-y-2 text-zinc-300">
-                <p className="break-words">Email: {reservationInfo.email}</p>
-                <p className="break-words">Phone: {reservationInfo.phone}</p>
-                {reservationInfo.flightNumber && (
-                  <p className="break-words">Flight Number: {reservationInfo.flightNumber}</p>
+                <p className="break-words">Email: {dataToShow.email}</p>
+                <p className="break-words">Phone: {dataToShow.phone}</p>
+                {dataToShow.flightNumber && (
+                  <p className="break-words">Flight Number: {dataToShow.flightNumber}</p>
                 )}
-                {reservationInfo.meetingBoard && (
-                  <p className="break-words">Meeting Board Name: {reservationInfo.meetingBoard}</p>
+                {dataToShow.meetingBoard && (
+                  <p className="break-words">Meeting Board Name: {dataToShow.meetingBoard}</p>
                 )}
-                {reservationInfo.additionalRequests &&  !reservationInfo.isSpecialRequest &&(
+                {dataToShow.additionalRequests && !dataToShow.isSpecialRequest && (
                   <>
-                    <p className="mt-4 text-sm text-zinc-400">{ 'Additional Requests'}:</p>
-                    <p className="text-sm break-words">{reservationInfo.additionalRequests}</p>
+                    <p className="mt-4 text-sm text-zinc-400">Additional Requests:</p>
+                    <p className="text-sm break-words">{dataToShow.additionalRequests}</p>
                   </>
                 )}
-                {reservationInfo.referenceNumber && (
+                {dataToShow.referenceNumber && (
                   <>
                     <p className="mt-4 text-sm text-zinc-400">Reference Number or Cost Center:</p>
-                    <p className="text-sm break-words">{reservationInfo.referenceNumber}</p>
+                    <p className="text-sm break-words">{dataToShow.referenceNumber}</p>
                   </>
                 )}
               </div>
             </div>
 
             {/* Additional Information Section - Only shown for Special Requests */}
-            {reservationInfo.isSpecialRequest && reservationInfo.additionalRequests && (
+            {dataToShow.isSpecialRequest && dataToShow.additionalRequests && (
               <div className="bg-black/20 p-4 lg:p-6 rounded-lg">
                 <h3 className="text-gold font-medium mb-4 flex items-center gap-2">
                   <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
@@ -239,13 +260,13 @@ const ThankYou = ({ scrollUp }) => {
                   Request Information
                 </h3>
                 <div className="space-y-2 text-zinc-300">
-                  <p className="text-sm break-words">{reservationInfo.additionalRequests}</p>
+                  <p className="text-sm break-words">{dataToShow.additionalRequests}</p>
                 </div>
               </div>
             )}
 
             {/* Reference Number Section - Only shown if reference number exists */}
-            {reservationInfo.referenceNumber && (
+            {dataToShow.referenceNumber && (
               <div className="bg-black/20 p-4 lg:p-6 rounded-lg">
                 <h3 className="text-gold font-medium mb-4 flex items-center gap-2">
                   <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
@@ -254,7 +275,7 @@ const ThankYou = ({ scrollUp }) => {
                   Reference Information
                 </h3>
                 <div className="space-y-2 text-zinc-300">
-                  <p className="text-sm break-words">{reservationInfo.referenceNumber}</p>
+                  <p className="text-sm break-words">{dataToShow.referenceNumber}</p>
                 </div>
               </div>
             )}
@@ -262,9 +283,9 @@ const ThankYou = ({ scrollUp }) => {
 
           <div className="text-center text-zinc-400">
             <p className="mb-2 break-words">
-              {reservationInfo.isSpecialRequest 
-                ? `We'll send a detailed response to ${reservationInfo.email}`
-                : `A confirmation email has been sent to ${reservationInfo.email}`}
+              {dataToShow.isSpecialRequest 
+                ? `We'll send a detailed response to ${dataToShow.email}`
+                : `A confirmation email has been sent to ${dataToShow.email}`}
             </p>
             <p className="break-words">If you have any questions, please don't hesitate to contact us.</p>
           </div>
