@@ -114,81 +114,95 @@ export const ReservationContextProvider = ({ children }) => {
     console.log('📊 Updated reservation info:', newReservationInfo);
     setReservationInfo(newReservationInfo);
 
-    // Calculate route if we have pickup and dropoff for distance mode
+    // Only calculate route if both locations are confirmed from autocomplete suggestions
     if (!reservationInfo.isHourly && 
         newReservationInfo.pickup && 
         newReservationInfo.dropoff && 
         type !== 'route') {
-      console.log('🗺️ Triggering route calculation...');
-      console.log('📍 Route calculation inputs:', {
-        pickupDisplay: newReservationInfo.pickup,
-        dropoffDisplay: newReservationInfo.dropoff,
-        pickupPlaceInfo: newReservationInfo.pickupPlaceInfo,
-        dropoffPlaceInfo: newReservationInfo.dropoffPlaceInfo
-      });
       
-      try {
-        // Use routing addresses (full formatted addresses) for more reliable international routing
-        const originData = newReservationInfo.pickupPlaceInfo?.routingAddress || 
-                          newReservationInfo.pickupPlaceInfo?.formattedAddress || 
-                          newReservationInfo.pickup;
-        const destinationData = newReservationInfo.dropoffPlaceInfo?.routingAddress || 
-                               newReservationInfo.dropoffPlaceInfo?.formattedAddress || 
-                               newReservationInfo.dropoff;
-        
-        console.log('🎯 Using full addresses for routing:', {
-          origin: originData,
-          destination: destinationData,
-          pickupRouting: newReservationInfo.pickupPlaceInfo?.routingAddress,
-          dropoffRouting: newReservationInfo.dropoffPlaceInfo?.routingAddress
+      // Check if both locations are properly confirmed from suggestions
+      const pickupIsConfirmed = newReservationInfo.pickupPlaceInfo?.isConfirmed && !newReservationInfo.pickupPlaceInfo?.wasManuallyEdited;
+      const dropoffIsConfirmed = newReservationInfo.dropoffPlaceInfo?.isConfirmed && !newReservationInfo.dropoffPlaceInfo?.wasManuallyEdited;
+      
+      if (pickupIsConfirmed && dropoffIsConfirmed) {
+        console.log('🗺️ Both locations confirmed from suggestions - triggering route calculation...');
+        console.log('📍 Route calculation inputs:', {
+          pickupDisplay: newReservationInfo.pickup,
+          dropoffDisplay: newReservationInfo.dropoff,
+          pickupPlaceInfo: newReservationInfo.pickupPlaceInfo,
+          dropoffPlaceInfo: newReservationInfo.dropoffPlaceInfo
         });
         
-        const route = await calculateRoute(
-          originData,
-          destinationData,
-          newReservationInfo.extraStops || []
-        );
-        
-        console.log('✅ Route calculated:', route);
-        
-        if (route.noRouteFound) {
-          console.log('⚠️ No route found between locations - proceeding without route info');
+        try {
+          // Use routing addresses (full formatted addresses) for more reliable international routing
+          const originData = newReservationInfo.pickupPlaceInfo?.routingAddress || 
+                            newReservationInfo.pickupPlaceInfo?.formattedAddress || 
+                            newReservationInfo.pickup;
+          const destinationData = newReservationInfo.dropoffPlaceInfo?.routingAddress || 
+                                 newReservationInfo.dropoffPlaceInfo?.formattedAddress || 
+                                 newReservationInfo.dropoff;
+          
+          console.log('🎯 Using full addresses for routing:', {
+            origin: originData,
+            destination: destinationData,
+            pickupRouting: newReservationInfo.pickupPlaceInfo?.routingAddress,
+            dropoffRouting: newReservationInfo.dropoffPlaceInfo?.routingAddress
+          });
+          
+          const route = await calculateRoute(
+            originData,
+            destinationData,
+            newReservationInfo.extraStops || []
+          );
+          
+          console.log('✅ Route calculated:', route);
+          
+          if (route.noRouteFound) {
+            console.log('⚠️ No route found between locations - proceeding without route info');
+            setReservationInfo(prev => ({
+              ...prev,
+              [`${type}Details`]: placeInfo,
+              routeInfo: route,
+              distance: 'Route not available',
+              duration: 'Route not available',
+              totalDistance: 0,
+              totalDuration: 0,
+              optimizedWaypoints: []
+            }));
+          } else {
+            setReservationInfo(prev => ({
+              ...prev,
+              [`${type}Details`]: placeInfo,
+              routeInfo: route,
+              distance: route.distance,
+              duration: route.duration,
+              totalDistance: route.distanceValue,
+              totalDuration: route.durationValue,
+              optimizedWaypoints: route.waypoints
+            }));
+          }
+        } catch (error) {
+          console.error('💥 Error calculating route:', error);
+          // Don't block the form submission if route calculation fails
+          console.log('🔄 Proceeding without route calculation due to error');
           setReservationInfo(prev => ({
             ...prev,
             [`${type}Details`]: placeInfo,
-            routeInfo: route,
-            distance: 'Route not available',
-            duration: 'Route not available',
+            routeInfo: null,
+            distance: 'Unable to calculate',
+            duration: 'Unable to calculate',
             totalDistance: 0,
             totalDuration: 0,
             optimizedWaypoints: []
           }));
-        } else {
-          setReservationInfo(prev => ({
-            ...prev,
-            [`${type}Details`]: placeInfo,
-            routeInfo: route,
-            distance: route.distance,
-            duration: route.duration,
-            totalDistance: route.distanceValue,
-            totalDuration: route.durationValue,
-            optimizedWaypoints: route.waypoints
-          }));
         }
-      } catch (error) {
-        console.error('💥 Error calculating route:', error);
-        // Don't block the form submission if route calculation fails
-        console.log('🔄 Proceeding without route calculation due to error');
-        setReservationInfo(prev => ({
-          ...prev,
-          [`${type}Details`]: placeInfo,
-          routeInfo: null,
-          distance: 'Unable to calculate',
-          duration: 'Unable to calculate',
-          totalDistance: 0,
-          totalDuration: 0,
-          optimizedWaypoints: []
-        }));
+      } else {
+        console.log('⚠️ Skipping route calculation - locations not confirmed from suggestions:', {
+          pickupIsConfirmed,
+          dropoffIsConfirmed,
+          pickupWasEdited: newReservationInfo.pickupPlaceInfo?.wasManuallyEdited,
+          dropoffWasEdited: newReservationInfo.dropoffPlaceInfo?.wasManuallyEdited
+        });
       }
     }
     
