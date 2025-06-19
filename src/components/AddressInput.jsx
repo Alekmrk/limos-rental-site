@@ -262,28 +262,6 @@ const AddressInput = ({ value, onChange, name, placeholder, onPlaceSelected, cla
       // Fetch suggestions for new input
       if (newValue.trim()) {
         fetchSuggestions(newValue);
-        
-        // Enhanced scrolling for address on mobile when typing
-        if (window.innerWidth < 768) {
-          setTimeout(() => {
-            if (inputRef.current) {
-              const inputRect = inputRef.current.getBoundingClientRect();
-              const viewportHeight = window.innerHeight;
-              
-              // More aggressive scrolling for address field - scroll higher up
-              const targetPosition = viewportHeight * 0.25; // Position at 25% from top instead of center
-              const currentPosition = inputRect.top;
-              
-              if (currentPosition > targetPosition) {
-                const scrollAmount = currentPosition - targetPosition;
-                window.scrollBy({
-                  top: scrollAmount,
-                  behavior: 'smooth'
-                });
-              }
-            }
-          }, 150); // Slight delay to ensure suggestions are about to appear
-        }
       } else {
         setPredictions([]);
         setShowSuggestions(false);
@@ -302,6 +280,28 @@ const AddressInput = ({ value, onChange, name, placeholder, onPlaceSelected, cla
       valueLength: value?.length,
       hasEnoughChars: value && value.trim().length >= 2
     });
+    
+    // Scroll into view when user clicks/focuses on address input on mobile
+    if (window.innerWidth < 768) {
+      setTimeout(() => {
+        if (inputRef.current) {
+          const inputRect = inputRef.current.getBoundingClientRect();
+          const viewportHeight = window.innerHeight;
+          
+          // Position at 25% from top for better visibility
+          const targetPosition = viewportHeight * 0.25;
+          const currentPosition = inputRect.top;
+          
+          if (currentPosition > targetPosition) {
+            const scrollAmount = currentPosition - targetPosition;
+            window.scrollBy({
+              top: scrollAmount,
+              behavior: 'smooth'
+            });
+          }
+        }
+      }, 100); // Small delay to ensure input is focused
+    }
     
     // If there's enough text to trigger suggestions, fetch them
     if (value && value.trim().length >= 2) {
