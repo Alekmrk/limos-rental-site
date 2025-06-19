@@ -174,15 +174,25 @@ export const getPlaceDetails = async (address) => {
     try {
       const geocoder = new window.google.maps.Geocoder();
       const result = await new Promise((resolve, reject) => {
-        geocoder.geocode({ address }, (results, status) => {
-          if (status === 'OK' && results[0]) {
-            resolve(results[0]);
-          } else {
-            reject(new Error(status === 'OVER_QUERY_LIMIT'
-              ? 'Rate limit exceeded. Please try again in a few moments.'
-              : 'Address not found'));
-          }
-        });
+        let retryCount = 0;
+        const maxRetries = 3;
+
+        const tryGeocode = () => {
+          geocoder.geocode({ address }, (results, status) => {
+            if (status === 'OK' && results[0]) {
+              resolve(results[0]);
+            } else if (status === 'OVER_QUERY_LIMIT' && retryCount < maxRetries) {
+              retryCount++;
+              setTimeout(tryGeocode, 1000 * retryCount); // Exponential backoff
+            } else {
+              reject(new Error(status === 'OVER_QUERY_LIMIT'
+                ? 'Rate limit exceeded. Please try again in a few moments.'
+                : 'Address not found'));
+            }
+          });
+        };
+
+        tryGeocode();
       });
       
       const isSpecialLocation = result.types?.some(type => 
