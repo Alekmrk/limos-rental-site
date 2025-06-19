@@ -63,6 +63,20 @@ const PaymentPage = ({ scrollUp }) => {
     if (method === 'crypto') {
       setUsdtAddress("TRX7NHqkeAhVrKdZrHQJ2RRf2MeL5132cr");
     }
+    
+    // Scroll to payment method selection when card is selected
+    if (method === 'card') {
+      setTimeout(() => {
+        const paymentMethodSection = document.querySelector('[data-payment-methods]');
+        if (paymentMethodSection) {
+          paymentMethodSection.scrollIntoView({ 
+            behavior: 'smooth', 
+            block: 'center',
+            inline: 'nearest'
+          });
+        }
+      }, 150); // Reduced delay slightly for more responsive feel
+    }
   };
 
   const handleBack = () => {
@@ -302,7 +316,7 @@ const PaymentPage = ({ scrollUp }) => {
           </div>
 
           {/* Payment Method Selection */}
-          <div className="space-y-4">
+          <div className="space-y-4" data-payment-methods>
             <h2 className="text-xl font-medium">Select Payment Method</h2>
             <div className="grid grid-cols-2 gap-4">
               <button
@@ -347,7 +361,7 @@ const PaymentPage = ({ scrollUp }) => {
 
           {/* Payment Forms */}
           {paymentMethod === 'card' && (
-            <div className="space-y-4">
+            <div className="space-y-4" data-payment-form="card">
               <StripePayment
                 amount={price}
                 onSuccess={handlePaymentSuccess}
