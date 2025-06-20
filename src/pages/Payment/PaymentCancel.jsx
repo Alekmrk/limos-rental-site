@@ -13,6 +13,37 @@ const PaymentCancel = () => {
   const { reservationInfo, handleInput } = useContext(ReservationContext);
   const hasSetRetryFlag = useRef(false);
   const hasRestoredSession = useRef(false);
+  const hasSentCancelEmail = useRef(false);
+
+  // Send cancellation notification to admin
+  const sendCancellationNotification = async (reservationData) => {
+    if (hasSentCancelEmail.current) return;
+    hasSentCancelEmail.current = true;
+
+    try {
+      console.log('📧 Sending payment cancellation notification to admin');
+      
+      const response = await fetch(`${API_BASE_URL}/api/email/payment-cancelled`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          reservationInfo: reservationData
+        }),
+      });
+
+      const result = await response.json();
+      
+      if (result.success) {
+        console.log('✅ Payment cancellation notification sent to admin');
+      } else {
+        console.error('❌ Failed to send cancellation notification:', result.error);
+      }
+    } catch (error) {
+      console.error('❌ Error sending cancellation notification:', error);
+    }
+  };
 
   // Restore booking data from Stripe session when coming from payment cancel
   useEffect(() => {
@@ -24,6 +55,10 @@ const PaymentCancel = () => {
       
       if (!sessionId) {
         console.log('⚠️ No session ID found in URL - user may have navigated directly');
+        // Still send notification if we have reservation data
+        if (reservationInfo?.email) {
+          await sendCancellationNotification(reservationInfo);
+        }
         return;
       }
 
@@ -52,11 +87,22 @@ const PaymentCancel = () => {
           }
           
           console.log('✅ Booking data restored successfully from Stripe');
+          
+          // Send cancellation notification with restored data
+          await sendCancellationNotification(stripeReservation);
         } else {
           console.log('⚠️ Could not retrieve session data from Stripe');
+          // Still send notification if we have reservation data
+          if (reservationInfo?.email) {
+            await sendCancellationNotification(reservationInfo);
+          }
         }
       } catch (error) {
         console.error('❌ Error retrieving session from Stripe:', error);
+        // Still send notification if we have reservation data
+        if (reservationInfo?.email) {
+          await sendCancellationNotification(reservationInfo);
+        }
       }
     };
 
@@ -72,7 +118,7 @@ const PaymentCancel = () => {
         }
       });
     }
-  }, [searchParams, handleInput]);
+  }, [searchParams, handleInput, reservationInfo]);
 
   const handleRetry = () => {
     // Clear any previous payment details and errors

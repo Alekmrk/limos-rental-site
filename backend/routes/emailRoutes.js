@@ -498,4 +498,58 @@ router.post('/route-error', async (req, res) => {
   }
 });
 
+/**
+ * @route   POST /api/email/payment-cancelled
+ * @desc    Send payment cancellation notification to admin
+ * @access  Public
+ */
+router.post('/payment-cancelled', async (req, res) => {
+  try {
+    const { reservationInfo } = req.body;
+    
+    if (!reservationInfo) {
+      return res.status(400).json({ 
+        success: false, 
+        message: 'Reservation information is required' 
+      });
+    }
+
+    console.log('Sending payment cancellation notification to admin:', {
+      email: reservationInfo.email,
+      pickup: reservationInfo.pickup,
+      dropoff: reservationInfo.dropoff,
+      timestamp: new Date().toISOString()
+    });
+
+    // Prepare reservation info with cancellation status
+    const cancellationInfo = {
+      ...reservationInfo,
+      paymentDetails: {
+        ...reservationInfo.paymentDetails,
+        status: 'User Cancelled',
+        timestamp: new Date().toISOString()
+      }
+    };
+
+    // Send email to admin with full reservation details
+    const adminEmailResult = await emailService.sendToAdmin({
+      ...cancellationInfo,
+      subject: `⚠️ Payment Cancelled by User - ${cancellationInfo.pickup || 'Unknown'} to ${cancellationInfo.dropoff || 'Unknown'}`
+    });
+
+    res.status(200).json({
+      success: true,
+      message: 'Payment cancellation notification sent to admin',
+      adminEmail: adminEmailResult
+    });
+  } catch (error) {
+    console.error('Error sending payment cancellation notification:', error);
+    res.status(500).json({ 
+      success: false, 
+      message: 'Failed to send payment cancellation notification', 
+      error: error.message 
+    });
+  }
+});
+
 module.exports = router;
