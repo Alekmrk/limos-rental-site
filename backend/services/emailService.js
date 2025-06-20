@@ -187,8 +187,8 @@ const sendToAdmin = async (reservationInfo) => {
 const sendToCustomer = async (reservationInfo) => {
   const isSpecialRequest = reservationInfo.isSpecialRequest;
   const subject = isSpecialRequest 
-    ? 'Your Special Request Has Been Received - Limos Rental'
-    : 'Your Luxury Transfer Confirmation - Limos Rental';
+    ? 'Your Special Request Has Been Received - Elite Way Limo'
+    : 'Your Luxury Transfer Confirmation - Elite Way Limo';
   
   const content = generateEmailContent(reservationInfo, 'customer');
   return await sendEmail(reservationInfo.email, subject, content, 'contact');
@@ -232,7 +232,7 @@ const sendPaymentReceiptToCustomer = async (reservationInfo) => {
       };
     }
 
-    const subject = '💳 Payment Receipt - Limos Rental Transfer';
+    const subject = '💳 Payment Receipt - Elite Way Limo Transfer';
     const content = generateEmailContent(reservationInfo, 'customer');
     
     console.log('Sending payment receipt to customer:', {
@@ -558,15 +558,24 @@ const generateEmailContent = (reservationInfo, type = 'customer') => {
     <body>
       <div class="container">
         <div class="header">
+          <img src="https://elitewaylimo.ch/assets/elitewaylogo.png" alt="Elite Way Limo" style="max-height: 60px; margin-bottom: 10px;">
           <h2>${getEmailTitle(reservationInfo, type)}</h2>
         </div>
         <div class="content">
+          ${type === 'customer' ? `
           <div style="text-align: center; margin-bottom: 32px;">
             <h2 style="font-size: 24px; margin-bottom: 8px; color: #fff;">Thank You for Choosing Us!</h2>
             <p style="color: #ccc; font-size: 18px;">
               ${getEmailIntro(reservationInfo, type)}
             </p>
           </div>
+          ` : `
+          <div style="text-align: center; margin-bottom: 32px;">
+            <p style="color: #ccc; font-size: 18px;">
+              ${getEmailIntro(reservationInfo, type)}
+            </p>
+          </div>
+          `}
           
           ${hasPayment ? generateSection('Payment Information', icons.payment, paymentSection, 'payment') : ''}
           ${generateSection(isSpecialRequest ? 'Request Details' : 'Transfer Details', icons.transfer, transferDetails)}
@@ -575,7 +584,7 @@ const generateEmailContent = (reservationInfo, type = 'customer') => {
 
           <div style="text-align: center; color: #ccc; margin-top: 32px;">
             <p>${getEmailOutro(reservationInfo, type)}</p>
-            <p>If you have any questions, please contact us at info@elitewaylimo.ch</p>
+            ${type === 'customer' ? '<p>If you have any questions, please contact us at info@elitewaylimo.ch</p>' : ''}
           </div>
         </div>
         <div class="footer">
