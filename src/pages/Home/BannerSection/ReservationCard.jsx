@@ -426,6 +426,7 @@ const ReservationCard = () => {
                         setErrors(prev => ({ ...prev, hours: undefined }));
                         handleInput(e);
                       }}
+                      onFocus={(e) => e.target.select()}
                       className={`bg-zinc-800/30 rounded-xl py-3 px-4 w-full border text-white transition-all duration-200 hover:border-zinc-600 focus:border-gold/50 focus:shadow-[0_0_15px_rgba(212,175,55,0.1)] ${
                         errors.hours ? 'border-red-500 ring-1 ring-red-500/50 animate-shake' : 'border-zinc-700/50'
                       }`}
