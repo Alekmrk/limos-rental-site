@@ -210,17 +210,84 @@ module.exports = async (req, res) => {
         });
 
         try {
-          await emailService.sendToAdmin({
-            isUrgent: true,
-            subject: `❌ Payment Failed - ${failedIntent.amount/100} ${failedIntent.currency.toUpperCase()}`,
-            details: {
-              paymentId: failedIntent.id,
-              amount: `${failedIntent.amount/100} ${failedIntent.currency.toUpperCase()}`,
+          // Get the checkout session to retrieve full reservation metadata
+          const sessions = await stripe.checkout.sessions.list({
+            payment_intent: failedIntent.id,
+            limit: 1,
+            expand: ['data.customer']
+          });
+
+          // Use metadata from session if available
+          const metadata = sessions.data.length > 0 ? sessions.data[0].metadata : {};
+
+          // Prepare full reservation info from metadata
+          const reservationInfo = {
+            // Customer Details
+            email: metadata.email,
+            firstName: metadata.firstName,
+            phone: metadata.phone,
+
+            // Booking Core Details
+            date: metadata.date,
+            time: metadata.time,
+            pickup: metadata.pickup,
+            dropoff: metadata.dropoff,
+            extraStops: metadata.extraStops ? JSON.parse(metadata.extraStops) : [],
+
+            // Service Type
+            isHourly: metadata.isHourly === 'true',
+            isSpecialRequest: metadata.isSpecialRequest === 'true',
+            hours: metadata.hours,
+
+            // Vehicle Info
+            selectedVehicle: {
+              id: metadata.vehicleId,
+              name: metadata.vehicleName
+            },
+
+            // Passenger Details
+            passengers: parseInt(metadata.passengers) || 0,
+            bags: parseInt(metadata.bags) || 0,
+            childSeats: parseInt(metadata.childSeats) || 0,
+            babySeats: parseInt(metadata.babySeats) || 0,
+            skiEquipment: parseInt(metadata.skiEquipment) || 0,
+
+            // Additional Details
+            flightNumber: metadata.flightNumber,
+            meetingBoard: metadata.meetingBoard,
+            plannedActivities: metadata.plannedActivities,
+            specialRequestDetails: metadata.specialRequestDetails,
+            additionalRequests: metadata.additionalRequests,
+            referenceNumber: metadata.referenceNumber,
+
+            // Route Information
+            routeInfo: metadata.routeDistance && metadata.routeDuration ? {
+              distance: metadata.routeDistance,
+              duration: metadata.routeDuration
+            } : null,
+
+            // Payment Details with failure info
+            paymentDetails: {
+              method: 'stripe',
+              amount: failedIntent.amount / 100,
+              currency: failedIntent.currency.toUpperCase(),
+              timestamp: new Date().toISOString(),
+              reference: failedIntent.id,
               status: 'Failed',
               error: errorDetails?.message || 'Unknown error',
               errorCode: errorDetails?.code,
-              declineCode: errorDetails?.decline_code
+              declineCode: errorDetails?.decline_code,
+              bookingSource: metadata.bookingSource || 'website',
+              bookingTimestamp: metadata.bookingTimestamp || new Date().toISOString(),
+              locale: metadata.locale || 'en-CH'
             }
+          };
+
+          // Send detailed notification to admin with full reservation info
+          await emailService.sendToAdmin({
+            ...reservationInfo,
+            isUrgent: true,
+            subject: `❌ Payment Failed - ${failedIntent.amount/100} ${failedIntent.currency.toUpperCase()}`
           });
         } catch (emailError) {
           console.error('Failed to send payment failure notification:', emailError);
@@ -248,18 +315,88 @@ module.exports = async (req, res) => {
         });
 
         try {
-          await emailService.sendToAdmin({
-            isUrgent: true,
-            subject: `⚠️ URGENT: Payment Dispute Received - ${dispute.amount/100} ${dispute.currency.toUpperCase()}`,
-            details: {
+          // Get the charge to access payment intent
+          const charge = await stripe.charges.retrieve(dispute.charge);
+          
+          // Get the checkout session to retrieve full reservation metadata
+          const sessions = await stripe.checkout.sessions.list({
+            payment_intent: charge.payment_intent,
+            limit: 1,
+            expand: ['data.customer']
+          });
+
+          // Use metadata from session if available
+          const metadata = sessions.data.length > 0 ? sessions.data[0].metadata : {};
+
+          // Prepare full reservation info from metadata
+          const reservationInfo = {
+            // Customer Details
+            email: metadata.email,
+            firstName: metadata.firstName,
+            phone: metadata.phone,
+
+            // Booking Core Details
+            date: metadata.date,
+            time: metadata.time,
+            pickup: metadata.pickup,
+            dropoff: metadata.dropoff,
+            extraStops: metadata.extraStops ? JSON.parse(metadata.extraStops) : [],
+
+            // Service Type
+            isHourly: metadata.isHourly === 'true',
+            isSpecialRequest: metadata.isSpecialRequest === 'true',
+            hours: metadata.hours,
+
+            // Vehicle Info
+            selectedVehicle: {
+              id: metadata.vehicleId,
+              name: metadata.vehicleName
+            },
+
+            // Passenger Details
+            passengers: parseInt(metadata.passengers) || 0,
+            bags: parseInt(metadata.bags) || 0,
+            childSeats: parseInt(metadata.childSeats) || 0,
+            babySeats: parseInt(metadata.babySeats) || 0,
+            skiEquipment: parseInt(metadata.skiEquipment) || 0,
+
+            // Additional Details
+            flightNumber: metadata.flightNumber,
+            meetingBoard: metadata.meetingBoard,
+            plannedActivities: metadata.plannedActivities,
+            specialRequestDetails: metadata.specialRequestDetails,
+            additionalRequests: metadata.additionalRequests,
+            referenceNumber: metadata.referenceNumber,
+
+            // Route Information
+            routeInfo: metadata.routeDistance && metadata.routeDuration ? {
+              distance: metadata.routeDistance,
+              duration: metadata.routeDuration
+            } : null,
+
+            // Payment Details with dispute info
+            paymentDetails: {
+              method: 'stripe',
+              amount: dispute.amount / 100,
+              currency: dispute.currency.toUpperCase(),
+              timestamp: new Date().toISOString(),
+              reference: dispute.charge,
+              status: 'Disputed',
               disputeId: dispute.id,
-              chargeId: dispute.charge,
-              amount: `${dispute.amount/100} ${dispute.currency.toUpperCase()}`,
-              reason: dispute.reason,
-              status: dispute.status,
-              evidence_details: dispute.evidence_details,
-              due_by: dispute.evidence_details?.due_by ? new Date(dispute.evidence_details.due_by * 1000).toISOString() : 'Not specified'
+              disputeReason: dispute.reason,
+              disputeStatus: dispute.status,
+              evidenceDueBy: dispute.evidence_details?.due_by ? new Date(dispute.evidence_details.due_by * 1000).toISOString() : 'Not specified',
+              bookingSource: metadata.bookingSource || 'website',
+              bookingTimestamp: metadata.bookingTimestamp || new Date().toISOString(),
+              locale: metadata.locale || 'en-CH'
             }
+          };
+
+          // Send detailed notification to admin with full reservation info
+          await emailService.sendToAdmin({
+            ...reservationInfo,
+            isUrgent: true,
+            subject: `⚠️ URGENT: Payment Dispute Received - ${dispute.amount/100} ${dispute.currency.toUpperCase()}`
           });
         } catch (emailError) {
           console.error('Failed to send dispute notification email:', emailError);
@@ -316,29 +453,87 @@ module.exports = async (req, res) => {
         });
 
         try {
-          // Notify admin about the refund
-          await emailService.sendToAdmin({
-            subject: `💰 Refund Processed - ${charge.amount_refunded/100} ${charge.currency.toUpperCase()}`,
-            details: {
-              chargeId: charge.id,
-              amount: `${charge.amount_refunded/100} ${charge.currency.toUpperCase()}`,
-              reason: charge.refunds?.data[0]?.reason || 'No reason provided'
-            }
+          // Get the checkout session to retrieve full reservation metadata
+          const sessions = await stripe.checkout.sessions.list({
+            payment_intent: charge.payment_intent,
+            limit: 1,
+            expand: ['data.customer']
           });
 
-          // If we have customer email in metadata, notify them too
-          if (charge.metadata?.email) {
-            await emailService.sendPaymentReceiptToCustomer({
-              email: charge.metadata.email,
-              paymentDetails: {
-                method: 'stripe',
-                type: 'refund',
-                amount: charge.amount_refunded / 100,
-                currency: charge.currency.toUpperCase(),
-                timestamp: new Date().toISOString(),
-                reference: charge.id
-              }
-            });
+          // Use metadata from session if available
+          const metadata = sessions.data.length > 0 ? sessions.data[0].metadata : {};
+
+          // Prepare full reservation info from metadata
+          const reservationInfo = {
+            // Customer Details
+            email: metadata.email,
+            firstName: metadata.firstName,
+            phone: metadata.phone,
+
+            // Booking Core Details
+            date: metadata.date,
+            time: metadata.time,
+            pickup: metadata.pickup,
+            dropoff: metadata.dropoff,
+            extraStops: metadata.extraStops ? JSON.parse(metadata.extraStops) : [],
+
+            // Service Type
+            isHourly: metadata.isHourly === 'true',
+            isSpecialRequest: metadata.isSpecialRequest === 'true',
+            hours: metadata.hours,
+
+            // Vehicle Info
+            selectedVehicle: {
+              id: metadata.vehicleId,
+              name: metadata.vehicleName
+            },
+
+            // Passenger Details
+            passengers: parseInt(metadata.passengers) || 0,
+            bags: parseInt(metadata.bags) || 0,
+            childSeats: parseInt(metadata.childSeats) || 0,
+            babySeats: parseInt(metadata.babySeats) || 0,
+            skiEquipment: parseInt(metadata.skiEquipment) || 0,
+
+            // Additional Details
+            flightNumber: metadata.flightNumber,
+            meetingBoard: metadata.meetingBoard,
+            plannedActivities: metadata.plannedActivities,
+            specialRequestDetails: metadata.specialRequestDetails,
+            additionalRequests: metadata.additionalRequests,
+            referenceNumber: metadata.referenceNumber,
+
+            // Route Information
+            routeInfo: metadata.routeDistance && metadata.routeDuration ? {
+              distance: metadata.routeDistance,
+              duration: metadata.routeDuration
+            } : null,
+
+            // Payment Details with refund info
+            paymentDetails: {
+              method: 'stripe',
+              amount: charge.amount_refunded / 100,
+              currency: charge.currency.toUpperCase(),
+              timestamp: new Date().toISOString(),
+              reference: charge.id,
+              status: 'Refunded',
+              type: 'refund',
+              reason: charge.refunds?.data[0]?.reason || 'No reason provided',
+              bookingSource: metadata.bookingSource || 'website',
+              bookingTimestamp: metadata.bookingTimestamp || new Date().toISOString(),
+              locale: metadata.locale || 'en-CH'
+            }
+          };
+
+          // Send detailed notification to admin with full reservation info
+          await emailService.sendToAdmin({
+            ...reservationInfo,
+            subject: `💰 Refund Processed - ${charge.amount_refunded/100} ${charge.currency.toUpperCase()}`
+          });
+
+          // If we have customer email in metadata, notify them too with full context
+          if (reservationInfo.email) {
+            await emailService.sendPaymentReceiptToCustomer(reservationInfo);
           }
         } catch (emailError) {
           console.error('Failed to send refund notification:', emailError);
@@ -377,14 +572,81 @@ module.exports = async (req, res) => {
         });
 
         try {
-          await emailService.sendToAdmin({
-            subject: `❌ Payment Canceled - ${paymentIntent.amount/100} ${paymentIntent.currency.toUpperCase()}`,
-            details: {
-              paymentId: paymentIntent.id,
-              amount: `${paymentIntent.amount/100} ${paymentIntent.currency.toUpperCase()}`,
+          // Get the checkout session to retrieve full reservation metadata
+          const sessions = await stripe.checkout.sessions.list({
+            payment_intent: paymentIntent.id,
+            limit: 1,
+            expand: ['data.customer']
+          });
+
+          // Use metadata from session if available
+          const metadata = sessions.data.length > 0 ? sessions.data[0].metadata : {};
+
+          // Prepare full reservation info from metadata
+          const reservationInfo = {
+            // Customer Details
+            email: metadata.email,
+            firstName: metadata.firstName,
+            phone: metadata.phone,
+
+            // Booking Core Details
+            date: metadata.date,
+            time: metadata.time,
+            pickup: metadata.pickup,
+            dropoff: metadata.dropoff,
+            extraStops: metadata.extraStops ? JSON.parse(metadata.extraStops) : [],
+
+            // Service Type
+            isHourly: metadata.isHourly === 'true',
+            isSpecialRequest: metadata.isSpecialRequest === 'true',
+            hours: metadata.hours,
+
+            // Vehicle Info
+            selectedVehicle: {
+              id: metadata.vehicleId,
+              name: metadata.vehicleName
+            },
+
+            // Passenger Details
+            passengers: parseInt(metadata.passengers) || 0,
+            bags: parseInt(metadata.bags) || 0,
+            childSeats: parseInt(metadata.childSeats) || 0,
+            babySeats: parseInt(metadata.babySeats) || 0,
+            skiEquipment: parseInt(metadata.skiEquipment) || 0,
+
+            // Additional Details
+            flightNumber: metadata.flightNumber,
+            meetingBoard: metadata.meetingBoard,
+            plannedActivities: metadata.plannedActivities,
+            specialRequestDetails: metadata.specialRequestDetails,
+            additionalRequests: metadata.additionalRequests,
+            referenceNumber: metadata.referenceNumber,
+
+            // Route Information
+            routeInfo: metadata.routeDistance && metadata.routeDuration ? {
+              distance: metadata.routeDistance,
+              duration: metadata.routeDuration
+            } : null,
+
+            // Payment Details with cancellation info
+            paymentDetails: {
+              method: 'stripe',
+              amount: paymentIntent.amount / 100,
+              currency: paymentIntent.currency.toUpperCase(),
+              timestamp: new Date().toISOString(),
+              reference: paymentIntent.id,
+              status: 'Canceled',
               reason: paymentIntent.cancellation_reason || 'No reason provided',
-              metadata: paymentIntent.metadata
+              bookingSource: metadata.bookingSource || 'website',
+              bookingTimestamp: metadata.bookingTimestamp || new Date().toISOString(),
+              locale: metadata.locale || 'en-CH'
             }
+          };
+
+          // Send detailed notification to admin with full reservation info
+          await emailService.sendToAdmin({
+            ...reservationInfo,
+            subject: `❌ Payment Canceled - ${paymentIntent.amount/100} ${paymentIntent.currency.toUpperCase()}`
           });
         } catch (emailError) {
           console.error('Failed to send cancellation notification:', emailError);
@@ -407,14 +669,84 @@ module.exports = async (req, res) => {
         });
 
         try {
-          await emailService.sendToAdmin({
-            subject: `⏰ Payment Expired - ${charge.amount/100} ${charge.currency.toUpperCase()}`,
-            details: {
-              chargeId: charge.id,
-              amount: `${charge.amount/100} ${charge.currency.toUpperCase()}`,
+          // Get the payment intent to access checkout session
+          const paymentIntent = await stripe.paymentIntents.retrieve(charge.payment_intent);
+          
+          // Get the checkout session to retrieve full reservation metadata
+          const sessions = await stripe.checkout.sessions.list({
+            payment_intent: paymentIntent.id,
+            limit: 1,
+            expand: ['data.customer']
+          });
+
+          // Use metadata from session if available
+          const metadata = sessions.data.length > 0 ? sessions.data[0].metadata : {};
+
+          // Prepare full reservation info from metadata
+          const reservationInfo = {
+            // Customer Details
+            email: metadata.email,
+            firstName: metadata.firstName,
+            phone: metadata.phone,
+
+            // Booking Core Details
+            date: metadata.date,
+            time: metadata.time,
+            pickup: metadata.pickup,
+            dropoff: metadata.dropoff,
+            extraStops: metadata.extraStops ? JSON.parse(metadata.extraStops) : [],
+
+            // Service Type
+            isHourly: metadata.isHourly === 'true',
+            isSpecialRequest: metadata.isSpecialRequest === 'true',
+            hours: metadata.hours,
+
+            // Vehicle Info
+            selectedVehicle: {
+              id: metadata.vehicleId,
+              name: metadata.vehicleName
+            },
+
+            // Passenger Details
+            passengers: parseInt(metadata.passengers) || 0,
+            bags: parseInt(metadata.bags) || 0,
+            childSeats: parseInt(metadata.childSeats) || 0,
+            babySeats: parseInt(metadata.babySeats) || 0,
+            skiEquipment: parseInt(metadata.skiEquipment) || 0,
+
+            // Additional Details
+            flightNumber: metadata.flightNumber,
+            meetingBoard: metadata.meetingBoard,
+            plannedActivities: metadata.plannedActivities,
+            specialRequestDetails: metadata.specialRequestDetails,
+            additionalRequests: metadata.additionalRequests,
+            referenceNumber: metadata.referenceNumber,
+
+            // Route Information
+            routeInfo: metadata.routeDistance && metadata.routeDuration ? {
+              distance: metadata.routeDistance,
+              duration: metadata.routeDuration
+            } : null,
+
+            // Payment Details with expiration info
+            paymentDetails: {
+              method: 'stripe',
+              amount: charge.amount / 100,
+              currency: charge.currency.toUpperCase(),
+              timestamp: new Date().toISOString(),
+              reference: charge.id,
+              status: 'Expired',
               created: new Date(charge.created * 1000).toISOString(),
-              metadata: charge.metadata
+              bookingSource: metadata.bookingSource || 'website',
+              bookingTimestamp: metadata.bookingTimestamp || new Date().toISOString(),
+              locale: metadata.locale || 'en-CH'
             }
+          };
+
+          // Send detailed notification to admin with full reservation info
+          await emailService.sendToAdmin({
+            ...reservationInfo,
+            subject: `⏰ Payment Expired - ${charge.amount/100} ${charge.currency.toUpperCase()}`
           });
         } catch (emailError) {
           console.error('Failed to send expiration notification:', emailError);
