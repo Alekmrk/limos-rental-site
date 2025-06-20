@@ -387,7 +387,7 @@ const PaymentPage = ({ scrollUp }) => {
                 <p>• Secure card payment powered by Stripe</p>
                 <p>• Your card will be charged immediately</p>
                 <p>• You will receive a confirmation email</p>
-                <p>• In case of issues, contact our support</p>
+                <p>• In case of issues, contact our support at info@elitewaylimo.ch</p>
               </div>
             </div>
           )}
@@ -403,7 +403,7 @@ const PaymentPage = ({ scrollUp }) => {
                   <p>• Send only USDT on TRC20 network</p>
                   <p>• Payment will be automatically detected</p>
                   <p>• Rate will be locked for 15 minutes</p>
-                  <p>• In case of issues, contact our support</p>
+                  <p>• In case of issues, contact our support at info@elitewaylimo.ch</p>
                 </div>
               </div>
 

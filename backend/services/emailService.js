@@ -679,7 +679,7 @@ const getEmailOutro = (reservationInfo, type) => {
   } else if (reservationInfo.isSpecialRequest) {
     return `We'll send a detailed response to ${reservationInfo.email}`;
   }
-  return `A confirmation email has been sent to ${reservationInfo.email}`;
+  return `Thank you for choosing Elite Way Limo. We look forward to serving you!`;
 };
 
 const generatePlainTextContent = (reservationInfo, type) => {

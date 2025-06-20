@@ -272,7 +272,7 @@ const ThankYou = ({ scrollUp }) => {
                 ? `We'll send a detailed response to ${dataToShow.email}`
                 : `A confirmation email has been sent to ${dataToShow.email}`}
             </p>
-            <p className="break-words">If you have any questions, please don't hesitate to contact us.</p>
+            <p className="break-words">If you have any questions, please don't hesitate to contact us at info@elitewaylimo.ch</p>
           </div>
         </div>
       </div>
