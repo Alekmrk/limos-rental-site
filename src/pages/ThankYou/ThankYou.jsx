@@ -108,7 +108,7 @@ const ThankYou = ({ scrollUp }) => {
           </span>
         </h1>
         
-        <ProgressBar />
+        <ProgressBar reservationData={dataToShow} />
         
         <div className="bg-zinc-800/30 p-8 rounded-lg border border-gold/50 mt-8">
           <div className="text-center mb-8">

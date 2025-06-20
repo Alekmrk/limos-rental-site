@@ -2,10 +2,13 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useContext, useEffect } from "react";
 import ReservationContext from "../contexts/ReservationContext";
 
-const ProgressBar = () => {
+const ProgressBar = ({ reservationData }) => {
   const location = useLocation();
   const navigate = useNavigate();
   const { reservationInfo } = useContext(ReservationContext);
+
+  // Use passed reservationData if available, otherwise fall back to context
+  const dataToUse = reservationData || reservationInfo;
 
   useEffect(() => {
     const scrollToTop = () => {
@@ -29,7 +32,7 @@ const ProgressBar = () => {
     { path: "/thankyou", label: "Confirmation" }
   ];
 
-  const steps = reservationInfo.isSpecialRequest ? specialSteps : regularSteps;
+  const steps = dataToUse.isSpecialRequest ? specialSteps : regularSteps;
 
   const currentStepIndex = steps.findIndex(step => step.path === location.pathname);
 
