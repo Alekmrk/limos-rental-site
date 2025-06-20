@@ -543,7 +543,7 @@ const generateEmailContent = (reservationInfo, type = 'customer') => {
     <p>Email: ${reservationInfo.email || 'Not provided'}</p>
     <p>Phone: ${reservationInfo.phone || 'Not provided'}</p>
     ${reservationInfo.firstName ? `<p>Name: ${reservationInfo.firstName}</p>` : ''}
-    ${reservationInfo.flightNumber ? `<p>Flight Number: ${reservationInfo.flightNumber}</p>` : ''}  // flightNumber is a string
+    ${reservationInfo.flightNumber ? `<p>Flight Number: ${reservationInfo.flightNumber}</p>` : ''}
     ${reservationInfo.meetingBoard ? `<p>Meeting Board Name: ${reservationInfo.meetingBoard}</p>` : ''}
     ${reservationInfo.additionalRequests ? `
       <div class="subsection">
@@ -642,7 +642,7 @@ ${reservationInfo.skiEquipment > 0 ? `Ski Equipment: ${reservationInfo.skiEquipm
 CUSTOMER DETAILS
 Email: ${reservationInfo.email}
 Phone: ${reservationInfo.phone}
-${reservationInfo.flightNumber ? `Flight Number: ${reservationInfo.flightNumber}` : ''}  // flightNumber is a string
+${reservationInfo.flightNumber ? `Flight Number: ${reservationInfo.flightNumber}` : ''}
 ${reservationInfo.meetingBoard ? `Meeting Board Name: ${reservationInfo.meetingBoard}` : ''}
 ${reservationInfo.additionalRequests ? `${isSpecialRequest ? 'Special Request Details' : 'Additional Requests'}: ${reservationInfo.additionalRequests}` : ''}
 ${reservationInfo.referenceNumber ? `Reference Number or Cost Center: ${reservationInfo.referenceNumber}` : ''}
@@ -729,7 +729,7 @@ ${reservationInfo.skiEquipment > 0 ? `Ski Equipment: ${reservationInfo.skiEquipm
 CUSTOMER DETAILS
 Email: ${reservationInfo.email}
 Phone: ${reservationInfo.phone}
-${reservationInfo.flightNumber ? `Flight Number: ${reservationInfo.flightNumber}` : ''}  // flightNumber is a string
+${reservationInfo.flightNumber ? `Flight Number: ${reservationInfo.flightNumber}` : ''}
 ${reservationInfo.meetingBoard ? `Meeting Board Name: ${reservationInfo.meetingBoard}` : ''}
 ${reservationInfo.additionalRequests ? `${reservationInfo.isSpecialRequest ? 'Special Request Details' : 'Additional Requests'}: ${reservationInfo.additionalRequests}` : ''}
 ${reservationInfo.referenceNumber ? `Reference Number or Cost Center: ${reservationInfo.referenceNumber}` : ''}
