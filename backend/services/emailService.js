@@ -566,8 +566,8 @@ const generateEmailContent = (reservationInfo, type = 'customer') => {
     <body>
       <div class="container">
         <div class="header">
-          <img src="https://elitewaylimo.ch/assets/elitewaylogo.png" alt="Elite Way Limo" style="max-height: 60px; margin-bottom: 10px;">
-          <h2>${getEmailTitle(reservationInfo, type)}</h2>
+          <h1 style="color: gold; font-size: 28px; margin: 0; font-weight: bold;">Elite Way Limo</h1>
+          <h2 style="margin: 10px 0 0 0;">${getEmailTitle(reservationInfo, type)}</h2>
         </div>
         <div class="content">
           ${type === 'customer' ? `
