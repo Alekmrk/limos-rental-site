@@ -425,9 +425,6 @@ const generateEmailContent = (reservationInfo, type = 'customer') => {
   const isHourly = reservationInfo.isHourly;
   const hasPayment = !!reservationInfo.paymentDetails;
   
-  // Base64 encoded logo for reliable email display
-  const logoBase64 = 'data:image/png;base64,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';
-  
   // Shared CSS styles
   const styles = `
     body { font-family: Arial, sans-serif; line-height: 1.6; color: #e5e5e5; background-color: #1a1a1a; }
@@ -569,7 +566,7 @@ const generateEmailContent = (reservationInfo, type = 'customer') => {
     <body>
       <div class="container">
         <div class="header">
-          <img src="${logoBase64}" alt="Elite Way Limo" style="max-height: 60px; margin-bottom: 10px;">
+          <img src="https://elitewaylimo.ch/assets/elitewaylogo.png" alt="Elite Way Limo" style="max-height: 60px; margin-bottom: 10px;">
           <h2>${getEmailTitle(reservationInfo, type)}</h2>
         </div>
         <div class="content">
