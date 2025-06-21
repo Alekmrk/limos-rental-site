@@ -568,7 +568,11 @@ module.exports = async (req, res) => {
         const paymentIntent = event.data.object;
         console.log('Payment canceled:', {
           id: paymentIntent.id,
-          cancellation_reason: paymentIntent.cancellation_reason
+          cancellation_reason: paymentIntent.cancellation_reason,
+          created: new Date(paymentIntent.created * 1000).toISOString(),
+          canceled_at: new Date().toISOString(),
+          status: paymentIntent.status,
+          client_secret: paymentIntent.client_secret ? 'present' : 'missing'
         });
 
         try {
@@ -646,7 +650,7 @@ module.exports = async (req, res) => {
           // Send detailed notification to admin with full reservation info
           await emailService.sendToAdmin({
             ...reservationInfo,
-            subject: `❌ Payment Canceled - ${paymentIntent.amount/100} ${paymentIntent.currency.toUpperCase()}`
+            subject: `❌ Payment Canceled - ${paymentIntent.amount/100} ${paymentIntent.currency.toUpperCase()} (${paymentIntent.cancellation_reason || 'unknown'})`
           });
         } catch (emailError) {
           console.error('Failed to send cancellation notification:', emailError);
