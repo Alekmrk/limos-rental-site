@@ -14,6 +14,9 @@ import PaymentPage from "./pages/Payment/PaymentPage";
 import PaymentSuccess from "./pages/Payment/PaymentSuccess";
 import PaymentCancel from "./pages/Payment/PaymentCancel";
 import PrivacyPolicy from "./pages/PrivacyPolicy/PrivacyPolicy";
+import Contact from "./pages/Contact/Contact";
+import AirportTransfer from "./pages/AirportTransfer/AirportTransfer";
+import DavosForum from "./pages/DavosForum/DavosForum";
 import BackToTopButton from "./components/BackToTopButton";
 import CookieConsent from "./components/CookieConsent";
 import { useState } from "react";
@@ -44,6 +47,9 @@ function App() {
         <Routes>
           <Route path="/" element={<Home scrollUp={scrollUp} setSelectedVehicle={setSelectedVehicle} />} />
           <Route path="/services" element={<ServicesPage scrollUp={scrollUp} />} />
+          <Route path="/contact" element={<Contact scrollUp={scrollUp} />} />
+          <Route path="/airport-transfer" element={<AirportTransfer scrollUp={scrollUp} />} />
+          <Route path="/davos-forum" element={<DavosForum scrollUp={scrollUp} />} />
           <Route
             path="/vehicles"
             element={

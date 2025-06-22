@@ -1,11 +1,21 @@
 import LanguageSelector from "./LanguageSelector";
 import { NavLink } from "react-router-dom";
+import { useState } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faChevronDown } from "@fortawesome/free-solid-svg-icons";
 
 const PrimaryNav = ({ navHidden, screenSize, setNavHidden }) => {
+  const [servicesDropdownOpen, setServicesDropdownOpen] = useState(false);
+
   const handleNavClick = () => {
     if (screenSize < 800) {
       setNavHidden(true);
     }
+    setServicesDropdownOpen(false);
+  };
+
+  const toggleServicesDropdown = () => {
+    setServicesDropdownOpen(!servicesDropdownOpen);
   };
 
   return (
@@ -16,24 +26,62 @@ const PrimaryNav = ({ navHidden, screenSize, setNavHidden }) => {
     >
       <ul className="flex flex-col md:flex-row gap-16 mb-8 md:mb-0 justify-center">
         <li>
-          <a className="nav-link" href="/" onClick={handleNavClick}>
+          <NavLink className="nav-link" to="/" onClick={handleNavClick}>
             Home
-          </a>
+          </NavLink>
         </li>
         <li>
           <NavLink className="nav-link" to="/vehicles" onClick={handleNavClick}>
             Vehicles
           </NavLink>
         </li>
-        <li>
-          <NavLink className="nav-link" to="/services" onClick={handleNavClick}>
+        <li className="relative">
+          <button
+            className="nav-link flex items-center gap-2"
+            onClick={toggleServicesDropdown}
+          >
             Services
-          </NavLink>
+            <FontAwesomeIcon
+              icon={faChevronDown}
+              className={`text-sm transition-transform ${
+                servicesDropdownOpen ? "rotate-180" : ""
+              }`}
+            />
+          </button>
+
+          {/* Services Dropdown */}
+          <div
+            className={`${
+              servicesDropdownOpen ? "block" : "hidden"
+            } absolute top-full left-1/2 transform -translate-x-1/2 mt-2 w-64 bg-zinc-900/95 backdrop-blur-sm border border-zinc-700/50 rounded-lg shadow-lg py-2 z-20`}
+          >
+            <NavLink
+              to="/services"
+              className="block px-4 py-3 text-sm text-zinc-300 hover:text-gold hover:bg-zinc-800/50 transition-colors"
+              onClick={handleNavClick}
+            >
+              All Services
+            </NavLink>
+            <NavLink
+              to="/airport-transfer"
+              className="block px-4 py-3 text-sm text-zinc-300 hover:text-gold hover:bg-zinc-800/50 transition-colors"
+              onClick={handleNavClick}
+            >
+              Airport Transfer
+            </NavLink>
+            <NavLink
+              to="/davos-forum"
+              className="block px-4 py-3 text-sm text-zinc-300 hover:text-gold hover:bg-zinc-800/50 transition-colors"
+              onClick={handleNavClick}
+            >
+              Davos Forum
+            </NavLink>
+          </div>
         </li>
         <li>
-          <a className="nav-link" href="#" onClick={handleNavClick}>
+          <NavLink className="nav-link" to="/contact" onClick={handleNavClick}>
             Contact
-          </a>
+          </NavLink>
         </li>
       </ul>
 
