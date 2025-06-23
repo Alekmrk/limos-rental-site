@@ -13,6 +13,17 @@ const cars = [
     seats: 2,
     luggage: 2,
     type: ["luxury"],
+    class: "First Class",
+    baseRate: 4.5, // CHF per km
+    minimumFare: 120, // CHF
+    hourlyRate: 180, // CHF per hour
+    features: [
+      "Executive interior",
+      "Privacy partition",
+      "Premium sound system",
+      "Climate control",
+    ],
+    upgradeAvailable: false,
   },
   {
     id: 2,
@@ -23,6 +34,17 @@ const cars = [
     seats: 5,
     luggage: 6,
     type: ["luxury", "business", "crossover"],
+    class: "First Class Van",
+    baseRate: 5.2, // CHF per km
+    minimumFare: 150, // CHF
+    hourlyRate: 220, // CHF per hour
+    features: [
+      "Spacious interior",
+      "Group seating",
+      "Entertainment system",
+      "Refreshment bar",
+    ],
+    upgradeAvailable: false,
   },
   {
     id: 3,
@@ -33,6 +55,18 @@ const cars = [
     seats: 6,
     luggage: 6,
     type: ["crossover"],
+    class: "Business Van",
+    baseRate: 3.8, // CHF per km
+    minimumFare: 90, // CHF
+    hourlyRate: 140, // CHF per hour
+    features: [
+      "Comfortable seating",
+      "Ample luggage space",
+      "Professional interior",
+      "USB charging",
+    ],
+    upgradeAvailable: true,
+    upgradeOptions: ["First Class Van - subject to availability"],
   },
   {
     id: 4,
@@ -43,6 +77,57 @@ const cars = [
     seats: 2,
     luggage: 2,
     type: ["business"],
+    class: "Business Class",
+    baseRate: 3.2, // CHF per km
+    minimumFare: 75, // CHF
+    hourlyRate: 120, // CHF per hour
+    features: [
+      "Professional comfort",
+      "Business amenities",
+      "Reliable performance",
+      "Efficient service",
+    ],
+    upgradeAvailable: true,
+    upgradeOptions: [
+      "First Class - subject to availability",
+      "First Class Van - subject to availability",
+    ],
+  },
+];
+
+// Popular route pricing examples
+export const popularRoutes = [
+  {
+    from: "Zurich Airport",
+    to: "Zurich City",
+    distance: "10km",
+    duration: "30min",
+    businessClass: "75 CHF",
+    firstClass: "90 CHF",
+  },
+  {
+    from: "Zurich Airport",
+    to: "Lucerne",
+    distance: "67km",
+    duration: "45-60min",
+    businessClass: "250 CHF",
+    firstClass: "300 CHF",
+  },
+  {
+    from: "Zurich Airport",
+    to: "Interlaken",
+    distance: "135km",
+    duration: "1h45min",
+    businessClass: "480 CHF",
+    firstClass: "570 CHF",
+  },
+  {
+    from: "Zurich Airport",
+    to: "St. Moritz",
+    distance: "209km",
+    duration: "3h",
+    businessClass: "650 CHF",
+    firstClass: "780 CHF",
   },
 ];
 

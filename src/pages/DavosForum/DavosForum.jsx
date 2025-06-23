@@ -60,11 +60,19 @@ const DavosForum = ({ scrollUp }) => {
     <div className="min-h-screen">
       {/* Hero Section with Reservation Card */}
       <div 
-        className="relative container-big rounded-[1.5rem] text-center mt-16 pb-32 md:pb-0 md:pr-[480px] lg:pr-[520px] xl:pr-[480px] bg-cover bg-center min-h-[600px] md:min-h-[700px] lg:min-h-[800px]"
+        className="relative container-big rounded-[1.5rem] text-center mt-16 pb-32 md:pb-0 md:pr-[480px] lg:pr-[520px] xl:pr-[480px] bg-cover bg-center min-h-[600px] md:min-h-[700px] lg:min-h-[800px] overflow-hidden"
         style={{
           backgroundImage: `linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.5)), url(${davosForumImage})`,
         }}
       >
+        {/* Animated Background Elements - Dark Theme */}
+        <div className="absolute inset-0 z-0">
+          <div className="absolute top-20 left-10 w-20 h-20 bg-zinc-700/20 rounded-full animate-pulse"></div>
+          <div className="absolute top-40 right-20 w-16 h-16 bg-gold/20 rounded-full animate-bounce"></div>
+          <div className="absolute bottom-40 left-20 w-12 h-12 bg-zinc-600/20 rounded-full animate-ping"></div>
+          <div className="absolute bottom-20 right-10 w-24 h-24 bg-gray-700/20 rounded-full animate-pulse"></div>
+        </div>
+
         <div className="relative z-10">
           <h1 className="text-4xl sm:text-5xl md:text-8xl font-semibold pt-8 tracking-wide mb-6 md:mb-8">
             <span className="text-gold">Davos</span> Forum
@@ -92,6 +100,14 @@ const DavosForum = ({ scrollUp }) => {
         
         {/* Reservation Card */}
         <ReservationCard />
+
+        {/* Improved Decorative Bottom Wave */}
+        <div className="absolute bottom-0 left-0 right-0 z-20">
+          <svg className="w-full h-16 text-zinc-900" viewBox="0 0 1200 80" preserveAspectRatio="none">
+            <path d="M0,80V40c200,0,400,-20,600,0s400,20,600,0V80Z" fill="currentColor" opacity="0.8"/>
+            <path d="M0,80V50c150,0,350,-15,600,10s450,-10,600,5V80Z" fill="currentColor"/>
+          </svg>
+        </div>
       </div>
 
       {/* Features Section */}

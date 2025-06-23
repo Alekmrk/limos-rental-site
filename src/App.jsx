@@ -19,6 +19,7 @@ import AirportTransfer from "./pages/AirportTransfer/AirportTransfer";
 import DavosForum from "./pages/DavosForum/DavosForum";
 import BackToTopButton from "./components/BackToTopButton";
 import CookieConsent from "./components/CookieConsent";
+import ContactChannels from "./components/ContactChannels";
 import { useState } from "react";
 import cars from "./data/cars";
 import { ReservationContextProvider } from "./contexts/ReservationContext";
@@ -87,6 +88,7 @@ function App() {
       </ReservationContextProvider>
       <Footer />
       <BackToTopButton scrollUp={scrollUp} />
+      <ContactChannels />
       <CookieConsent />
     </>
   );
