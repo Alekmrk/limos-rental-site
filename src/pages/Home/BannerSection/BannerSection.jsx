@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import Button from "../../../components/Button";
 import ReservationCard from "./ReservationCard";
 import bannerImage from "../../../assets/banner-image.jpg";
+import eliteWayLogo from "../../../assets/elitewaylogo.png";
 import { FaStar, FaShieldAlt, FaClock, FaPhone } from "react-icons/fa";
 
 const BannerSection = () => {
@@ -32,13 +33,17 @@ const BannerSection = () => {
               <span>Premium Luxury Transportation</span>
             </div>
             
-            <h1 className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-semibold tracking-wide text-white animate-fade-in mb-6 md:mb-8">
-              Elite Way Limo
-            </h1>
+            <div className="mb-6 md:mb-8">
+              <img 
+                src={eliteWayLogo} 
+                alt="Elite Way Limo" 
+                className="h-16 sm:h-20 md:h-24 lg:h-28 xl:h-32 mx-auto object-contain animate-fade-in"
+              />
+            </div>
             
             {/* Subtitle with gold gradient */}
             <div className="text-xl md:text-2xl lg:text-3xl font-light text-transparent bg-gradient-to-r from-yellow-400 to-yellow-200 bg-clip-text mb-8 md:mb-10">
-              Switzerland's Premier Chauffeur Service
+              Switzerland's Elite Chauffeur Service
             </div>
           </div>
 
