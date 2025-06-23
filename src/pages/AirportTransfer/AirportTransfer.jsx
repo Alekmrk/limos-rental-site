@@ -1,4 +1,5 @@
-import { useEffect } from "react";
+import { useEffect, useContext } from "react";
+import ReservationContext from "../../contexts/ReservationContext";
 import ReservationCard from "../../pages/Home/BannerSection/ReservationCard";
 import Button from "../../components/Button";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -6,9 +7,13 @@ import { faPlane, faClock, faShieldAlt, faUserTie, faWifi, faCoffee } from "@for
 import airportTransferImage from "../../assets/original-airport-transfers.jpg";
 
 const AirportTransfer = ({ scrollUp }) => {
+  const { clearReservation } = useContext(ReservationContext);
+
   useEffect(() => {
     scrollUp();
-  }, [scrollUp]);
+    // Clear any previous reservation data when user visits airport transfer page
+    clearReservation();
+  }, [scrollUp, clearReservation]);
 
   const features = [
     {

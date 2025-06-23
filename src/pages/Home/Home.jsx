@@ -1,4 +1,5 @@
-import { useEffect } from "react";
+import { useEffect, useContext } from "react";
+import ReservationContext from "../../contexts/ReservationContext";
 import BannerSection from "./BannerSection/BannerSection";
 import FeaturesSection from "./FeaturesSection/FeaturesSection";
 import FleetSection from "./FleetSection/FleetSection";
@@ -8,9 +9,13 @@ import EventsSection from "../../components/EventsSection";
 import TestimonialsSection from "../../components/TestimonialsSection";
 
 const Home = ({ scrollUp, setSelectedVehicle }) => {
+  const { clearReservation } = useContext(ReservationContext);
+
   useEffect(() => {
     scrollUp();
-  }, []);
+    // Clear any previous reservation data when user visits homepage
+    clearReservation();
+  }, [scrollUp, clearReservation]);
 
   return (
     <>
