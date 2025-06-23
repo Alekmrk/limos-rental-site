@@ -62,50 +62,52 @@ const AirportTransfer = ({ scrollUp }) => {
 
   return (
     <div className="min-h-screen">
-      {/* Hero Section with Reservation Card */}
-      <div 
-        className="relative container-big rounded-[1.5rem] text-center mt-16 pb-32 md:pb-0 md:pr-[480px] lg:pr-[520px] xl:pr-[480px] bg-cover bg-center min-h-[600px] md:min-h-[700px] lg:min-h-[800px] overflow-hidden"
-        style={{
-          backgroundImage: `linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.4)), url(${airportTransferImage})`,
-        }}
-      >
-        {/* Animated Background Elements - Dark Theme */}
-        <div className="absolute inset-0 z-0">
-          <div className="absolute top-20 left-10 w-20 h-20 bg-zinc-700/20 rounded-full animate-pulse"></div>
-          <div className="absolute top-40 right-20 w-16 h-16 bg-gold/20 rounded-full animate-bounce"></div>
-          <div className="absolute bottom-40 left-20 w-12 h-12 bg-zinc-600/20 rounded-full animate-ping"></div>
-          <div className="absolute bottom-20 right-10 w-24 h-24 bg-gray-700/20 rounded-full animate-pulse"></div>
-        </div>
+      <div className="relative">
+        {/* Hero Section with Reservation Card */}
+        <div 
+          className="relative container-big rounded-[1.5rem] text-center mt-16 pb-32 md:pb-0 md:pr-[480px] lg:pr-[520px] xl:pr-[480px] bg-cover bg-center min-h-[600px] md:min-h-[700px] lg:min-h-[800px] overflow-hidden"
+          style={{
+            backgroundImage: `linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.4)), url(${airportTransferImage})`,
+          }}
+        >
+          {/* Animated Background Elements - Dark Theme */}
+          <div className="absolute inset-0 z-0">
+            <div className="absolute top-20 left-10 w-20 h-20 bg-zinc-700/20 rounded-full animate-pulse"></div>
+            <div className="absolute top-40 right-20 w-16 h-16 bg-gold/20 rounded-full animate-bounce"></div>
+            <div className="absolute bottom-40 left-20 w-12 h-12 bg-zinc-600/20 rounded-full animate-ping"></div>
+            <div className="absolute bottom-20 right-10 w-24 h-24 bg-gray-700/20 rounded-full animate-pulse"></div>
+          </div>
 
-        <div className="relative z-10">
-          <h1 className="text-4xl sm:text-5xl md:text-8xl font-semibold pt-8 tracking-wide mb-6 md:mb-8">
-            <span className="text-gold">Airport</span> Transfer
-          </h1>
-          <p className="md:w-[50ch] mx-auto mb-12 md:mb-16 px-4 md:px-0 text-lg">
-            Seamless airport transfers with professional meet & greet service. 
-            Experience luxury travel from touchdown to destination.
-          </p>
-          
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-8 md:mb-12 md:mt-16">
-            <div className="flex items-center gap-2 text-gold">
-              <FontAwesomeIcon icon={faPlane} />
-              <span>Flight Tracking</span>
-            </div>
-            <div className="flex items-center gap-2 text-gold">
-              <FontAwesomeIcon icon={faClock} />
-              <span>60min Free Wait</span>
-            </div>
-            <div className="flex items-center gap-2 text-gold">
-              <FontAwesomeIcon icon={faShieldAlt} />
-              <span>Meet & Greet</span>
+          <div className="relative z-10">
+            <h1 className="text-4xl sm:text-5xl md:text-8xl font-semibold pt-8 tracking-wide mb-6 md:mb-8">
+              <span className="text-gold">Airport</span> Transfer
+            </h1>
+            <p className="md:w-[50ch] mx-auto mb-12 md:mb-16 px-4 md:px-0 text-lg">
+              Seamless airport transfers with professional meet & greet service. 
+              Experience luxury travel from touchdown to destination.
+            </p>
+            
+            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-8 md:mb-12 md:mt-16">
+              <div className="flex items-center gap-2 text-gold">
+                <FontAwesomeIcon icon={faPlane} />
+                <span>Flight Tracking</span>
+              </div>
+              <div className="flex items-center gap-2 text-gold">
+                <FontAwesomeIcon icon={faClock} />
+                <span>60min Free Wait</span>
+              </div>
+              <div className="flex items-center gap-2 text-gold">
+                <FontAwesomeIcon icon={faShieldAlt} />
+                <span>Meet & Greet</span>
+              </div>
             </div>
           </div>
+          
+          {/* Reservation Card */}
+          <ReservationCard />
         </div>
-        
-        {/* Reservation Card */}
-        <ReservationCard />
 
-        {/* Improved Decorative Bottom Wave */}
+        {/* Improved Decorative Bottom Wave - Moved outside banner container */}
         <div className="absolute bottom-0 left-0 right-0 z-20">
           <svg className="w-full h-16 text-zinc-900" viewBox="0 0 1200 80" preserveAspectRatio="none">
             <path d="M0,80V40c200,0,400,-20,600,0s400,20,600,0V80Z" fill="currentColor" opacity="0.8"/>
