@@ -33,11 +33,28 @@ const Contact = ({ scrollUp }) => {
     setSubmitStatus(null);
 
     try {
-      // Here you would typically send the data to your backend
-      // For now, we'll simulate an API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Send the form data to the backend API
+      const API_BASE_URL = import.meta.env.PROD 
+        ? 'https://api.elitewaylimo.ch/api/email'
+        : 'http://localhost:3001/api/email';
+
+      const response = await fetch(`${API_BASE_URL}/contact-form`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to send message');
+      }
+
+      const result = await response.json();
+      console.log('Contact form submitted successfully:', result);
       
-      // Reset form
+      // Reset form on success
       setFormData({
         name: '',
         email: '',
@@ -48,7 +65,7 @@ const Contact = ({ scrollUp }) => {
       
       setSubmitStatus('success');
     } catch (error) {
-      console.error('Error submitting form:', error);
+      console.error('Error submitting contact form:', error);
       setSubmitStatus('error');
     } finally {
       setIsSubmitting(false);

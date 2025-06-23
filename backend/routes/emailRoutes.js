@@ -552,4 +552,172 @@ router.post('/payment-cancelled', async (req, res) => {
   }
 });
 
+/**
+ * @route   POST /api/email/contact-form
+ * @desc    Send contact form submission to admin
+ * @access  Public
+ */
+router.post('/contact-form', async (req, res) => {
+  try {
+    const { name, email, phone, subject, message } = req.body;
+    
+    if (!name || !email || !subject || !message) {
+      return res.status(400).json({ 
+        success: false, 
+        message: 'Missing required fields: name, email, subject, message' 
+      });
+    }
+
+    console.log('Sending contact form submission to admin:', {
+      name,
+      email,
+      subject,
+      timestamp: new Date().toISOString()
+    });
+
+    // Prepare contact form data for email
+    const contactInfo = {
+      name,
+      email,
+      phone: phone || 'Not provided',
+      subject,
+      message,
+      submittedAt: new Date().toISOString(),
+      isContactForm: true
+    };
+
+    // Generate email content for contact form
+    const emailSubject = `📞 New Contact Form: ${subject}`;
+    const content = generateContactFormEmailContent(contactInfo);
+
+    // Send email to admin
+    const adminEmailResult = await emailService.sendEmail(
+      process.env.ADMIN_EMAIL,
+      emailSubject,
+      content,
+      'contact'
+    );
+
+    res.status(200).json({
+      success: true,
+      message: 'Contact form submitted successfully',
+      adminEmail: adminEmailResult
+    });
+  } catch (error) {
+    console.error('Error sending contact form:', error);
+    res.status(500).json({ 
+      success: false, 
+      message: 'Failed to send contact form', 
+      error: error.message 
+    });
+  }
+});
+
+/**
+ * Generate email content for contact form submissions
+ * @param {Object} contactInfo - Contact form data
+ * @returns {Object} - Email content with text and HTML versions
+ */
+function generateContactFormEmailContent(contactInfo) {
+  const timestamp = new Date().toLocaleString('en-CH', {
+    timeZone: 'Europe/Zurich',
+    dateStyle: 'full',
+    timeStyle: 'long'
+  });
+
+  // HTML version
+  const htmlContent = `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; color: #e5e5e5; background-color: #1a1a1a; }
+        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+        .header { background-color: #000; color: gold; padding: 20px; text-align: center; border-radius: 8px 8px 0 0; }
+        .content { padding: 20px; background-color: #2a2a2a; border-radius: 0 0 8px 8px; }
+        .section { background-color: rgba(0, 0, 0, 0.4); padding: 24px; border-radius: 8px; margin-bottom: 24px; }
+        .section-title { color: gold; font-size: 18px; font-weight: 500; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+        .section-content { color: #fff; }
+        .section-content p { margin: 8px 0; }
+        .message-content { background-color: rgba(212, 175, 55, 0.1); border: 1px solid rgba(212, 175, 55, 0.2); padding: 16px; border-radius: 8px; font-style: italic; }
+        .footer { text-align: center; margin-top: 20px; color: #888; font-size: 12px; }
+      </style>
+    </head>
+    <body>
+      <div class="container">
+        <div class="header">
+          <h1 style="color: gold; font-size: 28px; margin: 0; font-weight: bold;">Elite Way Limo</h1>
+          <h2 style="margin: 10px 0 0 0;">📞 New Contact Form Submission</h2>
+        </div>
+        <div class="content">
+          <div style="text-align: center; margin-bottom: 32px;">
+            <p style="color: #ccc; font-size: 18px;">
+              A new contact form has been submitted through the website.
+            </p>
+          </div>
+          
+          <div class="section">
+            <h3 class="section-title">
+              📋 Contact Information
+            </h3>
+            <div class="section-content">
+              <p><strong>Name:</strong> ${contactInfo.name}</p>
+              <p><strong>Email:</strong> ${contactInfo.email}</p>
+              <p><strong>Phone:</strong> ${contactInfo.phone}</p>
+              <p><strong>Subject:</strong> ${contactInfo.subject}</p>
+              <p><strong>Submitted:</strong> ${timestamp}</p>
+            </div>
+          </div>
+
+          <div class="section">
+            <h3 class="section-title">
+              💬 Message
+            </h3>
+            <div class="section-content">
+              <div class="message-content">
+                ${contactInfo.message.replace(/\n/g, '<br>')}
+              </div>
+            </div>
+          </div>
+
+          <div style="text-align: center; color: #ccc; margin-top: 32px;">
+            <p>Please respond to this inquiry promptly to maintain our high service standards.</p>
+            <p>Reply directly to: ${contactInfo.email}</p>
+          </div>
+        </div>
+        <div class="footer">
+          <p>© ${new Date().getFullYear()} Elite Way Limo. All rights reserved.</p>
+        </div>
+      </div>
+    </body>
+    </html>
+  `;
+
+  // Plain text version
+  const textContent = `
+NEW CONTACT FORM SUBMISSION
+
+Contact Information:
+- Name: ${contactInfo.name}
+- Email: ${contactInfo.email}
+- Phone: ${contactInfo.phone}
+- Subject: ${contactInfo.subject}
+- Submitted: ${timestamp}
+
+Message:
+${contactInfo.message}
+
+Please respond to this inquiry promptly to maintain our high service standards.
+Reply directly to: ${contactInfo.email}
+
+Best regards,
+Elite Way Limo System
+`.trim();
+
+  return {
+    text: textContent,
+    html: htmlContent
+  };
+}
+
 module.exports = router;
