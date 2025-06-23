@@ -3,6 +3,7 @@ import ReservationCard from "../../pages/Home/BannerSection/ReservationCard";
 import Button from "../../components/Button";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlane, faClock, faShieldAlt, faUserTie, faWifi, faCoffee } from "@fortawesome/free-solid-svg-icons";
+import airportTransferImage from "../../assets/original-airport-transfers.jpg";
 
 const AirportTransfer = ({ scrollUp }) => {
   useEffect(() => {
@@ -65,7 +66,7 @@ const AirportTransfer = ({ scrollUp }) => {
       <div 
         className="relative container-big rounded-[1.5rem] text-center mt-16 pb-32 md:pb-0 md:pr-[480px] lg:pr-[520px] xl:pr-[480px] bg-cover bg-center min-h-[600px] md:min-h-[700px] lg:min-h-[800px]"
         style={{
-          backgroundImage: `linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.4)), url('/src/assets/original-airport-transfers.jpg')`,
+          backgroundImage: `linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.4)), url(${airportTransferImage})`,
         }}
       >
         <div className="relative z-10">

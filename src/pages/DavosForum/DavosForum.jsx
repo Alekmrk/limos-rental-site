@@ -3,6 +3,7 @@ import ReservationCard from "../../pages/Home/BannerSection/ReservationCard";
 import Button from "../../components/Button";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMountain, faUsers, faShieldAlt, faCalendarAlt, faSnowflake, faCrown } from "@fortawesome/free-solid-svg-icons";
+import davosForumImage from "../../assets/banner-image1.jpg";
 
 const DavosForum = ({ scrollUp }) => {
   useEffect(() => {
@@ -61,7 +62,7 @@ const DavosForum = ({ scrollUp }) => {
       <div 
         className="relative container-big rounded-[1.5rem] text-center mt-16 pb-32 md:pb-0 md:pr-[480px] lg:pr-[520px] xl:pr-[480px] bg-cover bg-center min-h-[600px] md:min-h-[700px] lg:min-h-[800px]"
         style={{
-          backgroundImage: `linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.5)), url('/src/assets/banner-image1.jpg')`,
+          backgroundImage: `linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.5)), url(${davosForumImage})`,
         }}
       >
         <div className="relative z-10">

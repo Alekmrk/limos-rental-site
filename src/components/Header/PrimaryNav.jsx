@@ -1,11 +1,12 @@
 import LanguageSelector from "./LanguageSelector";
 import { NavLink } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronDown } from "@fortawesome/free-solid-svg-icons";
 
 const PrimaryNav = ({ navHidden, screenSize, setNavHidden }) => {
   const [servicesDropdownOpen, setServicesDropdownOpen] = useState(false);
+  const dropdownRef = useRef(null);
 
   const handleNavClick = () => {
     if (screenSize < 800) {
@@ -17,6 +18,23 @@ const PrimaryNav = ({ navHidden, screenSize, setNavHidden }) => {
   const toggleServicesDropdown = () => {
     setServicesDropdownOpen(!servicesDropdownOpen);
   };
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setServicesDropdownOpen(false);
+      }
+    };
+
+    if (servicesDropdownOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [servicesDropdownOpen]);
 
   return (
     <nav
@@ -35,9 +53,9 @@ const PrimaryNav = ({ navHidden, screenSize, setNavHidden }) => {
             Vehicles
           </NavLink>
         </li>
-        <li className="relative">
+        <li className="relative" ref={dropdownRef}>
           <button
-            className="nav-link flex items-center gap-2"
+            className="nav-link inline-flex items-center gap-2 ml-4"
             onClick={toggleServicesDropdown}
           >
             Services
