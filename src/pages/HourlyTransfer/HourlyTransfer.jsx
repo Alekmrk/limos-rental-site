@@ -1,4 +1,5 @@
-import { useEffect } from "react";
+import { useEffect, useContext } from "react";
+import ReservationContext from "../../contexts/ReservationContext";
 import ReservationCard from "../Home/BannerSection/ReservationCard";
 import Button from "../../components/Button";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -6,9 +7,13 @@ import { faClock, faBusinessTime, faMapMarkedAlt, faUsers, faCalendarCheck, faRo
 import hourlyTransferImage from "../../assets/banner-image1.jpg";
 
 const HourlyTransfer = ({ scrollUp }) => {
+  const { clearReservation } = useContext(ReservationContext);
+
   useEffect(() => {
     scrollUp();
-  }, [scrollUp]);
+    // Clear any previous reservation data when user visits hourly transfer page
+    clearReservation();
+  }, [scrollUp, clearReservation]);
 
   const features = [
     {
