@@ -16,6 +16,8 @@ import PaymentCancel from "./pages/Payment/PaymentCancel";
 import PrivacyPolicy from "./pages/PrivacyPolicy/PrivacyPolicy";
 import Contact from "./pages/Contact/Contact";
 import AirportTransfer from "./pages/AirportTransfer/AirportTransfer";
+import DistanceTransfer from "./pages/DistanceTransfer/DistanceTransfer";
+import HourlyTransfer from "./pages/HourlyTransfer/HourlyTransfer";
 import DavosForum from "./pages/DavosForum/DavosForum";
 import BackToTopButton from "./components/BackToTopButton";
 import CookieConsent from "./components/CookieConsent";
@@ -50,6 +52,8 @@ function App() {
           <Route path="/services" element={<ServicesPage scrollUp={scrollUp} />} />
           <Route path="/contact" element={<Contact scrollUp={scrollUp} />} />
           <Route path="/airport-transfer" element={<AirportTransfer scrollUp={scrollUp} />} />
+          <Route path="/distance-transfer" element={<DistanceTransfer scrollUp={scrollUp} />} />
+          <Route path="/hourly-transfer" element={<HourlyTransfer scrollUp={scrollUp} />} />
           <Route path="/davos-forum" element={<DavosForum scrollUp={scrollUp} />} />
           <Route
             path="/vehicles"

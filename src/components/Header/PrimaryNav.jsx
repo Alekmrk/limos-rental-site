@@ -110,14 +110,14 @@ const PrimaryNav = ({ navHidden, screenSize, setNavHidden }) => {
               Airport Transfer
             </NavLink>
             <NavLink
-              to="/services/distance-transfer"
+              to="/distance-transfer"
               className="block px-4 py-3 text-sm text-zinc-300 hover:text-gold hover:bg-zinc-800/50 transition-colors"
               onClick={handleNavClick}
             >
               Distance Transfer
             </NavLink>
             <NavLink
-              to="/services/hourly-transfer"
+              to="/hourly-transfer"
               className="block px-4 py-3 text-sm text-zinc-300 hover:text-gold hover:bg-zinc-800/50 transition-colors"
               onClick={handleNavClick}
             >
