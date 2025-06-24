@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import cars from "../../data/cars";
 import SliderCard from "../../components/SliderCard";
 import Button from "../../components/Button";
@@ -7,8 +7,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
 
 const Vehicles = ({ scrollUp, selectedVehicle, setSelectedVehicle }) => {
-  const [filter, setFilter] = useState("1");
-
   useEffect(() => {
     scrollUp();
   }, []);
@@ -52,39 +50,11 @@ const Vehicles = ({ scrollUp, selectedVehicle, setSelectedVehicle }) => {
           </Link>
         </div>
       </div>
-      <h2 className="text-4xl font-semibold mb-6">Other Cars</h2>
-      <label className="ml-2" htmlFor="filter">
-        Filter By:
-      </label>
-      <select
-        className="rounded-[0.4rem] border-2 border-zinc-400 py-1 px-4 ml-2 mb-8"
-        name=""
-        id=""
-        onChange={(e) => setFilter(e.target.value)}
-        value={filter}
-      >
-        <option value="1">All</option>
-        <option value="2">Luxury</option>
-        <option value="3">Business</option>
-        <option value="4">Crossover</option>
-      </select>
+      <h2 className="text-4xl font-semibold mb-6">Our Fleet</h2>
       <div className="grid sm:grid-cols-2 md:grid-cols-3">
-        {cars
-          .filter((car) => {
-            switch (filter) {
-              case "1":
-                return true;
-              case "2":
-                return car.type.includes("luxury");
-              case "3":
-                return car.type.includes("business");
-              case "4":
-                return car.type.includes("crossover");
-            }
-          })
-          .map((car, i) => (
-            <SliderCard {...car} key={i} chooseVehicle={chooseVehicle} />
-          ))}
+        {cars.map((car, i) => (
+          <SliderCard {...car} key={i} chooseVehicle={chooseVehicle} />
+        ))}
       </div>
     </div>
   );

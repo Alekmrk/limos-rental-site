@@ -136,7 +136,10 @@ const TestimonialsSection = () => {
         {/* Call to Action - Dark Theme */}
         <div className="text-center mt-12">
           <p className="text-gray-300 mb-4">Ready to join our satisfied clients?</p>
-          <button className="bg-gradient-to-r from-yellow-400 to-yellow-300 hover:from-yellow-300 hover:to-yellow-200 text-black px-8 py-3 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105 shadow-lg">
+          <button 
+            onClick={() => document.querySelector('.reservation').scrollIntoView({ behavior: 'smooth' })}
+            className="bg-gradient-to-r from-yellow-400 to-yellow-300 hover:from-yellow-300 hover:to-yellow-200 text-black px-8 py-3 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105 shadow-lg"
+          >
             Book Your Experience
           </button>
         </div>

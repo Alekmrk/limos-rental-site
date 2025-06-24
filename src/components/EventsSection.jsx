@@ -123,7 +123,10 @@ const EventsSection = () => {
           <p className="text-gray-300 mb-6">
             Secure your premium transportation for upcoming events. Early booking recommended.
           </p>
-          <button className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg font-medium transition-colors duration-300">
+          <button 
+            onClick={() => document.querySelector('.reservation').scrollIntoView({ behavior: 'smooth' })}
+            className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg font-medium transition-colors duration-300"
+          >
             Reserve Now
           </button>
         </div>

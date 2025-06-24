@@ -5,7 +5,7 @@ import SliderCard from "../../../components/SliderCard";
 import { useEffect } from "react";
 import Aos from "aos";
 import "aos/dist/aos.css";
-const CarSlider = ({ activeTab, setSelectedVehicle }) => {
+const CarSlider = ({ setSelectedVehicle }) => {
   useEffect(() => {
     Aos.init({ duration: 1000 });
   }, []);
@@ -47,28 +47,15 @@ const CarSlider = ({ activeTab, setSelectedVehicle }) => {
         swipeable={true}
         draggable={true}
       >
-        {/* filtering the car list based on the tab */}
-        {cars
-          .filter((car) => {
-            switch (activeTab) {
-              case 1:
-                return true;
-              case 2:
-                return car.type.includes("luxury");
-              case 3:
-                return car.type.includes("business");
-              case 4:
-                return car.type.includes("crossover");
-            }
-          })
-          .map((car, i) => (
-            <SliderCard
-              {...car}
-              index={i}
-              key={car.id}
-              chooseVehicle={chooseVehicle}
-            />
-          ))}
+        {/* Show all vehicles without filtering */}
+        {cars.map((car, i) => (
+          <SliderCard
+            {...car}
+            index={i}
+            key={car.id}
+            chooseVehicle={chooseVehicle}
+          />
+        ))}
       </Carousel>
     </div>
   );

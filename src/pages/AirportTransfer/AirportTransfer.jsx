@@ -38,33 +38,6 @@ const AirportTransfer = ({ scrollUp }) => {
     }
   ];
 
-  const airports = [
-    {
-      name: "Zurich Airport (ZUR)",
-      code: "ZUR",
-      distance: "Direct Service",
-      time: "Immediate"
-    },
-    {
-      name: "Geneva Airport (GVA)",
-      code: "GVA", 
-      distance: "280 km",
-      time: "3 hours"
-    },
-    {
-      name: "Basel Airport (BSL)",
-      code: "BSL",
-      distance: "85 km", 
-      time: "1 hour"
-    },
-    {
-      name: "Bern Airport (BRN)",
-      code: "BRN",
-      distance: "120 km",
-      time: "1.5 hours"
-    }
-  ];
-
   return (
     <div className="min-h-screen">
       <div className="relative">
@@ -146,37 +119,6 @@ const AirportTransfer = ({ scrollUp }) => {
             ))}
           </div>
 
-          {/* Airport Coverage */}
-          <div className="bg-zinc-800/30 p-8 rounded-lg border border-zinc-700/50 mb-20">
-            <h2 className="text-3xl font-semibold mb-8 text-center text-gold">Swiss Airport Coverage</h2>
-            
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {airports.map((airport, index) => (
-                <div key={index} className="bg-zinc-900/50 p-6 rounded-lg border border-zinc-700/30">
-                  <div className="flex items-center gap-3 mb-3">
-                    <div className="w-10 h-10 bg-gold/20 rounded-lg flex items-center justify-center">
-                      <FontAwesomeIcon icon={faPlane} className="text-gold" />
-                    </div>
-                    <div>
-                      <h3 className="font-semibold text-white">{airport.code}</h3>
-                      <p className="text-zinc-400 text-sm">{airport.name}</p>
-                    </div>
-                  </div>
-                  <div className="space-y-2 text-sm">
-                    <div className="flex justify-between">
-                      <span className="text-zinc-400">Distance:</span>
-                      <span className="text-white">{airport.distance}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-zinc-400">Travel Time:</span>
-                      <span className="text-white">{airport.time}</span>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
           {/* Service Process */}
           <div className="mb-20">
             <h2 className="text-4xl font-semibold mb-12 text-center">
@@ -225,7 +167,7 @@ const AirportTransfer = ({ scrollUp }) => {
                 <div className="flex items-start gap-4">
                   <FontAwesomeIcon icon={faClock} className="text-gold text-xl mt-1" />
                   <div>
-                    <h3 className="font-semibold text-white mb-1">Extended Wait Time</h3>
+                    <h3 className="font-semibold text-white mb-1">Free Wait Time</h3>
                     <p className="text-zinc-300 text-sm">60 minutes free waiting time for international flights, 30 minutes for domestic.</p>
                   </div>
                 </div>

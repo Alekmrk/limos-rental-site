@@ -86,7 +86,10 @@ const ServicesSection = () => {
               Join thousands of satisfied clients who trust Elite Way Limo for their
               transportation needs. Book your premium experience today.
             </p>
-            <button className="bg-yellow-400 text-black hover:bg-yellow-300 px-8 py-3 rounded-lg font-semibold transition-colors duration-300 shadow-lg">
+            <button 
+              onClick={() => document.querySelector('.reservation').scrollIntoView({ behavior: 'smooth' })}
+              className="bg-yellow-400 text-black hover:bg-yellow-300 px-8 py-3 rounded-lg font-semibold transition-colors duration-300 shadow-lg"
+            >
               Get Started Now
             </button>
           </div>

@@ -76,11 +76,11 @@ const FeaturesSection = () => {
             <div className="max-w-4xl mx-auto">
               <div className="text-6xl text-yellow-400 mb-4">★★★★★</div>
               <blockquote className="text-xl md:text-2xl font-light italic mb-6">
-                "Elite Way Limo transformed our wedding day into an unforgettable experience. 
-                The attention to detail and luxury service exceeded all our expectations."
+                "My flight was delayed by 2 hours, but the driver was tracking it and adjusted pickup automatically. 
+                He was waiting with a sign when I finally arrived at 11 PM. Professional service when I needed it most."
               </blockquote>
-              <div className="text-yellow-400 font-semibold">Sarah & Michael</div>
-              <div className="text-gray-300 text-sm">Wedding Clients, Zurich</div>
+              <div className="text-yellow-400 font-semibold">Marcus Chen</div>
+              <div className="text-gray-300 text-sm">Business Executive, Geneva</div>
               
               <div className="mt-8 pt-8 border-t border-zinc-700">
                 <div className="grid md:grid-cols-3 gap-6 text-center">
