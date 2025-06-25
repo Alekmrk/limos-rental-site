@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { DateTime } from 'luxon';
 
-const DateInput = ({ value, onChange, name, id, className }) => {
+const DateInput = ({ value, onChange, name, id, className, dropdownClassName }) => {
   const [displayValue, setDisplayValue] = useState('');
   const [showPicker, setShowPicker] = useState(false);
   const [currentDate, setCurrentDate] = useState(new Date());
@@ -145,7 +145,7 @@ const DateInput = ({ value, onChange, name, id, className }) => {
         className={className}
       />
       {showPicker && (
-        <div className="absolute z-50 w-full top-full -mt-0 bg-zinc-800/95 backdrop-blur-sm rounded-lg shadow-lg border border-zinc-700/50 min-w-[280px]">
+        <div className={`absolute z-50 top-full -mt-0 bg-zinc-800/95 backdrop-blur-sm rounded-lg shadow-lg border border-zinc-700/50 min-w-[280px] ${dropdownClassName || 'w-full'}`}>
           <div className="p-4">
             <div className="flex items-center justify-between mb-4">
               <button

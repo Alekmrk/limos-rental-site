@@ -5,6 +5,8 @@ import ReservationContext from "../../contexts/ReservationContext";
 import Button from "../../components/Button";
 import ProgressBar from "../../components/ProgressBar";
 import NumberDropdown from "../../components/NumberDropdown";
+import DateInput from "../../components/DateInput";
+import TimeInput from "../../components/TimeInput";
 
 const CustomerDetails = ({ scrollUp }) => {
   const navigate = useNavigate();
@@ -15,9 +17,8 @@ const CustomerDetails = ({ scrollUp }) => {
   // Check if we have the required data from previous steps
   useEffect(() => {
     if (reservationInfo.isSpecialRequest) {
-      if (!reservationInfo.date || !reservationInfo.time) {
-        navigate('/');
-      }
+      // For special requests, no pre-requirements needed - date and time will be entered here
+      return;
     } else {
       if (!reservationInfo.pickup || 
           (!reservationInfo.isHourly && !reservationInfo.dropoff) || 
@@ -44,6 +45,37 @@ const CustomerDetails = ({ scrollUp }) => {
 
   const validateForm = () => {
     const newErrors = {};
+    
+    // Date and time validation for special requests
+    if (reservationInfo.isSpecialRequest) {
+      if (!reservationInfo.date) {
+        newErrors.date = "Date is required";
+      } else {
+        // Use luxon for Swiss time comparison
+        const selectedDate = DateTime.fromFormat(reservationInfo.date, 'yyyy-MM-dd', { zone: 'Europe/Zurich' });
+        const swissNow = DateTime.now().setZone('Europe/Zurich');
+        const selectedDateStart = selectedDate.startOf('day');
+        const swissNowStart = swissNow.startOf('day');
+        if (selectedDateStart < swissNowStart) {
+          newErrors.date = "Date cannot be in the past";
+        }
+        
+        // If date is today, check if time is at least 3 hours in advance
+        if (reservationInfo.time && selectedDateStart.equals(swissNowStart)) {
+          const [hours, minutes] = reservationInfo.time.split(':').map(Number);
+          const selectedTime = selectedDate.set({ hour: hours, minute: minutes });
+          const minAllowedTime = swissNow.plus({ hours: 3 });
+          if (selectedTime < minAllowedTime) {
+            newErrors.time = "Must book 3h in advance";
+          }
+        }
+      }
+      
+      if (!reservationInfo.time) {
+        newErrors.time = "Time is required";
+      }
+    }
+    
     if (!reservationInfo.email) {
       newErrors.email = "Email is required";
     } else if (!/\S+@\S+\.\S+/.test(reservationInfo.email)) {
@@ -155,6 +187,66 @@ const CustomerDetails = ({ scrollUp }) => {
             }
           }}
         >
+          {/* Date and Time Section for Special Requests */}
+          {reservationInfo.isSpecialRequest && (
+            <div className="mb-8">
+              <div className="p-4 mb-6 bg-gold/10 rounded-lg border border-gold/20">
+                <h3 className="text-lg font-medium text-gold mb-2">Special Request Details</h3>
+                <p className="text-zinc-300 mb-4">Please specify your preferred date and time for your custom transportation request.</p>
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <div>
+                  <label className="block text-sm font-medium mb-2" htmlFor="date">
+                    Preferred Date *
+                  </label>
+                  <div className="relative">
+                    <DateInput
+                      value={reservationInfo.date}
+                      onChange={(e) => {
+                        setErrors(prev => ({ ...prev, date: undefined }));
+                        handleInputChange(e);
+                      }}
+                      name="date"
+                      id="date"
+                      className={`bg-zinc-800/30 rounded-lg py-3 px-4 w-full border text-white transition-all duration-200 hover:border-zinc-600 focus:border-gold/50 focus:shadow-[0_0_15px_rgba(212,175,55,0.1)] ${
+                        errors.date ? 'border-red-500 ring-1 ring-red-500/50' : 'border-zinc-700/50'
+                      }`}
+                      dropdownClassName="w-[90%] left-[5%]"
+                    />
+                    {errors.date && (
+                      <span className="text-red-500 text-sm mt-1 block">{errors.date}</span>
+                    )}
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium mb-2" htmlFor="time">
+                    Preferred Time *
+                  </label>
+                  <div className="relative">
+                    <TimeInput
+                      value={reservationInfo.time}
+                      onChange={(e) => {
+                        setErrors(prev => ({ ...prev, time: undefined }));
+                        handleInputChange(e);
+                      }}
+                      name="time"
+                      id="time"
+                      className={`bg-zinc-800/30 rounded-lg py-3 px-4 w-full border text-white transition-all duration-200 hover:border-zinc-600 focus:border-gold/50 focus:shadow-[0_0_15px_rgba(212,175,55,0.1)] ${
+                        errors.time ? 'border-red-500 ring-1 ring-red-500/50' : 'border-zinc-700/50'
+                      }`}
+                      dropdownClassName="w-[90%] left-[5%]"
+                    />
+                    {errors.time && (
+                      <span className="text-red-500 text-sm mt-1 block">{errors.time}</span>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
           <div className="grid md:grid-cols-2 gap-6 mb-8">
             <div>
               <label className="block text-sm font-medium mb-2" htmlFor="email">

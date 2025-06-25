@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 
-const TimeInput = ({ value, onChange, name, id, className }) => {
+const TimeInput = ({ value, onChange, name, id, className, dropdownClassName }) => {
   const [showPicker, setShowPicker] = useState(false);
   const [inputValue, setInputValue] = useState(value || '');
   const [selectedHour, setSelectedHour] = useState(value ? value.split(':')[0] : '00');
@@ -86,7 +86,7 @@ const TimeInput = ({ value, onChange, name, id, className }) => {
       />
       
       {showPicker && (
-        <div className="absolute z-50 w-full top-full -mt-0 bg-zinc-800/95 backdrop-blur-sm rounded-lg shadow-lg border border-zinc-700/50">
+        <div className={`absolute z-50 top-full -mt-0 bg-zinc-800/95 backdrop-blur-sm rounded-lg shadow-lg border border-zinc-700/50 ${dropdownClassName || 'w-full'}`}>
           <div className="p-2 flex">
             {/* Hours column */}
             <div ref={hoursRef} className="flex-1 h-[200px] overflow-y-auto scrollbar-thin scrollbar-thumb-zinc-600 scrollbar-track-transparent border-r border-zinc-700/50">

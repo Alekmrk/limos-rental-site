@@ -110,7 +110,14 @@ const ReservationCard = () => {
 
     const newErrors = {};
     
-    // Date and time validation
+    // For special requests, no validation needed - just proceed
+    if (reservationInfo.isSpecialRequest) {
+      console.log('✅ Special request mode - skipping validation');
+      console.groupEnd();
+      return true;
+    }
+    
+    // Date and time validation for non-special requests
     console.log('📅 Validating date and time...');
     if (!reservationInfo.date) {
       newErrors.date = "Date is required";
@@ -143,81 +150,79 @@ const ReservationCard = () => {
       console.log('❌ Time validation failed: Time is required');
     }
 
-    if (!reservationInfo.isSpecialRequest) {
-      console.log('🚗 Validating non-special request fields...');
-      
-      // Location validation
-      if (!reservationInfo.pickup) {
-        newErrors.pickup = "Pick up location is required";
-        console.log('❌ Pickup validation failed: No pickup location');
+    console.log('🚗 Validating non-special request fields...');
+    
+    // Location validation
+    if (!reservationInfo.pickup) {
+      newErrors.pickup = "Pick up location is required";
+      console.log('❌ Pickup validation failed: No pickup location');
+    }
+    
+    if (!reservationInfo.isHourly && !reservationInfo.dropoff) {
+      newErrors.dropoff = "Drop off location is required";
+      console.log('❌ Dropoff validation failed: No dropoff location');
+    }
+    
+    if (reservationInfo.isHourly) {
+      const hours = parseInt(reservationInfo.hours) || 0;
+      if (hours < 3 || hours > 24) {
+        newErrors.hours = "Hours must be between 3 and 24";
+        console.log('❌ Hours validation failed:', hours);
       }
-      
-      if (!reservationInfo.isHourly && !reservationInfo.dropoff) {
-        newErrors.dropoff = "Drop off location is required";
-        console.log('❌ Dropoff validation failed: No dropoff location');
-      }
-      
-      if (reservationInfo.isHourly) {
-        const hours = parseInt(reservationInfo.hours) || 0;
-        if (hours < 3 || hours > 24) {
-          newErrors.hours = "Hours must be between 3 and 24";
-          console.log('❌ Hours validation failed:', hours);
-        }
-      }
+    }
 
-      // Switzerland validation - check if we have locations to validate
-      const hasPickupValue = reservationInfo.pickup?.trim();
-      const hasDropoffValue = !reservationInfo.isHourly ? reservationInfo.dropoff?.trim() : null;
+    // Switzerland validation - check if we have locations to validate
+    const hasPickupValue = reservationInfo.pickup?.trim();
+    const hasDropoffValue = !reservationInfo.isHourly ? reservationInfo.dropoff?.trim() : null;
+    
+    console.log('🇨🇭 Switzerland validation check:', {
+      hasPickupValue,
+      hasDropoffValue,
+      hasPickupPlaceInfo: !!reservationInfo.pickupPlaceInfo,
+      hasDropoffPlaceInfo: !!reservationInfo.dropoffPlaceInfo,
+      pickupIsConfirmed: reservationInfo.pickupPlaceInfo?.isConfirmed,
+      dropoffIsConfirmed: reservationInfo.dropoffPlaceInfo?.isConfirmed,
+      pickupWasManuallyEdited: reservationInfo.pickupPlaceInfo?.wasManuallyEdited,
+      dropoffWasManuallyEdited: reservationInfo.dropoffPlaceInfo?.wasManuallyEdited
+    });
+    
+    if (hasPickupValue || hasDropoffValue) {
+      // First check: require autocomplete selection for any typed locations
+      // Also check if the address was manually edited after being confirmed
+      if (hasPickupValue && (!reservationInfo.pickupPlaceInfo?.isConfirmed || reservationInfo.pickupPlaceInfo?.wasManuallyEdited)) {
+        newErrors.pickup = "Please select a location from the suggestions";
+        console.log('❌ Pickup validation failed:', {
+          hasValue: hasPickupValue,
+          isConfirmed: reservationInfo.pickupPlaceInfo?.isConfirmed,
+          wasManuallyEdited: reservationInfo.pickupPlaceInfo?.wasManuallyEdited
+        });
+      }
+      if (hasDropoffValue && (!reservationInfo.dropoffPlaceInfo?.isConfirmed || reservationInfo.dropoffPlaceInfo?.wasManuallyEdited)) {
+        newErrors.dropoff = "Please select a location from the suggestions";
+        console.log('❌ Dropoff validation failed:', {
+          hasValue: hasDropoffValue,
+          isConfirmed: reservationInfo.dropoffPlaceInfo?.isConfirmed,
+          wasManuallyEdited: reservationInfo.dropoffPlaceInfo?.wasManuallyEdited
+        });
+      }
       
-      console.log('🇨🇭 Switzerland validation check:', {
-        hasPickupValue,
-        hasDropoffValue,
-        hasPickupPlaceInfo: !!reservationInfo.pickupPlaceInfo,
-        hasDropoffPlaceInfo: !!reservationInfo.dropoffPlaceInfo,
-        pickupIsConfirmed: reservationInfo.pickupPlaceInfo?.isConfirmed,
-        dropoffIsConfirmed: reservationInfo.dropoffPlaceInfo?.isConfirmed,
-        pickupWasManuallyEdited: reservationInfo.pickupPlaceInfo?.wasManuallyEdited,
-        dropoffWasManuallyEdited: reservationInfo.dropoffPlaceInfo?.wasManuallyEdited
-      });
-      
-      if (hasPickupValue || hasDropoffValue) {
-        // First check: require autocomplete selection for any typed locations
-        // Also check if the address was manually edited after being confirmed
-        if (hasPickupValue && (!reservationInfo.pickupPlaceInfo?.isConfirmed || reservationInfo.pickupPlaceInfo?.wasManuallyEdited)) {
-          newErrors.pickup = "Please select a location from the suggestions";
-          console.log('❌ Pickup validation failed:', {
-            hasValue: hasPickupValue,
-            isConfirmed: reservationInfo.pickupPlaceInfo?.isConfirmed,
-            wasManuallyEdited: reservationInfo.pickupPlaceInfo?.wasManuallyEdited
-          });
-        }
-        if (hasDropoffValue && (!reservationInfo.dropoffPlaceInfo?.isConfirmed || reservationInfo.dropoffPlaceInfo?.wasManuallyEdited)) {
-          newErrors.dropoff = "Please select a location from the suggestions";
-          console.log('❌ Dropoff validation failed:', {
-            hasValue: hasDropoffValue,
-            isConfirmed: reservationInfo.dropoffPlaceInfo?.isConfirmed,
-            wasManuallyEdited: reservationInfo.dropoffPlaceInfo?.wasManuallyEdited
-          });
-        }
-        
-        // Second check: if we have both place infos and they're confirmed (not manually edited), validate Switzerland requirement
-        if (reservationInfo.pickupPlaceInfo?.isConfirmed && !reservationInfo.pickupPlaceInfo?.wasManuallyEdited && 
-            (!reservationInfo.isHourly ? (reservationInfo.dropoffPlaceInfo?.isConfirmed && !reservationInfo.dropoffPlaceInfo?.wasManuallyEdited) : true)) {
-          console.log('🔄 Using address validation service...');
-          try {
-            const validation = await validateAddresses(
-              reservationInfo.pickupPlaceInfo,
-              reservationInfo.dropoffPlaceInfo
-            );
-            console.log('📍 Address validation result:', validation);
-            if (!validation.isValid) {
-              newErrors.pickup = validation.error;
-              console.log('❌ Address validation failed:', validation.error);
-            }
-          } catch (error) {
-            console.error('💥 Error validating addresses:', error);
-            newErrors.pickup = "Error validating addresses. Please try again.";
+      // Second check: if we have both place infos and they're confirmed (not manually edited), validate Switzerland requirement
+      if (reservationInfo.pickupPlaceInfo?.isConfirmed && !reservationInfo.pickupPlaceInfo?.wasManuallyEdited && 
+          (!reservationInfo.isHourly ? (reservationInfo.dropoffPlaceInfo?.isConfirmed && !reservationInfo.dropoffPlaceInfo?.wasManuallyEdited) : true)) {
+        console.log('🔄 Using address validation service...');
+        try {
+          const validation = await validateAddresses(
+            reservationInfo.pickupPlaceInfo,
+            reservationInfo.dropoffPlaceInfo
+          );
+          console.log('📍 Address validation result:', validation);
+          if (!validation.isValid) {
+            newErrors.pickup = validation.error;
+            console.log('❌ Address validation failed:', validation.error);
           }
+        } catch (error) {
+          console.error('💥 Error validating addresses:', error);
+          newErrors.pickup = "Error validating addresses. Please try again.";
         }
       }
     }
@@ -505,64 +510,21 @@ const ReservationCard = () => {
         ) : (
           <>
             <div className="mb-4 text-neutral-400 text-sm border border-gold/20 rounded-xl p-4 bg-gold/5">
-              <p>Enter your preferred date and time.</p>
-              <p>We'll discuss your requirements in the next step.</p>
-              <p className="mt-2">Perfect for:</p>
-              <ul className="list-disc ml-5 mt-1">
-                <li>Multi-city tours</li>
-                <li>Wedding transportation</li>
-                <li>Corporate events</li>
-                <li>Custom itineraries</li>
+              <p className="mb-3 text-white font-medium">Custom Transportation Request</p>
+              <p className="mb-2">Tell us about your unique transportation needs and we'll create a personalized quote for you.</p>
+              <p className="mt-3 text-gold font-medium">Perfect for:</p>
+              <ul className="list-disc ml-5 mt-2 space-y-1">
+                <li>Multi-city tours & sightseeing</li>
+                <li>Wedding & event transportation</li>
+                <li>Corporate events & VIP services</li>
+                <li>Custom itineraries & special occasions</li>
+                <li>Long-distance transfers</li>
+                <li>Group transportation</li>
               </ul>
-            </div>
-
-            <div>
-              <label className="block text-sm uppercase mb-2 tracking-wide" htmlFor="date">
-                Date
-              </label>
-              <div className="relative">
-                <DateInput
-                  value={reservationInfo.date}
-                  onChange={(e) => {
-                    setErrors(prev => ({ ...prev, date: undefined }));
-                    handleInput(e);
-                  }}
-                  name="date"
-                  id="date"
-                  className={`bg-zinc-800/30 rounded-xl py-3 px-4 w-full border text-white transition-all duration-200 hover:border-zinc-600 focus:border-gold/50 focus:shadow-[0_0_15px_rgba(212,175,55,0.1)] ${
-                    errors.date ? 'border-red-500 ring-1 ring-red-500/50 animate-shake' : 'border-zinc-700/50'
-                  }`}
-                />
-                {errors.date && (
-                  <div className="absolute left-1/8 right-0 bottom-0 w-4/4 translate-y-1/2 bg-zinc-800/40 text-red-500 text-[11px] py-1 px-3 rounded-2xl z-10 text-right backdrop-blur-sm">
-                    {errors.date}
-                  </div>
-                )}
-              </div>
-            </div>
-
-            <div>
-              <label className="block text-sm uppercase mb-2 tracking-wide" htmlFor="time">
-                Preferred pick-up time
-              </label>
-              <div className="relative">
-                <TimeInput
-                  value={reservationInfo.time}
-                  onChange={(e) => {
-                    setErrors(prev => ({ ...prev, time: undefined }));
-                    handleInput(e);
-                  }}
-                  name="time"
-                  id="time"
-                  className={`bg-zinc-800/30 rounded-xl py-3 px-4 w-full border text-white transition-all duration-200 hover:border-zinc-600 focus:border-gold/50 focus:shadow-[0_0_15px_rgba(212,175,55,0.1)] ${
-                    errors.time ? 'border-red-500 ring-1 ring-red-500/50 animate-shake' : 'border-zinc-700/50'
-                  }`}
-                />
-                {errors.time && (
-                  <div className="absolute left-1/8 right-0 bottom-0 w-4/4 translate-y-1/2 bg-zinc-800/40 text-red-500 text-[11px] py-1 px-3 rounded-2xl z-10 text-right backdrop-blur-sm">
-                    {errors.time}
-                  </div>
-                )}
+              <div className="mt-4 pt-3 border-t border-gold/20">
+                <p className="text-xs text-gold">✓ No upfront payment required</p>
+                <p className="text-xs text-gold">✓ Free consultation & quote</p>
+                <p className="text-xs text-gold">✓ Flexible scheduling & routing</p>
               </div>
             </div>
           </>
