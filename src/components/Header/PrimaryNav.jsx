@@ -124,7 +124,7 @@ const PrimaryNav = ({ navHidden, screenSize, setNavHidden }) => {
               Hourly Transfer
             </NavLink>
             <NavLink
-              to="/services/special-transfer"
+              to="/special-request"
               className="block px-4 py-3 text-sm text-zinc-300 hover:text-gold hover:bg-zinc-800/50 transition-colors"
               onClick={handleNavClick}
             >

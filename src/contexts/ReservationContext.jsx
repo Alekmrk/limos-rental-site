@@ -347,11 +347,11 @@ export const ReservationContextProvider = ({ children }) => {
     }
   }, [reservationInfo.isHourly, reservationInfo.pickup, reservationInfo.dropoff, reservationInfo.extraStops]);
 
-  const setSelectedVehicle = (vehicle) => {
+  const setSelectedVehicle = useCallback((vehicle) => {
     setReservationInfo(prev => ({ ...prev, selectedVehicle: vehicle }));
-  };
+  }, []);
 
-  const setIsHourly = (isHourly) => {
+  const setIsHourly = useCallback((isHourly) => {
     setReservationInfo(prev => ({ 
       ...prev, 
       isHourly,
@@ -366,9 +366,9 @@ export const ReservationContextProvider = ({ children }) => {
       totalDistance: 0,
       totalDuration: 0
     }));
-  };
+  }, []);
 
-  const setIsSpecialRequest = (isSpecial) => {
+  const setIsSpecialRequest = useCallback((isSpecial) => {
     setReservationInfo(prev => ({
       ...prev,
       isSpecialRequest: isSpecial,
@@ -384,7 +384,7 @@ export const ReservationContextProvider = ({ children }) => {
       totalDuration: 0,
       specialRequestDetails: isSpecial ? 'Special transportation request' : ''
     }));
-  };
+  }, []);
 
   // Clear reservation data (used after successful booking completion)
   const clearReservation = useCallback(() => {
