@@ -7,13 +7,15 @@ import { faClock, faBusinessTime, faMapMarkedAlt, faUsers, faCalendarCheck, faRo
 import hourlyTransferImage from "../../assets/banner-image1.jpg";
 
 const HourlyTransfer = ({ scrollUp }) => {
-  const { clearReservation } = useContext(ReservationContext);
+  const { clearReservation, setIsHourly } = useContext(ReservationContext);
 
   useEffect(() => {
     scrollUp();
     // Clear any previous reservation data when user visits hourly transfer page
     clearReservation();
-  }, [scrollUp, clearReservation]);
+    // Set the reservation card to hourly mode
+    setIsHourly(true);
+  }, [scrollUp, clearReservation, setIsHourly]);
 
   const features = [
     {
