@@ -74,11 +74,6 @@ const BannerSection = () => {
                 Explore Our Fleet
               </Button>
             </Link>
-            <Link to={"/vehicle-selection"}>
-              <Button variant="primary" className="transform hover:scale-105 transition-transform duration-300 w-full sm:w-auto">
-                Book Now
-              </Button>
-            </Link>
           </div>
         </div>
 
