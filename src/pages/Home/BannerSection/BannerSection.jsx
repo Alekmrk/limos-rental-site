@@ -27,13 +27,7 @@ const BannerSection = () => {
 
         <div className="relative z-10 px-4 md:px-8 md:mr-96 lg:mr-[28rem] xl:mr-[32rem]">
           <div className="pt-16 md:pt-20 mb-8 md:mb-12">
-            {/* Premium Badge - Slightly left aligned */}
-            <div className="inline-flex items-center gap-2 bg-zinc-800/60 backdrop-blur-sm text-yellow-300 px-4 py-2 rounded-full text-sm font-medium mb-6 border border-zinc-700/50">
-              <FaStar className="text-yellow-400" />
-              <span>Premium Luxury Transportation</span>
-            </div>
-            
-            <div className="mb-6 md:mb-8">
+            <div className="mb-10 md:mb-12">
               <img 
                 src={eliteWayLogo} 
                 alt="Elite Way Limo" 
