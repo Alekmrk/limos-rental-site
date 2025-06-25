@@ -15,7 +15,7 @@ Elite Way is a website for professional chauffeur service, designed to provide c
 ## How to Use
 
 1. Visit the Elite Way website at [elitewaylimo.ch](https://www.elitewaylimo.ch/)
-2. Browse the available limousine models and select the one that fits your needs
+2. Browse the available vehicles and select the one that fits your needs
 
 ![vehicles-page](screenshots/vehicles-page.png)
 

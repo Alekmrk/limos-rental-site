@@ -2,12 +2,12 @@ import React from 'react';
 import { FaWhatsapp, FaPhone, FaEnvelope } from 'react-icons/fa';
 
 const ContactChannels = ({ className = "", position = "fixed" }) => {
-  const whatsappNumber = "+41793456789"; // Replace with your actual WhatsApp number
-  const phoneNumber = "+41793456789"; // Replace with your actual phone number
-  const email = "info@elitewaylimo.com"; // Replace with your actual email
+  const whatsappNumber = "+41782647970";
+  const phoneNumber = "+41782647970";
+  const email = "info@elitewaylimo.com";
 
   const handleWhatsAppClick = () => {
-    const message = encodeURIComponent("Hello! I'm interested in your limousine services. Could you please provide more information?");
+    const message = encodeURIComponent("Hello! I'm interested in your luxury transportation services. Could you please provide more information?");
     window.open(`https://wa.me/${whatsappNumber.replace('+', '')}?text=${message}`, '_blank');
   };
 
@@ -16,7 +16,7 @@ const ContactChannels = ({ className = "", position = "fixed" }) => {
   };
 
   const handleEmailClick = () => {
-    window.location.href = `mailto:${email}?subject=Limousine Service Inquiry`;
+    window.location.href = `mailto:${email}?subject= Luxury Transportation Service Inquiry`;
   };
 
   if (position === "fixed") {

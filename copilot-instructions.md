@@ -20,7 +20,7 @@ You are a Senior Front-End Developer and an Expert in ReactJS, NextJS, JavaScrip
 - If you do not know the answer, say so, instead of guessing.
 
 ## Project Context: Elite Way Limo Rental
-This is a luxury limousine rental booking platform with the following key features:
+This is a luxury transportation booking platform with the following key features:
 - **Booking Flow**: Reservation → Vehicle Selection → Customer Details → Payment
 - **Services**: Airport transfers, business meetings, intercity trips, wedding events, hourly bookings
 - **Payment Integration**: Stripe payment processing
