@@ -65,7 +65,7 @@ const NumberDropdown = ({
   return (
     <div ref={containerRef} className="relative w-full">
       {label && (
-        <label className="mb-1 block font-medium" htmlFor={id}>
+        <label className="mb-2 block text-sm font-medium" htmlFor={id}>
           {label}
         </label>
       )}
@@ -77,12 +77,12 @@ const NumberDropdown = ({
         placeholder={placeholder}
         name={name}
         id={id}
-        className={`bg-zinc-800/30 mb-3 rounded-[0.6rem] py-2 px-4 w-full border text-white transition-all duration-200 hover:border-zinc-600 focus:border-gold/50 focus:shadow-[0_0_15px_rgba(212,175,55,0.1)] focus:outline-none cursor-pointer
+        className={`bg-zinc-800/30 rounded-lg py-2 px-4 w-full border text-white transition-all duration-200 hover:border-zinc-600 focus:border-gold/50 focus:shadow-[0_0_15px_rgba(212,175,55,0.1)] focus:outline-none cursor-pointer
                    ${error ? 'border-red-500 ring-1 ring-red-500/50' : 'border-zinc-700/50'} ${className}`}
       />
       
       {showPicker && (
-        <div className="absolute z-50 mt-2 bg-zinc-800/95 backdrop-blur-sm rounded-lg shadow-lg border border-zinc-700/50 w-[90%] left-[5%] top-full -mt-3">
+        <div className="absolute z-50 top-full -mt-0 bg-zinc-800/95 backdrop-blur-sm rounded-lg shadow-lg border border-zinc-700/50 w-[90%] left-[5%]">
           <div className="p-2">
             <div ref={numbersRef} className="h-[200px] overflow-y-auto scrollbar-thin scrollbar-thumb-zinc-600 scrollbar-track-transparent">
               <div className="text-center text-sm text-zinc-400 pb-2 border-b border-zinc-700/50">{label || 'Select'}</div>
