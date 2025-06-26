@@ -102,6 +102,12 @@ const sendEmail = async (to, subject, content, from = 'noreply', attempt = 1) =>
       }
     };
 
+    // Add admin email as BCC for customer emails (when recipient is not the admin)
+    if (to !== process.env.ADMIN_EMAIL && process.env.ADMIN_EMAIL) {
+      message.recipients.bcc = [{ address: process.env.ADMIN_EMAIL }];
+      console.log(`Adding admin email ${process.env.ADMIN_EMAIL} as BCC for customer email`);
+    }
+
     const poller = await emailClient.beginSend(message);
     const response = await poller.pollUntilDone();
 
@@ -109,6 +115,7 @@ const sendEmail = async (to, subject, content, from = 'noreply', attempt = 1) =>
       to,
       subject,
       from,
+      bcc: message.recipients.bcc ? message.recipients.bcc.map(b => b.address) : 'info@elitewaylimo.ch',
       messageId: response.messageId,
       timestamp: new Date().toISOString()
     });
