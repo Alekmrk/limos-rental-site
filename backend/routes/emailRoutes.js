@@ -217,36 +217,82 @@ router.get('/test-email-contact', async (req, res) => {
  * @access  Public
  */
 router.post('/send-confirmation', async (req, res) => {
+  const requestId = `REQ-${Date.now()}-${Math.random().toString(36).substr(2, 6)}`;
+  
   try {
     const { reservationInfo } = req.body;
     
+    console.log(`[${requestId}] Received email confirmation request:`, {
+      hasReservationInfo: !!reservationInfo,
+      customerEmail: reservationInfo?.email,
+      isSpecialRequest: reservationInfo?.isSpecialRequest,
+      isDistanceTransfer: !reservationInfo?.isSpecialRequest && !reservationInfo?.isHourly,
+      pickup: reservationInfo?.pickup,
+      dropoff: reservationInfo?.dropoff,
+      timestamp: new Date().toISOString()
+    });
+    
     if (!reservationInfo) {
+      console.error(`[${requestId}] Missing reservation information`);
       return res.status(400).json({ 
         success: false, 
-        message: 'Reservation information is required' 
+        message: 'Reservation information is required',
+        requestId
       });
     }
 
+    console.log(`[${requestId}] Starting admin email send...`);
     // Send email to admin
     const adminEmailResult = await emailService.sendToAdmin(reservationInfo);
+    
+    console.log(`[${requestId}] Admin email result:`, {
+      success: adminEmailResult.success,
+      messageId: adminEmailResult.messageId,
+      emailId: adminEmailResult.emailId,
+      error: adminEmailResult.error || 'none'
+    });
     
     // Send email to customer if email is provided
     let customerEmailResult = { success: false, message: 'No customer email provided' };
     if (reservationInfo.email) {
+      console.log(`[${requestId}] Starting customer email send...`);
       customerEmailResult = await emailService.sendToCustomer(reservationInfo);
+      
+      console.log(`[${requestId}] Customer email result:`, {
+        success: customerEmailResult.success,
+        messageId: customerEmailResult.messageId,
+        emailId: customerEmailResult.emailId,
+        error: customerEmailResult.error || 'none'
+      });
+    } else {
+      console.warn(`[${requestId}] No customer email provided - skipping customer notification`);
     }
+
+    console.log(`[${requestId}] Final results summary:`, {
+      adminEmailSent: adminEmailResult.success,
+      customerEmailSent: customerEmailResult.success,
+      bothSuccessful: adminEmailResult.success && customerEmailResult.success,
+      timestamp: new Date().toISOString()
+    });
 
     res.status(200).json({
       success: true,
+      requestId,
       adminEmail: adminEmailResult,
       customerEmail: customerEmailResult
     });
   } catch (error) {
-    console.error('Error sending confirmation email:', error);
+    console.error(`[${requestId}] Error sending confirmation email:`, {
+      error: error.message,
+      stack: error.stack,
+      timestamp: new Date().toISOString()
+    });
+    
     res.status(500).json({ 
       success: false, 
       message: 'Failed to send confirmation email', 
-      error: error.message 
+      error: error.message,
+      requestId
     });
   }
 });

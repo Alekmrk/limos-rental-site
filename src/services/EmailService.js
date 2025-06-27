@@ -48,15 +48,28 @@ const prepareReservationData = (reservationInfo) => {
  * @returns {Promise} - A promise that resolves when the email is sent
  */
 export const sendTransferConfirmationToAdmin = async (reservationInfo) => {
-  console.log('Sending transfer confirmation to admin via backend API');
+  const requestId = `FRONTEND-${Date.now()}-${Math.random().toString(36).substr(2, 6)}`;
+  
+  console.log(`[${requestId}] Starting transfer confirmation email process:`, {
+    customerEmail: reservationInfo.email,
+    isDistanceTransfer: !reservationInfo.isSpecialRequest && !reservationInfo.isHourly,
+    isSpecialRequest: reservationInfo.isSpecialRequest,
+    isHourly: reservationInfo.isHourly,
+    hasPaymentDetails: !!reservationInfo.paymentDetails,
+    pickup: reservationInfo.pickup,
+    dropoff: reservationInfo.dropoff,
+    date: reservationInfo.date,
+    time: reservationInfo.time,
+    timestamp: new Date().toISOString()
+  });
   
   // Prepare data for sending
   const sanitizedReservationInfo = prepareReservationData(reservationInfo);
-  console.log('API URL:', `${API_BASE_URL}/send-confirmation`);
-  console.log('Prepared sanitized data for API');
+  console.log(`[${requestId}] API URL:`, `${API_BASE_URL}/send-confirmation`);
+  console.log(`[${requestId}] Prepared sanitized data for API - removed large fields to prevent payload issues`);
 
   try {
-    console.log('Making API request...');
+    console.log(`[${requestId}] Making API request...`);
     const response = await fetch(`${API_BASE_URL}/send-confirmation`, {
       method: 'POST',
       headers: {
@@ -65,11 +78,13 @@ export const sendTransferConfirmationToAdmin = async (reservationInfo) => {
       body: JSON.stringify({ reservationInfo: sanitizedReservationInfo }),
     });
 
-    console.log('API response status:', response.status);
+    console.log(`[${requestId}] API response status:`, response.status);
     
     // Handle non-JSON responses
     if (!response.ok) {
       const errorText = await response.text();
+      console.error(`[${requestId}] API returned error status ${response.status}:`, errorText);
+      
       try {
         // Try to parse as JSON first
         const errorJson = JSON.parse(errorText);
@@ -81,19 +96,71 @@ export const sendTransferConfirmationToAdmin = async (reservationInfo) => {
     }
     
     const result = await response.json();
-    console.log('API response body:', result);
+    console.log(`[${requestId}] API response body:`, {
+      success: result.success,
+      requestId: result.requestId,
+      adminEmailSent: result.adminEmail?.success,
+      customerEmailSent: result.customerEmail?.success,
+      adminMessageId: result.adminEmail?.messageId,
+      customerMessageId: result.customerEmail?.messageId,
+      errors: {
+        admin: result.adminEmail?.error || 'none',
+        customer: result.customerEmail?.error || 'none'
+      }
+    });
+
+    // Log specific issues with admin email delivery
+    if (!result.adminEmail?.success) {
+      console.error(`[${requestId}] ❌ ADMIN EMAIL FAILED:`, {
+        adminEmailResult: result.adminEmail,
+        possibleCauses: [
+          'Azure Communication Services issue',
+          'Invalid admin email address in environment',
+          'Email service configuration problem',
+          'Network connectivity issue'
+        ]
+      });
+    } else {
+      console.log(`[${requestId}] ✅ ADMIN EMAIL SENT SUCCESSFULLY:`, {
+        messageId: result.adminEmail.messageId,
+        emailId: result.adminEmail.emailId
+      });
+    }
+
+    // Log customer email status
+    if (reservationInfo.email && !result.customerEmail?.success) {
+      console.warn(`[${requestId}] ⚠️ CUSTOMER EMAIL FAILED:`, {
+        customerEmail: reservationInfo.email,
+        customerEmailResult: result.customerEmail
+      });
+    } else if (reservationInfo.email && result.customerEmail?.success) {
+      console.log(`[${requestId}] ✅ CUSTOMER EMAIL SENT SUCCESSFULLY:`, {
+        customerEmail: reservationInfo.email,
+        messageId: result.customerEmail.messageId
+      });
+    }
     
     return {
       success: result.success,
-      message: result.adminEmail?.message || 'Confirmation email processed'
+      message: result.adminEmail?.message || 'Confirmation email processed',
+      requestId: result.requestId,
+      adminEmailResult: result.adminEmail,
+      customerEmailResult: result.customerEmail
     };
   } catch (error) {
-    console.error('Error sending email via API:', error);
-    console.error('Error details:', error.stack);
+    console.error(`[${requestId}] Error sending email via API:`, {
+      error: error.message,
+      stack: error.stack,
+      apiUrl: `${API_BASE_URL}/send-confirmation`,
+      timestamp: new Date().toISOString()
+    });
+    
+    console.error(`[${requestId}] Error details:`, error.stack);
     return {
       success: false,
       message: 'Failed to send confirmation email',
-      error: error.message
+      error: error.message,
+      requestId
     };
   }
 };

@@ -81,12 +81,17 @@ const formatDate = (dateString) => {
 const sendEmail = async (to, subject, content, from = 'noreply', attempt = 1) => {
   const maxRetries = 3;
   const retryDelay = attempt * 2000; // Exponential backoff: 2s, 4s, 6s
+  const emailId = `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
 
   try {
-    console.log(`Attempt ${attempt} to send email to ${to}`, {
+    console.log(`[EMAIL-${emailId}] Attempt ${attempt} to send email:`, {
+      to,
       subject,
       from,
-      timestamp: new Date().toISOString()
+      isAdminEmail: to === process.env.ADMIN_EMAIL,
+      adminEmailEnv: process.env.ADMIN_EMAIL,
+      timestamp: new Date().toISOString(),
+      contentLength: content.text?.length || 0
     });
 
     const sender = emailSenders[from] || emailSenders.noreply;
@@ -105,40 +110,85 @@ const sendEmail = async (to, subject, content, from = 'noreply', attempt = 1) =>
     // Add admin email as BCC for customer emails (when recipient is not the admin)
     if (to !== process.env.ADMIN_EMAIL && process.env.ADMIN_EMAIL) {
       message.recipients.bcc = [{ address: process.env.ADMIN_EMAIL }];
-      console.log(`Adding admin email ${process.env.ADMIN_EMAIL} as BCC for customer email`);
+      console.log(`[EMAIL-${emailId}] Adding admin email ${process.env.ADMIN_EMAIL} as BCC for customer email`);
     }
 
+    console.log(`[EMAIL-${emailId}] Starting Azure Communication Services send...`);
     const poller = await emailClient.beginSend(message);
+    
+    console.log(`[EMAIL-${emailId}] Polling for completion...`);
     const response = await poller.pollUntilDone();
 
-    console.log('Email sent successfully:', {
+    console.log(`[EMAIL-${emailId}] Email sent successfully:`, {
       to,
       subject,
       from,
-      bcc: message.recipients.bcc ? message.recipients.bcc.map(b => b.address) : 'info@elitewaylimo.ch',
+      bcc: message.recipients.bcc ? message.recipients.bcc.map(b => b.address) : 'none',
       messageId: response.messageId,
+      operationId: response.id,
+      status: response.status,
       timestamp: new Date().toISOString()
     });
 
+    // Additional logging for admin emails
+    if (to === process.env.ADMIN_EMAIL) {
+      console.log(`[ADMIN-EMAIL-${emailId}] ✅ ADMIN EMAIL DELIVERED SUCCESSFULLY:`, {
+        adminEmail: process.env.ADMIN_EMAIL,
+        messageId: response.messageId,
+        subject,
+        timestamp: new Date().toISOString()
+      });
+    }
+
     return {
       success: true,
-      messageId: response.messageId
+      messageId: response.messageId,
+      emailId,
+      operationId: response.id,
+      status: response.status
     };
   } catch (error) {
-    console.error(`Email sending failed (attempt ${attempt}):`, {
+    console.error(`[EMAIL-${emailId}] Email sending failed (attempt ${attempt}):`, {
+      to,
+      subject,
+      from,
+      isAdminEmail: to === process.env.ADMIN_EMAIL,
       error: error.message,
       code: error.code,
       statusCode: error.statusCode,
       details: error.details,
+      stack: error.stack,
       timestamp: new Date().toISOString()
     });
+
+    // Special logging for admin email failures
+    if (to === process.env.ADMIN_EMAIL) {
+      console.error(`[ADMIN-EMAIL-${emailId}] ❌ ADMIN EMAIL FAILED:`, {
+        adminEmail: process.env.ADMIN_EMAIL,
+        subject,
+        attempt,
+        maxRetries,
+        error: error.message,
+        code: error.code,
+        timestamp: new Date().toISOString()
+      });
+    }
     
     // If we haven't reached max retries, try again after delay
     if (attempt < maxRetries) {
-      console.log(`Retrying in ${retryDelay}ms...`);
+      console.log(`[EMAIL-${emailId}] Retrying in ${retryDelay}ms...`);
       await new Promise(resolve => setTimeout(resolve, retryDelay));
       return sendEmail(to, subject, content, from, attempt + 1);
     }
+
+    // Final failure logging
+    console.error(`[EMAIL-${emailId}] ❌ FINAL FAILURE after ${maxRetries} attempts:`, {
+      to,
+      isAdminEmail: to === process.env.ADMIN_EMAIL,
+      subject,
+      error: error.message,
+      timestamp: new Date().toISOString()
+    });
 
     throw error;
   }
