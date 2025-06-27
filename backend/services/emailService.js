@@ -646,6 +646,8 @@ const generateEmailContent = (reservationInfo, type = 'customer') => {
           ${generateSection(isSpecialRequest ? 'Request Details' : 'Transfer Details', icons.transfer, transferDetails)}
           ${!isSpecialRequest ? generateSection('Vehicle Details', icons.vehicle, vehicleDetails) : ''}
           ${generateSection('Customer Details', icons.customer, customerDetails)}
+          
+          ${type === 'customer' && !isSpecialRequest ? getDriverInfoNotice(reservationInfo, type).html : ''}
 
           <div style="text-align: center; color: #ccc; margin-top: 32px;">
             <p>${getEmailOutro(reservationInfo, type)}</p>
@@ -701,6 +703,8 @@ ${reservationInfo.meetingBoard ? `Meeting Board Name: ${reservationInfo.meetingB
 ${reservationInfo.additionalRequests ? `${isSpecialRequest ? 'Special Request Details' : 'Additional Requests'}: ${reservationInfo.additionalRequests}` : ''}
 ${reservationInfo.referenceNumber ? `Reference Number or Cost Center: ${reservationInfo.referenceNumber}` : ''}
 
+${type === 'customer' && !isSpecialRequest ? getDriverInfoNotice(reservationInfo, type).text : ''}
+
 ${getEmailOutro(reservationInfo, type)}
 
 Best regards,
@@ -745,6 +749,35 @@ const getEmailOutro = (reservationInfo, type) => {
     return `We'll send a detailed response to ${reservationInfo.email}`;
   }
   return `Thank you for choosing Elite Way Limo. We look forward to serving you!`;
+};
+
+// Generate driver information notice for customer emails
+const getDriverInfoNotice = (reservationInfo, type) => {
+  if (type !== 'customer' || reservationInfo.isSpecialRequest) {
+    return '';
+  }
+  
+  return {
+    html: `
+      <div class="section" style="background-color: rgba(34, 197, 94, 0.1); border: 1px solid rgba(34, 197, 94, 0.3); padding: 24px; border-radius: 8px; margin-bottom: 24px;">
+        <h3 class="section-title" style="color: #22c55e; font-size: 18px; font-weight: 500; margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">
+          <svg style="width: 20px; height: 20px;" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+          </svg>
+          Driver Information
+        </h3>
+        <div class="section-content" style="color: #fff;">
+          <p style="margin: 8px 0; font-size: 16px;">
+            📱 <strong>We will send you driver details (name, phone, vehicle info) a few hours before pickup.</strong> This ensures you have the most current information for your transfer.
+          </p>
+        </div>
+      </div>
+    `,
+    text: `
+DRIVER INFORMATION
+📱 We will send you driver details (name, phone, vehicle info) a few hours before pickup. This ensures you have the most current information for your transfer.
+`
+  };
 };
 
 const generatePlainTextContent = (reservationInfo, type) => {
