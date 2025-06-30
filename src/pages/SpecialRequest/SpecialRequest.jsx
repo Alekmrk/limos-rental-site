@@ -21,6 +21,7 @@ import { useEffect, useContext } from "react";
 import ReservationContext from "../../contexts/ReservationContext";
 import ReservationCard from "../Home/BannerSection/ReservationCard";
 import Button from "../../components/Button";
+import bannerImage from "../../assets/banner-image.jpg";
 
 const SpecialRequest = ({ scrollUp }) => {
   const { clearReservation, setIsSpecialRequest } = useContext(ReservationContext);
@@ -158,7 +159,7 @@ const SpecialRequest = ({ scrollUp }) => {
         <div 
           className="relative container-big rounded-[1.5rem] text-center mt-16 pb-32 md:pb-0 md:pr-[480px] lg:pr-[520px] xl:pr-[480px] bg-cover bg-center min-h-[600px] md:min-h-[700px] lg:min-h-[800px] overflow-hidden"
           style={{
-            backgroundImage: `linear-gradient(135deg, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.3) 50%, rgba(0,0,0,0.4) 100%), url('/src/assets/banner-image.jpg')`,
+            backgroundImage: `linear-gradient(135deg, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.3) 50%, rgba(0,0,0,0.4) 100%), url(${bannerImage})`,
             backgroundPosition: 'center',
             backgroundSize: 'cover'
           }}
