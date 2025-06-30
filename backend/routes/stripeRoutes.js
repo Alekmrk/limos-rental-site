@@ -7,7 +7,8 @@ router.post('/create-checkout-session', express.json(), async (req, res) => {
   try {
     const { amount, currency = 'chf', metadata = {} } = req.body;
     
-    const session = await stripe.checkout.sessions.create({
+    // Prepare session configuration
+    const sessionConfig = {
       payment_method_types: ['card'],
       line_items: [
         {
@@ -26,7 +27,14 @@ router.post('/create-checkout-session', express.json(), async (req, res) => {
       success_url: `${process.env.FRONTEND_URL || 'http://localhost:5173'}/payment-success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${process.env.FRONTEND_URL || 'http://localhost:5173'}/payment-cancel?session_id={CHECKOUT_SESSION_ID}`,
       metadata: metadata
-    });
+    };
+
+    // Prefill customer email if available
+    if (metadata.email) {
+      sessionConfig.customer_email = metadata.email;
+    }
+    
+    const session = await stripe.checkout.sessions.create(sessionConfig);
 
     res.json({ url: session.url });
   } catch (err) {
