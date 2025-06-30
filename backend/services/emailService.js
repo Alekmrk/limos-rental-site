@@ -768,14 +768,14 @@ const getDriverInfoNotice = (reservationInfo, type) => {
         </h3>
         <div class="section-content" style="color: #fff;">
           <p style="margin: 8px 0; font-size: 16px;">
-            📱 <strong>We will send you driver details (name, phone, vehicle info) a few hours before pickup.</strong> This ensures you have the most current information for your transfer.
+            📧 <strong>We will send you a follow-up email with driver details (name, phone, vehicle info) closer to your pickup time.</strong> This follow-up email will provide you with all the necessary contact information for your assigned driver and vehicle.
           </p>
         </div>
       </div>
     `,
     text: `
 DRIVER INFORMATION
-📱 We will send you driver details (name, phone, vehicle info) a few hours before pickup. This ensures you have the most current information for your transfer.
+📧 We will send you a follow-up email with driver details (name, phone, vehicle info) closer to your pickup time.
 `
   };
 };
