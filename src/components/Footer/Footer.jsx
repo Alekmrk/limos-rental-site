@@ -2,9 +2,38 @@ import logoFooter from "../../assets/elitewaylogo.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faInstagram, faWhatsapp } from "@fortawesome/free-brands-svg-icons";
 import { faTelegram } from "@fortawesome/free-brands-svg-icons";
+import { useLocation } from "react-router-dom";
+import { useState, useEffect } from "react";
 
 const Footer = () => {
+  const location = useLocation();
   const currentYear = new Date().getFullYear();
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Check if it's phone/mobile version
+  useEffect(() => {
+    const checkIfMobile = () => {
+      const width = window.innerWidth;
+      setIsMobile(width < 768); // Tailwind's md breakpoint
+    };
+
+    checkIfMobile();
+    window.addEventListener("resize", checkIfMobile);
+
+    return () => window.removeEventListener("resize", checkIfMobile);
+  }, []);
+
+  // Hide footer or make it basic for reservation flow pages
+  const reservationFlowPages = [
+    "/vehicle-selection",
+    "/customer-details",
+    "/payment",
+    "/payment-success",
+    "/payment-cancel",
+    "/thankyou",
+  ];
+
+  const isReservationFlow = reservationFlowPages.includes(location.pathname);
 
   const serviceLinks = [
     { name: "Airport Transfers", path: "/airport-transfer" },
@@ -41,15 +70,39 @@ const Footer = () => {
     }
   };
 
+  // Basic footer for reservation flow pages - only on mobile
+  if (isReservationFlow && isMobile) {
+    return (
+      <footer className="container-big bg-neutral-800 text-white rounded-[1.5rem] mt-20 mb-[2.5vw] py-8 px-8">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center">
+            <img
+              className="w-20 mx-auto mb-4"
+              src={logoFooter}
+              alt="Elite Way Limo"
+            />
+            <p className="text-neutral-400 text-sm mb-4">
+              &copy; {currentYear} Elite Way Limo. All rights reserved.
+            </p>
+            <p className="text-neutral-500 text-xs">
+              Professional chauffeur service in Switzerland
+            </p>
+          </div>
+        </div>
+      </footer>
+    );
+  }
+
+  // Regular footer for desktop reservation pages and all other pages
   return (
     <footer className="container-big bg-neutral-800 text-white rounded-[1.5rem] mt-20 mb-[2.5vw] py-12 px-8 md:px-20">
       <div className="max-w-6xl mx-auto">
         {/* Main Footer Content */}
-        <div className="grid md:grid-cols-4 gap-8 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8 text-center md:text-left">
           {/* Company Info */}
           <div className="md:col-span-1">
             <img
-              className="w-28 mb-6"
+              className="w-28 mb-6 mx-auto md:mx-0"
               src={logoFooter}
               alt="Elite Way Limo"
             />
@@ -110,7 +163,7 @@ const Footer = () => {
             <p className="text-neutral-400 text-sm mb-4">
               Stay connected for updates and exclusive offers.
             </p>
-            <div className="flex gap-3">
+            <div className="flex gap-3 justify-center md:justify-start">
               <button
                 onClick={() => handleSocialClick("whatsapp")}
                 className="w-10 h-10 bg-neutral-700 hover:bg-green-600 rounded-lg flex items-center justify-center transition-colors group"
@@ -147,7 +200,7 @@ const Footer = () => {
 
         {/* Bottom Bar */}
         <div className="border-t border-neutral-700 pt-6">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-center md:text-left">
             <p className="text-neutral-400 text-sm">
               &copy; {currentYear} Elite Way Limo. All rights reserved.
             </p>
