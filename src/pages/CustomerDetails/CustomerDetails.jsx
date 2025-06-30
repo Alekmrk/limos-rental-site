@@ -387,7 +387,7 @@ const CustomerDetails = ({ scrollUp }) => {
                       </div>
                       <div>
                         <label className="block text-sm font-medium mb-2" htmlFor="meetingBoard">
-                          Meeting Board Name
+                          Meet & Greet Sign <span className="text-xs text-zinc-400 font-normal">(Name for pickup sign)</span>
                         </label>
                         <input
                           type="text"
