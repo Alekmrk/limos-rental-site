@@ -44,8 +44,8 @@ const Footer = () => {
 
   const legalLinks = [
     { name: "Privacy Policy", path: "/privacy-policy" },
-    { name: "Terms of Service", path: "#" },
-    { name: "Legal Notice", path: "#" },
+    { name: "Terms of Service", path: "/terms-of-service" },
+    { name: "Legal Notice", path: "/legal-notice" },
   ];
 
   const handleSocialClick = (platform) => {

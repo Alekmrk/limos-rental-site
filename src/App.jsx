@@ -27,6 +27,8 @@ import { useState } from "react";
 import cars from "./data/cars";
 import { ReservationContextProvider } from "./contexts/ReservationContext";
 import { useGoogleMapsApi } from "./hooks/useGoogleMapsApi";
+import TermsOfService from "./pages/TermsOfService/TermsOfService";
+import LegalNotice from "./pages/LegalNotice/LegalNotice";
 
 function App() {
   const { isLoaded, loadError } = useGoogleMapsApi();
@@ -89,6 +91,8 @@ function App() {
           />
           <Route path="/thankyou" element={<ThankYou scrollUp={scrollUp} />} />
           <Route path="/privacy-policy" element={<PrivacyPolicy scrollUp={scrollUp} />} />
+          <Route path="/terms-of-service" element={<TermsOfService scrollUp={scrollUp} />} />
+          <Route path="/legal-notice" element={<LegalNotice scrollUp={scrollUp} />} />
           <Route path="*" element={<NotFound scrollUp={scrollUp} />} />
         </Routes>
       </ReservationContextProvider>
