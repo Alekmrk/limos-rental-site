@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 
 const Image = ({ 
   src, 
@@ -7,66 +7,18 @@ const Image = ({
   sizes = '100vw',
   loading = 'lazy',
   priority = false,
-  imageType = 'standard',
   ...props 
 }) => {
   const [loaded, setLoaded] = useState(false);
-  const [imageSrc, setImageSrc] = useState(null);
-  const [srcSet, setSrcSet] = useState(null);
   const [error, setError] = useState(false);
-
-  useEffect(() => {
-    const loadImage = async () => {
-      try {
-        const baseFilename = typeof src === 'string' 
-          ? src.replace(/\.[^/.]+$/, '')
-          : src?.default?.replace(/\.[^/.]+$/, '') || src?.src?.replace(/\.[^/.]+$/, '');
-
-        // Get optimized images if they exist
-        const optimizedDir = baseFilename.replace('/assets/', '/assets/optimized/');
-        const imageConfig = {
-          banner: [2048, 1536, 1024, 768],
-          car: [800, 600, 400],
-          logo: [192, 96],
-          feature: [400, 200],
-          standard: [800, 400]
-        }[imageType] || [800, 400];
-
-        try {
-          // Try to load the smallest optimized version first as fallback
-          const smallestSize = Math.min(...imageConfig);
-          const fallbackPath = `${optimizedDir}-${smallestSize}.webp`;
-          setImageSrc(fallbackPath);
-
-          // Set srcset for responsive images
-          const srcSetString = imageConfig
-            .map(size => `${optimizedDir}-${size}.webp ${size}w`)
-            .join(', ');
-          setSrcSet(srcSetString);
-        } catch {
-          // Fallback to original image if optimized versions don't exist
-          setImageSrc(typeof src === 'string' ? src : src?.default || src?.src);
-        }
-      } catch (err) {
-        console.error('Error loading image:', err);
-        setError(true);
-      }
-    };
-
-    loadImage();
-  }, [src, imageType]);
 
   const handleLoad = () => {
     setLoaded(true);
   };
 
   const handleError = (e) => {
-    // Fallback to original image on error
-    if (e.target.src !== src) {
-      e.target.src = typeof src === 'string' ? src : src?.default || src?.src;
-    } else {
-      setError(true);
-    }
+    console.error('Image load error for:', e.target.src);
+    setError(true);
   };
 
   const combinedClassName = `
@@ -74,6 +26,9 @@ const Image = ({
     ${!loaded ? 'opacity-0' : 'opacity-100'}
     transition-opacity duration-300 ease-in-out
   `.trim();
+
+  // Get the image source - handle both string and import objects
+  const imageSrc = typeof src === 'string' ? src : src?.default || src?.src;
 
   if (error) {
     return (
@@ -100,25 +55,16 @@ const Image = ({
   }
 
   return (
-    <picture>
-      {srcSet && (
-        <source
-          type="image/webp"
-          srcSet={srcSet}
-          sizes={sizes}
-        />
-      )}
-      <img
-        src={imageSrc}
-        alt={alt}
-        className={combinedClassName}
-        loading={priority ? 'eager' : loading}
-        onLoad={handleLoad}
-        onError={handleError}
-        sizes={sizes}
-        {...props}
-      />
-    </picture>
+    <img
+      src={imageSrc}
+      alt={alt}
+      className={combinedClassName}
+      loading={priority ? 'eager' : loading}
+      onLoad={handleLoad}
+      onError={handleError}
+      sizes={sizes}
+      {...props}
+    />
   );
 };
 
