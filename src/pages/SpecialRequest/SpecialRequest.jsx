@@ -1,8 +1,12 @@
+import { useEffect, useContext } from "react";
+import ReservationContext from "../../contexts/ReservationContext";
+import ReservationCard from "../../pages/Home/BannerSection/ReservationCard";
+import Button from "../../components/Button";
+import Image from "../../components/Image";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { 
   faStar, 
   faUsers, 
-  faCalendarCheck, 
   faRoute, 
   faHandshake, 
   faCrown,
@@ -17,10 +21,6 @@ import {
   faGift,
   faShieldAlt
 } from "@fortawesome/free-solid-svg-icons";
-import { useEffect, useContext } from "react";
-import ReservationContext from "../../contexts/ReservationContext";
-import ReservationCard from "../Home/BannerSection/ReservationCard";
-import Button from "../../components/Button";
 import bannerImage from "../../assets/banner-image.jpg";
 
 const SpecialRequest = ({ scrollUp }) => {
@@ -156,17 +156,21 @@ const SpecialRequest = ({ scrollUp }) => {
     <div className="min-h-screen">
       <div className="relative">
         {/* Hero Section with Reservation Card */}
-        <div 
-          className="relative container-big rounded-[1.5rem] text-center mt-16 pb-32 md:pb-0 md:pr-[480px] lg:pr-[520px] xl:pr-[480px] bg-cover bg-center min-h-[600px] md:min-h-[700px] lg:min-h-[800px] overflow-hidden"
-          style={{
-            backgroundImage: `linear-gradient(135deg, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.3) 50%, rgba(0,0,0,0.4) 100%), url(${bannerImage})`,
-            backgroundPosition: 'center',
-            backgroundSize: 'cover'
-          }}
-        >
-          <div className="absolute inset-0 bg-gradient-to-br from-black/40 via-black/20 to-black/40"></div>
+        <div className="relative container-big rounded-[1.5rem] text-center mt-16 pb-32 md:pb-0 md:pr-[480px] lg:pr-[520px] xl:pr-[480px] min-h-[600px] md:min-h-[700px] lg:min-h-[800px] overflow-hidden">
+          {/* Optimized Background Image */}
+          <div className="absolute inset-0 z-0">
+            <Image
+              src={bannerImage}
+              alt="Luxury special request service"
+              className="w-full h-full object-cover"
+              imageType="banner"
+              priority={true}
+              sizes="100vw"
+            />
+            <div className="absolute inset-0 bg-gradient-to-br from-black/40 via-black/20 to-black/40"></div>
+          </div>
           
-          <div className="relative z-10 px-4 md:px-8">
+          <div className="relative z-20 px-4 md:px-8">
             <h1 className="text-4xl sm:text-5xl md:text-8xl font-semibold pt-48 tracking-wide mb-16 md:mb-20">
               <span className="text-gold">Special</span> Requests
             </h1>

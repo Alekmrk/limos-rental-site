@@ -1,9 +1,19 @@
 import { useEffect, useContext } from "react";
 import ReservationContext from "../../contexts/ReservationContext";
-import ReservationCard from "../Home/BannerSection/ReservationCard";
+import ReservationCard from "../../pages/Home/BannerSection/ReservationCard";
 import Button from "../../components/Button";
+import Image from "../../components/Image";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faClock, faBusinessTime, faMapMarkedAlt, faUsers, faCalendarCheck, faRoute, faStar, faHandshake, faGlobe } from "@fortawesome/free-solid-svg-icons";
+import { 
+  faClock, 
+  faRoute, 
+  faShieldAlt, 
+  faUserTie, 
+  faUsers,
+  faCalendarCheck,
+  faGlobe,
+  faStar
+} from "@fortawesome/free-solid-svg-icons";
 import hourlyTransferImage from "../../assets/banner-image1.jpg";
 
 const HourlyTransfer = ({ scrollUp }) => {
@@ -24,7 +34,7 @@ const HourlyTransfer = ({ scrollUp }) => {
       description: "Book for 3-24 hours with complete flexibility. Extend or modify your booking as needed."
     },
     {
-      icon: faBusinessTime,
+      icon: faUserTie,
       title: "Professional Service",
       description: "Dedicated chauffeur at your disposal for meetings, events, or leisure activities."
     },
@@ -34,7 +44,7 @@ const HourlyTransfer = ({ scrollUp }) => {
       description: "Visit multiple locations efficiently with optimized routing and professional guidance."
     },
     {
-      icon: faHandshake,
+      icon: faShieldAlt,
       title: "Personalized Experience",
       description: "Tailored service with local expertise, recommendations, and attention to your preferences."
     }
@@ -44,14 +54,14 @@ const HourlyTransfer = ({ scrollUp }) => {
     {
       title: "Business Meetings",
       duration: "3-8 hours",
-      icon: faBusinessTime,
+      icon: faUserTie,
       description: "Professional transportation for business meetings, conferences, and corporate events.",
       features: ["Office to office transfers", "Conference center pickups", "Airport connections", "Flexible scheduling"]
     },
     {
       title: "City Tours & Sightseeing", 
       duration: "4-12 hours",
-      icon: faMapMarkedAlt,
+      icon: faRoute,
       description: "Explore Switzerland's beautiful cities and attractions with a knowledgeable chauffeur.",
       features: ["Tourist attractions", "Photography spots", "Local recommendations", "Cultural sites"]
     },
@@ -126,21 +136,29 @@ const HourlyTransfer = ({ scrollUp }) => {
     <div className="min-h-screen">
       <div className="relative">
         {/* Hero Section with Reservation Card */}
-        <div 
-          className="relative container-big rounded-[1.5rem] text-center mt-16 pb-32 md:pb-0 md:pr-[480px] lg:pr-[520px] xl:pr-[480px] bg-cover bg-center min-h-[600px] md:min-h-[700px] lg:min-h-[800px] overflow-hidden"
-          style={{
-            backgroundImage: `linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.4)), url(${hourlyTransferImage})`,
-          }}
-        >
-          {/* Animated Background Elements - Dark Theme */}
+        <div className="relative container-big rounded-[1.5rem] text-center mt-16 pb-32 md:pb-0 md:pr-[480px] lg:pr-[520px] xl:pr-[480px] min-h-[600px] md:min-h-[700px] lg:min-h-[800px] overflow-hidden">
+          {/* Optimized Background Image */}
           <div className="absolute inset-0 z-0">
+            <Image
+              src={hourlyTransferImage}
+              alt="Luxury hourly transfer service"
+              className="w-full h-full object-cover"
+              imageType="banner"
+              priority={true}
+              sizes="100vw"
+            />
+            <div className="absolute inset-0 bg-gradient-to-br from-black/60 via-black/50 to-black/40"></div>
+          </div>
+
+          {/* Animated Background Elements - Dark Theme */}
+          <div className="absolute inset-0 z-10">
             <div className="absolute top-20 left-10 w-20 h-20 bg-zinc-700/20 rounded-full animate-pulse"></div>
             <div className="absolute top-40 right-20 w-16 h-16 bg-gold/20 rounded-full animate-bounce"></div>
             <div className="absolute bottom-40 left-20 w-12 h-12 bg-zinc-600/20 rounded-full animate-ping"></div>
             <div className="absolute bottom-20 right-10 w-24 h-24 bg-gray-700/20 rounded-full animate-pulse"></div>
           </div>
 
-          <div className="relative z-10">
+          <div className="relative z-20">
             <h1 className="text-4xl sm:text-5xl md:text-8xl font-semibold pt-48 tracking-wide mb-16 md:mb-20">
               <span className="text-gold">Hourly</span> Transfer
             </h1>
@@ -159,7 +177,7 @@ const HourlyTransfer = ({ scrollUp }) => {
                 <span>Multiple Stops</span>
               </div>
               <div className="flex items-center gap-2 text-gold">
-                <FontAwesomeIcon icon={faHandshake} />
+                <FontAwesomeIcon icon={faShieldAlt} />
                 <span>Personal Service</span>
               </div>
             </div>

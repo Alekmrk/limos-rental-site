@@ -71,8 +71,10 @@ async function optimizeImage(inputPath, type) {
 
 async function main() {
   try {
-    // Optimize banner images
+    // Optimize all banner images
     await optimizeImage(path.join(ASSETS_DIR, 'banner-image.jpg'), 'banner');
+    await optimizeImage(path.join(ASSETS_DIR, 'banner-image1.jpg'), 'banner');
+    await optimizeImage(path.join(ASSETS_DIR, 'original-airport-transfers.jpg'), 'banner');
     
     // Optimize car images
     const carDir = path.join(ASSETS_DIR, 'cars');

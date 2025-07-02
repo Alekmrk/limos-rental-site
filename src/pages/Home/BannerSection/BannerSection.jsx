@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import Button from "../../../components/Button";
 import ReservationCard from "./ReservationCard";
+import Image from "../../../components/Image";
 import bannerImage from "../../../assets/banner-image.jpg";
 import eliteWayLogo from "../../../assets/elitewaylogo.png";
 import { FaStar, FaShieldAlt, FaClock, FaPhone } from "react-icons/fa";
@@ -8,30 +9,38 @@ import { FaStar, FaShieldAlt, FaClock, FaPhone } from "react-icons/fa";
 const BannerSection = () => {
   return (
     <div className="relative">
-      <div 
-        className="banner relative container-big rounded-[1.5rem] mt-16 pb-32 md:pb-0 overflow-hidden text-center"
-        style={{
-          backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.37)), url(${bannerImage})`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          minHeight: '700px'
-        }}
-      >
-        {/* Animated Background Elements - Dark Theme */}
+      <div className="banner relative container-big rounded-[1.5rem] mt-16 pb-32 md:pb-0 overflow-hidden text-center min-h-[700px]">
+        {/* Optimized Background Image */}
         <div className="absolute inset-0 z-0">
+          <Image
+            src={bannerImage}
+            alt="Elite Way Limo luxury chauffeur service"
+            className="w-full h-full object-cover"
+            imageType="banner"
+            priority={true}
+            sizes="100vw"
+          />
+          <div className="absolute inset-0 bg-gradient-to-br from-black/25 via-black/30 to-black/37"></div>
+        </div>
+
+        {/* Animated Background Elements - Dark Theme */}
+        <div className="absolute inset-0 z-10">
           <div className="absolute top-20 left-10 w-20 h-20 bg-zinc-700/20 rounded-full animate-pulse"></div>
           <div className="absolute top-40 right-20 w-16 h-16 bg-gold/20 rounded-full animate-bounce"></div>
           <div className="absolute bottom-40 left-20 w-12 h-12 bg-zinc-600/20 rounded-full animate-ping"></div>
           <div className="absolute bottom-20 right-10 w-24 h-24 bg-gray-700/20 rounded-full animate-pulse"></div>
         </div>
 
-        <div className="relative z-10 px-4 md:px-8 md:mr-96 lg:mr-[28rem] xl:mr-[32rem]">
+        <div className="relative z-20 px-4 md:px-8 md:mr-96 lg:mr-[28rem] xl:mr-[32rem]">
           <div className="pt-16 md:pt-20 mb-8 md:mb-12">
             <div className="mb-10 md:mb-12">
               <img 
                 src={eliteWayLogo} 
                 alt="Elite Way Limo" 
                 className="h-16 sm:h-20 md:h-24 lg:h-28 xl:h-32 mx-auto object-contain animate-fade-in"
+                imageType="logo"
+                priority={true}
+                sizes="(max-width: 640px) 64px, (max-width: 768px) 80px, (max-width: 1024px) 96px, (max-width: 1280px) 112px, 128px"
               />
             </div>
             

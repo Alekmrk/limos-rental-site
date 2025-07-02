@@ -1,9 +1,11 @@
-import logo from "../../assets/elitewaylogo.png";
+import Image from "../../components/Image";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { useEffect, useState } from "react";
 import PrimaryNav from "./PrimaryNav";
 import LanguageSelector from "./LanguageSelector";
+import logo from "../../assets/elitewaylogo.png";
+
 const Header = () => {
   const screenMd = 800;
 
@@ -42,12 +44,19 @@ const Header = () => {
     >
       <div className="container-big flex justify-between">
         <a href="/">
-          <img className="w-20" src={logo} alt="LIMO-logo" />
+          <Image
+            src={logo}
+            alt="Elite Way Limo"
+            className="w-20"
+            imageType="logo"
+            priority={true}
+            sizes="80px"
+          />
         </a>
-        <PrimaryNav 
-          screenSize={screenSize} 
-          navHidden={navHidden} 
-          setNavHidden={setNavHidden} 
+        <PrimaryNav
+          screenSize={screenSize}
+          navHidden={navHidden}
+          setNavHidden={setNavHidden}
         />
 
         {screenSize >= screenMd && <LanguageSelector />}

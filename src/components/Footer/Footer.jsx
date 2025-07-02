@@ -1,3 +1,4 @@
+import Image from "../../components/Image";
 import logoFooter from "../../assets/elitewaylogo.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faInstagram, faWhatsapp } from "@fortawesome/free-brands-svg-icons";
@@ -76,10 +77,12 @@ const Footer = () => {
       <footer className="container-big bg-neutral-800 text-white rounded-[1.5rem] mt-20 mb-[2.5vw] py-8 px-8">
         <div className="max-w-6xl mx-auto">
           <div className="text-center">
-            <img
-              className="w-20 mx-auto mb-4"
+            <Image
               src={logoFooter}
               alt="Elite Way Limo"
+              className="w-20 mx-auto mb-4"
+              imageType="logo"
+              sizes="80px"
             />
             <p className="text-neutral-400 text-sm mb-4">
               &copy; {currentYear} Elite Way Limo. All rights reserved.
