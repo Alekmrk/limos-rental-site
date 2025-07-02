@@ -5,8 +5,22 @@ import Image from "../../../components/Image";
 import bannerImage from "../../../assets/banner-image.jpg";
 import eliteWayLogo from "../../../assets/elitewaylogo.png";
 import { FaStar, FaShieldAlt, FaClock, FaPhone } from "react-icons/fa";
+import { useEffect } from "react";
 
 const BannerSection = () => {
+  // Preload critical banner image
+  useEffect(() => {
+    const link = document.createElement('link');
+    link.rel = 'preload';
+    link.as = 'image';
+    link.href = bannerImage;
+    document.head.appendChild(link);
+    
+    return () => {
+      document.head.removeChild(link);
+    };
+  }, []);
+
   return (
     <div className="relative">
       <div className="banner relative container-big rounded-[1.5rem] mt-16 pb-32 md:pb-0 overflow-hidden text-center min-h-[700px]">
@@ -34,16 +48,14 @@ const BannerSection = () => {
         <div className="relative z-20 px-4 md:px-8 md:mr-96 lg:mr-[28rem] xl:mr-[32rem]">
           <div className="pt-16 md:pt-20 mb-8 md:mb-12">
             <div className="mb-10 md:mb-12">
-              <Image 
+              <img 
                 src={eliteWayLogo} 
                 alt="Elite Way Limo" 
                 className="h-16 sm:h-20 md:h-24 lg:h-28 xl:h-32 mx-auto object-contain animate-fade-in"
                 style={{
-                  filter: 'drop-shadow(-0.1px -0.1px 0 rgba(102,102,102,0.5)) drop-shadow(0.1px -0.1px 0 rgba(102,102,102,0.5)) drop-shadow(-0.1px 0.1px 0 rgba(102,102,102,0.5)) drop-shadow(0.1px 0.1px 0 rgba(102,102,102,0.5))'
+                  filter: 'drop-shadow(-0.1px -0.1px 0 rgba(102,102,102,0.35)) drop-shadow(0.1px -0.1px 0 rgba(102,102,102,0.35)) drop-shadow(-0.1px 0.1px 0 rgba(102,102,102,0.35)) drop-shadow(0.1px 0.1px 0 rgba(102,102,102,0.35))'
                 }}
-                imageType="logo"
-                priority={true}
-                sizes="(max-width: 640px) 64px, (max-width: 768px) 80px, (max-width: 1024px) 96px, (max-width: 1280px) 112px, 128px"
+                loading="eager"
               />
             </div>
             
