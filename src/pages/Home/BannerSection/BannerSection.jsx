@@ -34,7 +34,7 @@ const BannerSection = () => {
         <div className="relative z-20 px-4 md:px-8 md:mr-96 lg:mr-[28rem] xl:mr-[32rem]">
           <div className="pt-16 md:pt-20 mb-8 md:mb-12">
             <div className="mb-10 md:mb-12">
-              <img 
+              <Image 
                 src={eliteWayLogo} 
                 alt="Elite Way Limo" 
                 className="h-16 sm:h-20 md:h-24 lg:h-28 xl:h-32 mx-auto object-contain animate-fade-in"

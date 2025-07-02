@@ -7,6 +7,7 @@ const Image = ({
   sizes = '100vw',
   loading = 'lazy',
   priority = false,
+  imageType = 'standard', // Custom prop - should not be passed to DOM
   ...props 
 }) => {
   const [loaded, setLoaded] = useState(false);
@@ -29,6 +30,9 @@ const Image = ({
 
   // Get the image source - handle both string and import objects
   const imageSrc = typeof src === 'string' ? src : src?.default || src?.src;
+
+  // Filter out custom props that shouldn't be passed to the DOM element
+  const { imageType: _, priority: __, ...domProps } = props;
 
   if (error) {
     return (
@@ -63,7 +67,7 @@ const Image = ({
       onLoad={handleLoad}
       onError={handleError}
       sizes={sizes}
-      {...props}
+      {...domProps}
     />
   );
 };

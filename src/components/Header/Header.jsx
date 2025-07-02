@@ -47,10 +47,10 @@ const Header = () => {
           <Image
             src={logo}
             alt="Elite Way Limo"
-            className="w-20"
+            className="w-28"
             imageType="logo"
             priority={true}
-            sizes="80px"
+            sizes="112px"
           />
         </a>
         <PrimaryNav
