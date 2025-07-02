@@ -23,6 +23,7 @@
         - [ ] Real-time crypto payment detection
         - [ ] Handle blockchain confirmations
         - [ ] Handle failed/incomplete crypto transfers
+        - [ ] Re-enable crypto payment UI (currently hidden - see PaymentPage.jsx)
     - [x] Add payment receipt and invoice generation
         - [x] Email delivery of receipts (via webhooks)
         - [x] Store payment records (in reservation context)

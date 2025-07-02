@@ -332,7 +332,7 @@ const PaymentPage = ({ scrollUp }) => {
           {/* Payment Method Selection */}
           <div className="space-y-4" data-payment-methods>
             <h2 className="text-xl font-medium">Select Payment Method</h2>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-4">
               <button
                 onClick={() => handlePaymentMethodSelect('card')}
                 disabled={isProcessing}
@@ -352,6 +352,8 @@ const PaymentPage = ({ scrollUp }) => {
                 </div>
               </button>
 
+              {/* Crypto payment option temporarily disabled - see TODO.md */}
+              {/* 
               <button
                 onClick={() => handlePaymentMethodSelect('crypto')}
                 disabled={isProcessing}
@@ -370,6 +372,7 @@ const PaymentPage = ({ scrollUp }) => {
                   <span>USDT (TRC20)</span>
                 </div>
               </button>
+              */}
             </div>
           </div>
 
