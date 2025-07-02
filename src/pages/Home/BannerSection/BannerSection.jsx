@@ -39,7 +39,7 @@ const BannerSection = () => {
                 alt="Elite Way Limo" 
                 className="h-16 sm:h-20 md:h-24 lg:h-28 xl:h-32 mx-auto object-contain animate-fade-in"
                 style={{
-                  filter: 'drop-shadow(-0.1px -0.1px 0 #666666) drop-shadow(0.1px -0.1px 0 #666666) drop-shadow(-0.1px 0.1px 0 #666666) drop-shadow(0.1px 0.1px 0 #666666)'
+                  filter: 'drop-shadow(-0.1px -0.1px 0 rgba(102,102,102,0.5)) drop-shadow(0.1px -0.1px 0 rgba(102,102,102,0.5)) drop-shadow(-0.1px 0.1px 0 rgba(102,102,102,0.5)) drop-shadow(0.1px 0.1px 0 rgba(102,102,102,0.5))'
                 }}
                 imageType="logo"
                 priority={true}
