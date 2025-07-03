@@ -151,7 +151,7 @@ const HourlyTransfer = ({ scrollUp }) => {
           </div>
 
           {/* Animated Background Elements - Dark Theme */}
-          <div className="absolute inset-0 z-10">
+          <div className="absolute inset-0 z-10" style={{ pointerEvents: 'none' }}>
             <div className="absolute top-20 left-10 w-20 h-20 bg-zinc-700/20 rounded-full animate-pulse"></div>
             <div className="absolute top-40 right-20 w-16 h-16 bg-gold/20 rounded-full animate-bounce"></div>
             <div className="absolute bottom-40 left-20 w-12 h-12 bg-zinc-600/20 rounded-full animate-ping"></div>
