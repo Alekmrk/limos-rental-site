@@ -137,17 +137,48 @@ const TermsOfService = ({ scrollUp }) => {
                 <li>Comply with Swiss traffic laws and regulations</li>
               </ul>
               
-              <h3 className="text-xl font-medium text-white mb-3">6.2 Waiting Time</h3>
+              <h3 className="text-xl font-medium text-white mb-3">6.2 Baggage and Luggage Policy</h3>
+              <div className="text-zinc-300 space-y-3">
+                <p>
+                  Customers must accurately declare the number of bags during booking. Vehicle capacity varies by model, and exceeding declared baggage limits may result in:
+                </p>
+                <ul className="list-disc list-inside space-y-2 ml-4">
+                  <li>Additional charges for excess baggage handling</li>
+                  <li>Requirement to upgrade to a larger vehicle (subject to availability and additional cost)</li>
+                  <li>Service cancellation if baggage cannot be safely accommodated</li>
+                </ul>
+                <p>
+                  <strong>Important:</strong> If your actual baggage significantly exceeds what was declared during booking, we reserve the right to:
+                </p>
+                <ul className="list-disc list-inside space-y-2 ml-4">
+                  <li>Charge additional fees on the spot (minimum CHF 50 per excess bag)</li>
+                  <li>Cancel the service if safe transport cannot be guaranteed</li>
+                  <li>Require rebooking with appropriate vehicle size</li>
+                </ul>
+                <p className="text-sm text-amber-300">
+                  No refunds will be provided for cancellations due to undeclared excess baggage.
+                </p>
+              </div>
+              
+              <h3 className="text-xl font-medium text-white mb-3">6.3 Additional Equipment and Services</h3>
+              <div className="text-zinc-300 space-y-3">
+                <p>We provide the following additional equipment and services upon request:</p>
+                <ul className="list-disc list-inside space-y-2 ml-4">
+                  <li><strong>Child and Baby Seats:</strong> Provided free of charge when declared during booking. Must specify exact ages and weights of children.</li>
+                  <li><strong>Ski Equipment Transport:</strong> Subject to vehicle capacity and must be declared during booking. Additional charges may apply for oversized or excess equipment.</li>
+                  <li><strong>Special Equipment:</strong> Other special equipment requests subject to availability and additional charges.</li>
+                </ul>
+                <p>
+                  <strong>Equipment Requirements:</strong> All additional equipment must be declared at time of booking. Failure to declare required equipment may result in service delays, additional charges, or cancellation if accommodation cannot be safely provided.
+                </p>
+              </div>
+              
+              <h3 className="text-xl font-medium text-white mb-3">6.4 Waiting Time</h3>
               <ul className="list-disc list-inside space-y-2 ml-4">
                 <li>Airport transfers: 60 minutes free waiting time for international flights, 30 minutes for domestic</li>
                 <li>Other pickups: 15 minutes free waiting time</li>
                 <li>Additional waiting time charged at hourly rates</li>
               </ul>
-              
-              <h3 className="text-xl font-medium text-white mb-3">6.3 Flight Delays</h3>
-              <p>
-                For airport transfers, we monitor flight arrivals and adjust pickup times accordingly at no additional charge.
-              </p>
             </div>
           </section>
 
