@@ -272,7 +272,20 @@ const ThankYou = ({ scrollUp }) => {
                 ? `We'll send a detailed response to ${dataToShow.email}`
                 : `A confirmation email has been sent to ${dataToShow.email}`}
             </p>
-            <p className="break-words">If you have any questions, please don't hesitate to contact us at info@elitewaylimo.ch</p>
+            
+            {/* Spam folder reminder */}
+            <div className="bg-yellow-900/20 border border-yellow-500/30 rounded-lg p-4 mb-4 max-w-md mx-auto">
+              <div className="flex items-center gap-2 mb-2">
+                <svg className="w-5 h-5 text-yellow-400" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/>
+                </svg>
+                <span className="text-yellow-400 font-medium text-sm">Email Not Received?</span>
+              </div>
+              <p className="text-zinc-300 text-sm break-words">
+                Please check your spam/junk folder. Sometimes confirmation emails can end up there. 
+                If you still can't find it, contact us at info@elitewaylimo.ch
+              </p>
+            </div>
           </div>
         </div>
       </div>
