@@ -14,7 +14,7 @@ const BackToTopButton = ({ scrollUp }) => {
   return (
     <button
       onClick={scrollUp}
-      className={`fixed bg-neutral-900 w-12 transition-opacity duration-200 h-12 text-lg rounded-full p-2 bottom-4 left-4 ${
+      className={`fixed bg-neutral-900 w-12 transition-opacity duration-200 h-12 text-lg rounded-full p-2 bottom-4 left-4 z-50 ${
         bttVisible ? "opacity-100" : "opacity-0"
       }`}
     >
