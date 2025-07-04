@@ -514,7 +514,7 @@ const CustomerDetails = ({ scrollUp }) => {
               rows="3"
               wrap="soft"
               className="bg-zinc-800/30 rounded-lg py-2 px-4 w-full border border-zinc-700/50 whitespace-pre-wrap focus:border-gold/40 focus:outline-none focus:ring-1 focus:ring-gold/20 transition-all duration-200"
-              placeholder="Enter reference number, cost center, project code, or any other billing information... This information will appear on your invoice for billing and accounting purposes"
+              placeholder="Reference number, cost center, project code, or billing info for your invoice..."
               style={{ resize: 'vertical', minHeight: '75px' }}
             ></textarea>
           </div>
