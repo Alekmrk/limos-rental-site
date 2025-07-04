@@ -10,7 +10,7 @@
   - [ ] Admin notifications
 - [ ] Implement email queue and retry mechanism
 - [ ] Add email delivery tracking and analytics
-- [ ] Set up automated emails for aleksandarpantic98@gmail.com for all new bookings
+- [ ] Set up automated admin notifications to info@elitewaylimo.ch for all new bookings
 
 ## Payment Processing 💳
 - [ ] Integrate credit card payment gateway (Stripe/PayPal/Braintree)

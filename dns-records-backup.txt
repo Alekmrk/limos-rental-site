@@ -32,7 +32,7 @@ TTL: 60 minutes
 # TXT Records (Email Authentication & Verification)
 Type: TXT
 Host: _dmarc
-Value: v=DMARC1; p=quarantine; pct=100; rua=mailto:info@elitewaylimo.ch; ruf=mailto:dmarc-failures@elitewaylimo.ch; fo=1
+Value: v=DMARC1; p=quarantine; pct=100; rua=mailto:info@elitewaylimo.ch; ruf=mailto:info@elitewaylimo.ch; fo=1
 TTL: 60 minutes/automatic
 
 Type: TXT
