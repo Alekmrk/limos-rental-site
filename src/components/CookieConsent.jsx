@@ -1,19 +1,74 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
+
+// Cookie utility functions
+const CookieManager = {
+  set: (name, value, days = 365) => {
+    const expires = new Date();
+    expires.setTime(expires.getTime() + (days * 24 * 60 * 60 * 1000));
+    document.cookie = `${name}=${value};expires=${expires.toUTCString()};path=/;SameSite=Lax`;
+  },
+  
+  get: (name) => {
+    const nameEQ = name + "=";
+    const ca = document.cookie.split(';');
+    for (let i = 0; i < ca.length; i++) {
+      let c = ca[i];
+      while (c.charAt(0) === ' ') c = c.substring(1, c.length);
+      if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
+    }
+    return null;
+  },
+  
+  delete: (name) => {
+    document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;`;
+  },
+  
+  deleteByCategory: (category) => {
+    // Define cookies by category for cleanup
+    const cookiesByCategory = {
+      analytics: ['_ga', '_ga_*', '_gid', '_gat', '_gtag', 'gtag'],
+      marketing: ['_fbp', '_fbc', 'fr', 'sb', 'wd', '_gcl_au', 'ads'],
+      functional: ['lang', 'theme', 'preferences']
+    };
+    
+    const cookies = cookiesByCategory[category] || [];
+    cookies.forEach(cookieName => {
+      if (cookieName.includes('*')) {
+        // Handle wildcard cookies like _ga_*
+        const prefix = cookieName.replace('*', '');
+        const allCookies = document.cookie.split(';');
+        allCookies.forEach(cookie => {
+          const name = cookie.split('=')[0].trim();
+          if (name.startsWith(prefix)) {
+            CookieManager.delete(name);
+          }
+        });
+      } else {
+        CookieManager.delete(cookieName);
+      }
+    });
+  }
+};
 
 const CookieConsent = () => {
   const [showBanner, setShowBanner] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const [animateIn, setAnimateIn] = useState(false);
+  // GDPR Compliant: Default all non-essential to false
   const [preferences, setPreferences] = useState({
     essential: true, // Always true, can't be disabled
-    analytics: true, // Default enabled
-    marketing: true, // Default enabled
-    functional: true // Default enabled
+    analytics: false, // GDPR compliant: default false
+    marketing: false, // GDPR compliant: default false
+    functional: false // GDPR compliant: default false
   });
 
+  // Add styles only once using a ref to prevent re-injection
   useEffect(() => {
-    // Add CSS animation to document head
+    // Check if styles already exist
+    if (document.getElementById('cookie-consent-styles')) return;
+    
     const style = document.createElement('style');
+    style.id = 'cookie-consent-styles';
     style.textContent = `
       .pulse-glow {
         animation: pulse-glow 2s infinite;
@@ -51,76 +106,138 @@ const CookieConsent = () => {
       }
     `;
     document.head.appendChild(style);
+  }, []);
 
-    // Cleanup function to remove style when component unmounts
-    return () => {
-      if (document.head.contains(style)) {
-        document.head.removeChild(style);
+  // Check consent status and expiration
+  const checkConsentStatus = useCallback(() => {
+    try {
+      const consent = localStorage.getItem('cookie-consent');
+      const timestamp = localStorage.getItem('cookie-consent-timestamp');
+      
+      if (!consent || !timestamp) {
+        return { hasConsent: false, expired: false };
       }
-    };
+
+      // Check if consent is older than 12 months (GDPR requirement)
+      const consentDate = new Date(timestamp);
+      const now = new Date();
+      const monthsOld = (now.getTime() - consentDate.getTime()) / (1000 * 60 * 60 * 24 * 30);
+      
+      if (monthsOld > 12) {
+        // Consent expired, clear old data
+        localStorage.removeItem('cookie-consent');
+        localStorage.removeItem('cookie-consent-timestamp');
+        return { hasConsent: false, expired: true };
+      }
+
+      const savedPreferences = JSON.parse(consent);
+      return { hasConsent: true, expired: false, preferences: savedPreferences };
+    } catch (error) {
+      console.error('Error checking consent status:', error);
+      // Clear corrupted data
+      localStorage.removeItem('cookie-consent');
+      localStorage.removeItem('cookie-consent-timestamp');
+      return { hasConsent: false, expired: false };
+    }
   }, []);
 
   useEffect(() => {
-    // Check if user has already accepted cookies
-    const consent = localStorage.getItem('cookie-consent');
-    if (!consent) {
+    const { hasConsent, expired, preferences: savedPreferences } = checkConsentStatus();
+    
+    if (!hasConsent) {
       // Show banner after a short delay
       const timer = setTimeout(() => {
         setShowBanner(true);
-        // Start animation slightly after banner shows
         setTimeout(() => setAnimateIn(true), 50);
       }, 1000);
       return () => clearTimeout(timer);
     } else {
-      try {
-        const savedPreferences = JSON.parse(consent);
-        setPreferences(savedPreferences);
-        
-        // Only hide banner if user has accepted at least analytics and marketing
-        // This ensures popup keeps showing if they rejected important cookies
-        if (savedPreferences.analytics && savedPreferences.marketing) {
-          setShowBanner(false);
-          // Initialize tracking based on saved preferences
-          initializeTracking(savedPreferences);
-        } else {
-          // Show banner again if they previously rejected important cookies
-          const timer = setTimeout(() => {
-            setShowBanner(true);
-            setTimeout(() => setAnimateIn(true), 50);
-          }, 1000);
-          return () => clearTimeout(timer);
-        }
-      } catch (error) {
-        console.error('Error loading cookie preferences:', error);
-        // Show banner if there's an error parsing preferences
-        const timer = setTimeout(() => {
-          setShowBanner(true);
-          setTimeout(() => setAnimateIn(true), 50);
-        }, 1000);
-        return () => clearTimeout(timer);
-      }
+      // Load saved preferences and apply them
+      setPreferences(savedPreferences);
+      initializeTracking(savedPreferences);
+      setShowBanner(false);
     }
-  }, []);
+  }, [checkConsentStatus]);
 
-  const initializeTracking = (prefs) => {
+  const initializeTracking = useCallback((prefs) => {
+    // Clean up cookies for disabled categories first
+    Object.keys(prefs).forEach(category => {
+      if (category !== 'essential' && !prefs[category]) {
+        CookieManager.deleteByCategory(category);
+      }
+    });
+
     // Initialize Google Analytics if analytics cookies are accepted
     if (prefs.analytics) {
-      // Add Google Analytics initialization here
+      // Initialize Google Analytics 4
+      if (typeof gtag !== 'undefined') {
+        gtag('consent', 'update', {
+          'analytics_storage': 'granted'
+        });
+      }
+      
+      // Set analytics cookies
+      CookieManager.set('analytics_consent', 'granted', 365);
       console.log('Analytics tracking enabled');
+    } else {
+      CookieManager.delete('analytics_consent');
+      if (typeof gtag !== 'undefined') {
+        gtag('consent', 'update', {
+          'analytics_storage': 'denied'
+        });
+      }
     }
 
     // Initialize marketing pixels if marketing cookies are accepted
     if (prefs.marketing) {
-      // Add Facebook Pixel, Google Ads, etc. here
+      if (typeof gtag !== 'undefined') {
+        gtag('consent', 'update', {
+          'ad_storage': 'granted',
+          'ad_user_data': 'granted',
+          'ad_personalization': 'granted'
+        });
+      }
+      
+      CookieManager.set('marketing_consent', 'granted', 365);
       console.log('Marketing tracking enabled');
+    } else {
+      CookieManager.delete('marketing_consent');
+      if (typeof gtag !== 'undefined') {
+        gtag('consent', 'update', {
+          'ad_storage': 'denied',
+          'ad_user_data': 'denied',
+          'ad_personalization': 'denied'
+        });
+      }
     }
 
     // Initialize functional cookies if accepted
     if (prefs.functional) {
-      // Add chat widgets, preference storage, etc.
+      CookieManager.set('functional_consent', 'granted', 365);
       console.log('Functional cookies enabled');
+    } else {
+      CookieManager.delete('functional_consent');
     }
-  };
+
+    // Always set essential cookies
+    CookieManager.set('essential_consent', 'granted', 365);
+  }, []);
+
+  const savePreferences = useCallback((newPreferences) => {
+    try {
+      setPreferences(newPreferences);
+      localStorage.setItem('cookie-consent', JSON.stringify(newPreferences));
+      localStorage.setItem('cookie-consent-timestamp', new Date().toISOString());
+      initializeTracking(newPreferences);
+      
+      // Hide banner regardless of choices (GDPR compliant)
+      setShowBanner(false);
+      setShowSettings(false);
+      setAnimateIn(false);
+    } catch (error) {
+      console.error('Error saving cookie preferences:', error);
+    }
+  }, [initializeTracking]);
 
   const handleAcceptAll = () => {
     const allAccepted = {
@@ -129,27 +246,11 @@ const CookieConsent = () => {
       marketing: true,
       functional: true
     };
-    setPreferences(allAccepted);
-    localStorage.setItem('cookie-consent', JSON.stringify(allAccepted));
-    localStorage.setItem('cookie-consent-timestamp', new Date().toISOString());
-    initializeTracking(allAccepted);
-    setShowBanner(false);
-    setShowSettings(false);
-    setAnimateIn(false);
+    savePreferences(allAccepted);
   };
 
   const handleAcceptSelected = () => {
-    // Save preferences regardless of selection
-    localStorage.setItem('cookie-consent', JSON.stringify(preferences));
-    localStorage.setItem('cookie-consent-timestamp', new Date().toISOString());
-    
-    // Initialize tracking for whatever they accepted
-    initializeTracking(preferences);
-    
-    // Always hide banner and close settings modal when user saves preferences
-    setShowBanner(false);
-    setShowSettings(false);
-    setAnimateIn(false);
+    savePreferences(preferences);
   };
 
   const handleRejectAll = () => {
@@ -159,22 +260,30 @@ const CookieConsent = () => {
       marketing: false,
       functional: false
     };
-    setPreferences(essentialOnly);
-    localStorage.setItem('cookie-consent', JSON.stringify(essentialOnly));
-    // Don't hide the banner - it will keep showing
-    setShowSettings(false);
-    // Show message that popup will continue to appear
-    alert('The cookie notice will continue to appear until you accept our analytics and marketing cookies, which help us provide you with the best service.');
+    savePreferences(essentialOnly);
   };
 
   const handlePreferenceChange = (category) => {
-    if (category === 'essential') return; // Essential cookies can't be disabled
+    if (category === 'essential') return;
     
     setPreferences(prev => ({
       ...prev,
       [category]: !prev[category]
     }));
   };
+
+  // Method to show settings (for privacy policy page or user preference changes)
+  const showCookieSettings = useCallback(() => {
+    setShowSettings(true);
+  }, []);
+
+  // Expose method globally for other components to use
+  useEffect(() => {
+    window.showCookieSettings = showCookieSettings;
+    return () => {
+      delete window.showCookieSettings;
+    };
+  }, [showCookieSettings]);
 
   if (!showBanner) return null;
 
@@ -192,7 +301,7 @@ const CookieConsent = () => {
                 🍪 WE VALUE YOUR PRIVACY
               </h3>
               <p className="text-zinc-300 text-xs leading-relaxed">
-                We use cookies to enhance your browsing experience, serve personalised content, and analyse our traffic. By clicking 'Accept all', you consent to our use of cookies. 
+                We use cookies to enhance your browsing experience. You can choose which cookies to accept. 
                 <a href="/privacy-policy" className="text-gold hover:text-gold/80 underline ml-1">Learn more</a>
               </p>
             </div>
@@ -229,6 +338,7 @@ const CookieConsent = () => {
                 <button
                   onClick={() => setShowSettings(false)}
                   className="text-zinc-400 hover:text-white transition-colors"
+                  aria-label="Close settings"
                 >
                   <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
@@ -237,16 +347,11 @@ const CookieConsent = () => {
               </div>
 
               {/* Notice */}
-              <div className="bg-gold/10 p-4 rounded-lg border border-gold/20 mb-6">
-                <h4 className="text-gold font-medium mb-2">💡 Recommended Settings</h4>
+              <div className="bg-blue-500/10 p-4 rounded-lg border border-blue-500/20 mb-6">
+                <h4 className="text-blue-400 font-medium mb-2">ℹ️ Your Choice Matters</h4>
                 <p className="text-sm text-zinc-300">
-                  For the best experience, we recommend keeping all cookies enabled. This allows us to:
+                  You have full control over your privacy. Choose which cookies you're comfortable with.
                 </p>
-                <ul className="text-sm text-zinc-300 mt-2 ml-4 space-y-1">
-                  <li>• Provide personalized content and offers</li>
-                  <li>• Improve our services based on your usage</li>
-                  <li>• Remember your preferences</li>
-                </ul>
               </div>
 
               {/* Cookie Categories */}
@@ -255,7 +360,10 @@ const CookieConsent = () => {
                 <div className="border border-zinc-700/50 rounded-lg p-4">
                   <div className="flex items-start sm:items-center justify-between gap-3 mb-2">
                     <div className="flex-1 min-w-0">
-                      <h3 className="text-lg font-medium text-white">Essential Cookies</h3>
+                      <h3 className="text-lg font-medium text-white flex items-center gap-2">
+                        Essential Cookies
+                        <span className="text-xs bg-green-500/20 text-green-400 px-2 py-1 rounded-full">Required</span>
+                      </h3>
                     </div>
                     <div className="flex-shrink-0">
                       <div className="w-12 h-6 bg-gold rounded-full relative">
@@ -273,10 +381,7 @@ const CookieConsent = () => {
                 <div className="border border-zinc-700/50 rounded-lg p-4">
                   <div className="flex items-start sm:items-center justify-between gap-3 mb-2">
                     <div className="flex-1 min-w-0">
-                      <h3 className="text-lg font-medium text-white flex flex-wrap items-center gap-2">
-                        <span>Analytics Cookies</span>
-                        <span className="text-xs bg-gold/20 text-gold px-2 py-1 rounded-full whitespace-nowrap">Recommended</span>
-                      </h3>
+                      <h3 className="text-lg font-medium text-white">Analytics Cookies</h3>
                     </div>
                     <div className="flex-shrink-0">
                       <button
@@ -284,6 +389,7 @@ const CookieConsent = () => {
                         className={`w-12 h-6 rounded-full relative transition-colors ${
                           preferences.analytics ? 'bg-gold' : 'bg-zinc-600'
                         }`}
+                        aria-label={`${preferences.analytics ? 'Disable' : 'Enable'} analytics cookies`}
                       >
                         <div className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-transform ${
                           preferences.analytics ? 'translate-x-6' : 'translate-x-1'
@@ -300,10 +406,7 @@ const CookieConsent = () => {
                 <div className="border border-zinc-700/50 rounded-lg p-4">
                   <div className="flex items-start sm:items-center justify-between gap-3 mb-2">
                     <div className="flex-1 min-w-0">
-                      <h3 className="text-lg font-medium text-white flex flex-wrap items-center gap-2">
-                        <span>Marketing Cookies</span>
-                        <span className="text-xs bg-gold/20 text-gold px-2 py-1 rounded-full whitespace-nowrap">Recommended</span>
-                      </h3>
+                      <h3 className="text-lg font-medium text-white">Marketing Cookies</h3>
                     </div>
                     <div className="flex-shrink-0">
                       <button
@@ -311,6 +414,7 @@ const CookieConsent = () => {
                         className={`w-12 h-6 rounded-full relative transition-colors ${
                           preferences.marketing ? 'bg-gold' : 'bg-zinc-600'
                         }`}
+                        aria-label={`${preferences.marketing ? 'Disable' : 'Enable'} marketing cookies`}
                       >
                         <div className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-transform ${
                           preferences.marketing ? 'translate-x-6' : 'translate-x-1'
@@ -335,6 +439,7 @@ const CookieConsent = () => {
                         className={`w-12 h-6 rounded-full relative transition-colors ${
                           preferences.functional ? 'bg-gold' : 'bg-zinc-600'
                         }`}
+                        aria-label={`${preferences.functional ? 'Disable' : 'Enable'} functional cookies`}
                       >
                         <div className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-transform ${
                           preferences.functional ? 'translate-x-6' : 'translate-x-1'
@@ -343,22 +448,10 @@ const CookieConsent = () => {
                     </div>
                   </div>
                   <p className="text-zinc-400 text-sm">
-                    Enable enhanced functionality like chat widgets, language preferences, and personalized content.
+                    Enable enhanced functionality like language preferences and personalized content.
                   </p>
                 </div>
               </div>
-
-              {/* Warning for disabled cookies */}
-              {(!preferences.analytics || !preferences.marketing) && (
-                <div className="bg-yellow-500/10 p-4 rounded-lg border border-yellow-500/20 mt-6">
-                  <h4 className="text-yellow-400 font-medium mb-2">⚠️ Limited Experience</h4>
-                  <p className="text-sm text-yellow-200">
-                    Disabling analytics or marketing cookies will limit our ability to provide you with 
-                    personalized content and special offers. The cookie notice will continue to appear 
-                    until these are enabled.
-                  </p>
-                </div>
-              )}
 
               {/* Footer Buttons */}
               <div className="flex flex-col sm:flex-row gap-3 mt-8 pt-6 border-t border-zinc-700/50">

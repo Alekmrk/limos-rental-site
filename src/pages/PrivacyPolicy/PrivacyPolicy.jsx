@@ -1,7 +1,10 @@
 import { useEffect } from 'react';
 import { DateTime } from 'luxon';
+import useCookieConsent from '../../hooks/useCookieConsent';
 
 const PrivacyPolicy = ({ scrollUp }) => {
+  const { showSettings } = useCookieConsent();
+
   useEffect(() => {
     scrollUp();
   }, [scrollUp]);
@@ -116,8 +119,26 @@ const PrivacyPolicy = ({ scrollUp }) => {
             <div className="text-zinc-300 space-y-4">
               <p>
                 We use cookies and similar tracking technologies to enhance your browsing experience. 
-                You can manage your cookie preferences through our cookie consent banner.
+                You can manage your cookie preferences at any time.
               </p>
+
+              {/* Cookie Management Button */}
+              <div className="bg-gold/10 p-4 rounded-lg border border-gold/20 mb-6">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                  <div>
+                    <h4 className="text-gold font-medium mb-2">🍪 Cookie Preferences</h4>
+                    <p className="text-sm text-zinc-300">
+                      Control which cookies you want to accept and manage your privacy settings.
+                    </p>
+                  </div>
+                  <button
+                    onClick={showSettings}
+                    className="px-6 py-3 bg-gold text-black font-semibold hover:bg-gold/90 rounded-lg transition-all duration-200 whitespace-nowrap"
+                  >
+                    Manage Cookies
+                  </button>
+                </div>
+              </div>
               
               <div className="grid md:grid-cols-2 gap-4 mt-4">
                 <div className="bg-zinc-900/50 p-4 rounded-lg border border-zinc-700/30">
@@ -205,8 +226,8 @@ const PrivacyPolicy = ({ scrollUp }) => {
                 <h4 className="text-gold font-medium mb-2">How to Exercise Your Rights</h4>
                 <p className="text-sm">
                   Contact us at{' '}
-                  <a href="mailto:privacy@elitewaylimo.ch" className="text-gold hover:underline">
-                    privacy@elitewaylimo.ch
+                  <a href="mailto:info@elitewaylimo.ch" className="text-gold hover:underline">
+                    info@elitewaylimo.ch
                   </a>
                   {' '}or use the contact information below. We will respond within 30 days.
                 </p>
@@ -232,6 +253,7 @@ const PrivacyPolicy = ({ scrollUp }) => {
                 <li>Marketing communications: Until you unsubscribe</li>
                 <li>Website analytics: 26 months (Google Analytics default)</li>
                 <li>Customer support records: 3 years</li>
+                <li>Cookie consent: 12 months (re-consent required annually)</li>
               </ul>
             </div>
           </section>
