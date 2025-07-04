@@ -30,7 +30,7 @@ const ServicesPage = ({ scrollUp }) => {
       <h1 className="text-5xl md:text-7xl font-semibold">Our Services</h1>
       <p className="text-zinc-600 md:w-2/3">
         We provide a variety of luxury ride services for you to choose from.
-        Whether you want intercity rides or a wedding event, we've got you
+        Whether you want intercity rides or corporate events, we've got you
         covered.
       </p>
 

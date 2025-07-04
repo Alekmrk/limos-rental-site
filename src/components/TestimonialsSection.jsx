@@ -14,11 +14,11 @@ const TestimonialsSection = () => {
     },
     {
       id: 2,
-      name: "Marco & Lisa",
-      role: "Wedding Couple",
-      location: "St. Moritz",
+      name: "Thomas Müller",
+      role: "Private Client",
+      location: "Basel",
       rating: 5,
-      text: "Our wedding day was made even more special thanks to Elite Way Limo. The decorated vehicle was stunning, and the chauffeur's service was impeccable. Highly recommended!",
+      text: "Exceptional service for our family vacation transfers. The vehicle was immaculate, and our chauffeur was knowledgeable about local attractions. A truly premium experience!",
       image: null
     },
     {

@@ -59,12 +59,6 @@ const SpecialRequest = ({ scrollUp }) => {
 
   const specialServices = [
     {
-      title: "Wedding Transportation",
-      icon: faHeart,
-      description: "Elegant bridal transportation with decorated vehicles, coordination for wedding parties, and photography support.",
-      features: ["Bridal car decoration", "Wedding party coordination", "Photography assistance", "Flexible timing"]
-    },
-    {
       title: "Corporate Events",
       duration: "Full event coverage",
       icon: faUserTie,

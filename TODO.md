@@ -7,7 +7,7 @@
 - [ ] 🔴 Implement complete reservation and confirmation flow
     - [ ] Airport transfer service reservations
     - [ ] Ski resort transportation reservations
-    - [ ] Special events service (weddings, proms, corporate events)
+    - [ ] Special events service (corporate events, VIP services)
     - [ ] Custom/other reservation types
     - [ ] Service-specific pricing and options
 - [ ] 🔴 Implement billing flow and payment processing

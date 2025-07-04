@@ -73,11 +73,11 @@ const HourlyTransfer = ({ scrollUp }) => {
       features: ["Shopping districts", "Restaurant transfers", "Entertainment venues", "Personal errands"]
     },
     {
-      title: "Wedding & Events",
+      title: "Corporate Events",
       duration: "6-12 hours",
       icon: faCalendarCheck,
-      description: "Special occasion transportation with luxury vehicles and professional service.",
-      features: ["Wedding venues", "Photo locations", "Guest transportation", "Event coordination"]
+      description: "Professional transportation for conferences, corporate retreats, and executive meetings.",
+      features: ["Corporate venues", "Multi-location coordination", "Executive service", "Flexible scheduling"]
     }
   ];
 
@@ -95,7 +95,7 @@ const HourlyTransfer = ({ scrollUp }) => {
     {
       duration: "9-12 Hours",
       price: "From CHF 950",
-      features: ["Full day tours", "Wedding events", "Long-distance trips", "VIP experiences"]
+      features: ["Full day tours", "Special events", "Long-distance trips", "VIP experiences"]
     }
   ];
 

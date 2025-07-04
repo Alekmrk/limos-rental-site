@@ -1,6 +1,5 @@
 import ImgAirport from "../assets/image-airport-transfers.png";
 import ImgIntercity from "../assets/image-intercity-trips.png";
-import ImgWedding from "../assets/image-wedding-events.png";
 import ImgBusiness from "../assets/image-business-meeting.png";
 
 const services = [
@@ -27,13 +26,6 @@ const services = [
   },
   {
     id: 3,
-    image: ImgWedding,
-    heading: "Wedding events",
-    text: "Make your special day unforgettable with our luxury wedding transportation. Our attentive service ensures you arrive in style and comfort.",
-    features: ["Bridal car decoration", "Multiple vehicle coordination", "Flexible scheduling", "Photography support"]
-  },
-  {
-    id: 4,
     image: ImgBusiness,
     heading: "Business meeting",
     text: "Focus on your meetings while we handle the transportation. Professional, punctual, and discreet service for business travelers.",

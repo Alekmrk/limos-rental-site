@@ -515,7 +515,6 @@ const ReservationCard = () => {
               <p className="mt-3 text-gold font-medium">Perfect for:</p>
               <ul className="list-disc ml-5 mt-2 space-y-1">
                 <li>Multi-city tours & sightseeing</li>
-                <li>Wedding & event transportation</li>
                 <li>Corporate events & VIP services</li>
                 <li>Custom itineraries & special occasions</li>
                 <li>Long-distance transfers</li>
