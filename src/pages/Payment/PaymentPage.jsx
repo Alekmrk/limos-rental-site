@@ -387,7 +387,8 @@ const PaymentPage = ({ scrollUp }) => {
               />
               
               <div className="mt-4 text-sm text-zinc-400">
-                <p>• Secure card payment powered by Stripe</p>
+                <p>• You will be redirected to Stripe's secure payment page</p>
+                <p>• Your payment information is handled securely by Stripe</p>
                 <p>• Your card will be charged immediately</p>
                 <p>• You will receive a confirmation email</p>
                 <p>• In case of issues, contact our support at info@elitewaylimo.ch</p>

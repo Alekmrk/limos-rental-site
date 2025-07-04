@@ -98,10 +98,6 @@ const StripePayment = ({ amount, onSuccess, onError, reservationInfo }) => {
       >
         {isProcessing ? 'Opening Payment Window...' : `Pay ${amount} CHF`}
       </Button>
-      <div className="mt-4 text-sm text-zinc-400">
-        <p>• You will be redirected to Stripe's secure payment page</p>
-        <p>• Your payment information is handled securely by Stripe</p>
-      </div>
     </div>
   );
 };
