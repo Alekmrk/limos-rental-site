@@ -308,7 +308,7 @@ const DavosForum = ({ scrollUp }) => {
                 <div className="space-y-3">
                   <Button 
                     variant="secondary"
-                    onClick={() => window.location.href = 'mailto:events@elitewaylimo.ch?subject=Davos Forum Transportation'}
+                    onClick={() => window.location.href = 'mailto:info@elitewaylimo.ch?subject=Davos Forum Transportation'}
                     className="w-full"
                   >
                     Email Events Team
