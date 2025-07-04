@@ -84,6 +84,22 @@ const LegalNotice = ({ scrollUp }) => {
                 Prices displayed are indicative and may vary based on specific requirements and booking conditions.
               </p>
               
+              <h3 className="text-xl font-medium text-white mb-3">Vehicle Availability and Substitution</h3>
+              <div className="bg-zinc-900/50 p-4 rounded-lg border border-zinc-700/30">
+                <p className="mb-3">
+                  Elite Way Limo reserves the right to provide vehicles of similar class, quality, and capacity when the exact vehicle model displayed or selected during booking is not available due to:
+                </p>
+                <ul className="list-disc list-inside space-y-1 ml-4 text-sm mb-3">
+                  <li>Maintenance requirements or safety inspections</li>
+                  <li>Unexpected mechanical issues</li>
+                  <li>Prior booking conflicts or operational necessities</li>
+                  <li>Force majeure events beyond our control</li>
+                </ul>
+                <p className="text-sm">
+                  Any substitute vehicle will maintain the same luxury standards, passenger capacity, and amenities as the originally selected vehicle category. 
+                </p>
+              </div>
+              
               <h3 className="text-xl font-medium text-white mb-3">External Links</h3>
               <p>
                 Our website may contain links to external websites. We are not responsible for the content, 

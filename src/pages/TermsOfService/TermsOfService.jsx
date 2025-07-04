@@ -173,7 +173,30 @@ const TermsOfService = ({ scrollUp }) => {
                 </p>
               </div>
               
-              <h3 className="text-xl font-medium text-white mb-3">6.4 Waiting Time</h3>
+              <h3 className="text-xl font-medium text-white mb-3">6.4 Vehicle Availability and Substitution</h3>
+              <div className="bg-zinc-900/50 p-4 rounded-lg border border-zinc-700/30 mb-4">
+                <p className="mb-3">
+                  Elite Way Limo reserves the right to provide vehicles of similar class, quality, and passenger capacity when the exact vehicle model displayed or selected during booking is not available. This may occur due to:
+                </p>
+                <ul className="list-disc list-inside space-y-2 ml-4 text-sm mb-3">
+                  <li>Scheduled maintenance or mandatory safety inspections</li>
+                  <li>Unexpected mechanical issues or repairs</li>
+                  <li>Prior booking conflicts or operational requirements</li>
+                  <li>Force majeure events, including but not limited to severe weather, natural disasters, or government restrictions</li>
+                </ul>
+                <div className="space-y-2 text-sm">
+                  <p><strong>Substitution Standards:</strong> Any substitute vehicle will:</p>
+                  <ul className="list-disc list-inside space-y-1 ml-4">
+                    <li>Maintain equivalent or superior luxury standards and comfort features</li>
+                    <li>Accommodate the same number of passengers as originally booked</li>
+                    <li>Provide similar or better amenities (Wi-Fi, climate control, premium interior)</li>
+                    <li>Meet all safety and insurance requirements</li>
+                  </ul>
+                  <p><strong>No Price Adjustment:</strong> Vehicle substitutions within the same class will not affect the agreed-upon price. If a superior vehicle class is provided, no additional charges will apply.</p>
+                </div>
+              </div>
+              
+              <h3 className="text-xl font-medium text-white mb-3">6.5 Waiting Time</h3>
               <ul className="list-disc list-inside space-y-2 ml-4">
                 <li>Airport transfers: 60 minutes free waiting time for international flights, 30 minutes for domestic</li>
                 <li>Other pickups: 15 minutes free waiting time</li>
