@@ -69,10 +69,15 @@ const AirportTransfer = ({ scrollUp }) => {
             <h1 className="text-4xl sm:text-5xl md:text-8xl font-semibold pt-48 tracking-wide mb-16 md:mb-20">
               <span className="text-gold">Airport</span> Transfer
             </h1>
-            <p className="md:w-[50ch] mx-auto mb-24 md:mb-28 px-4 md:px-0 text-lg">
+            <p className="md:w-[50ch] mx-auto mb-12 md:mb-28 px-4 md:px-0 text-lg">
               Seamless airport transfers with professional meet & greet service. 
               Experience luxury travel from touchdown to destination.
             </p>
+
+            {/* Mobile Reservation Card - Right after description */}
+            <div className="block md:hidden mb-12 px-4">
+              <ReservationCard />
+            </div>
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-20 md:mb-24 md:mt-28">
               <div className="flex items-center gap-2 text-gold">
@@ -90,8 +95,10 @@ const AirportTransfer = ({ scrollUp }) => {
             </div>
           </div>
           
-          {/* Reservation Card */}
-          <ReservationCard />
+          {/* Desktop Reservation Card - Original position */}
+          <div className="hidden md:block">
+            <ReservationCard />
+          </div>
         </div>
 
         {/* Improved Decorative Bottom Wave - Moved outside banner container */}

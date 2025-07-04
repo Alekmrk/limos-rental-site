@@ -170,14 +170,18 @@ const SpecialRequest = ({ scrollUp }) => {
             <div className="absolute inset-0 bg-gradient-to-br from-black/40 via-black/20 to-black/40"></div>
           </div>
           
-          <div className="relative z-20 px-4 md:px-8">
+          <div className="relative z-20">
             <h1 className="text-4xl sm:text-5xl md:text-8xl font-semibold pt-48 tracking-wide mb-16 md:mb-20">
-              <span className="text-gold">Special</span> Requests
+              <span className="text-gold">Special</span> Request
             </h1>
-            <p className="md:w-[50ch] mx-auto mb-24 md:mb-28 px-4 md:px-0 text-lg">
-              Extraordinary transportation experiences crafted exclusively for you. 
-              From intimate celebrations to grand events, we bring your vision to life.
+            <p className="md:w-[50ch] mx-auto mb-12 md:mb-28 px-4 md:px-0 text-lg">
+              Where imagination meets luxury transportation. We craft extraordinary experiences that transform ordinary journeys into unforgettable memories, tailored exclusively for your most special moments.
             </p>
+
+            {/* Mobile Reservation Card - Right after description */}
+            <div className="block md:hidden mb-12 px-4">
+              <ReservationCard />
+            </div>
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-20 md:mb-24 md:mt-28">
               <div className="flex items-center gap-2 text-gold">
@@ -195,8 +199,10 @@ const SpecialRequest = ({ scrollUp }) => {
             </div>
           </div>
           
-          {/* Reservation Card */}
-          <ReservationCard />
+          {/* Desktop Reservation Card - Original position */}
+          <div className="hidden md:block">
+            <ReservationCard />
+          </div>
         </div>
 
         {/* Improved Decorative Bottom Wave */}

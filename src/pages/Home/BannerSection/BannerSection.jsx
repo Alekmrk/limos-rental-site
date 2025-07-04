@@ -65,10 +65,15 @@ const BannerSection = () => {
             </div>
           </div>
 
-          <p className="max-w-[50ch] mx-auto mb-10 md:mb-12 text-gray-200 text-lg md:text-xl leading-relaxed">
+          <p className="max-w-[50ch] mx-auto mb-8 md:mb-12 text-gray-200 text-lg md:text-xl leading-relaxed">
             Experience unparalleled luxury with our professional chauffeur services 
             featuring Switzerland's finest fleet of premium vehicles
           </p>
+
+          {/* Mobile Reservation Card - Right after description */}
+          <div className="block md:hidden mb-8">
+            <ReservationCard />
+          </div>
 
           {/* Trust Indicators - Slightly left aligned */}
           <div className="flex flex-col sm:flex-row justify-center items-center gap-6 sm:gap-8 mb-10 md:mb-12 text-gray-300 text-sm">
@@ -95,7 +100,10 @@ const BannerSection = () => {
           </div>
         </div>
 
-        <ReservationCard />
+        {/* Desktop Reservation Card - Original position */}
+        <div className="hidden md:block">
+          <ReservationCard />
+        </div>
       </div>
       
       {/* Improved Decorative Bottom Wave - Moved outside banner container */}

@@ -140,10 +140,15 @@ const DistanceTransfer = ({ scrollUp }) => {
             <h1 className="text-4xl sm:text-5xl md:text-8xl font-semibold pt-48 tracking-wide mb-16 md:mb-20">
               <span className="text-gold">Distance</span> Transfer
             </h1>
-            <p className="md:w-[50ch] mx-auto mb-24 md:mb-28 px-4 md:px-0 text-lg">
-              Professional point-to-point transportation across Switzerland and beyond. 
-              Reliable, comfortable, and efficient luxury transfers.
+            <p className="md:w-[50ch] mx-auto mb-12 md:mb-28 px-4 md:px-0 text-lg">
+              Point-to-point luxury transportation with optimal routing and transparent pricing. 
+              Experience comfort and efficiency for your journey across Switzerland.
             </p>
+
+            {/* Mobile Reservation Card - Right after description */}
+            <div className="block md:hidden mb-12 px-4">
+              <ReservationCard />
+            </div>
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-20 md:mb-24 md:mt-28">
               <div className="flex items-center gap-2 text-gold">
@@ -161,8 +166,10 @@ const DistanceTransfer = ({ scrollUp }) => {
             </div>
           </div>
           
-          {/* Reservation Card */}
-          <ReservationCard />
+          {/* Desktop Reservation Card - Original position */}
+          <div className="hidden md:block">
+            <ReservationCard />
+          </div>
         </div>
 
         {/* Improved Decorative Bottom Wave */}
