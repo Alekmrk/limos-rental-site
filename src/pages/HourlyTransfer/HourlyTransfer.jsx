@@ -21,7 +21,7 @@ const HourlyTransfer = ({ scrollUp }) => {
 
   useEffect(() => {
     scrollUp();
-    // Clear any previous reservation data when user visits hourly transfer page
+    // Clear any previous reservation data when user visits hourly service page
     clearReservation();
     // Set the reservation card to hourly mode
     setIsHourly(true);
