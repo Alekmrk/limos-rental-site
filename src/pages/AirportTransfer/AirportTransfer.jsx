@@ -6,6 +6,7 @@ import Image from "../../components/Image";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlane, faClock, faShieldAlt, faUserTie, faWifi, faCoffee } from "@fortawesome/free-solid-svg-icons";
 import airportTransferImage from "../../assets/original-airport-transfers.jpg";
+import { scrollToReservationCard } from "../../utils/scrollUtils";
 
 const AirportTransfer = ({ scrollUp }) => {
   const { clearReservation } = useContext(ReservationContext);
@@ -243,7 +244,7 @@ const AirportTransfer = ({ scrollUp }) => {
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button 
                 variant="secondary"
-                onClick={() => document.querySelector('.reservation').scrollIntoView({ behavior: 'smooth' })}
+                onClick={scrollToReservationCard}
               >
                 Book Airport Transfer
               </Button>

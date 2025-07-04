@@ -2,6 +2,7 @@ import SectionHeading from "../../../components/SectionHeading";
 import ServiceCard from "./ServiceCard";
 import services from "../../../data/services";
 import { FaQuoteLeft, FaAward, FaUsers, FaGlobeEurope } from "react-icons/fa";
+import { scrollToReservationCard } from "../../../utils/scrollUtils";
 
 const ServicesSection = () => {
   const stats = [
@@ -87,7 +88,7 @@ const ServicesSection = () => {
               transportation needs. Book your premium experience today.
             </p>
             <button 
-              onClick={() => document.querySelector('.reservation').scrollIntoView({ behavior: 'smooth' })}
+              onClick={scrollToReservationCard}
               className="bg-yellow-400 text-black hover:bg-yellow-300 px-8 py-3 rounded-lg font-semibold transition-colors duration-300 shadow-lg"
             >
               Get Started Now

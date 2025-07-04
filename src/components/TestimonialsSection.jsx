@@ -1,5 +1,6 @@
 import React from 'react';
 import { FaStar, FaQuoteLeft, FaUser } from 'react-icons/fa';
+import { scrollToReservationCard } from '../utils/scrollUtils';
 
 const TestimonialsSection = () => {
   const testimonials = [
@@ -137,7 +138,7 @@ const TestimonialsSection = () => {
         <div className="text-center mt-12">
           <p className="text-gray-300 mb-4">Ready to join our satisfied clients?</p>
           <button 
-            onClick={() => document.querySelector('.reservation').scrollIntoView({ behavior: 'smooth' })}
+            onClick={scrollToReservationCard}
             className="bg-gradient-to-r from-yellow-400 to-yellow-300 hover:from-yellow-300 hover:to-yellow-200 text-black px-8 py-3 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105 shadow-lg"
           >
             Book Your Experience

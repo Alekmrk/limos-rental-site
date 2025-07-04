@@ -22,6 +22,7 @@ import {
   faShieldAlt
 } from "@fortawesome/free-solid-svg-icons";
 import bannerImage from "../../assets/banner-image.jpg";
+import { scrollToReservationCard } from "../../utils/scrollUtils";
 
 const SpecialRequest = ({ scrollUp }) => {
   const { clearReservation, setIsSpecialRequest } = useContext(ReservationContext);
@@ -451,7 +452,7 @@ const SpecialRequest = ({ scrollUp }) => {
             <div className="flex justify-center">
               <Button 
                 variant="secondary"
-                onClick={() => document.querySelector('.reservation').scrollIntoView({ behavior: 'smooth' })}
+                onClick={scrollToReservationCard}
               >
                 Submit Special Request
               </Button>

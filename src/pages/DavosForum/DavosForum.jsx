@@ -5,6 +5,7 @@ import Image from "../../components/Image";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMountain, faUsers, faShieldAlt, faCalendarAlt, faSnowflake, faCrown } from "@fortawesome/free-solid-svg-icons";
 import davosForumImage from "../../assets/banner-image1.jpg";
+import { scrollToReservationCard } from "../../utils/scrollUtils";
 
 const DavosForum = ({ scrollUp }) => {
   useEffect(() => {
@@ -342,7 +343,7 @@ const DavosForum = ({ scrollUp }) => {
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button 
                 variant="secondary"
-                onClick={() => document.querySelector('.reservation').scrollIntoView({ behavior: 'smooth' })}
+                onClick={scrollToReservationCard}
               >
                 Book Davos Transfer
               </Button>

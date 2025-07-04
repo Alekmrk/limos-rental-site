@@ -1,6 +1,7 @@
 import React from 'react';
 import { FaCalendarAlt, FaStar, FaUsers, FaMapMarkerAlt } from 'react-icons/fa';
 import { eventDestinations } from '../data/services';
+import { scrollToReservationCard } from '../utils/scrollUtils';
 
 const EventsSection = () => {
   const upcomingEvents = [
@@ -124,7 +125,7 @@ const EventsSection = () => {
             Secure your premium transportation for upcoming events. Early booking recommended.
           </p>
           <button 
-            onClick={() => document.querySelector('.reservation').scrollIntoView({ behavior: 'smooth' })}
+            onClick={scrollToReservationCard}
             className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg font-medium transition-colors duration-300"
           >
             Reserve Now

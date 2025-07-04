@@ -14,6 +14,7 @@ import {
   faUsers
 } from "@fortawesome/free-solid-svg-icons";
 import distanceTransferImage from "../../assets/banner-image.jpg";
+import { scrollToReservationCard } from "../../utils/scrollUtils";
 
 const DistanceTransfer = ({ scrollUp }) => {
   const { clearReservation } = useContext(ReservationContext);
@@ -338,7 +339,7 @@ const DistanceTransfer = ({ scrollUp }) => {
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button 
                 variant="secondary"
-                onClick={() => document.querySelector('.reservation').scrollIntoView({ behavior: 'smooth' })}
+                onClick={scrollToReservationCard}
               >
                 Book Distance Transfer
               </Button>
