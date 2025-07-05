@@ -1,6 +1,7 @@
 import ImgAirport from "../assets/image-airport-transfers.png";
 import ImgIntercity from "../assets/image-intercity-trips.png";
 import ImgBusiness from "../assets/image-business-meeting.png";
+import ImgHourly from "../assets/banner-image1.jpg";
 
 const services = [
   {
@@ -30,6 +31,20 @@ const services = [
     heading: "Business meeting",
     text: "Focus on your meetings while we handle the transportation. Professional, punctual, and discreet service for business travelers.",
     features: ["Corporate accounts", "Meeting schedule integration", "Wi-Fi enabled vehicles", "Privacy assured"]
+  },
+  {
+    id: 4,
+    image: ImgHourly,
+    heading: "Hourly service",
+    text: "Premium chauffeur service by the hour. Perfect for business meetings, sightseeing tours, and flexible transportation needs across Switzerland.",
+    waitTime: "3-24 hours flexibility",
+    features: ["Multiple destinations", "Flexible scheduling", "Personal chauffeur", "Real-time adjustments"],
+    popularServices: [
+      { name: "Business Meetings", duration: "3-8h", startingPrice: "From 300 CHF" },
+      { name: "City Tours", duration: "4-12h", startingPrice: "From 400 CHF" },
+      { name: "Shopping & Leisure", duration: "3-6h", startingPrice: "From 300 CHF" },
+      { name: "Corporate Events", duration: "6-12h", startingPrice: "From 600 CHF" }
+    ]
   },
 ];
 
