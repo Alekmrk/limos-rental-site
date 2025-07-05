@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import Button from "../../../components/Button";
 import ReservationCard from "./ReservationCard";
 import Image from "../../../components/Image";
-import bannerImage from "../../../assets/banner-image.jpg";
+import bannerImage from "../../../assets/bannerNew.jpg";
 import eliteWayLogo from "../../../assets/elitewaylogo.png";
 import { FaStar, FaShieldAlt, FaClock, FaPhone } from "react-icons/fa";
 import { useEffect } from "react";
@@ -23,7 +23,7 @@ const BannerSection = () => {
 
   return (
     <div className="relative">
-      <div className="banner relative container-big rounded-[1.5rem] mt-16 pb-32 md:pb-0 overflow-hidden text-center min-h-[700px]">
+      <div className="banner relative container-ultra-wide rounded-[1.5rem] mt-16 pb-32 md:pb-0 overflow-hidden text-center min-h-[700px] lg:min-h-[800px]">
         {/* Optimized Background Image */}
         <div className="absolute inset-0 z-0">
           <Image
@@ -34,24 +34,25 @@ const BannerSection = () => {
             priority={true}
             sizes="100vw"
           />
-          <div className="absolute inset-0 bg-gradient-to-br from-black/25 via-black/30 to-black/37"></div>
+          <div className="absolute inset-0 bg-gradient-to-br from-warm-gray/8 via-cream/5 to-soft-gray/8"></div>
         </div>
 
-        {/* Animated Background Elements - Dark Theme */}
+        {/* Softer Animated Background Elements with Harmonious Colors */}
         <div className="absolute inset-0 z-10" style={{ pointerEvents: 'none' }}>
-          <div className="absolute top-20 left-10 w-20 h-20 bg-zinc-700/20 rounded-full animate-pulse"></div>
-          <div className="absolute top-40 right-20 w-16 h-16 bg-gold/20 rounded-full animate-bounce"></div>
-          <div className="absolute bottom-40 left-20 w-12 h-12 bg-zinc-600/20 rounded-full animate-ping"></div>
-          <div className="absolute bottom-20 right-10 w-24 h-24 bg-gray-700/20 rounded-full animate-pulse"></div>
+          <div className="absolute top-20 left-10 w-20 h-20 bg-royal-blue/20 rounded-full animate-pulse"></div>
+          <div className="absolute top-40 right-20 w-16 h-16 bg-gold/25 rounded-full animate-bounce"></div>
+          <div className="absolute bottom-40 left-20 w-12 h-12 bg-warm-gray/30 rounded-full animate-ping"></div>
+          <div className="absolute bottom-20 right-10 w-24 h-24 bg-royal-blue/15 rounded-full animate-pulse"></div>
+          <div className="absolute top-1/2 left-1/3 w-32 h-32 bg-gradient-to-br from-cream/20 to-gold/15 rounded-full blur-xl animate-float"></div>
         </div>
 
-        <div className="relative z-20 px-4 md:px-8 md:mr-96 lg:mr-[28rem] xl:mr-[32rem]">
+        <div className="relative z-20 px-4 md:px-8 lg:px-16 md:mr-96 lg:mr-[28rem] xl:mr-[32rem]">
           <div className="pt-16 md:pt-20 mb-8 md:mb-12">
             <div className="mb-10 md:mb-12">
               <img 
                 src={eliteWayLogo} 
                 alt="Elite Way Limo" 
-                className="h-16 sm:h-20 md:h-24 lg:h-28 xl:h-32 mx-auto object-contain animate-fade-in"
+                className="h-16 sm:h-20 md:h-24 lg:h-28 xl:h-36 mx-auto object-contain animate-fade-in"
                 style={{
                   filter: 'drop-shadow(-0.1px -0.1px 0 rgba(102,102,102,0.35)) drop-shadow(0.1px -0.1px 0 rgba(102,102,102,0.35)) drop-shadow(-0.1px 0.1px 0 rgba(102,102,102,0.35)) drop-shadow(0.1px 0.1px 0 rgba(102,102,102,0.35))'
                 }}
@@ -59,13 +60,13 @@ const BannerSection = () => {
               />
             </div>
             
-            {/* Subtitle with gold gradient */}
-            <div className="text-xl md:text-2xl lg:text-3xl font-light text-transparent bg-gradient-to-r from-yellow-400 to-yellow-200 bg-clip-text mb-8 md:mb-10">
+            {/* Subtitle with softer gradient */}
+            <div className="text-xl md:text-2xl lg:text-3xl xl:text-4xl font-light text-transparent bg-gradient-to-r from-royal-blue via-gold to-royal-blue-light bg-clip-text mb-8 md:mb-10">
               Switzerland's Elite Chauffeur Service
             </div>
           </div>
 
-          <p className="max-w-[50ch] mx-auto mb-8 md:mb-12 text-gray-200 text-lg md:text-xl leading-relaxed">
+          <p className="max-w-[55ch] mx-auto mb-12 md:mb-16 text-gray-800 text-lg md:text-xl lg:text-2xl leading-relaxed font-semibold">
             Experience unparalleled luxury with our professional chauffeur services 
             featuring Switzerland's finest fleet of premium vehicles
           </p>
@@ -75,25 +76,25 @@ const BannerSection = () => {
             <ReservationCard />
           </div>
 
-          {/* Trust Indicators - Slightly left aligned */}
-          <div className="flex flex-col sm:flex-row justify-center items-center gap-6 sm:gap-8 mb-10 md:mb-12 text-gray-300 text-sm">
-            <div className="flex items-center gap-2">
-              <FaShieldAlt className="text-green-400" />
-              <span>Fully Insured</span>
+          {/* Softer Trust Indicators */}
+          <div className="flex flex-col sm:flex-row justify-center items-center gap-8 sm:gap-12 mb-12 md:mb-16 text-gray-600 text-sm md:text-base">
+            <div className="flex items-center gap-3 bg-warm-white/80 backdrop-blur-sm px-4 py-2 rounded-full border border-royal-blue/20 shadow-md">
+              <FaShieldAlt className="text-emerald-500 text-lg" />
+              <span className="font-medium">Fully Insured</span>
             </div>
-            <div className="flex items-center gap-2">
-              <FaClock className="text-blue-400" />
-              <span>24/7 Available</span>            
+            <div className="flex items-center gap-3 bg-warm-white/80 backdrop-blur-sm px-4 py-2 rounded-full border border-royal-blue/20 shadow-md">
+              <FaClock className="text-royal-blue text-lg" />
+              <span className="font-medium">24/7 Available</span>            
             </div>
-            <div className="flex items-center gap-2">
-              <FaPhone className="text-yellow-400" />
-              <span>Instant Booking</span>
+            <div className="flex items-center gap-3 bg-warm-white/80 backdrop-blur-sm px-4 py-2 rounded-full border border-royal-blue/20 shadow-md">
+              <FaPhone className="text-gold text-lg" />
+              <span className="font-medium">Instant Booking</span>
             </div>
           </div>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16 md:mb-20">
             <Link to={"/vehicles"}>
-              <Button variant="secondary" className="transform hover:scale-105 transition-transform duration-300 w-full sm:w-auto">
+              <Button variant="secondary" className="transform hover:scale-105 transition-all duration-300 w-full sm:w-auto shadow-lg hover:shadow-xl bg-gradient-to-r from-royal-blue to-royal-blue-light hover:from-royal-blue-light hover:to-royal-blue text-white">
                 Explore Our Fleet
               </Button>
             </Link>
@@ -106,10 +107,17 @@ const BannerSection = () => {
         </div>
       </div>
       
-      {/* Improved Decorative Bottom Wave - Moved outside banner container */}
+      {/* Softer Decorative Bottom Wave */}
       <div className="absolute bottom-0 left-0 right-0 z-20">
-        <svg className="w-full h-16 text-zinc-900" viewBox="0 0 1200 80" preserveAspectRatio="none">
-          <path d="M0,80V40c200,0,400,-20,600,0s400,20,600,0V80Z" fill="currentColor" opacity="0.8"/>
+        <svg className="w-full h-20 text-warm-gray" viewBox="0 0 1200 80" preserveAspectRatio="none">
+          <defs>
+            <linearGradient id="softWaveGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stopColor="currentColor" stopOpacity="0.9"/>
+              <stop offset="50%" stopColor="#F8F7F4" stopOpacity="0.8"/>
+              <stop offset="100%" stopColor="currentColor" stopOpacity="0.9"/>
+            </linearGradient>
+          </defs>
+          <path d="M0,80V40c200,0,400,-20,600,0s400,20,600,0V80Z" fill="url(#softWaveGradient)" opacity="0.9"/>
           <path d="M0,80V50c150,0,350,-15,600,10s450,-10,600,5V80Z" fill="currentColor"/>
         </svg>
       </div>

@@ -131,10 +131,10 @@ const Contact = ({ scrollUp }) => {
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="text-center mb-16">
-          <h1 className="text-5xl md:text-7xl font-semibold mb-6">
-            <span className="text-gold">Contact</span> Us
+          <h1 className="text-5xl md:text-7xl font-semibold mb-6 text-gray-700">
+            <span className="text-royal-blue">Contact</span> Us
           </h1>
-          <p className="text-lg text-zinc-400 max-w-2xl mx-auto">
+          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
             Get in touch with our team for any questions about our premium chauffeur services. 
             We're here to make your luxury travel experience unforgettable.
           </p>
@@ -142,25 +142,25 @@ const Contact = ({ scrollUp }) => {
 
         <div className="grid lg:grid-cols-2 gap-12 mb-16">
           {/* Contact Form */}
-          <div className="bg-zinc-800/30 p-8 rounded-lg border border-zinc-700/50">
-            <h2 className="text-3xl font-semibold mb-6 text-gold">Send us a Message</h2>
+          <div className="bg-cream-light/90 p-8 rounded-lg border border-royal-blue/20 shadow-lg">
+            <h2 className="text-3xl font-semibold mb-6 text-royal-blue">Send us a Message</h2>
             
             {submitStatus === 'success' && (
-              <div className="mb-6 p-4 bg-green-900/20 border border-green-500/50 rounded-lg">
-                <p className="text-green-400">Thank you! Your message has been sent successfully.</p>
+              <div className="mb-6 p-4 bg-emerald-50 border border-emerald-200 rounded-lg">
+                <p className="text-emerald-600">Thank you! Your message has been sent successfully.</p>
               </div>
             )}
             
             {submitStatus === 'error' && (
-              <div className="mb-6 p-4 bg-red-900/20 border border-red-500/50 rounded-lg">
-                <p className="text-red-400">Sorry, there was an error sending your message. Please try again.</p>
+              <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
+                <p className="text-red-600">Sorry, there was an error sending your message. Please try again.</p>
               </div>
             )}
 
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="grid md:grid-cols-2 gap-6">
                 <div>
-                  <label htmlFor="name" className="block text-sm font-medium mb-2">
+                  <label htmlFor="name" className="block text-sm font-medium mb-2 text-gray-700">
                     Full Name *
                   </label>
                   <input
@@ -170,13 +170,13 @@ const Contact = ({ scrollUp }) => {
                     value={formData.name}
                     onChange={handleInputChange}
                     required
-                    className="bg-zinc-800/30 rounded-lg py-3 px-4 w-full border border-zinc-700/50 focus:border-gold/40 focus:outline-none focus:ring-1 focus:ring-gold/20 transition-all duration-200"
+                    className="bg-warm-white rounded-lg py-3 px-4 w-full border border-gray-300 focus:border-royal-blue focus:outline-none focus:ring-2 focus:ring-royal-blue/20 transition-all duration-200"
                     placeholder="Your full name"
                   />
                 </div>
                 
                 <div>
-                  <label htmlFor="email" className="block text-sm font-medium mb-2">
+                  <label htmlFor="email" className="block text-sm font-medium mb-2 text-gray-700">
                     Email Address *
                   </label>
                   <input
@@ -186,7 +186,7 @@ const Contact = ({ scrollUp }) => {
                     value={formData.email}
                     onChange={handleInputChange}
                     required
-                    className="bg-zinc-800/30 rounded-lg py-3 px-4 w-full border border-zinc-700/50 focus:border-gold/40 focus:outline-none focus:ring-1 focus:ring-gold/20 transition-all duration-200"
+                    className="bg-warm-white rounded-lg py-3 px-4 w-full border border-gray-300 focus:border-royal-blue focus:outline-none focus:ring-2 focus:ring-royal-blue/20 transition-all duration-200"
                     placeholder="your@email.com"
                   />
                 </div>
@@ -194,7 +194,7 @@ const Contact = ({ scrollUp }) => {
 
               <div className="grid md:grid-cols-2 gap-6">
                 <div>
-                  <label htmlFor="phone" className="block text-sm font-medium mb-2">
+                  <label htmlFor="phone" className="block text-sm font-medium mb-2 text-gray-700">
                     Phone Number
                   </label>
                   <input
@@ -203,13 +203,13 @@ const Contact = ({ scrollUp }) => {
                     name="phone"
                     value={formData.phone}
                     onChange={handleInputChange}
-                    className="bg-zinc-800/30 rounded-lg py-3 px-4 w-full border border-zinc-700/50 focus:border-gold/40 focus:outline-none focus:ring-1 focus:ring-gold/20 transition-all duration-200"
+                    className="bg-warm-white rounded-lg py-3 px-4 w-full border border-gray-300 focus:border-royal-blue focus:outline-none focus:ring-2 focus:ring-royal-blue/20 transition-all duration-200"
                     placeholder="+41 XX XXX XX XX"
                   />
                 </div>
                 
                 <div>
-                  <label htmlFor="subject" className="block text-sm font-medium mb-2">
+                  <label htmlFor="subject" className="block text-sm font-medium mb-2 text-gray-700">
                     Subject *
                   </label>
                   <select
@@ -218,7 +218,7 @@ const Contact = ({ scrollUp }) => {
                     value={formData.subject}
                     onChange={handleInputChange}
                     required
-                    className="bg-zinc-800/30 rounded-lg py-3 px-4 w-full border border-zinc-700/50 focus:border-gold/40 focus:outline-none focus:ring-1 focus:ring-gold/20 transition-all duration-200"
+                    className="bg-warm-white rounded-lg py-3 px-4 w-full border border-gray-300 focus:border-royal-blue focus:outline-none focus:ring-2 focus:ring-royal-blue/20 transition-all duration-200"
                   >
                     <option value="">Select a subject</option>
                     <option value="booking">New Booking Inquiry</option>
@@ -231,7 +231,7 @@ const Contact = ({ scrollUp }) => {
               </div>
 
               <div>
-                <label htmlFor="message" className="block text-sm font-medium mb-2">
+                <label htmlFor="message" className="block text-sm font-medium mb-2 text-gray-700">
                   Message *
                 </label>
                 <textarea
@@ -241,7 +241,7 @@ const Contact = ({ scrollUp }) => {
                   onChange={handleInputChange}
                   required
                   rows="6"
-                  className="bg-zinc-800/30 rounded-lg py-3 px-4 w-full border border-zinc-700/50 focus:border-gold/40 focus:outline-none focus:ring-1 focus:ring-gold/20 transition-all duration-200 resize-vertical"
+                  className="bg-warm-white rounded-lg py-3 px-4 w-full border border-gray-300 focus:border-royal-blue focus:outline-none focus:ring-2 focus:ring-royal-blue/20 transition-all duration-200 resize-vertical"
                   placeholder="Tell us about your requirements..."
                 />
               </div>
@@ -258,26 +258,26 @@ const Contact = ({ scrollUp }) => {
 
           {/* Contact Information */}
           <div className="space-y-8">
-            <div className="bg-zinc-800/30 p-8 rounded-lg border border-zinc-700/50">
-              <h2 className="text-3xl font-semibold mb-6 text-gold">Get in Touch</h2>
+            <div className="bg-cream-light/90 p-8 rounded-lg border border-royal-blue/20 shadow-lg">
+              <h2 className="text-3xl font-semibold mb-6 text-royal-blue">Get in Touch</h2>
               
               <div className="space-y-6">
                 {contactInfo.map((item, index) => (
                   <div key={index} className="flex items-start gap-4">
-                    <div className="flex-shrink-0 w-12 h-12 bg-gold/20 rounded-lg flex items-center justify-center">
-                      <FontAwesomeIcon icon={item.icon} className="text-gold text-lg" />
+                    <div className="flex-shrink-0 w-12 h-12 bg-royal-blue/15 rounded-lg flex items-center justify-center">
+                      <FontAwesomeIcon icon={item.icon} className="text-royal-blue text-lg" />
                     </div>
                     <div className="flex-1">
-                      <h3 className="font-medium text-white mb-1">{item.title}</h3>
+                      <h3 className="font-medium text-gray-700 mb-1">{item.title}</h3>
                       {item.link ? (
                         <a 
                           href={item.link} 
-                          className="text-zinc-300 hover:text-gold transition-colors"
+                          className="text-gray-600 hover:text-royal-blue transition-colors"
                         >
                           {item.content}
                         </a>
                       ) : (
-                        <p className="text-zinc-300">{item.content}</p>
+                        <p className="text-gray-600">{item.content}</p>
                       )}
                     </div>
                   </div>
@@ -286,14 +286,14 @@ const Contact = ({ scrollUp }) => {
             </div>
 
             {/* Social Media */}
-            <div className="bg-zinc-800/30 p-8 rounded-lg border border-zinc-700/50">
-              <h3 className="text-2xl font-semibold mb-6 text-gold">Follow Us</h3>
+            <div className="bg-cream-light/90 p-8 rounded-lg border border-royal-blue/20 shadow-lg">
+              <h3 className="text-2xl font-semibold mb-6 text-royal-blue">Follow Us</h3>
               <div className="flex gap-4">
                 {socialLinks.map((social, index) => (
                   <a
                     key={index}
                     href={social.url}
-                    className={`w-12 h-12 bg-zinc-700/50 rounded-lg flex items-center justify-center hover:bg-zinc-600/50 transition-all duration-200 group ${social.color}`}
+                    className={`w-12 h-12 bg-warm-gray/20 rounded-lg flex items-center justify-center hover:bg-warm-gray/30 transition-all duration-200 group ${social.color}`}
                     aria-label={social.name}
                   >
                     <FontAwesomeIcon 
@@ -303,15 +303,15 @@ const Contact = ({ scrollUp }) => {
                   </a>
                 ))}
               </div>
-              <p className="text-zinc-400 text-sm mt-4">
+              <p className="text-gray-600 text-sm mt-4">
                 Stay connected for exclusive offers and luxury travel inspiration.
               </p>
             </div>
 
             {/* Quick Contact */}
-            <div className="bg-gradient-to-br from-gold/20 to-gold/5 p-8 rounded-lg border border-gold/20">
-              <h3 className="text-2xl font-semibold mb-4 text-gold">Need Immediate Assistance?</h3>
-              <p className="text-zinc-300 mb-6">
+            <div className="bg-gradient-to-br from-gold/20 to-royal-blue/10 p-8 rounded-lg border border-gold/30 shadow-lg">
+              <h3 className="text-2xl font-semibold mb-4 text-royal-blue-dark">Need Immediate Assistance?</h3>
+              <p className="text-gray-600 mb-6">
                 For urgent bookings or immediate support, call us directly. Our team is available 24/7.
               </p>
               <div className="flex flex-col sm:flex-row gap-4">
@@ -337,41 +337,41 @@ const Contact = ({ scrollUp }) => {
         </div>
 
         {/* FAQ Section */}
-        <div className="bg-zinc-800/30 p-8 rounded-lg border border-zinc-700/50">
-          <h2 className="text-3xl font-semibold mb-8 text-center text-gold">Frequently Asked Questions</h2>
+        <div className="bg-cream-light/90 p-8 rounded-lg border border-royal-blue/20 shadow-lg">
+          <h2 className="text-3xl font-semibold mb-8 text-center text-royal-blue">Frequently Asked Questions</h2>
           
           <div className="grid md:grid-cols-2 gap-8">
             <div className="space-y-6">
               <div>
-                <h3 className="font-medium text-white mb-2">How far in advance should I book?</h3>
-                <p className="text-zinc-400 text-sm">We recommend booking at least 3 hours in advance for regular transfers. For special events or peak seasons, booking 24-48 hours ahead is preferred.</p>
+                <h3 className="font-medium text-gray-700 mb-2">How far in advance should I book?</h3>
+                <p className="text-gray-600 text-sm">We recommend booking at least 3 hours in advance for regular transfers. For special events or peak seasons, booking 24-48 hours ahead is preferred.</p>
               </div>
               
               <div>
-                <h3 className="font-medium text-white mb-2">Do you provide child seats?</h3>
-                <p className="text-zinc-400 text-sm">Yes, we provide child and baby seats free of charge. Please specify your requirements when booking.</p>
+                <h3 className="font-medium text-gray-700 mb-2">Do you provide child seats?</h3>
+                <p className="text-gray-600 text-sm">Yes, we provide child and baby seats free of charge. Please specify your requirements when booking.</p>
               </div>
               
               <div>
-                <h3 className="font-medium text-white mb-2">What payment methods do you accept?</h3>
-                <p className="text-zinc-400 text-sm">We accept credit cards (Visa, Mastercard, American Express) and cryptocurrency (USDT) for your convenience.</p>
+                <h3 className="font-medium text-gray-700 mb-2">What payment methods do you accept?</h3>
+                <p className="text-gray-600 text-sm">We accept credit cards (Visa, Mastercard, American Express) and cryptocurrency (USDT) for your convenience.</p>
               </div>
             </div>
             
             <div className="space-y-6">
               <div>
-                <h3 className="font-medium text-white mb-2">Can I modify or cancel my booking?</h3>
-                <p className="text-zinc-400 text-sm">Yes, you can modify or cancel your booking. Please contact us at least 2 hours before your scheduled pickup time.</p>
+                <h3 className="font-medium text-gray-700 mb-2">Can I modify or cancel my booking?</h3>
+                <p className="text-gray-600 text-sm">Yes, you can modify or cancel your booking. Please contact us at least 2 hours before your scheduled pickup time.</p>
               </div>
               
               <div>
-                <h3 className="font-medium text-white mb-2">Do you operate outside Switzerland?</h3>
-                <p className="text-zinc-400 text-sm">Our primary service area is Switzerland, but we can arrange special transfers to neighboring countries upon request.</p>
+                <h3 className="font-medium text-gray-700 mb-2">Do you operate outside Switzerland?</h3>
+                <p className="text-gray-600 text-sm">Our primary service area is Switzerland, but we can arrange special transfers to neighboring countries upon request.</p>
               </div>
               
               <div>
-                <h3 className="font-medium text-white mb-2">Are your vehicles insured?</h3>
-                <p className="text-zinc-400 text-sm">Yes, all our vehicles are fully insured and regularly maintained to the highest standards for your safety and comfort.</p>
+                <h3 className="font-medium text-gray-700 mb-2">Are your vehicles insured?</h3>
+                <p className="text-gray-600 text-sm">Yes, all our vehicles are fully insured and regularly maintained to the highest standards for your safety and comfort.</p>
               </div>
             </div>
           </div>

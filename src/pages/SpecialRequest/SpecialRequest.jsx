@@ -162,14 +162,14 @@ const SpecialRequest = ({ scrollUp }) => {
               priority={true}
               sizes="100vw"
             />
-            <div className="absolute inset-0 bg-gradient-to-br from-black/40 via-black/20 to-black/40"></div>
+            <div className="absolute inset-0 bg-gradient-to-br from-warm-gray/40 via-cream/30 to-soft-gray/40"></div>
           </div>
           
           <div className="relative z-20">
-            <h1 className="text-4xl sm:text-5xl md:text-8xl font-semibold pt-48 tracking-wide mb-16 md:mb-20">
-              <span className="text-gold">Special</span> Request
+            <h1 className="text-4xl sm:text-5xl md:text-8xl font-semibold pt-48 tracking-wide mb-16 md:mb-20 text-gray-700">
+              <span className="text-royal-blue">Special</span> Request
             </h1>
-            <p className="md:w-[50ch] mx-auto mb-12 md:mb-28 px-4 md:px-0 text-lg">
+            <p className="md:w-[50ch] mx-auto mb-12 md:mb-28 px-4 md:px-0 text-lg text-gray-600 font-medium">
               Where imagination meets luxury transportation. We craft extraordinary experiences that transform ordinary journeys into unforgettable memories, tailored exclusively for your most special moments.
             </p>
 
@@ -179,17 +179,17 @@ const SpecialRequest = ({ scrollUp }) => {
             </div>
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-20 md:mb-24 md:mt-28">
-              <div className="flex items-center gap-2 text-gold">
-                <FontAwesomeIcon icon={faCrown} />
-                <span>Bespoke Service</span>
+              <div className="flex items-center gap-2 bg-cream-light/80 backdrop-blur-sm px-4 py-2 rounded-full border border-royal-blue/20 shadow-md">
+                <FontAwesomeIcon icon={faCrown} className="text-royal-blue" />
+                <span className="text-gray-700 font-medium">Bespoke Service</span>
               </div>
-              <div className="flex items-center gap-2 text-gold">
-                <FontAwesomeIcon icon={faUsers} />
-                <span>Group Coordination</span>
+              <div className="flex items-center gap-2 bg-cream-light/80 backdrop-blur-sm px-4 py-2 rounded-full border border-royal-blue/20 shadow-md">
+                <FontAwesomeIcon icon={faUsers} className="text-royal-blue" />
+                <span className="text-gray-700 font-medium">Group Coordination</span>
               </div>
-              <div className="flex items-center gap-2 text-gold">
-                <FontAwesomeIcon icon={faShieldAlt} />
-                <span>No Upfront Payment</span>
+              <div className="flex items-center gap-2 bg-cream-light/80 backdrop-blur-sm px-4 py-2 rounded-full border border-royal-blue/20 shadow-md">
+                <FontAwesomeIcon icon={faShieldAlt} className="text-emerald-500" />
+                <span className="text-gray-700 font-medium">No Upfront Payment</span>
               </div>
             </div>
           </div>
@@ -200,262 +200,264 @@ const SpecialRequest = ({ scrollUp }) => {
           </div>
         </div>
 
-        {/* Improved Decorative Bottom Wave */}
+        {/* Softer Decorative Bottom Wave */}
         <div className="absolute bottom-0 left-0 right-0 z-20">
-          <svg className="w-full h-16 text-zinc-900" viewBox="0 0 1200 80" preserveAspectRatio="none">
+          <svg className="w-full h-16 text-cream" viewBox="0 0 1200 80" preserveAspectRatio="none">
             <path d="M0,80V40c200,0,400,-20,600,0s400,20,600,0V80Z" fill="currentColor" opacity="0.8"/>
             <path d="M0,80V50c150,0,350,-15,600,10s450,-10,600,5V80Z" fill="currentColor"/>
           </svg>
         </div>
       </div>
 
-      {/* Features Section */}
-      <div className="container-default mt-20">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-6xl font-semibold mb-6">
-              Why Choose Our <span className="text-gold">Special Request</span> Service
-            </h2>
-            <p className="text-lg text-zinc-400 max-w-2xl mx-auto">
-              When standard services aren't enough, our special request team creates 
-              extraordinary transportation experiences tailored to your unique vision and requirements.
-            </p>
-          </div>
+      {/* Features Section with Darker Cream Background */}
+      <div className="bg-gradient-to-br from-cream to-warm-gray py-20">
+        <div className="container-default">
+          <div className="max-w-6xl mx-auto">
+            <div className="text-center mb-16">
+              <h2 className="text-4xl md:text-6xl font-semibold mb-6 text-gray-700">
+                Why Choose Our <span className="text-royal-blue">Special Request</span> Service
+              </h2>
+              <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+                When standard services aren't enough, our special request team creates 
+                extraordinary transportation experiences tailored to your unique vision and requirements.
+              </p>
+            </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-20">
-            {features.map((feature, index) => (
-              <div key={index} className="bg-zinc-800/30 p-6 rounded-lg border border-zinc-700/50 text-center hover:border-gold/30 transition-all duration-300">
-                <div className="w-16 h-16 bg-gold/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <FontAwesomeIcon icon={feature.icon} className="text-gold text-2xl" />
-                </div>
-                <h3 className="text-xl font-semibold mb-3 text-white">{feature.title}</h3>
-                <p className="text-zinc-400">{feature.description}</p>
-              </div>
-            ))}
-          </div>
-
-          {/* Special Services */}
-          <div className="mb-20">
-            <h2 className="text-4xl font-semibold mb-12 text-center">
-              <span className="text-gold">Specialized</span> Transportation Services
-            </h2>
-            
-            <div className="grid md:grid-cols-2 gap-8">
-              {specialServices.map((service, index) => (
-                <div key={index} className="bg-zinc-800/30 p-8 rounded-lg border border-zinc-700/50 hover:border-gold/30 transition-all duration-300">
-                  <div className="flex items-center gap-4 mb-6">
-                    <div className="w-16 h-16 bg-gold/20 rounded-full flex items-center justify-center">
-                      <FontAwesomeIcon icon={service.icon} className="text-gold text-2xl" />
-                    </div>
-                    <div>
-                      <h3 className="text-xl font-semibold text-white">{service.title}</h3>
-                      {service.duration && <div className="text-gold text-sm font-medium">{service.duration}</div>}
-                    </div>
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-20">
+              {features.map((feature, index) => (
+                <div key={index} className="bg-cream-light/90 p-6 rounded-lg border border-royal-blue/15 text-center hover:border-royal-blue/30 transition-all duration-300 shadow-md hover:shadow-lg">
+                  <div className="w-16 h-16 bg-royal-blue/15 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <FontAwesomeIcon icon={feature.icon} className="text-royal-blue text-2xl" />
                   </div>
-                  
-                  <p className="text-zinc-400 mb-6">{service.description}</p>
-                  
-                  <div className="space-y-2">
-                    <h4 className="text-sm font-medium text-zinc-300">Service Includes:</h4>
-                    {service.features.map((feature, idx) => (
-                      <div key={idx} className="flex items-center gap-2 text-sm text-zinc-400">
-                        <div className="w-1 h-1 bg-gold rounded-full"></div>
-                        <span>{feature}</span>
-                      </div>
-                    ))}
-                  </div>
+                  <h3 className="text-xl font-semibold mb-3 text-gray-700">{feature.title}</h3>
+                  <p className="text-gray-600">{feature.description}</p>
                 </div>
               ))}
             </div>
-          </div>
 
-          {/* Popular Experiences */}
-          <div className="mb-20">
-            <h2 className="text-4xl font-semibold mb-12 text-center">
-              <span className="text-gold">Signature</span> Experiences
-            </h2>
-            
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {popularExperiences.map((experience, index) => (
-                <div key={index} className="bg-zinc-800/30 p-6 rounded-lg border border-zinc-700/50 hover:border-gold/30 transition-all duration-300">
-                  <div className="flex items-center gap-3 mb-4">
-                    <FontAwesomeIcon icon={faMapMarkedAlt} className="text-gold text-lg" />
-                    <div>
-                      <h3 className="font-semibold text-white">{experience.experience}</h3>
-                      <div className="text-gold text-sm">{experience.duration}</div>
-                    </div>
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <h4 className="text-sm font-medium text-zinc-300">Experience Highlights:</h4>
-                    {experience.highlights.map((highlight, idx) => (
-                      <div key={idx} className="flex items-center gap-2 text-xs text-zinc-400">
-                        <div className="w-1 h-1 bg-gold rounded-full"></div>
-                        <span>{highlight}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Service Process */}
-          <div className="mb-20">
-            <h2 className="text-4xl font-semibold mb-12 text-center">
-              How Our <span className="text-gold">Custom Service</span> Works
-            </h2>
-            
-            <div className="grid md:grid-cols-3 gap-8">
-              {serviceProcess.map((process, index) => (
-                <div key={index} className="text-center">
-                  <div className="w-20 h-20 bg-gold/20 rounded-full flex items-center justify-center mx-auto mb-6">
-                    <span className="text-gold text-2xl font-bold">{process.step}</span>
-                  </div>
-                  <h3 className="text-xl font-semibold mb-4 text-white">{process.title}</h3>
-                  <p className="text-zinc-400">
-                    {process.description}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Service Benefits */}
-          <div className="bg-gradient-to-br from-gold/20 to-gold/5 p-8 rounded-lg border border-gold/20 mb-20">
-            <div className="grid md:grid-cols-2 gap-8 items-center">
-              <div>
-                <h2 className="text-3xl font-semibold mb-6 text-gold">Special Request Benefits</h2>
-                <div className="space-y-4">
-                  <div className="flex items-start gap-3">
-                    <FontAwesomeIcon icon={faClock} className="text-gold text-lg mt-1" />
-                    <div>
-                      <h4 className="font-semibold text-white">No Time Constraints</h4>
-                      <p className="text-zinc-400 text-sm">Flexible timing and duration to match your unique requirements</p>
-                    </div>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <FontAwesomeIcon icon={faGlobe} className="text-gold text-lg mt-1" />
-                    <div>
-                      <h4 className="font-semibold text-white">Unlimited Destinations</h4>
-                      <p className="text-zinc-400 text-sm">Travel anywhere within Switzerland and neighboring countries</p>
-                    </div>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <FontAwesomeIcon icon={faStar} className="text-gold text-lg mt-1" />
-                    <div>
-                      <h4 className="font-semibold text-white">Premium Experience</h4>
-                      <p className="text-zinc-400 text-sm">Luxury vehicles with amenities tailored to your preferences</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
+            {/* Special Services */}
+            <div className="mb-20">
+              <h2 className="text-4xl font-semibold mb-12 text-center text-gray-700">
+                <span className="text-royal-blue">Specialized</span> Transportation Services
+              </h2>
               
-              <div className="bg-zinc-900/50 p-6 rounded-lg border border-zinc-700/30">
-                <h3 className="text-xl font-semibold mb-4 text-gold">What's Included</h3>
-                <div className="space-y-3">
-                  <div className="flex items-center gap-3">
-                    <div className="w-2 h-2 bg-gold rounded-full"></div>
-                    <span className="text-zinc-300">Personal consultation and planning</span>
+              <div className="grid md:grid-cols-2 gap-8">
+                {specialServices.map((service, index) => (
+                  <div key={index} className="bg-cream-light/90 p-8 rounded-lg border border-royal-blue/15 hover:border-royal-blue/30 transition-all duration-300 shadow-md hover:shadow-lg">
+                    <div className="flex items-center gap-4 mb-6">
+                      <div className="w-16 h-16 bg-royal-blue/15 rounded-full flex items-center justify-center">
+                        <FontAwesomeIcon icon={service.icon} className="text-royal-blue text-2xl" />
+                      </div>
+                      <div>
+                        <h3 className="text-xl font-semibold text-gray-700">{service.title}</h3>
+                        {service.duration && <div className="text-royal-blue text-sm font-medium">{service.duration}</div>}
+                      </div>
+                    </div>
+                    
+                    <p className="text-gray-600 mb-6">{service.description}</p>
+                    
+                    <div className="space-y-2">
+                      <h4 className="text-sm font-medium text-gray-700">Service Includes:</h4>
+                      {service.features.map((feature, idx) => (
+                        <div key={idx} className="flex items-center gap-2 text-sm text-gray-600">
+                          <div className="w-1 h-1 bg-royal-blue rounded-full"></div>
+                          <span>{feature}</span>
+                        </div>
+                      ))}
+                    </div>
                   </div>
-                  <div className="flex items-center gap-3">
-                    <div className="w-2 h-2 bg-gold rounded-full"></div>
-                    <span className="text-zinc-300">Custom itinerary design</span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <div className="w-2 h-2 bg-gold rounded-full"></div>
-                    <span className="text-zinc-300">Dedicated event coordination</span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <div className="w-2 h-2 bg-gold rounded-full"></div>
-                    <span className="text-zinc-300">Premium vehicle selection</span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <div className="w-2 h-2 bg-gold rounded-full"></div>
-                    <span className="text-zinc-300">Professional chauffeur team</span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <div className="w-2 h-2 bg-gold rounded-full"></div>
-                    <span className="text-zinc-300">24/7 support during event</span>
-                  </div>
-                </div>
+                ))}
               </div>
             </div>
-          </div>
 
-          {/* Pricing Information */}
-          <div className="mb-20">
-            <h2 className="text-4xl font-semibold mb-12 text-center">
-              <span className="text-gold">Transparent</span> Custom Pricing
-            </h2>
-            
-            <div className="grid md:grid-cols-2 gap-8 items-center">
-              <div className="space-y-6">
-                <div className="bg-gradient-to-br from-gold/20 to-gold/5 p-6 rounded-lg border border-gold/20">
-                  <h3 className="text-xl font-semibold mb-3 text-gold">No Upfront Payment</h3>
-                  <p className="text-zinc-300">
-                    Submit your request with zero payment required. We'll provide a detailed quote 
-                    and only proceed once you're completely satisfied with the proposal.
-                  </p>
+            {/* Popular Experiences */}
+            <div className="mb-20">
+              <h2 className="text-4xl font-semibold mb-12 text-center text-gray-700">
+                <span className="text-royal-blue">Signature</span> Experiences
+              </h2>
+              
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {popularExperiences.map((experience, index) => (
+                  <div key={index} className="bg-cream-light/90 p-6 rounded-lg border border-royal-blue/15 hover:border-royal-blue/30 transition-all duration-300 shadow-md hover:shadow-lg">
+                    <div className="flex items-center gap-3 mb-4">
+                      <FontAwesomeIcon icon={faMapMarkedAlt} className="text-royal-blue text-lg" />
+                      <div>
+                        <h3 className="font-semibold text-gray-700">{experience.experience}</h3>
+                        <div className="text-royal-blue text-sm">{experience.duration}</div>
+                      </div>
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <h4 className="text-sm font-medium text-gray-700">Experience Highlights:</h4>
+                      {experience.highlights.map((highlight, idx) => (
+                        <div key={idx} className="flex items-center gap-2 text-xs text-gray-600">
+                          <div className="w-1 h-1 bg-royal-blue rounded-full"></div>
+                          <span>{highlight}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Service Process */}
+            <div className="mb-20">
+              <h2 className="text-4xl font-semibold mb-12 text-center text-gray-700">
+                How Our <span className="text-royal-blue">Custom Service</span> Works
+              </h2>
+              
+              <div className="grid md:grid-cols-3 gap-8">
+                {serviceProcess.map((process, index) => (
+                  <div key={index} className="text-center bg-cream-light/90 p-8 rounded-lg border border-royal-blue/15">
+                    <div className="w-20 h-20 bg-royal-blue/15 rounded-full flex items-center justify-center mx-auto mb-6">
+                      <span className="text-royal-blue text-2xl font-bold">{process.step}</span>
+                    </div>
+                    <h3 className="text-xl font-semibold mb-4 text-gray-700">{process.title}</h3>
+                    <p className="text-gray-600">
+                      {process.description}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Service Benefits */}
+            <div className="bg-gradient-to-br from-royal-blue/10 to-gold/5 p-8 rounded-lg border border-royal-blue/20 mb-20">
+              <div className="grid md:grid-cols-2 gap-8 items-center">
+                <div>
+                  <h2 className="text-3xl font-semibold mb-6 text-royal-blue-dark">Special Request Benefits</h2>
+                  <div className="space-y-4">
+                    <div className="flex items-start gap-3">
+                      <FontAwesomeIcon icon={faClock} className="text-royal-blue text-lg mt-1" />
+                      <div>
+                        <h4 className="font-semibold text-gray-700">No Time Constraints</h4>
+                        <p className="text-gray-600 text-sm">Flexible timing and duration to match your unique requirements</p>
+                      </div>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <FontAwesomeIcon icon={faGlobe} className="text-royal-blue text-lg mt-1" />
+                      <div>
+                        <h4 className="font-semibold text-gray-700">Unlimited Destinations</h4>
+                        <p className="text-gray-600 text-sm">Travel anywhere within Switzerland and neighboring countries</p>
+                      </div>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <FontAwesomeIcon icon={faStar} className="text-gold text-lg mt-1" />
+                      <div>
+                        <h4 className="font-semibold text-gray-700">Premium Experience</h4>
+                        <p className="text-gray-600 text-sm">Luxury vehicles with amenities tailored to your preferences</p>
+                      </div>
+                    </div>
+                  </div>
                 </div>
                 
-                <div className="bg-gradient-to-br from-gold/20 to-gold/5 p-6 rounded-lg border border-gold/20">
-                  <h3 className="text-xl font-semibold mb-3 text-gold">Competitive Rates</h3>
-                  <p className="text-zinc-300">
-                    Our pricing is based on the complexity, duration, and specific requirements 
-                    of your request. We provide detailed breakdowns with no hidden fees.
-                  </p>
-                </div>
-                
-                <div className="bg-gradient-to-br from-gold/20 to-gold/5 p-6 rounded-lg border border-gold/20">
-                  <h3 className="text-xl font-semibold mb-3 text-gold">Flexible Payment</h3>
-                  <p className="text-zinc-300">
-                    Multiple payment options available including corporate billing, 
-                    installment plans for large events, and premium cryptocurrency options.
-                  </p>
-                </div>
-              </div>
-              
-              <div className="bg-zinc-900/50 p-6 rounded-lg border border-zinc-700/30">
-                <h3 className="text-xl font-semibold mb-4 text-gold">Contact Our Specialists</h3>
-                <p className="text-zinc-300 text-sm mb-6">
-                  Ready to create something extraordinary? Our luxury transportation specialists 
-                  are here to bring your vision to life with personalized service and attention to detail.
-                </p>
-                <div className="space-y-3">
-                  <Button 
-                    variant="secondary"
-                    onClick={() => window.location.href = 'mailto:info@elitewaylimo.ch?subject=Special Request Consultation'}
-                    className="w-full"
-                  >
-                    Email Our Team
-                  </Button>
-                  <Button 
-                    variant="outline"
-                    onClick={() => window.location.href = 'tel:+41782647970'}
-                    className="w-full"
-                  >
-                    Call for Consultation
-                  </Button>
+                <div className="bg-cream-light/95 p-6 rounded-lg border border-royal-blue/20">
+                  <h3 className="text-xl font-semibold mb-4 text-royal-blue-dark">What's Included</h3>
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-3">
+                      <div className="w-2 h-2 bg-royal-blue rounded-full"></div>
+                      <span className="text-gray-700">Personal consultation and planning</span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <div className="w-2 h-2 bg-royal-blue rounded-full"></div>
+                      <span className="text-gray-700">Custom itinerary design</span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <div className="w-2 h-2 bg-royal-blue rounded-full"></div>
+                      <span className="text-gray-700">Dedicated event coordination</span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <div className="w-2 h-2 bg-royal-blue rounded-full"></div>
+                      <span className="text-gray-700">Premium vehicle selection</span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <div className="w-2 h-2 bg-royal-blue rounded-full"></div>
+                      <span className="text-gray-700">Professional chauffeur team</span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <div className="w-2 h-2 bg-royal-blue rounded-full"></div>
+                      <span className="text-gray-700">24/7 support during event</span>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
 
-          {/* CTA Section */}
-          <div className="text-center bg-zinc-800/30 p-8 rounded-lg border border-zinc-700/50">
-            <h2 className="text-3xl font-semibold mb-4 text-gold">Ready to Create Something Special?</h2>
-            <p className="text-zinc-300 mb-6 max-w-2xl mx-auto">
-              Whether it's a once-in-a-lifetime celebration or a recurring luxury service, 
-              we're here to exceed your expectations with our custom transportation solutions.
-            </p>
-            <div className="flex justify-center">
-              <Button 
-                variant="secondary"
-                onClick={scrollToReservationCard}
-              >
-                Submit Special Request
-              </Button>
+            {/* Pricing Information */}
+            <div className="mb-20">
+              <h2 className="text-4xl font-semibold mb-12 text-center text-gray-700">
+                <span className="text-royal-blue">Transparent</span> Custom Pricing
+              </h2>
+              
+              <div className="grid md:grid-cols-2 gap-8 items-center">
+                <div className="space-y-6">
+                  <div className="bg-gradient-to-br from-royal-blue/15 to-gold/5 p-6 rounded-lg border border-royal-blue/20">
+                    <h3 className="text-xl font-semibold mb-3 text-royal-blue-dark">No Upfront Payment</h3>
+                    <p className="text-gray-600">
+                      Submit your request with zero payment required. We'll provide a detailed quote 
+                      and only proceed once you're completely satisfied with the proposal.
+                    </p>
+                  </div>
+                  
+                  <div className="bg-gradient-to-br from-royal-blue/15 to-gold/5 p-6 rounded-lg border border-royal-blue/20">
+                    <h3 className="text-xl font-semibold mb-3 text-royal-blue-dark">Competitive Rates</h3>
+                    <p className="text-gray-600">
+                      Our pricing is based on the complexity, duration, and specific requirements 
+                      of your request. We provide detailed breakdowns with no hidden fees.
+                    </p>
+                  </div>
+                  
+                  <div className="bg-gradient-to-br from-royal-blue/15 to-gold/5 p-6 rounded-lg border border-royal-blue/20">
+                    <h3 className="text-xl font-semibold mb-3 text-royal-blue-dark">Flexible Payment</h3>
+                    <p className="text-gray-600">
+                      Multiple payment options available including corporate billing, 
+                      installment plans for large events, and premium cryptocurrency options.
+                    </p>
+                  </div>
+                </div>
+                
+                <div className="bg-cream-light/95 p-6 rounded-lg border border-royal-blue/20">
+                  <h3 className="text-xl font-semibold mb-4 text-royal-blue-dark">Contact Our Specialists</h3>
+                  <p className="text-gray-600 text-sm mb-6">
+                    Ready to create something extraordinary? Our luxury transportation specialists 
+                    are here to bring your vision to life with personalized service and attention to detail.
+                  </p>
+                  <div className="space-y-3">
+                    <Button 
+                      variant="secondary"
+                      onClick={() => window.location.href = 'mailto:info@elitewaylimo.ch?subject=Special Request Consultation'}
+                      className="w-full"
+                    >
+                      Email Our Team
+                    </Button>
+                    <Button 
+                      variant="primary"
+                      onClick={() => window.location.href = 'tel:+41782647970'}
+                      className="w-full"
+                    >
+                      Call for Consultation
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* CTA Section */}
+            <div className="text-center bg-cream-light/90 p-8 rounded-lg border border-royal-blue/20">
+              <h2 className="text-3xl font-semibold mb-4 text-royal-blue-dark">Ready to Create Something Special?</h2>
+              <p className="text-gray-600 mb-6 max-w-2xl mx-auto">
+                Whether it's a once-in-a-lifetime celebration or a recurring luxury service, 
+                we're here to exceed your expectations with our custom transportation solutions.
+              </p>
+              <div className="flex justify-center">
+                <Button 
+                  variant="secondary"
+                  onClick={scrollToReservationCard}
+                >
+                  Submit Special Request
+                </Button>
+              </div>
             </div>
           </div>
         </div>

@@ -49,53 +49,53 @@ const TestimonialsSection = () => {
   };
 
   return (
-    <section className="py-20 bg-zinc-900 relative overflow-hidden">
-      {/* Background Decorations - Dark Theme */}
+    <section className="py-20 bg-gradient-to-br from-cream to-warm-gray relative overflow-hidden">
+      {/* Background Decorations - Harmonious Theme */}
       <div className="absolute inset-0">
-        <div className="absolute top-20 left-10 w-40 h-40 bg-gradient-to-br from-zinc-700/20 to-zinc-600/20 rounded-full opacity-30 animate-float"></div>
-        <div className="absolute bottom-20 right-10 w-32 h-32 bg-gradient-to-br from-yellow-400/10 to-yellow-300/10 rounded-full opacity-30 animate-float animation-delay-2000"></div>
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-60 h-60 bg-gradient-to-br from-zinc-600/10 to-zinc-700/10 rounded-full opacity-20 animate-pulse"></div>
+        <div className="absolute top-20 left-10 w-40 h-40 bg-gradient-to-br from-royal-blue/10 to-gold/5 rounded-full opacity-30 animate-float"></div>
+        <div className="absolute bottom-20 right-10 w-32 h-32 bg-gradient-to-br from-gold/15 to-cream/20 rounded-full opacity-30 animate-float animation-delay-2000"></div>
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-60 h-60 bg-gradient-to-br from-warm-gray/10 to-royal-blue/5 rounded-full opacity-20 animate-pulse"></div>
       </div>
 
       <div className="container-default relative z-10">
         {/* Section Header */}
         <div className="text-center mb-16">
-          <div className="inline-flex items-center gap-2 bg-zinc-800/60 text-yellow-400 px-4 py-2 rounded-full text-sm font-medium mb-4 border border-zinc-700/50">
+          <div className="inline-flex items-center gap-2 bg-cream-light/80 text-royal-blue px-4 py-2 rounded-full text-sm font-medium mb-4 border border-royal-blue/20 shadow-md">
             <FaStar />
             <span>Client Testimonials</span>
           </div>
           
-          <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
-            What Our Clients Say
+          <h2 className="text-3xl md:text-4xl font-bold text-gray-700 mb-4">
+            What Our <span className="text-royal-blue">Clients</span> Say
           </h2>
-          <p className="text-lg text-gray-300 max-w-2xl mx-auto">
+          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
             Don't just take our word for it. Hear from our satisfied clients who have experienced 
             the luxury and professionalism of Elite Way Limo.
           </p>
         </div>
 
-        {/* Testimonials Grid - Dark Theme */}
+        {/* Testimonials Grid - Harmonious Theme */}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
           {testimonials.map((testimonial, index) => (
             <div 
               key={testimonial.id} 
-              className="bg-zinc-800/60 p-8 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 border border-zinc-700/50"
+              className="bg-cream-light/90 p-8 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 border border-royal-blue/15 hover:border-royal-blue/30"
             >
-              <FaQuoteLeft className="text-2xl text-yellow-400 mb-4" />
+              <FaQuoteLeft className="text-2xl text-gold mb-4" />
               
               <ReviewStars rating={testimonial.rating} />
               
-              <p className="text-gray-300 mb-6 leading-relaxed">
+              <p className="text-gray-600 mb-6 leading-relaxed">
                 "{testimonial.text}"
               </p>
               
               <div className="flex items-center gap-4">
-                <div className="w-12 h-12 bg-gradient-to-br from-yellow-400 to-yellow-300 rounded-full flex items-center justify-center">
-                  <FaUser className="text-black" />
+                <div className="w-12 h-12 bg-gradient-to-br from-royal-blue to-royal-blue-light rounded-full flex items-center justify-center">
+                  <FaUser className="text-white" />
                 </div>
                 <div>
-                  <div className="font-semibold text-white">{testimonial.name}</div>
-                  <div className="text-sm text-gray-400">{testimonial.role}</div>
+                  <div className="font-semibold text-gray-700">{testimonial.name}</div>
+                  <div className="text-sm text-gray-600">{testimonial.role}</div>
                   <div className="text-xs text-gray-500">{testimonial.location}</div>
                 </div>
               </div>
@@ -103,43 +103,43 @@ const TestimonialsSection = () => {
           ))}
         </div>
 
-        {/* Trust Indicators - Dark Theme */}
-        <div className="bg-zinc-800/60 p-8 rounded-2xl shadow-lg border border-zinc-700/50">
+        {/* Trust Indicators - Harmonious Theme */}
+        <div className="bg-cream-light/90 p-8 rounded-2xl shadow-lg border border-royal-blue/20">
           <div className="grid md:grid-cols-4 gap-8 text-center">
             <div className="space-y-2">
-              <div className="text-4xl font-bold text-yellow-400">4.9</div>
-              <div className="text-sm text-gray-300">Average Rating</div>
+              <div className="text-4xl font-bold text-gold">4.9</div>
+              <div className="text-sm text-gray-600">Average Rating</div>
               <div className="flex justify-center">
                 <ReviewStars rating={5} />
               </div>
             </div>
             
             <div className="space-y-2">
-              <div className="text-4xl font-bold text-green-400">500+</div>
-              <div className="text-sm text-gray-300">5-Star Reviews</div>
+              <div className="text-4xl font-bold text-emerald-500">500+</div>
+              <div className="text-sm text-gray-600">5-Star Reviews</div>
               <div className="text-xs text-gray-500">Verified clients</div>
             </div>
             
             <div className="space-y-2">
-              <div className="text-4xl font-bold text-blue-400">98%</div>
-              <div className="text-sm text-gray-300">Satisfaction Rate</div>
+              <div className="text-4xl font-bold text-royal-blue">98%</div>
+              <div className="text-sm text-gray-600">Satisfaction Rate</div>
               <div className="text-xs text-gray-500">Client feedback</div>
             </div>
             
             <div className="space-y-2">
-              <div className="text-4xl font-bold text-purple-400">24/7</div>
-              <div className="text-sm text-gray-300">Customer Support</div>
+              <div className="text-4xl font-bold text-royal-blue-light">24/7</div>
+              <div className="text-sm text-gray-600">Customer Support</div>
               <div className="text-xs text-gray-500">Always available</div>
             </div>
           </div>
         </div>
 
-        {/* Call to Action - Dark Theme */}
+        {/* Call to Action - Harmonious Theme */}
         <div className="text-center mt-12">
-          <p className="text-gray-300 mb-4">Ready to join our satisfied clients?</p>
+          <p className="text-gray-600 mb-4">Ready to join our satisfied clients?</p>
           <button 
             onClick={scrollToReservationCard}
-            className="bg-gradient-to-r from-yellow-400 to-yellow-300 hover:from-yellow-300 hover:to-yellow-200 text-black px-8 py-3 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105 shadow-lg"
+            className="bg-gradient-to-r from-royal-blue to-royal-blue-light hover:from-royal-blue-light hover:to-royal-blue text-white px-8 py-3 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
           >
             Book Your Experience
           </button>

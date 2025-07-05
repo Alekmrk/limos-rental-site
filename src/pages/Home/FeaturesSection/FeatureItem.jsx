@@ -9,8 +9,8 @@ const FeatureItem = ({ icon, heading, text }) => {
         className="w-16 h-16 mx-auto mb-4"
         sizes="(max-width: 640px) 48px, (max-width: 1024px) 64px, 96px"
       />
-      <h3 className="text-xl font-medium mb-2 text-white">{heading}</h3>
-      <p className="text-neutral-400">{text}</p>
+      <h3 className="text-xl font-medium mb-2 text-gray-700">{heading}</h3>
+      <p className="text-gray-600">{text}</p>
     </div>
   );
 };

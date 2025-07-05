@@ -318,7 +318,7 @@ const ReservationCard = () => {
           e.preventDefault();
         }
       }}
-      className="reservation reserve-card w-[90%] max-w-[420px] p-8 sm:p-8 mx-auto md:mx-0 md:absolute md:bottom-12 md:right-8 lg:right-16 shadow-2xl bg-zinc-800/70 backdrop-blur-md border border-zinc-700/30 rounded-[2rem] text-left text-[14px] transition-all hover:shadow-[0_20px_50px_rgba(0,0,0,0.5)] hover:border-zinc-600/40 z-50"
+      className="reservation reserve-card w-[90%] max-w-[420px] p-8 sm:p-8 mx-auto md:mx-0 md:absolute md:bottom-12 md:right-8 lg:right-16 shadow-2xl bg-cream-light/95 backdrop-blur-md border border-royal-blue/30 rounded-[2rem] text-left text-[14px] transition-all hover:shadow-[0_20px_50px_rgba(65,105,225,0.15)] hover:border-royal-blue/50 z-50"
     >
       <div className="flex justify-center gap-3 pb-4 relative">
         <button
@@ -326,8 +326,8 @@ const ReservationCard = () => {
           onClick={() => handleModeChange('distance')}
           className={
             !reservationInfo.isHourly && !reservationInfo.isSpecialRequest
-              ? "py-2.5 px-4 rounded-xl active shadow-lg transform transition-all duration-200"
-              : "py-2.5 px-4 rounded-xl text-neutral-400 hover:text-gold transition-all duration-200 hover:bg-zinc-800/50"
+              ? "py-2.5 px-4 rounded-xl bg-royal-blue text-white shadow-lg transform transition-all duration-200"
+              : "py-2.5 px-4 rounded-xl text-gray-600 hover:text-royal-blue transition-all duration-200 hover:bg-royal-blue/10"
           }
         >
           Distance
@@ -337,8 +337,8 @@ const ReservationCard = () => {
           onClick={() => handleModeChange('hourly')}
           className={
             reservationInfo.isHourly
-              ? "py-2.5 px-4 rounded-xl active shadow-lg transform transition-all duration-200"
-              : "py-2.5 px-4 rounded-xl text-neutral-400 hover:text-gold transition-all duration-200 hover:bg-zinc-800/50"
+              ? "py-2.5 px-4 rounded-xl bg-royal-blue text-white shadow-lg transform transition-all duration-200"
+              : "py-2.5 px-4 rounded-xl text-gray-600 hover:text-royal-blue transition-all duration-200 hover:bg-royal-blue/10"
           }
         >
           Hourly
@@ -348,13 +348,13 @@ const ReservationCard = () => {
           onClick={() => handleModeChange('special')}
           className={
             reservationInfo.isSpecialRequest
-              ? "py-2.5 px-4 rounded-xl active shadow-lg transform transition-all duration-200"
-              : "py-2.5 px-4 rounded-xl text-neutral-400 hover:text-gold transition-all duration-200 hover:bg-zinc-800/50"
+              ? "py-2.5 px-4 rounded-xl bg-royal-blue text-white shadow-lg transform transition-all duration-200"
+              : "py-2.5 px-4 rounded-xl text-gray-600 hover:text-royal-blue transition-all duration-200 hover:bg-royal-blue/10"
           }
         >
           Special
         </button>
-        <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-gradient-to-r"></div>
+        <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-gradient-to-r from-royal-blue/20 via-royal-blue/40 to-royal-blue/20"></div>
       </div>
       
       <div className="space-y-5 mt-2 min-h-[250px]">
@@ -362,7 +362,7 @@ const ReservationCard = () => {
           <>
             <div className="space-y-4">
               <div>
-                <label className="block text-sm uppercase mb-2 tracking-wide" htmlFor="pickup">
+                <label className="block text-sm uppercase mb-2 tracking-wide text-gray-700 font-medium" htmlFor="pickup">
                   Pick-up point
                 </label>
                 <div className="relative">
@@ -375,11 +375,11 @@ const ReservationCard = () => {
                     className={`${
                       errors.pickup && errors.pickup !== "At least one location must be in Switzerland" 
                         ? 'border-red-500 ring-1 ring-red-500/50 animate-shake' 
-                        : 'border-zinc-700/50'
+                        : 'border-royal-blue/20'
                     }`}
                   />
                   {errors.pickup && errors.pickup !== "At least one location must be in Switzerland" && (
-                    <div className="absolute left-1/8 right-0 bottom-0 w-4/4 translate-y-1/2 bg-zinc-800/40 text-red-500 text-[11px] py-1 px-3 rounded-2xl z-10 text-right backdrop-blur-sm">
+                    <div className="absolute left-1/8 right-0 bottom-0 w-4/4 translate-y-1/2 bg-warm-white/95 text-red-500 text-[11px] py-1 px-3 rounded-2xl z-10 text-right backdrop-blur-sm border border-red-500/30">
                       {errors.pickup}
                     </div>
                   )}
@@ -388,7 +388,7 @@ const ReservationCard = () => {
 
               {!reservationInfo.isHourly && (
                 <div>
-                  <label className="block text-sm uppercase mb-2 tracking-wide" htmlFor="dropoff">
+                  <label className="block text-sm uppercase mb-2 tracking-wide text-gray-700 font-medium" htmlFor="dropoff">
                     Drop-off point
                   </label>
                   <div className="relative">
@@ -401,11 +401,11 @@ const ReservationCard = () => {
                       className={`${
                         errors.dropoff && errors.dropoff !== "At least one location must be in Switzerland" 
                           ? 'border-red-500 ring-1 ring-red-500/50 animate-shake' 
-                          : 'border-zinc-700/50'
+                          : 'border-royal-blue/20'
                       }`}
                     />
                     {errors.dropoff && errors.dropoff !== "At least one location must be in Switzerland" && (
-                      <div className="absolute left-1/8 right-0 bottom-0 w-4/4 translate-y-1/2 bg-zinc-800/40 text-red-500 text-[11px] py-1 px-3 rounded-2xl z-10 text-right backdrop-blur-sm">
+                      <div className="absolute left-1/8 right-0 bottom-0 w-4/4 translate-y-1/2 bg-warm-white/95 text-red-500 text-[11px] py-1 px-3 rounded-2xl z-10 text-right backdrop-blur-sm border border-red-500/30">
                         {errors.dropoff}
                       </div>
                     )}
@@ -415,7 +415,7 @@ const ReservationCard = () => {
 
               {reservationInfo.isHourly && (
                 <div>
-                  <label className="block text-sm uppercase mb-2 tracking-wide" htmlFor="hours">
+                  <label className="block text-sm uppercase mb-2 tracking-wide text-gray-700 font-medium" htmlFor="hours">
                     Duration (hours)
                   </label>
                   <div className="relative">
@@ -432,13 +432,13 @@ const ReservationCard = () => {
                         handleInput(e);
                       }}
                       onFocus={(e) => e.target.select()}
-                      className={`bg-zinc-800/30 rounded-xl py-3 px-4 w-full border text-white transition-all duration-200 hover:border-zinc-600 focus:border-gold/50 focus:shadow-[0_0_15px_rgba(212,175,55,0.1)] ${
-                        errors.hours ? 'border-red-500 ring-1 ring-red-500/50 animate-shake' : 'border-zinc-700/50'
+                      className={`bg-warm-white/80 rounded-xl py-3 px-4 w-full border text-gray-700 transition-all duration-200 hover:border-royal-blue/30 focus:border-royal-blue/50 focus:shadow-[0_0_15px_rgba(65,105,225,0.2)] ${
+                        errors.hours ? 'border-red-500 ring-1 ring-red-500/50 animate-shake' : 'border-royal-blue/20'
                       }`}
                       placeholder="Enter hours (3-24)"
                     />
                     {errors.hours && (
-                      <div className="absolute left-1/8 right-0 bottom-0 w-4/4 translate-y-1/2 bg-zinc-800/40 text-red-500 text-[11px] py-1 px-3 rounded-2xl z-10 text-right backdrop-blur-sm">
+                      <div className="absolute left-1/8 right-0 bottom-0 w-4/4 translate-y-1/2 bg-warm-white/95 text-red-500 text-[11px] py-1 px-3 rounded-2xl z-10 text-right backdrop-blur-sm border border-red-500/30">
                         {errors.hours}
                       </div>
                     )}
@@ -449,7 +449,7 @@ const ReservationCard = () => {
 
             <div className="space-y-4">
               <div>
-                <label className="block text-sm uppercase mb-2 tracking-wide" htmlFor="date">
+                <label className="block text-sm uppercase mb-2 tracking-wide text-gray-700 font-medium" htmlFor="date">
                   When will the service take place?
                 </label>
                 <div className="relative">
@@ -461,12 +461,12 @@ const ReservationCard = () => {
                     }}
                     name="date"
                     id="date"
-                    className={`bg-zinc-800/30 rounded-xl py-3 px-4 w-full border text-white transition-all duration-200 hover:border-zinc-600 focus:border-gold/50 focus:shadow-[0_0_15px_rgba(212,175,55,0.1)] ${
-                      errors.date ? 'border-red-500 ring-1 ring-red-500/50 animate-shake' : 'border-zinc-700/50'
+                    className={`bg-warm-white/80 rounded-xl py-3 px-4 w-full border text-gray-700 transition-all duration-200 hover:border-royal-blue/30 focus:border-royal-blue/50 focus:shadow-[0_0_15px_rgba(65,105,225,0.2)] ${
+                      errors.date ? 'border-red-500 ring-1 ring-red-500/50 animate-shake' : 'border-royal-blue/20'
                     }`}
                   />
                   {errors.date && (
-                    <div className="absolute left-1/8 right-0 bottom-0 w-4/4 translate-y-1/2 bg-zinc-800/40 text-red-500 text-[11px] py-1 px-3 rounded-2xl z-10 text-right backdrop-blur-sm">
+                    <div className="absolute left-1/8 right-0 bottom-0 w-4/4 translate-y-1/2 bg-warm-white/95 text-red-500 text-[11px] py-1 px-3 rounded-2xl z-10 text-right backdrop-blur-sm border border-red-500/30">
                       {errors.date}
                     </div>
                   )}
@@ -474,7 +474,7 @@ const ReservationCard = () => {
               </div>
 
               <div>
-                <label className="block text-sm uppercase mb-2 tracking-wide" htmlFor="time">
+                <label className="block text-sm uppercase mb-2 tracking-wide text-gray-700 font-medium" htmlFor="time">
                   When do you want to be picked up?
                 </label>
                 <div className="relative">
@@ -486,19 +486,19 @@ const ReservationCard = () => {
                     }}
                     name="time"
                     id="time"
-                    className={`bg-zinc-800/30 rounded-xl py-3 px-4 w-full border text-white transition-all duration-200 hover:border-zinc-600 focus:border-gold/50 focus:shadow-[0_0_15px_rgba(212,175,55,0.1)] ${
-                      errors.time ? 'border-red-500 ring-1 ring-red-500/50 animate-shake' : 'border-zinc-700/50'
+                    className={`bg-warm-white/80 rounded-xl py-3 px-4 w-full border text-gray-700 transition-all duration-200 hover:border-royal-blue/30 focus:border-royal-blue/50 focus:shadow-[0_0_15px_rgba(65,105,225,0.2)] ${
+                      errors.time ? 'border-red-500 ring-1 ring-red-500/50 animate-shake' : 'border-royal-blue/20'
                     }`}
                   />
                   {errors.time && (
-                    <div className="absolute left-1/8 right-0 bottom-0 w-4/4 translate-y-1/2 bg-zinc-800/40 text-red-500 text-[11px] py-1 px-3 rounded-2xl z-10 text-right backdrop-blur-sm">
+                    <div className="absolute left-1/8 right-0 bottom-0 w-4/4 translate-y-1/2 bg-warm-white/95 text-red-500 text-[11px] py-1 px-3 rounded-2xl z-10 text-right backdrop-blur-sm border border-red-500/30">
                       {errors.time}
                     </div>
                   )}
                 </div>
               </div>
 
-              <div className="text-sm text-neutral-400 mt-4">
+              <div className="text-sm text-gray-600 mt-4">
                 <p>For non-airport rides the chauffeur will wait 15m at no cost.</p>
                 <p>For airport transfers the chauffeur will wait 60m at no cost.</p>
                 {reservationInfo.isHourly && (
@@ -509,10 +509,10 @@ const ReservationCard = () => {
           </>
         ) : (
           <>
-            <div className="mb-4 text-neutral-400 text-sm border border-gold/20 rounded-xl p-4 bg-gold/5">
-              <p className="mb-3 text-white font-medium">Custom Transportation Request</p>
+            <div className="mb-4 text-gray-600 text-sm border border-royal-blue/20 rounded-xl p-4 bg-royal-blue/5">
+              <p className="mb-3 text-gray-700 font-medium">Custom Transportation Request</p>
               <p className="mb-2">Tell us about your unique transportation needs and we'll create a personalized quote for you.</p>
-              <p className="mt-3 text-gold font-medium">Perfect for:</p>
+              <p className="mt-3 text-royal-blue font-medium">Perfect for:</p>
               <ul className="list-disc ml-5 mt-2 space-y-1">
                 <li>Multi-city tours & sightseeing</li>
                 <li>Corporate events & VIP services</li>
@@ -520,10 +520,10 @@ const ReservationCard = () => {
                 <li>Long-distance transfers</li>
                 <li>Group transportation</li>
               </ul>
-              <div className="mt-4 pt-3 border-t border-gold/20">
-                <p className="text-xs text-gold">✓ No upfront payment required</p>
-                <p className="text-xs text-gold">✓ Free consultation & quote</p>
-                <p className="text-xs text-gold">✓ Flexible scheduling & routing</p>
+              <div className="mt-4 pt-3 border-t border-royal-blue/20">
+                <p className="text-xs text-royal-blue">✓ No upfront payment required</p>
+                <p className="text-xs text-royal-blue">✓ Free consultation & quote</p>
+                <p className="text-xs text-royal-blue">✓ Flexible scheduling & routing</p>
               </div>
             </div>
           </>
@@ -536,7 +536,7 @@ const ReservationCard = () => {
               <Button 
                 type="submit" 
                 variant="secondary" 
-                className={`w-full py-4 text-base font-medium tracking-wide transition-all duration-200 hover:shadow-[0_0_20px_rgba(212,175,55,0.15)] ${
+                className={`w-full py-4 text-base font-medium tracking-wide transition-all duration-200 hover:shadow-[0_0_20px_rgba(65,105,225,0.15)] ${
                   (errors.pickup === "At least one location must be in Switzerland" || errors.dropoff === "At least one location must be in Switzerland")
                     ? 'border-red-500 ring-1 ring-red-500/50 animate-shake'
                     : ''
@@ -545,7 +545,7 @@ const ReservationCard = () => {
                 {reservationInfo.isSpecialRequest ? "Continue to Request Details" : "Reserve Now"}
               </Button>
               {(errors.pickup === "At least one location must be in Switzerland" || errors.dropoff === "At least one location must be in Switzerland") && (
-                <div className="absolute left-1/8 right-0 top-0 w-4/4 translate-y-[-50%] bg-zinc-800/40 text-red-500 text-[11px] py-1 px-3 rounded-2xl z-10 text-right backdrop-blur-sm">
+                <div className="absolute left-1/8 right-0 top-0 w-4/4 translate-y-[-50%] bg-warm-white/95 text-red-500 text-[11px] py-1 px-3 rounded-2xl z-10 text-right backdrop-blur-sm border border-red-500/30">
                   At least one location must be in Switzerland
                 </div>
               )}

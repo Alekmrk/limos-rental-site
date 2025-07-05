@@ -17,27 +17,36 @@ const Vehicles = ({ scrollUp, selectedVehicle, setSelectedVehicle }) => {
 
   return (
     <div className="container-default text-center md:text-left mt-28">
-      <h1 className="text-5xl md:text-7xl font-semibold">Vehicles</h1>
-      <p className="md:w-2/3 text-zinc-600">
+      <h1 className="text-5xl md:text-7xl font-semibold text-gray-700">
+        <span className="text-royal-blue">Our</span> Vehicles
+      </h1>
+      <p className="md:w-2/3 text-gray-600">
         We offer a variety of luxurious vehicles for you to choose. Select your
         vehicle of choice from our collection of luxury, crossover and business
         class vehicles.
       </p>
       <div className="grid md:grid-cols-2 gap-12 my-16">
-        <div className="bg-accent/40 p-4 rounded-[1rem] flex items-center">
+        <div className="bg-cream-light/90 p-4 rounded-[1rem] flex items-center border border-royal-blue/20 shadow-lg">
           <img className="w-full" src={selectedVehicle.image} alt="" />
         </div>
         <div className="mt-4">
-          <h2 className="text-4xl font-semibold">{selectedVehicle.name}</h2>
-          <p className="text-zinc-600 mt-4">{selectedVehicle.detail}</p>
-          <hr className="mt-4" />
-          <h3 className="mt-8 text-2xl font-medium">Capacity</h3>
-          <p className="mt-1">
+          <h2 className="text-4xl font-semibold text-royal-blue">
+            {selectedVehicle.name}
+          </h2>
+          <p className="text-gray-600 mt-4">{selectedVehicle.detail}</p>
+          <hr className="mt-4 border-royal-blue/20" />
+          <h3 className="mt-8 text-2xl font-medium text-gray-700">Capacity</h3>
+          <p className="mt-1 text-gray-600">
             Luggage:{" "}
-            <span className="font-medium">{selectedVehicle.luggage}</span>
+            <span className="font-medium text-royal-blue">
+              {selectedVehicle.luggage}
+            </span>
           </p>
-          <p className="mt-1 mb-12">
-            Seats: <span className="font-medium">{selectedVehicle.seats}</span>
+          <p className="mt-1 mb-12 text-gray-600">
+            Seats:{" "}
+            <span className="font-medium text-royal-blue">
+              {selectedVehicle.seats}
+            </span>
           </p>
           <Link to={"/"}>
             <Button variant="secondary">
@@ -50,7 +59,7 @@ const Vehicles = ({ scrollUp, selectedVehicle, setSelectedVehicle }) => {
           </Link>
         </div>
       </div>
-      <h2 className="text-4xl font-semibold mb-6">Our Fleet</h2>
+      <h2 className="text-4xl font-semibold mb-6 text-royal-blue">Our Fleet</h2>
       <div className="grid sm:grid-cols-2 md:grid-cols-3">
         {cars.map((car, i) => (
           <SliderCard {...car} key={i} chooseVehicle={chooseVehicle} />

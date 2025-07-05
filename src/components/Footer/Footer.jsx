@@ -98,7 +98,7 @@ const Footer = () => {
 
   // Regular footer for desktop reservation pages and all other pages
   return (
-    <footer className="container-big bg-neutral-800 text-white rounded-[1.5rem] mt-20 mb-[2.5vw] py-12 px-8 md:px-20">
+    <footer className="container-big bg-gradient-to-br from-cream-light to-darker-cream rounded-[1.5rem] mt-20 mb-[2.5vw] py-12 px-8 md:px-20 border border-royal-blue/20 shadow-lg">
       <div className="max-w-6xl mx-auto">
         {/* Main Footer Content */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8 text-center md:text-left">
@@ -109,32 +109,32 @@ const Footer = () => {
               src={logoFooter}
               alt="Elite Way Limo"
             />
-            <p className="text-neutral-400 text-sm mb-4">
+            <p className="text-gray-600 text-sm mb-4">
               Premium chauffeur service in Switzerland. Professional, reliable,
               and luxurious transportation.
             </p>
             <div className="space-y-2 text-sm">
-              <p className="text-neutral-300">
-                <span className="text-gold">Phone:</span> +41 78 264 79 70
+              <p className="text-gray-700">
+                <span className="text-royal-blue font-medium">Phone:</span> +41 78 264 79 70
               </p>
-              <p className="text-neutral-300">
-                <span className="text-gold">Email:</span> info@elitewaylimo.ch
+              <p className="text-gray-700">
+                <span className="text-royal-blue font-medium">Email:</span> info@elitewaylimo.ch
               </p>
-              <p className="text-neutral-300">
-                <span className="text-gold">Location:</span> Zurich, Switzerland
+              <p className="text-gray-700">
+                <span className="text-royal-blue font-medium">Location:</span> Zurich, Switzerland
               </p>
             </div>
           </div>
 
           {/* Services */}
           <div>
-            <h3 className="text-lg font-medium text-gold mb-4">Services</h3>
+            <h3 className="text-lg font-medium text-royal-blue-dark mb-4">Services</h3>
             <ul className="space-y-2">
               {serviceLinks.map((service, index) => (
                 <li key={index}>
                   <a
                     href={service.path}
-                    className="text-neutral-400 hover:text-gold transition-colors text-sm"
+                    className="text-gray-600 hover:text-royal-blue transition-colors text-sm"
                   >
                     {service.name}
                   </a>
@@ -145,13 +145,13 @@ const Footer = () => {
 
           {/* Legal */}
           <div>
-            <h3 className="text-lg font-medium text-gold mb-4">Legal</h3>
+            <h3 className="text-lg font-medium text-royal-blue-dark mb-4">Legal</h3>
             <ul className="space-y-2">
               {legalLinks.map((link, index) => (
                 <li key={index}>
                   <a
                     href={link.path}
-                    className="text-neutral-400 hover:text-gold transition-colors text-sm"
+                    className="text-gray-600 hover:text-royal-blue transition-colors text-sm"
                   >
                     {link.name}
                   </a>
@@ -162,39 +162,39 @@ const Footer = () => {
 
           {/* Connect */}
           <div>
-            <h3 className="text-lg font-medium text-gold mb-4">Connect</h3>
-            <p className="text-neutral-400 text-sm mb-4">
+            <h3 className="text-lg font-medium text-royal-blue-dark mb-4">Connect</h3>
+            <p className="text-gray-600 text-sm mb-4">
               Stay connected for updates and exclusive offers.
             </p>
             <div className="flex gap-3 justify-center md:justify-start">
               <button
                 onClick={() => handleSocialClick("whatsapp")}
-                className="w-10 h-10 bg-neutral-700 hover:bg-green-600 rounded-lg flex items-center justify-center transition-colors group"
+                className="w-10 h-10 bg-warm-gray hover:bg-green-500 rounded-lg flex items-center justify-center transition-colors group border border-royal-blue/20"
                 aria-label="WhatsApp"
               >
                 <FontAwesomeIcon
                   icon={faWhatsapp}
-                  className="text-lg group-hover:scale-110 transition-transform"
+                  className="text-lg group-hover:scale-110 transition-transform text-gray-700 group-hover:text-white"
                 />
               </button>
               <button
                 onClick={() => handleSocialClick("instagram")}
-                className="w-10 h-10 bg-neutral-700 hover:bg-pink-600 rounded-lg flex items-center justify-center transition-colors group"
+                className="w-10 h-10 bg-warm-gray hover:bg-pink-500 rounded-lg flex items-center justify-center transition-colors group border border-royal-blue/20"
                 aria-label="Instagram"
               >
                 <FontAwesomeIcon
                   icon={faInstagram}
-                  className="text-lg group-hover:scale-110 transition-transform"
+                  className="text-lg group-hover:scale-110 transition-transform text-gray-700 group-hover:text-white"
                 />
               </button>
               <button
                 onClick={() => handleSocialClick("telegram")}
-                className="w-10 h-10 bg-neutral-700 hover:bg-blue-500 rounded-lg flex items-center justify-center transition-colors group"
+                className="w-10 h-10 bg-warm-gray hover:bg-blue-500 rounded-lg flex items-center justify-center transition-colors group border border-royal-blue/20"
                 aria-label="Telegram"
               >
                 <FontAwesomeIcon
                   icon={faTelegram}
-                  className="text-lg group-hover:scale-110 transition-transform"
+                  className="text-lg group-hover:scale-110 transition-transform text-gray-700 group-hover:text-white"
                 />
               </button>
             </div>
@@ -202,12 +202,12 @@ const Footer = () => {
         </div>
 
         {/* Bottom Bar */}
-        <div className="border-t border-neutral-700 pt-6">
+        <div className="border-t border-royal-blue/20 pt-6">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-center md:text-left">
-            <p className="text-neutral-400 text-sm">
+            <p className="text-gray-600 text-sm">
               &copy; {currentYear} Elite Way Limo. All rights reserved.
             </p>
-            <p className="text-neutral-500 text-xs">
+            <p className="text-gray-500 text-xs">
               Professional chauffeur service in Switzerland
             </p>
           </div>

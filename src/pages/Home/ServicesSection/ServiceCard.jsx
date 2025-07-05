@@ -14,7 +14,7 @@ const ServiceCard = ({ image, heading, text }) => {
   return (
     <div
       data-aos="fade-up"
-      className="service-card luxury-card p-6 rounded-[1.5rem] w-[300px] sm:w-full sm:flex sm:space-x-8 text-sm hover:shadow-xl transition-shadow duration-300"
+      className="service-card bg-cream-light/95 backdrop-blur-sm p-6 rounded-[1.5rem] w-[300px] sm:w-full sm:flex sm:space-x-8 text-sm hover:shadow-xl transition-all duration-300 border border-royal-blue/15 hover:border-royal-blue/25"
     >
       <div className="flex-shrink-0">
         <Image
@@ -28,8 +28,8 @@ const ServiceCard = ({ image, heading, text }) => {
       </div>
       <div className="card-content flex flex-col justify-between flex-grow">
         <div>
-          <h2 className="text-2xl font-semibold mb-3 text-white">{heading}</h2>
-          <p className="text-neutral-400 mb-6 leading-relaxed">{text}</p>
+          <h2 className="text-2xl font-semibold mb-3 text-gray-700">{heading}</h2>
+          <p className="text-gray-600 mb-6 leading-relaxed">{text}</p>
         </div>
         <Link to={"/services"} className="self-start">
           <Button variant="secondary">Read More</Button>

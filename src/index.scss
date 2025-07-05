@@ -13,27 +13,27 @@
   body,
   html {
     min-height: 100vh;
-    @apply bg-zinc-900 text-white;
+    @apply bg-cream text-gray-700;
   }
 
   .reservation input {
-    @apply block w-full py-3 px-4 mb-3 font-light placeholder:text-neutral-400 rounded-xl bg-zinc-800/30 border border-zinc-700/50 text-white transition-all duration-200;
+    @apply block w-full py-3 px-4 mb-3 font-light placeholder:text-gray-500 rounded-xl bg-darker-cream/80 border border-royal-blue/20 text-gray-700 transition-all duration-200;
     &:focus {
       outline: none;
-      @apply border-gold/50 shadow-[0_0_15px_rgba(212,175,55,0.1)];
+      @apply border-royal-blue/50 shadow-[0_0_15px_rgba(65,105,225,0.2)];
     }
     &:hover {
-      @apply border-zinc-600;
+      @apply border-royal-blue/30;
     }
   }
 
   .nav-link {
-    @apply font-normal text-base text-neutral-400 transition;
+    @apply font-normal text-base text-gray-600 transition;
     &:hover {
-      color: #D4AF37;
+      color: #4169E1;
     }
     &.active {
-      color: #D4AF37;
+      color: #4169E1;
     }
   }
 
@@ -42,13 +42,13 @@
     min-height: 760px;
     height: auto;
     padding-bottom: 28rem;
-    @apply border border-zinc-900 shadow-2xl rounded-[1.5rem];
+    @apply border border-soft-gray shadow-2xl rounded-[1.5rem];
 
     &::before {
       content: '';
       position: absolute;
       inset: 0;
-      background-color: rgba(0, 0, 0, 0.4);
+      background-color: rgba(248, 247, 244, 0.2);
       border-radius: inherit;
     }
 
@@ -63,14 +63,14 @@
   }
 
   .tabs button {
-    @apply py-2 px-3 md:px-5 md:mx-2 rounded-[0.5rem] transition-colors duration-200 ease-in-out text-neutral-400;
+    @apply py-2 px-3 md:px-5 md:mx-2 rounded-[0.5rem] transition-colors duration-200 ease-in-out text-gray-600;
     &:hover {
-      color: #D4AF37;
+      color: #4169E1;
     }
   }
   
   button.active {
-    @apply bg-gold text-black shadow-[0_0_20px_rgba(212,175,55,0.2)];
+    @apply bg-royal-blue text-white shadow-[0_0_20px_rgba(65,105,225,0.3)];
   }
 
   .slider-card:hover .car {
@@ -83,11 +83,11 @@
     width: 0.6em;
 
     &-track {
-      @apply bg-zinc-900 rounded-full;
+      @apply bg-warm-gray rounded-full;
     }
 
     &-thumb {
-      background-color: #D4AF37;
+      background-color: #4169E1;
       border-radius: 9999px;
 
       &:hover {
@@ -137,12 +137,22 @@
   }
 
   .container-big {
-    width: 95vw;
+    width: 98vw;
     margin-inline: auto;
   }
 
-  .container-small {
-    width: min(950px, 100vw - 4rem);
+  .container-wide {
+    width: min(1400px, 98vw - 2rem);
+    margin-inline: auto;
+  }
+
+  .container-extra-wide {
+    width: min(1800px, 98vw - 1rem);
+    margin-inline: auto;
+  }
+
+  .container-ultra-wide {
+    width: min(2000px, 99vw - 1rem);
     margin-inline: auto;
   }
 

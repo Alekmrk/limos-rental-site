@@ -12,8 +12,8 @@ const SliderCard = ({ index, image, name, seats, luggage, chooseVehicle }) => {
       >
         <div
           className={`car-image w-full h-[290px] flex items-center justify-center ${
-            index === 0 ? "bg-gold/20" : "bg-zinc-900"
-          } rounded-[1.5rem] hover:shadow-luxury border border-zinc-800 px-8`}
+            index === 0 ? "bg-royal-blue/20" : "bg-cream-light/90"
+          } rounded-[1.5rem] hover:shadow-lg border border-royal-blue/20 px-8 transition-all duration-300`}
         >
           <Image
             className="car w-full transition"
@@ -22,7 +22,7 @@ const SliderCard = ({ index, image, name, seats, luggage, chooseVehicle }) => {
             sizes="(max-width: 768px) 300px, (max-width: 1280px) 400px, 500px"
           />
         </div>
-        <h2 className="text-lg font-medium my-4 text-white">{name}</h2>
+        <h2 className="text-lg font-medium my-4 text-gray-700">{name}</h2>
         <div className="capacity-info flex gap-2">
           <CapacityItem text={seats} icon={faPerson} />
           <CapacityItem text={luggage} icon={faBriefcase} />

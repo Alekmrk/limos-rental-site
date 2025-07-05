@@ -38,7 +38,7 @@ const Header = () => {
 
   return (
     <header
-      className={`py-3 fixed z-[100] bg-zinc-900/95 backdrop-blur-sm border-b border-zinc-800 left-0 right-0 top-0 ${
+      className={`py-3 fixed z-[100] bg-cream/95 backdrop-blur-sm border-b border-royal-blue/20 left-0 right-0 top-0 ${
         shadowVisible && "shadow-default"
       }`}
     >
@@ -65,7 +65,7 @@ const Header = () => {
           <button onClick={() => setNavHidden(!navHidden)} className="text-lg">
             <FontAwesomeIcon
               icon={navHidden ? faBars : faXmark}
-              style={{ color: "#ffffff" }}
+              style={{ color: "#4169E1" }}
             />
           </button>
         )}

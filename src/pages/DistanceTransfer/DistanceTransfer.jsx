@@ -126,22 +126,22 @@ const DistanceTransfer = ({ scrollUp }) => {
               priority={true}
               sizes="100vw"
             />
-            <div className="absolute inset-0 bg-gradient-to-br from-black/60 via-black/50 to-black/40"></div>
+            <div className="absolute inset-0 bg-gradient-to-br from-warm-gray/8 via-cream/5 to-soft-gray/8"></div>
           </div>
 
-          {/* Animated Background Elements - Dark Theme */}
+          {/* Softer Animated Background Elements */}
           <div className="absolute inset-0 z-10" style={{ pointerEvents: 'none' }}>
-            <div className="absolute top-20 left-10 w-20 h-20 bg-zinc-700/20 rounded-full animate-pulse"></div>
-            <div className="absolute top-40 right-20 w-16 h-16 bg-gold/20 rounded-full animate-bounce"></div>
-            <div className="absolute bottom-40 left-20 w-12 h-12 bg-zinc-600/20 rounded-full animate-ping"></div>
-            <div className="absolute bottom-20 right-10 w-24 h-24 bg-gray-700/20 rounded-full animate-pulse"></div>
+            <div className="absolute top-20 left-10 w-20 h-20 bg-royal-blue/20 rounded-full animate-pulse"></div>
+            <div className="absolute top-40 right-20 w-16 h-16 bg-gold/25 rounded-full animate-bounce"></div>
+            <div className="absolute bottom-40 left-20 w-12 h-12 bg-warm-gray/30 rounded-full animate-ping"></div>
+            <div className="absolute bottom-20 right-10 w-24 h-24 bg-royal-blue/15 rounded-full animate-pulse"></div>
           </div>
 
           <div className="relative z-20">
-            <h1 className="text-4xl sm:text-5xl md:text-8xl font-semibold pt-48 tracking-wide mb-16 md:mb-20">
-              <span className="text-gold">Distance</span> Transfer
+            <h1 className="text-4xl sm:text-5xl md:text-8xl font-semibold pt-48 tracking-wide mb-16 md:mb-20 text-gray-700">
+              <span className="text-royal-blue">Distance</span> Transfer
             </h1>
-            <p className="md:w-[50ch] mx-auto mb-12 md:mb-28 px-4 md:px-0 text-lg">
+            <p className="md:w-[50ch] mx-auto mb-12 md:mb-28 px-4 md:px-0 text-lg text-gray-600 font-medium">
               Point-to-point luxury transportation with optimal routing and transparent pricing. 
               Experience comfort and efficiency for your journey across Switzerland.
             </p>
@@ -152,17 +152,17 @@ const DistanceTransfer = ({ scrollUp }) => {
             </div>
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-20 md:mb-24 md:mt-28">
-              <div className="flex items-center gap-2 text-gold">
-                <FontAwesomeIcon icon={faRoute} />
-                <span>Direct Routes</span>
+              <div className="flex items-center gap-2 bg-cream-light/80 backdrop-blur-sm px-4 py-2 rounded-full border border-royal-blue/20 shadow-md">
+                <FontAwesomeIcon icon={faRoute} className="text-royal-blue" />
+                <span className="text-gray-700 font-medium">Direct Routes</span>
               </div>
-              <div className="flex items-center gap-2 text-gold">
-                <FontAwesomeIcon icon={faCalculator} />
-                <span>Fixed Pricing</span>
+              <div className="flex items-center gap-2 bg-cream-light/80 backdrop-blur-sm px-4 py-2 rounded-full border border-royal-blue/20 shadow-md">
+                <FontAwesomeIcon icon={faCalculator} className="text-royal-blue" />
+                <span className="text-gray-700 font-medium">Fixed Pricing</span>
               </div>
-              <div className="flex items-center gap-2 text-gold">
-                <FontAwesomeIcon icon={faClock} />
-                <span>On-Time Guarantee</span>
+              <div className="flex items-center gap-2 bg-cream-light/80 backdrop-blur-sm px-4 py-2 rounded-full border border-royal-blue/20 shadow-md">
+                <FontAwesomeIcon icon={faClock} className="text-emerald-500" />
+                <span className="text-gray-700 font-medium">On-Time Guarantee</span>
               </div>
             </div>
           </div>
@@ -173,182 +173,184 @@ const DistanceTransfer = ({ scrollUp }) => {
           </div>
         </div>
 
-        {/* Improved Decorative Bottom Wave */}
+        {/* Softer Decorative Bottom Wave */}
         <div className="absolute bottom-0 left-0 right-0 z-20">
-          <svg className="w-full h-16 text-zinc-900" viewBox="0 0 1200 80" preserveAspectRatio="none">
+          <svg className="w-full h-16 text-cream" viewBox="0 0 1200 80" preserveAspectRatio="none">
             <path d="M0,80V40c200,0,400,-20,600,0s400,20,600,0V80Z" fill="currentColor" opacity="0.8"/>
             <path d="M0,80V50c150,0,350,-15,600,10s450,-10,600,5V80Z" fill="currentColor"/>
           </svg>
         </div>
       </div>
 
-      {/* Features Section */}
-      <div className="container-default mt-20">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-6xl font-semibold mb-6">
-              Why Choose Our <span className="text-gold">Point-to-Point</span> Service
-            </h2>
-            <p className="text-lg text-zinc-400 max-w-2xl mx-auto">
-              Experience seamless city-to-city transportation with our professional distance transfer service. 
-              Perfect for business travel, airport connections, and intercity journeys.
-            </p>
-          </div>
+      {/* Features Section with Darker Cream Background */}
+      <div className="bg-gradient-to-br from-cream to-warm-gray py-20">
+        <div className="container-default">
+          <div className="max-w-6xl mx-auto">
+            <div className="text-center mb-16">
+              <h2 className="text-4xl md:text-6xl font-semibold mb-6 text-gray-700">
+                Why Choose Our <span className="text-royal-blue">Point-to-Point</span> Service
+              </h2>
+              <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+                Experience seamless city-to-city transportation with our professional distance transfer service. 
+                Perfect for business travel, airport connections, and intercity journeys.
+              </p>
+            </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-20">
-            {features.map((feature, index) => (
-              <div key={index} className="bg-zinc-800/30 p-6 rounded-lg border border-zinc-700/50 text-center hover:border-gold/30 transition-all duration-300">
-                <div className="w-16 h-16 bg-gold/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <FontAwesomeIcon icon={feature.icon} className="text-gold text-2xl" />
-                </div>
-                <h3 className="text-xl font-semibold mb-3 text-white">{feature.title}</h3>
-                <p className="text-zinc-400">{feature.description}</p>
-              </div>
-            ))}
-          </div>
-
-          {/* Popular Routes */}
-          <div className="mb-20">
-            <h2 className="text-4xl font-semibold mb-12 text-center">
-              <span className="text-gold">Popular</span> Swiss Routes
-            </h2>
-            
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {popularRoutes.map((route, index) => (
-                <div key={index} className="bg-zinc-800/30 p-6 rounded-lg border border-zinc-700/50 hover:border-gold/30 transition-all duration-300">
-                  <div className="flex items-center gap-3 mb-4">
-                    <FontAwesomeIcon icon={faMapMarkedAlt} className="text-gold text-lg" />
-                    <div className="flex-1">
-                      <h3 className="font-semibold text-white text-lg">{route.from}</h3>
-                      <div className="flex items-center gap-2 text-zinc-400 text-sm">
-                        <span>→</span>
-                        <span>{route.to}</span>
-                      </div>
-                    </div>
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-20">
+              {features.map((feature, index) => (
+                <div key={index} className="bg-cream-light/90 p-6 rounded-lg border border-royal-blue/15 text-center hover:border-royal-blue/30 transition-all duration-300 shadow-md hover:shadow-lg">
+                  <div className="w-16 h-16 bg-royal-blue/15 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <FontAwesomeIcon icon={feature.icon} className="text-royal-blue text-2xl" />
                   </div>
-                  
-                  <div className="grid grid-cols-2 gap-4 mb-4">
-                    <div className="text-center bg-black/20 p-3 rounded-lg">
-                      <div className="text-gold font-semibold">{route.distance}</div>
-                      <div className="text-zinc-400 text-xs">Distance</div>
-                    </div>
-                    <div className="text-center bg-black/20 p-3 rounded-lg">
-                      <div className="text-gold font-semibold">{route.time}</div>
-                      <div className="text-zinc-400 text-xs">Duration</div>
-                    </div>
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <h4 className="text-sm font-medium text-zinc-300">Route Highlights:</h4>
-                    {route.highlights.map((highlight, idx) => (
-                      <div key={idx} className="flex items-center gap-2 text-xs text-zinc-400">
-                        <div className="w-1 h-1 bg-gold rounded-full"></div>
-                        <span>{highlight}</span>
-                      </div>
-                    ))}
-                  </div>
+                  <h3 className="text-xl font-semibold mb-3 text-gray-700">{feature.title}</h3>
+                  <p className="text-gray-600">{feature.description}</p>
                 </div>
               ))}
             </div>
-          </div>
 
-          {/* Service Process */}
-          <div className="mb-20">
-            <h2 className="text-4xl font-semibold mb-12 text-center">
-              How Our <span className="text-gold">Distance Service</span> Works
-            </h2>
-            
-            <div className="grid md:grid-cols-3 gap-8">
-              {serviceProcess.map((process, index) => (
-                <div key={index} className="text-center">
-                  <div className="w-20 h-20 bg-gold/20 rounded-full flex items-center justify-center mx-auto mb-6">
-                    <span className="text-gold text-2xl font-bold">{process.step}</span>
-                  </div>
-                  <h3 className="text-xl font-semibold mb-4 text-white">{process.title}</h3>
-                  <p className="text-zinc-400">{process.description}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Pricing Information */}
-          <div className="bg-gradient-to-br from-gold/20 to-gold/5 p-8 rounded-lg border border-gold/20 mb-20">
-            <div className="grid md:grid-cols-2 gap-8 items-center">
-              <div>
-                <h2 className="text-3xl font-semibold mb-6 text-gold">Distance-Based Pricing</h2>
-                <div className="space-y-4">
-                  <div className="flex items-start gap-3">
-                    <FontAwesomeIcon icon={faCalculator} className="text-gold text-lg mt-1" />
-                    <div>
-                      <h4 className="font-semibold text-white">Transparent Rates</h4>
-                      <p className="text-zinc-400 text-sm">Clear pricing based on distance with no hidden fees</p>
-                    </div>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <FontAwesomeIcon icon={faStar} className="text-gold text-lg mt-1" />
-                    <div>
-                      <h4 className="font-semibold text-white">Premium Vehicles</h4>
-                      <p className="text-zinc-400 text-sm">Luxury fleet with competitive rates for all distances</p>
-                    </div>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <FontAwesomeIcon icon={faUsers} className="text-gold text-lg mt-1" />
-                    <div>
-                      <h4 className="font-semibold text-white">Group Discounts</h4>
-                      <p className="text-zinc-400 text-sm">Special rates for multiple passengers and return trips</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
+            {/* Popular Routes */}
+            <div className="mb-20">
+              <h2 className="text-4xl font-semibold mb-12 text-center text-gray-700">
+                <span className="text-royal-blue">Popular</span> Swiss Routes
+              </h2>
               
-              <div className="bg-zinc-900/50 p-6 rounded-lg border border-zinc-700/30">
-                <h3 className="text-xl font-semibold mb-4 text-gold">What's Included</h3>
-                <div className="space-y-3">
-                  <div className="flex items-center gap-3">
-                    <div className="w-2 h-2 bg-gold rounded-full"></div>
-                    <span className="text-zinc-300">Professional chauffeur service</span>
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {popularRoutes.map((route, index) => (
+                  <div key={index} className="bg-cream-light/90 p-6 rounded-lg border border-royal-blue/15 hover:border-royal-blue/30 transition-all duration-300 shadow-md hover:shadow-lg">
+                    <div className="flex items-center gap-3 mb-4">
+                      <FontAwesomeIcon icon={faMapMarkedAlt} className="text-royal-blue text-lg" />
+                      <div className="flex-1">
+                        <h3 className="font-semibold text-gray-700 text-lg">{route.from}</h3>
+                        <div className="flex items-center gap-2 text-gray-600 text-sm">
+                          <span>→</span>
+                          <span>{route.to}</span>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="grid grid-cols-2 gap-4 mb-4">
+                      <div className="text-center bg-royal-blue/10 p-3 rounded-lg">
+                        <div className="text-royal-blue font-semibold">{route.distance}</div>
+                        <div className="text-gray-600 text-xs">Distance</div>
+                      </div>
+                      <div className="text-center bg-royal-blue/10 p-3 rounded-lg">
+                        <div className="text-royal-blue font-semibold">{route.time}</div>
+                        <div className="text-gray-600 text-xs">Duration</div>
+                      </div>
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <h4 className="text-sm font-medium text-gray-700">Route Highlights:</h4>
+                      {route.highlights.map((highlight, idx) => (
+                        <div key={idx} className="flex items-center gap-2 text-xs text-gray-600">
+                          <div className="w-1 h-1 bg-royal-blue rounded-full"></div>
+                          <span>{highlight}</span>
+                        </div>
+                      ))}
+                    </div>
                   </div>
-                  <div className="flex items-center gap-3">
-                    <div className="w-2 h-2 bg-gold rounded-full"></div>
-                    <span className="text-zinc-300">Fuel and toll charges included</span>
+                ))}
+              </div>
+            </div>
+
+            {/* Service Process */}
+            <div className="mb-20">
+              <h2 className="text-4xl font-semibold mb-12 text-center text-gray-700">
+                How Our <span className="text-royal-blue">Distance Service</span> Works
+              </h2>
+              
+              <div className="grid md:grid-cols-3 gap-8">
+                {serviceProcess.map((process, index) => (
+                  <div key={index} className="text-center bg-cream-light/90 p-8 rounded-lg border border-royal-blue/15">
+                    <div className="w-20 h-20 bg-royal-blue/15 rounded-full flex items-center justify-center mx-auto mb-6">
+                      <span className="text-royal-blue text-2xl font-bold">{process.step}</span>
+                    </div>
+                    <h3 className="text-xl font-semibold mb-4 text-gray-700">{process.title}</h3>
+                    <p className="text-gray-600">{process.description}</p>
                   </div>
-                  <div className="flex items-center gap-3">
-                    <div className="w-2 h-2 bg-gold rounded-full"></div>
-                    <span className="text-zinc-300">Complimentary waiting time</span>
+                ))}
+              </div>
+            </div>
+
+            {/* Pricing Information */}
+            <div className="bg-gradient-to-br from-royal-blue/10 to-gold/5 p-8 rounded-lg border border-royal-blue/20 mb-20">
+              <div className="grid md:grid-cols-2 gap-8 items-center">
+                <div>
+                  <h2 className="text-3xl font-semibold mb-6 text-royal-blue-dark">Distance-Based Pricing</h2>
+                  <div className="space-y-4">
+                    <div className="flex items-start gap-3">
+                      <FontAwesomeIcon icon={faCalculator} className="text-royal-blue text-lg mt-1" />
+                      <div>
+                        <h4 className="font-semibold text-gray-700">Transparent Rates</h4>
+                        <p className="text-gray-600 text-sm">Clear pricing based on distance with no hidden fees</p>
+                      </div>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <FontAwesomeIcon icon={faStar} className="text-gold text-lg mt-1" />
+                      <div>
+                        <h4 className="font-semibold text-gray-700">Premium Vehicles</h4>
+                        <p className="text-gray-600 text-sm">Luxury fleet with competitive rates for all distances</p>
+                      </div>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <FontAwesomeIcon icon={faUsers} className="text-emerald-500 text-lg mt-1" />
+                      <div>
+                        <h4 className="font-semibold text-gray-700">Group Discounts</h4>
+                        <p className="text-gray-600 text-sm">Special rates for multiple passengers and return trips</p>
+                      </div>
+                    </div>
                   </div>
-                  <div className="flex items-center gap-3">
-                    <div className="w-2 h-2 bg-gold rounded-full"></div>
-                    <span className="text-zinc-300">Route optimization and planning</span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <div className="w-2 h-2 bg-gold rounded-full"></div>
-                    <span className="text-zinc-300">Real-time GPS tracking</span>
+                </div>
+                
+                <div className="bg-cream-light/95 p-6 rounded-lg border border-royal-blue/20">
+                  <h3 className="text-xl font-semibold mb-4 text-royal-blue-dark">What's Included</h3>
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-3">
+                      <div className="w-2 h-2 bg-royal-blue rounded-full"></div>
+                      <span className="text-gray-700">Professional chauffeur service</span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <div className="w-2 h-2 bg-royal-blue rounded-full"></div>
+                      <span className="text-gray-700">Fuel and toll charges included</span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <div className="w-2 h-2 bg-royal-blue rounded-full"></div>
+                      <span className="text-gray-700">Complimentary waiting time</span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <div className="w-2 h-2 bg-royal-blue rounded-full"></div>
+                      <span className="text-gray-700">Route optimization and planning</span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <div className="w-2 h-2 bg-royal-blue rounded-full"></div>
+                      <span className="text-gray-700">Real-time GPS tracking</span>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
 
-          {/* CTA Section */}
-          <div className="text-center bg-zinc-800/30 p-8 rounded-lg border border-zinc-700/50">
-            <h2 className="text-3xl font-semibold mb-4 text-gold">Ready for Your Journey?</h2>
-            <p className="text-zinc-300 mb-6 max-w-2xl mx-auto">
-              Book your point-to-point transfer today and experience premium transportation 
-              across Switzerland's most beautiful routes.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button 
-                variant="secondary"
-                onClick={scrollToReservationCard}
-              >
-                Book Distance Transfer
-              </Button>
-              <Button 
-                variant="outline"
-                onClick={() => window.location.href = '/contact'}
-              >
-                Get Custom Quote
-              </Button>
+            {/* CTA Section */}
+            <div className="text-center bg-cream-light/90 p-8 rounded-lg border border-royal-blue/20">
+              <h2 className="text-3xl font-semibold mb-4 text-royal-blue-dark">Ready for Your Journey?</h2>
+              <p className="text-gray-600 mb-6 max-w-2xl mx-auto">
+                Book your point-to-point transfer today and experience premium transportation 
+                across Switzerland's most beautiful routes.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <Button 
+                  variant="secondary"
+                  onClick={scrollToReservationCard}
+                >
+                  Book Distance Transfer
+                </Button>
+                <Button 
+                  variant="primary"
+                  onClick={() => window.location.href = '/contact'}
+                >
+                  Get Custom Quote
+                </Button>
+              </div>
             </div>
           </div>
         </div>

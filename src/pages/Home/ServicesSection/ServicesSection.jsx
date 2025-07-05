@@ -1,7 +1,7 @@
 import SectionHeading from "../../../components/SectionHeading";
 import ServiceCard from "./ServiceCard";
 import services from "../../../data/services";
-import { FaQuoteLeft, FaAward, FaUsers, FaGlobeEurope } from "react-icons/fa";
+import { FaQuoteLeft, FaAward, FaUsers, FaGlobeEurope, FaStar } from "react-icons/fa";
 import { scrollToReservationCard } from "../../../utils/scrollUtils";
 
 const ServicesSection = () => {
@@ -12,23 +12,23 @@ const ServicesSection = () => {
   ];
 
   return (
-    <div className="relative bg-zinc-900 py-20 mt-0">
-      {/* Decorative Background Pattern - Dark Theme */}
+    <div className="relative bg-gradient-to-br from-cream-dark via-cream to-warm-gray py-24 mt-0">
+      {/* Softer Decorative Background Pattern */}
       <div className="absolute inset-0 opacity-10">
         <div
           className="absolute inset-0"
           style={{
-            backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23D4AF37' fill-opacity='0.4'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+            backgroundImage: `url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%234169E1' fill-opacity='0.2'%3E%3Ccircle cx='40' cy='40' r='3'/%3E%3C/g%3E%3Cg fill='%23D4AF37' fill-opacity='0.15'%3E%3Ccircle cx='20' cy='20' r='2'/%3E%3Ccircle cx='60' cy='20' r='2'/%3E%3Ccircle cx='20' cy='60' r='2'/%3E%3Ccircle cx='60' cy='60' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
           }}
         ></div>
       </div>
 
-      <div className="container-default relative z-10">
-        {/* Enhanced Section Header */}
-        <div className="text-center mb-16">
-          <div className="inline-flex items-center gap-2 bg-zinc-800/60 text-yellow-400 px-4 py-2 rounded-full text-sm font-medium mb-4 border border-zinc-700/50">
-            <FaAward />
-            <span>Premium Services</span>
+      <div className="container-wide relative z-10">
+        {/* Harmonious Section Header */}
+        <div className="text-center mb-20">
+          <div className="inline-flex items-center gap-3 bg-royal-blue/15 backdrop-blur-sm text-royal-blue-dark px-6 py-3 rounded-full text-sm font-medium mb-6 border border-royal-blue/25 shadow-md">
+            <FaAward className="text-lg" />
+            <span className="text-base font-semibold">Premium Services</span>
           </div>
 
           <SectionHeading
@@ -36,60 +36,73 @@ const ServicesSection = () => {
             text="We invite you to experience our world-class services, backed by our personal guarantee of complete satisfaction and luxury beyond expectations."
           />
 
-          {/* Quote - Dark Theme */}
-          <div className="max-w-2xl mx-auto mt-8 p-6 bg-zinc-800/60 backdrop-blur-sm rounded-lg shadow-lg border border-zinc-700/50">
-            <FaQuoteLeft className="text-2xl text-yellow-400 mb-3 mx-auto" />
-            <p className="text-gray-300 italic text-lg">
+          {/* Softer Quote Section */}
+          <div className="max-w-3xl mx-auto mt-12 p-8 bg-darker-cream/90 backdrop-blur-sm rounded-2xl shadow-lg border border-royal-blue/15">
+            <div className="flex items-center justify-center mb-4">
+              <div className="w-12 h-12 bg-royal-blue/15 rounded-full flex items-center justify-center">
+                <FaQuoteLeft className="text-xl text-royal-blue-dark" />
+              </div>
+            </div>
+            <p className="text-gray-600 italic text-xl leading-relaxed">
               "Excellence is not a skill, it's an attitude. Every journey with Elite
               Way Limo is crafted to exceed your expectations."
             </p>
-            <div className="text-sm text-gray-400 mt-3">
+            <div className="text-base text-royal-blue-dark mt-4 font-medium">
               - Elite Way Limo Promise
             </div>
           </div>
         </div>
 
-        {/* Stats Section - Dark Theme */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
+        {/* Harmonious Stats Section */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-20">
           {stats.map((stat, index) => (
             <div
               key={index}
-              className="text-center p-6 bg-zinc-800/60 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 border border-zinc-700/50"
+              className="text-center p-8 bg-cream-light/95 backdrop-blur-sm rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border border-royal-blue/15 hover:border-royal-blue/25 transform hover:-translate-y-1"
             >
-              <stat.icon className="text-3xl text-yellow-400 mx-auto mb-3" />
-              <div className="text-3xl font-bold text-white mb-1">
+              <div className="w-16 h-16 bg-royal-blue/15 rounded-full flex items-center justify-center mx-auto mb-4">
+                <stat.icon className="text-2xl text-royal-blue-dark" />
+              </div>
+              <div className="text-4xl font-bold text-gray-700 mb-2">
                 {stat.number}
               </div>
-              <div className="text-gray-300">{stat.label}</div>
+              <div className="text-gray-600 text-lg">{stat.label}</div>
             </div>
           ))}
         </div>
 
-        {/* Enhanced Services Grid */}
-        <div className="services grid gap-8 lg:grid-cols-2 justify-center">
+        {/* Services Grid */}
+        <div className="services grid gap-10 lg:grid-cols-2 xl:grid-cols-2 justify-center max-w-7xl mx-auto">
           {services.map((service, index) => (
             <div
               key={service.id}
-              className="transform hover:scale-[1.02] transition-transform duration-300"
+              className="transform hover:scale-[1.02] transition-all duration-300 hover:shadow-xl"
             >
               <ServiceCard {...service} />
             </div>
           ))}
         </div>
 
-        {/* Call to Action - Dark Theme */}
-        <div className="text-center mt-16">
-          <div className="bg-gradient-to-r from-zinc-800 to-zinc-700 text-white p-8 rounded-2xl shadow-xl border border-zinc-600/50">
-            <h3 className="text-2xl font-bold mb-4 text-yellow-400">
+        {/* Harmonious Call to Action */}
+        <div className="text-center mt-20">
+          <div className="bg-gradient-to-r from-cream-light/98 via-darker-cream/95 to-cream-light/98 backdrop-blur-sm p-10 rounded-3xl shadow-lg border border-royal-blue/20 max-w-4xl mx-auto">
+            <div className="flex items-center justify-center gap-2 mb-4">
+              <FaStar className="text-gold text-xl" />
+              <FaStar className="text-gold text-xl" />
+              <FaStar className="text-gold text-xl" />
+              <FaStar className="text-gold text-xl" />
+              <FaStar className="text-gold text-xl" />
+            </div>
+            <h3 className="text-3xl lg:text-4xl font-bold mb-6 bg-gradient-to-r from-royal-blue-dark to-gold bg-clip-text text-transparent">
               Ready to Experience Luxury?
             </h3>
-            <p className="text-gray-300 mb-6 max-w-2xl mx-auto">
+            <p className="text-gray-600 mb-8 max-w-2xl mx-auto text-lg leading-relaxed">
               Join thousands of satisfied clients who trust Elite Way Limo for their
               transportation needs. Book your premium experience today.
             </p>
             <button 
               onClick={scrollToReservationCard}
-              className="bg-yellow-400 text-black hover:bg-yellow-300 px-8 py-3 rounded-lg font-semibold transition-colors duration-300 shadow-lg"
+              className="bg-gradient-to-r from-royal-blue-dark to-royal-blue text-white hover:from-royal-blue hover:to-royal-blue-light px-10 py-4 rounded-xl font-semibold transition-all duration-300 shadow-md hover:shadow-lg transform hover:scale-105 text-lg"
             >
               Get Started Now
             </button>
