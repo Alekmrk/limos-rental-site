@@ -170,368 +170,380 @@ const CustomerDetails = ({ scrollUp }) => {
   }, []);
 
   return (
-    <div className="container-default mt-28">
-      <div className="max-w-6xl mx-auto">
-        <h1 className="text-5xl md:text-7xl font-semibold mb-8">
-          {reservationInfo.isSpecialRequest ? "Contact Details" : "Additional Details"}
-        </h1>
-        
-        <ProgressBar />
-        
-        <form 
-          onSubmit={handleSubmit}
-          onKeyDown={(e) => {
-            // Only prevent form submission for regular inputs, allow new lines in textareas
-            if (e.key === 'Enter' && e.target.tagName === 'INPUT') {
-              e.preventDefault();
-            }
-          }}
-        >
-          {/* Date and Time Section for Special Requests */}
-          {reservationInfo.isSpecialRequest && (
-            <div className="mb-8">
-              <div className="p-4 mb-6 bg-gold/10 rounded-lg border border-gold/20">
-                <h3 className="text-lg font-medium text-gold mb-2">Special Request Details</h3>
-                <p className="text-zinc-300 mb-4">Please specify your preferred date and time for your custom transportation request.</p>
-              </div>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                <div>
-                  <label className="block text-sm font-medium mb-2" htmlFor="date">
-                    Preferred Date *
-                  </label>
-                  <div className="relative">
-                    <DateInput
-                      value={reservationInfo.date}
-                      onChange={(e) => {
-                        setErrors(prev => ({ ...prev, date: undefined }));
-                        handleInputChange(e);
-                      }}
-                      name="date"
-                      id="date"
-                      className={`bg-zinc-800/30 rounded-lg py-3 px-4 w-full border text-white transition-all duration-200 hover:border-zinc-600 focus:border-gold/50 focus:shadow-[0_0_15px_rgba(212,175,55,0.1)] ${
-                        errors.date ? 'border-red-500 ring-1 ring-red-500/50' : 'border-zinc-700/50'
-                      }`}
-                      dropdownClassName="w-[90%] left-[5%]"
-                    />
-                    {errors.date && (
-                      <span className="text-red-500 text-sm mt-1 block">{errors.date}</span>
-                    )}
-                  </div>
-                </div>
+    <div className="min-h-screen bg-gradient-to-br from-warm-gray/5 via-cream/3 to-soft-gray/5">
+      {/* Softer Animated Background Elements */}
+      <div className="fixed inset-0 z-0" style={{ pointerEvents: 'none' }}>
+        <div className="absolute top-20 left-10 w-20 h-20 bg-royal-blue/10 rounded-full animate-pulse"></div>
+        <div className="absolute top-40 right-20 w-16 h-16 bg-gold/15 rounded-full animate-bounce"></div>
+        <div className="absolute bottom-40 left-20 w-12 h-12 bg-warm-gray/20 rounded-full animate-ping"></div>
+        <div className="absolute bottom-20 right-10 w-24 h-24 bg-royal-blue/8 rounded-full animate-pulse"></div>
+        <div className="absolute top-1/2 left-1/3 w-32 h-32 bg-gradient-to-br from-cream/15 to-gold/10 rounded-full blur-xl animate-float"></div>
+      </div>
 
-                <div>
-                  <label className="block text-sm font-medium mb-2" htmlFor="time">
-                    Preferred Time *
-                  </label>
-                  <div className="relative">
-                    <TimeInput
-                      value={reservationInfo.time}
-                      onChange={(e) => {
-                        setErrors(prev => ({ ...prev, time: undefined }));
-                        handleInputChange(e);
-                      }}
-                      name="time"
-                      id="time"
-                      className={`bg-zinc-800/30 rounded-lg py-3 px-4 w-full border text-white transition-all duration-200 hover:border-zinc-600 focus:border-gold/50 focus:shadow-[0_0_15px_rgba(212,175,55,0.1)] ${
-                        errors.time ? 'border-red-500 ring-1 ring-red-500/50' : 'border-zinc-700/50'
-                      }`}
-                      dropdownClassName="w-[90%] left-[5%]"
-                    />
-                    {errors.time && (
-                      <span className="text-red-500 text-sm mt-1 block">{errors.time}</span>
-                    )}
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
-
-          <div className="grid md:grid-cols-2 gap-6 mb-8">
-            <div>
-              <label className="block text-sm font-medium mb-2" htmlFor="email">
-                Email Address *
-              </label>
-              <input
-                type="text"
-                id="email"
-                name="email"
-                value={reservationInfo.email}
-                onChange={handleInputChange}
-                className={`bg-zinc-800/30 rounded-lg py-2 px-4 w-full border focus:outline-none focus:ring-1 focus:ring-gold/20 transition-all duration-200 ${
-                  errors.email ? 'border-red-500 focus:border-red-500' : 'border-zinc-700/50 focus:border-gold/40'
-                }`}
-                placeholder="Enter your email address"
-              />
-              {errors.email && (
-                <span className="text-red-500 text-sm">{errors.email}</span>
-              )}
-            </div>
-            
-            <div>
-              <label className="block text-sm font-medium mb-2" htmlFor="phone">
-                Phone Number *
-              </label>
-              <input
-                type="tel"
-                id="phone"
-                name="phone"
-                value={reservationInfo.phone}
-                onChange={handleInputChange}
-                className={`bg-zinc-800/30 rounded-lg py-2 px-4 w-full border focus:outline-none focus:ring-1 focus:ring-gold/20 transition-all duration-200 ${
-                  errors.phone ? 'border-red-500 focus:border-red-500' : 'border-zinc-700/50 focus:border-gold/40'
-                }`}
-              />
-              {errors.phone && (
-                <span className="text-red-500 text-sm">{errors.phone}</span>
-              )}
-            </div>
-          </div>
-
-          {!reservationInfo.isSpecialRequest ? (
-            <>
-              {reservationInfo.isHourly && (
-                <div className="mb-8">
-                  <label className="block text-sm font-medium mb-2" htmlFor="plannedActivities">
-                    Planned Activities *
-                  </label>
-                  <textarea
-                    id="plannedActivities"
-                    name="plannedActivities"
-                    value={reservationInfo.plannedActivities}
-                    onChange={handleInputChange}
-                    rows="4"
-                    wrap="soft"
-                    className={`bg-zinc-800/30 rounded-lg py-2 px-4 w-full border whitespace-pre-wrap focus:outline-none focus:ring-1 focus:ring-gold/20 transition-all duration-200 ${
-                      errors.plannedActivities ? 'border-red-500 focus:border-red-500' : 'border-zinc-700/50 focus:border-gold/40'
-                    }`}
-                    placeholder="Please describe your planned activities during the rental period..."
-                    style={{ resize: 'vertical', minHeight: '100px' }}
-                  ></textarea>
-                  {errors.plannedActivities && (
-                    <span className="text-red-500 text-sm">{errors.plannedActivities}</span>
-                  )}
-                </div>
-              )}
-
-              {/* Collapsible Additional Details Section */}
+      <div className="container-default mt-28 relative z-10">
+        <div className="max-w-6xl mx-auto">
+          <h1 className="text-5xl md:text-7xl font-semibold mb-8 text-gray-700">
+            {reservationInfo.isSpecialRequest ? (
+              <>
+                <span className="text-royal-blue">Contact</span> Details
+              </>
+            ) : (
+              <>
+                <span className="text-royal-blue">Additional</span> Details
+              </>
+            )}
+          </h1>
+          
+          <ProgressBar />
+          
+          <form 
+            onSubmit={handleSubmit}
+            onKeyDown={(e) => {
+              // Only prevent form submission for regular inputs, allow new lines in textareas
+              if (e.key === 'Enter' && e.target.tagName === 'INPUT') {
+                e.preventDefault();
+              }
+            }}
+          >
+            {/* Date and Time Section for Special Requests */}
+            {reservationInfo.isSpecialRequest && (
               <div className="mb-8">
-                <button
-                  type="button"
-                  onClick={() => setShowAdditionalDetails(!showAdditionalDetails)}
-                  className="flex items-center justify-between w-full p-4 bg-zinc-800/20 rounded-lg border border-zinc-700/50 hover:bg-zinc-800/30 transition-all duration-200"
-                >
-                  <div className="flex items-center gap-3">
-                    <svg className="w-5 h-5 text-gold" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
-                      <circle cx="9" cy="7" r="4"/>
-                      <path d="m22 21-3-3"/>
-                    </svg>
-                    <span className="text-sm font-medium">Additional Passenger Details</span>
-                    <span className="text-xs text-zinc-400">(Flight number, meeting board, child seats)</span>
+                <div className="p-4 mb-6 bg-gradient-to-br from-gold/15 to-royal-blue/5 rounded-lg border border-gold/30 backdrop-blur-sm">
+                  <h3 className="text-lg font-medium text-gold mb-2">Special Request Details</h3>
+                  <p className="text-gray-600 mb-4">Please specify your preferred date and time for your custom transportation request.</p>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                  <div>
+                    <label className="block text-sm font-medium mb-2 text-gray-700" htmlFor="date">
+                      Preferred Date *
+                    </label>
+                    <div className="relative">
+                      <DateInput
+                        value={reservationInfo.date}
+                        onChange={(e) => {
+                          setErrors(prev => ({ ...prev, date: undefined }));
+                          handleInputChange(e);
+                        }}
+                        name="date"
+                        id="date"
+                        className={`bg-warm-white/80 backdrop-blur-sm rounded-lg py-3 px-4 w-full border text-gray-700 transition-all duration-200 hover:border-royal-blue/30 focus:border-royal-blue/50 focus:shadow-[0_0_15px_rgba(65,105,225,0.1)] ${
+                          errors.date ? 'border-red-500 ring-1 ring-red-500/50' : 'border-royal-blue/20'
+                        }`}
+                        dropdownClassName="w-[90%] left-[5%]"
+                      />
+                      {errors.date && (
+                        <span className="text-red-500 text-sm mt-1 block">{errors.date}</span>
+                      )}
+                    </div>
                   </div>
-                  <svg 
-                    className={`w-5 h-5 text-zinc-400 transition-transform duration-200 ${
-                      showAdditionalDetails ? 'rotate-180' : ''
-                    }`} 
-                    viewBox="0 0 24 24" 
-                    fill="none" 
-                    stroke="currentColor" 
-                    strokeWidth="2"
-                  >
-                    <path d="m6 9 6 6 6-6"/>
-                  </svg>
-                </button>
 
-                {/* Expandable Content */}
-                <div 
-                  className={`transition-all ease-in-out ${
-                    showAdditionalDetails 
-                      ? 'max-h-[800px] opacity-100' 
-                      : 'max-h-0 opacity-0 overflow-hidden'
-                  }`}
-                  style={{ transitionDuration: showAdditionalDetails ? '1s' : '0.4s' }}
-                >
-                  <div 
-                    className={`pt-6 space-y-6 transform transition-transform ease-in-out ${
-                      showAdditionalDetails ? 'translate-y-0' : '-translate-y-4'
-                    }`}
-                    style={{ transitionDuration: showAdditionalDetails ? '1s' : '0.4s' }}
-                  >
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <div>
-                        <label className="block text-sm font-medium mb-2" htmlFor="flightNumber">
-                          Flight Number
-                        </label>
-                        <input
-                          type="text"
-                          id="flightNumber"
-                          name="flightNumber"
-                          value={reservationInfo.flightNumber}
-                          onChange={handleInputChange}
-                          className="bg-zinc-800/30 rounded-lg py-2 px-4 w-full border border-zinc-700/50 focus:border-gold/40 focus:outline-none focus:ring-1 focus:ring-gold/20 transition-all duration-200"
-                          placeholder="e.g., LX123"
-                        />
-                      </div>
-                      
-                      <div className= "hidden">
-                        <NumberDropdown
-                          id="skiEquipment"
-                          name="skiEquipment"
-                          value={reservationInfo.skiEquipment}
-                          onChange={handleInput}
-                          min={0}
-                          max={20}
-                          label="Number of Ski Equipment"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium mb-2" htmlFor="meetingBoard">
-                          Meet & Greet Sign <span className="text-xs text-zinc-400 font-normal">(Name for pickup sign)</span>
-                        </label>
-                        <input
-                          type="text"
-                          id="meetingBoard"
-                          name="meetingBoard"
-                          value={reservationInfo.meetingBoard}
-                          onChange={handleInputChange}
-                          className="bg-zinc-800/30 rounded-lg py-2 px-4 w-full border border-zinc-700/50 focus:border-gold/40 focus:outline-none focus:ring-1 focus:ring-gold/20 transition-all duration-200"
-                          placeholder="e.g., Mr. Smith, ABC Company"
-                        />
-                      </div>
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <div>
-                        <NumberDropdown
-                          id="childSeats"
-                          name="childSeats"
-                          value={reservationInfo.childSeats}
-                          onChange={handleInputChange}
-                          min={0}
-                          max={3}
-                          label={
-                            <span>
-                              Child Seats <span className="text-xs text-zinc-400 font-normal">(Ages 4-7 / 15-36 kg)</span>
-                            </span>
-                          }
-                        />
-                      </div>
-                      
-                      <div>
-                        <NumberDropdown
-                          id="babySeats"
-                          name="babySeats"
-                          value={reservationInfo.babySeats}
-                          onChange={handleInputChange}
-                          min={0}
-                          max={3}
-                          label={
-                            <span>
-                              Baby Seats <span className="text-xs text-zinc-400 font-normal">(Ages 0-3 / up to 18 kg)</span>
-                            </span>
-                          }
-                        />
-                      </div>
-                    </div>
-
-                    <div className="bg-blue-500/10 border border-blue-500/20 rounded-lg p-3">
-                      <div className="flex items-start gap-2">
-                        <svg className="w-4 h-4 text-blue-400 mt-0.5 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                          <circle cx="12" cy="12" r="10"/>
-                          <path d="m9 12 2 2 4-4"/>
-                        </svg>
-                        <p className="text-xs text-blue-200">
-                          Child and baby seats are provided free of charge. Please specify the exact number needed for your journey.
-                        </p>
-                      </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-2 text-gray-700" htmlFor="time">
+                      Preferred Time *
+                    </label>
+                    <div className="relative">
+                      <TimeInput
+                        value={reservationInfo.time}
+                        onChange={(e) => {
+                          setErrors(prev => ({ ...prev, time: undefined }));
+                          handleInputChange(e);
+                        }}
+                        name="time"
+                        id="time"
+                        className={`bg-warm-white/80 backdrop-blur-sm rounded-lg py-3 px-4 w-full border text-gray-700 transition-all duration-200 hover:border-royal-blue/30 focus:border-royal-blue/50 focus:shadow-[0_0_15px_rgba(65,105,225,0.1)] ${
+                          errors.time ? 'border-red-500 ring-1 ring-red-500/50' : 'border-royal-blue/20'
+                        }`}
+                        dropdownClassName="w-[90%] left-[5%]"
+                      />
+                      {errors.time && (
+                        <span className="text-red-500 text-sm mt-1 block">{errors.time}</span>
+                      )}
                     </div>
                   </div>
                 </div>
               </div>
-            </>
-          ) : (
-            <div className="mb-8">
-              <div className="p-4 mb-6 bg-gold/10 rounded-lg border border-gold/20">
-                <h3 className="text-lg font-medium text-gold mb-2">Your Special Request</h3>
-                <p className="text-zinc-300">{reservationInfo.specialRequestDetails}</p>
-                <div className="mt-3 text-sm text-zinc-400">
-                  <p>Date: {formatDate(reservationInfo.date)}</p>
-                  <p>Preferred Time: {reservationInfo.time} (Swiss time)</p>
-                </div>
+            )}
+
+            <div className="grid md:grid-cols-2 gap-6 mb-8">
+              <div>
+                <label className="block text-sm font-medium mb-2 text-gray-700" htmlFor="email">
+                  Email Address *
+                </label>
+                <input
+                  type="text"
+                  id="email"
+                  name="email"
+                  value={reservationInfo.email}
+                  onChange={handleInputChange}
+                  className={`bg-warm-white/80 backdrop-blur-sm rounded-lg py-2 px-4 w-full border text-gray-700 focus:outline-none focus:ring-1 focus:ring-royal-blue/20 transition-all duration-200 hover:border-royal-blue/30 focus:border-royal-blue/50 ${
+                    errors.email ? 'border-red-500 focus:border-red-500' : 'border-royal-blue/20'
+                  }`}
+                  placeholder="Enter your email address"
+                />
+                {errors.email && (
+                  <span className="text-red-500 text-sm">{errors.email}</span>
+                )}
               </div>
               
-              <label className="block text-sm font-medium mb-2" htmlFor="additionalRequests">
-                Additional Information *
-              </label>
-              <textarea
-                id="additionalRequests"
-                name="additionalRequests"
-                value={reservationInfo.additionalRequests}
-                onChange={handleInputChange}
-                rows="6"
-                wrap="soft"
-                className={`bg-zinc-800/30 rounded-lg py-2 px-4 w-full border whitespace-pre-wrap focus:outline-none focus:ring-1 focus:ring-gold/20 transition-all duration-200 ${
-                  errors.additionalRequests ? 'border-red-500 focus:border-red-500' : 'border-zinc-700/50 focus:border-gold/40'
-                }`}
-                placeholder="Please provide any additional details that would help us understand your requirements better (e.g., number of guests, event type, specific vehicle preferences, budget constraints, etc.)"
-                style={{ resize: 'vertical', minHeight: '150px' }}
-              ></textarea>
-              {errors.additionalRequests && (
-                <span className="text-red-500 text-sm">{errors.additionalRequests}</span>
-              )}
+              <div>
+                <label className="block text-sm font-medium mb-2 text-gray-700" htmlFor="phone">
+                  Phone Number *
+                </label>
+                <input
+                  type="tel"
+                  id="phone"
+                  name="phone"
+                  value={reservationInfo.phone}
+                  onChange={handleInputChange}
+                  className={`bg-warm-white/80 backdrop-blur-sm rounded-lg py-2 px-4 w-full border text-gray-700 focus:outline-none focus:ring-1 focus:ring-royal-blue/20 transition-all duration-200 hover:border-royal-blue/30 focus:border-royal-blue/50 ${
+                    errors.phone ? 'border-red-500 focus:border-red-500' : 'border-royal-blue/20'
+                  }`}
+                />
+                {errors.phone && (
+                  <span className="text-red-500 text-sm">{errors.phone}</span>
+                )}
+              </div>
             </div>
-          )}
 
-          {!reservationInfo.isSpecialRequest && (
+            {!reservationInfo.isSpecialRequest ? (
+              <>
+                {reservationInfo.isHourly && (
+                  <div className="mb-8">
+                    <div className="bg-gradient-to-br from-royal-blue/10 to-cream/5 p-4 mb-6 rounded-lg border border-royal-blue/20 backdrop-blur-sm">
+                      <h3 className="text-lg font-medium text-royal-blue mb-2">Your Hourly Service</h3>
+                      <p className="text-gray-600 mb-4">Please describe your planned activities during the booking to help us provide the best service.</p>
+                      <div className="mt-3 text-sm text-gray-600">
+                        <p>Date: {formatDate(reservationInfo.date)}</p>
+                        <p>Service Duration: {reservationInfo.hours} hours</p>
+                        <p>Time: {reservationInfo.time} (Swiss time)</p>
+                      </div>
+                    </div>
+                    
+                    <label className="block text-sm font-medium mb-2 text-gray-700" htmlFor="plannedActivities">
+                      Planned Activities *
+                    </label>
+                    <textarea
+                      id="plannedActivities"
+                      name="plannedActivities"
+                      value={reservationInfo.plannedActivities}
+                      onChange={handleInputChange}
+                      rows="4"
+                      wrap="soft"
+                      className={`bg-warm-white/80 backdrop-blur-sm rounded-lg py-2 px-4 w-full border text-gray-700 whitespace-pre-wrap focus:outline-none focus:ring-1 focus:ring-royal-blue/20 transition-all duration-200 hover:border-royal-blue/30 focus:border-royal-blue/50 ${
+                        errors.plannedActivities ? 'border-red-500 focus:border-red-500' : 'border-royal-blue/20'
+                      }`}
+                      placeholder="Please describe your planned activities during the rental period..."
+                      style={{ resize: 'vertical', minHeight: '100px' }}
+                    ></textarea>
+                    {errors.plannedActivities && (
+                      <span className="text-red-500 text-sm">{errors.plannedActivities}</span>
+                    )}
+                  </div>
+                )}
+
+                {/* Additional Details Section */}
+                <div className="mb-8">
+                  <button
+                    type="button"
+                    onClick={() => setShowAdditionalDetails(!showAdditionalDetails)}
+                    className="flex items-center justify-between w-full p-4 bg-gradient-to-r from-cream-light/80 to-warm-white/80 backdrop-blur-sm rounded-lg border border-royal-blue/20 text-left hover:border-royal-blue/40 transition-all duration-300"
+                  >
+                    <span className="text-lg font-medium text-gray-700">Additional Details (Optional)</span>
+                    <svg
+                      className={`w-5 h-5 text-royal-blue transition-transform duration-300 ${
+                        showAdditionalDetails ? 'rotate-180' : ''
+                      }`}
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </button>
+
+                  <div
+                    className={`transition-all duration-1000 ease-in-out overflow-hidden ${
+                      showAdditionalDetails 
+                        ? 'max-h-[2000px] opacity-100 mt-6' 
+                        : 'max-h-0 opacity-0'
+                    }`}
+                  >
+                    <div
+                      className={`transform transition-all duration-1000 ease-in-out ${
+                        showAdditionalDetails ? 'translate-y-0' : '-translate-y-4'
+                      }`}
+                      style={{ transitionDuration: showAdditionalDetails ? '1s' : '0.4s' }}
+                    >
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                          <label className="block text-sm font-medium mb-2 text-gray-700" htmlFor="flightNumber">
+                            Flight Number
+                          </label>
+                          <input
+                            type="text"
+                            id="flightNumber"
+                            name="flightNumber"
+                            value={reservationInfo.flightNumber}
+                            onChange={handleInputChange}
+                            className="bg-warm-white/80 backdrop-blur-sm rounded-lg py-2 px-4 w-full border border-royal-blue/20 text-gray-700 focus:border-royal-blue/40 focus:outline-none focus:ring-1 focus:ring-royal-blue/20 transition-all duration-200"
+                            placeholder="e.g., LX123"
+                          />
+                        </div>
+                        
+                        <div>
+                          <label className="block text-sm font-medium mb-2 text-gray-700" htmlFor="meetingBoard">
+                            Meet & Greet Sign <span className="text-xs text-gray-500 font-normal">(Name for pickup sign)</span>
+                          </label>
+                          <input
+                            type="text"
+                            id="meetingBoard"
+                            name="meetingBoard"
+                            value={reservationInfo.meetingBoard}
+                            onChange={handleInputChange}
+                            className="bg-warm-white/80 backdrop-blur-sm rounded-lg py-2 px-4 w-full border border-royal-blue/20 text-gray-700 focus:border-royal-blue/40 focus:outline-none focus:ring-1 focus:ring-royal-blue/20 transition-all duration-200"
+                            placeholder="e.g., Mr. Smith, ABC Company"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                        <div>
+                          <NumberDropdown
+                            id="childSeats"
+                            name="childSeats"
+                            value={reservationInfo.childSeats}
+                            onChange={handleInputChange}
+                            min={0}
+                            max={3}
+                            label={
+                              <span className="text-gray-700">
+                                Child Seats <span className="text-xs text-gray-500 font-normal">(Ages 4-7 / 15-36 kg)</span>
+                              </span>
+                            }
+                          />
+                        </div>
+                        
+                        <div>
+                          <NumberDropdown
+                            id="babySeats"
+                            name="babySeats"
+                            value={reservationInfo.babySeats}
+                            onChange={handleInputChange}
+                            min={0}
+                            max={3}
+                            label={
+                              <span className="text-gray-700">
+                                Baby Seats <span className="text-xs text-gray-500 font-normal">(Ages 0-3 / up to 18 kg)</span>
+                              </span>
+                            }
+                          />
+                        </div>
+                      </div>
+
+                      <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-lg p-3 mt-6">
+                        <div className="flex items-start gap-2">
+                          <svg className="w-4 h-4 text-emerald-400 mt-0.5 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                            <circle cx="12" cy="12" r="10"/>
+                            <path d="m9 12 2 2 4-4"/>
+                          </svg>
+                          <p className="text-xs text-emerald-700">
+                            Child and baby seats are provided free of charge. Please specify the exact number needed for your journey.
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </>
+            ) : (
+              <div className="mb-8">
+                <div className="p-4 mb-6 bg-gradient-to-br from-gold/15 to-royal-blue/5 rounded-lg border border-gold/30 backdrop-blur-sm">
+                  <h3 className="text-lg font-medium text-gold mb-2">Your Special Request</h3>
+                  <p className="text-gray-600">{reservationInfo.specialRequestDetails}</p>
+                  <div className="mt-3 text-sm text-gray-600">
+                    <p>Date: {formatDate(reservationInfo.date)}</p>
+                    <p>Preferred Time: {reservationInfo.time} (Swiss time)</p>
+                  </div>
+                </div>
+                
+                <label className="block text-sm font-medium mb-2 text-gray-700" htmlFor="additionalRequests">
+                  Additional Information *
+                </label>
+                <textarea
+                  id="additionalRequests"
+                  name="additionalRequests"
+                  value={reservationInfo.additionalRequests}
+                  onChange={handleInputChange}
+                  rows="6"
+                  wrap="soft"
+                  className={`bg-warm-white/80 backdrop-blur-sm rounded-lg py-2 px-4 w-full border text-gray-700 whitespace-pre-wrap focus:outline-none focus:ring-1 focus:ring-royal-blue/20 transition-all duration-200 hover:border-royal-blue/30 focus:border-royal-blue/50 ${
+                    errors.additionalRequests ? 'border-red-500 focus:border-red-500' : 'border-royal-blue/20'
+                  }`}
+                  placeholder="Please provide any additional details that would help us understand your requirements better (e.g., number of guests, event type, specific vehicle preferences, budget constraints, etc.)"
+                  style={{ resize: 'vertical', minHeight: '150px' }}
+                ></textarea>
+                {errors.additionalRequests && (
+                  <span className="text-red-500 text-sm">{errors.additionalRequests}</span>
+                )}
+              </div>
+            )}
+
+            {!reservationInfo.isSpecialRequest && (
+              <div className="mb-8">
+                <label className="block text-sm font-medium mb-2 text-gray-700" htmlFor="additionalRequests">
+                  Additional Requests
+                </label>
+                <textarea
+                  id="additionalRequests"
+                  name="additionalRequests"
+                  value={reservationInfo.additionalRequests}
+                  onChange={handleInputChange}
+                  rows="4"
+                  wrap="soft"
+                  className="bg-warm-white/80 backdrop-blur-sm rounded-lg py-2 px-4 w-full border border-royal-blue/20 text-gray-700 whitespace-pre-wrap focus:border-royal-blue/40 focus:outline-none focus:ring-1 focus:ring-royal-blue/20 transition-all duration-200"
+                  placeholder="Any special requirements or requests..."
+                  style={{ resize: 'vertical', minHeight: '100px' }}
+                ></textarea>
+              </div>
+            )}
+
             <div className="mb-8">
-              <label className="block text-sm font-medium mb-2" htmlFor="additionalRequests">
-                Additional Requests
+              <label className="block text-sm font-medium mb-2 text-gray-700" htmlFor="referenceNumber">
+                Reference Number or Cost Center
               </label>
               <textarea
-                id="additionalRequests"
-                name="additionalRequests"
-                value={reservationInfo.additionalRequests}
+                id="referenceNumber"
+                name="referenceNumber"
+                value={reservationInfo.referenceNumber}
                 onChange={handleInputChange}
-                rows="4"
+                rows="3"
                 wrap="soft"
-                className="bg-zinc-800/30 rounded-lg py-2 px-4 w-full border border-zinc-700/50 whitespace-pre-wrap focus:border-gold/40 focus:outline-none focus:ring-1 focus:ring-gold/20 transition-all duration-200"
-                placeholder="Any special requirements or requests..."
-                style={{ resize: 'vertical', minHeight: '100px' }}
+                className="bg-warm-white/80 backdrop-blur-sm rounded-lg py-2 px-4 w-full border border-royal-blue/20 text-gray-700 whitespace-pre-wrap focus:border-royal-blue/40 focus:outline-none focus:ring-1 focus:ring-royal-blue/20 transition-all duration-200"
+                placeholder="Reference number, cost center, project code, or billing info for your invoice..."
+                style={{ resize: 'vertical', minHeight: '75px' }}
               ></textarea>
             </div>
-          )}
 
-          <div className="mb-8">
-            <label className="block text-sm font-medium mb-2" htmlFor="referenceNumber">
-              Reference Number or Cost Center
-            </label>
-            <textarea
-              id="referenceNumber"
-              name="referenceNumber"
-              value={reservationInfo.referenceNumber}
-              onChange={handleInputChange}
-              rows="3"
-              wrap="soft"
-              className="bg-zinc-800/30 rounded-lg py-2 px-4 w-full border border-zinc-700/50 whitespace-pre-wrap focus:border-gold/40 focus:outline-none focus:ring-1 focus:ring-gold/20 transition-all duration-200"
-              placeholder="Reference number, cost center, project code, or billing info for your invoice..."
-              style={{ resize: 'vertical', minHeight: '75px' }}
-            ></textarea>
-          </div>
-
-          <div className="flex justify-between">
-            <Button
-              type="button"
-              variant="secondary"
-              onClick={handleBack}
-            >
-              Back
-            </Button>
-            <Button type="submit" variant="secondary">
-              {reservationInfo.isSpecialRequest ? "Submit Request" : "Pay Now"}
-            </Button>
-          </div>
-        </form>
+            <div className="flex justify-between">
+              <Button
+                type="button"
+                variant="secondary"
+                onClick={handleBack}
+                className="bg-warm-white/80 backdrop-blur-sm border-royal-blue/30 text-gray-700 hover:bg-royal-blue/10"
+              >
+                Back
+              </Button>
+              <Button 
+                type="submit" 
+                variant="secondary"
+                className="bg-gradient-to-r from-royal-blue to-royal-blue-light hover:from-royal-blue-light hover:to-royal-blue text-white shadow-lg hover:shadow-xl transition-all duration-300"
+              >
+                {reservationInfo.isSpecialRequest ? "Submit Request" : "Pay Now"}
+              </Button>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
   );
