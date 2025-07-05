@@ -396,6 +396,19 @@ const PaymentPage = ({ scrollUp }) => {
                 )}
               </div>
             )}
+
+            {/* Navigation Buttons */}
+            <div className="flex justify-between">
+              <Button
+                type="button"
+                variant="secondary"
+                onClick={handleBack}
+                disabled={isProcessing}
+                className="bg-warm-white/80 backdrop-blur-sm border-royal-blue/30 text-gray-700 hover:bg-royal-blue/10 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                Back
+              </Button>
+            </div>
           </div>
         </div>
       </div>

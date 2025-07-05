@@ -347,11 +347,11 @@ const CustomerDetails = ({ scrollUp }) => {
                   <button
                     type="button"
                     onClick={() => setShowAdditionalDetails(!showAdditionalDetails)}
-                    className="flex items-center justify-between w-full p-4 bg-gradient-to-r from-cream-light/80 to-warm-white/80 backdrop-blur-sm rounded-lg border border-royal-blue/20 text-left hover:border-royal-blue/40 transition-all duration-300"
+                    className="flex items-center justify-between w-full p-3 bg-gradient-to-r from-cream-light/80 to-warm-white/80 backdrop-blur-sm rounded-lg border border-royal-blue/20 text-left hover:border-royal-blue/40 transition-all duration-300"
                   >
-                    <span className="text-lg font-medium text-gray-700">Additional Details (Optional)</span>
+                    <span className="text-base font-medium text-gray-700">Additional Details <span className="text-sm text-gray-500">(Flight number, meeting board, child seats)</span></span>
                     <svg
-                      className={`w-5 h-5 text-royal-blue transition-transform duration-300 ${
+                      className={`w-4 h-4 text-royal-blue transition-transform duration-300 ${
                         showAdditionalDetails ? 'rotate-180' : ''
                       }`}
                       fill="none"
