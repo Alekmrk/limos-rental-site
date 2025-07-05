@@ -145,31 +145,35 @@ const DateInput = ({ value, onChange, name, id, className, dropdownClassName }) 
         className={className}
       />
       {showPicker && (
-        <div className={`absolute z-50 top-full -mt-0 bg-zinc-800/95 backdrop-blur-sm rounded-lg shadow-lg border border-zinc-700/50 min-w-[280px] ${dropdownClassName || 'w-full'}`}>
+        <div className={`absolute z-50 top-full mt-1 bg-warm-white/95 backdrop-blur-md rounded-lg shadow-xl border border-royal-blue/30 min-w-[280px] ${dropdownClassName || 'w-full'}`}>
           <div className="p-4">
             <div className="flex items-center justify-between mb-4">
               <button
                 type="button"
                 onClick={(e) => changeMonth(-1, e)}
-                className="text-zinc-300 hover:text-gold p-1"
+                className="text-gray-600 hover:text-royal-blue p-2 rounded-lg hover:bg-royal-blue/10 transition-all duration-200"
               >
-                &#x3c;
+                <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M15 18l-6-6 6-6"/>
+                </svg>
               </button>
-              <div className="text-white font-medium">
+              <div className="text-gray-700 font-medium text-lg">
                 {monthNames[currentDate.getMonth()]} {currentDate.getFullYear()}
               </div>
               <button
                 type="button"
                 onClick={(e) => changeMonth(1, e)}
-                className="text-zinc-300 hover:text-gold p-1"
+                className="text-gray-600 hover:text-royal-blue p-2 rounded-lg hover:bg-royal-blue/10 transition-all duration-200"
               >
-                &#x3e;
+                <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M9 18l6-6-6-6"/>
+                </svg>
               </button>
             </div>
             
             <div className="grid grid-cols-7 gap-1">
               {weekDays.map(day => (
-                <div key={day} className="text-center text-zinc-400 text-sm py-1">
+                <div key={day} className="text-center text-royal-blue font-medium text-sm py-2">
                   {day}
                 </div>
               ))}
@@ -191,10 +195,10 @@ const DateInput = ({ value, onChange, name, id, className, dropdownClassName }) 
                     key={index}
                     onClick={() => handleDateSelect(dateInfo)}
                     className={`
-                      text-center p-1 text-sm rounded transition-colors duration-200
-                      ${dateInfo.isCurrentMonth ? 'text-white hover:bg-zinc-700/70' : 'text-zinc-500'}
-                      ${isSelected ? 'bg-gold text-black hover:bg-gold/90' : ''}
-                      ${isToday && !isSelected ? 'border border-gold/50' : ''}
+                      text-center p-2 text-sm rounded-lg transition-all duration-200
+                      ${dateInfo.isCurrentMonth ? 'text-gray-700 hover:bg-royal-blue/10 hover:text-royal-blue' : 'text-gray-400'}
+                      ${isSelected ? 'bg-gradient-to-r from-royal-blue to-royal-blue-light text-white shadow-md' : ''}
+                      ${isToday && !isSelected ? 'border border-gold/50 bg-gold/10' : ''}
                       ${dateInfo.isPrevMonth || dateInfo.isNextMonth ? 'opacity-50' : ''}
                     `}
                   >
@@ -208,7 +212,7 @@ const DateInput = ({ value, onChange, name, id, className, dropdownClassName }) 
               <button
                 type="button"
                 onClick={handleClear}
-                className="px-3 py-1 text-sm text-zinc-300 hover:text-white bg-zinc-700/50 hover:bg-zinc-700 rounded transition-colors duration-200"
+                className="px-4 py-2 text-sm text-gray-600 hover:text-royal-blue bg-gray-100 hover:bg-royal-blue/10 rounded-lg transition-all duration-200"
               >
                 Clear
               </button>

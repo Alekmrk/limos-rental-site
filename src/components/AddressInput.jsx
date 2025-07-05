@@ -378,9 +378,9 @@ const AddressInput = ({ value, onChange, name, placeholder, onPlaceSelected, cla
         onFocus={handleInputFocus}
         name={name}
         placeholder={placeholder || "Enter location"}
-        className={`bg-zinc-800/30 mb-3 py-2 px-4 w-full border text-white transition-colors ${
-          error ? 'border-red-500' : isLocationSelected ? 'border-gold' : 'border-zinc-700/50'
-        } ${className || ''} ${showSuggestions ? 'rounded-t-xl rounded-b-none' : 'rounded-xl'}`}
+        className={`bg-warm-white/80 backdrop-blur-sm mb-3 py-3 px-4 w-full border text-gray-700 transition-all duration-200 hover:border-royal-blue/30 focus:border-royal-blue/50 focus:shadow-[0_0_15px_rgba(65,105,225,0.1)] focus:outline-none ${
+          error ? 'border-red-500 ring-1 ring-red-500/50' : isLocationSelected ? 'border-gold/50 ring-1 ring-gold/20' : 'border-royal-blue/20'
+        } ${className || ''} ${showSuggestions ? 'rounded-t-lg rounded-b-none' : 'rounded-lg'}`}
         autoComplete="off"
         aria-label={placeholder || "Location input"}
         aria-invalid={!!error}
@@ -391,18 +391,11 @@ const AddressInput = ({ value, onChange, name, placeholder, onPlaceSelected, cla
         aria-activedescendant={activeSuggestionIndex >= 0 ? `suggestion-${activeSuggestionIndex}` : undefined}
       />
       
-      {/* Custom suggestions dropdown - styled to match documentation */}
+      {/* Custom suggestions dropdown - updated to harmonious theme */}
       {showSuggestions && predictions.length > 0 && (
         <div
           ref={suggestionsRef}
-          className="absolute z-[9999] w-full top-full -mt-0 overflow-hidden"
-          style={{
-            background: 'rgba(39, 39, 42, 0.85)',
-            backdropFilter: 'blur(16px)',
-            borderRadius: '1rem',
-            border: '1px solid rgba(255, 255, 255, 0.1)',
-            boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)'
-          }}
+          className="absolute z-[9999] w-full top-full -mt-0 bg-warm-white/95 backdrop-blur-md border border-royal-blue/30 rounded-lg shadow-xl overflow-hidden"
           role="listbox"
         >
           {predictions.map((suggestion, index) => (
@@ -411,41 +404,29 @@ const AddressInput = ({ value, onChange, name, placeholder, onPlaceSelected, cla
               id={`suggestion-${index}`}
               className={`flex items-center cursor-pointer transition-all duration-200 ${
                 index === activeSuggestionIndex 
-                  ? '' 
-                  : ''
-              } ${index !== 0 ? 'border-t border-white/5' : ''}`}
+                  ? 'bg-royal-blue/10' 
+                  : 'hover:bg-royal-blue/5'
+              } ${index !== 0 ? 'border-t border-royal-blue/10' : ''}`}
               style={{
-                padding: '0.75rem 1.5rem',
-                fontSize: '14px',
-                lineHeight: '1.5',
-                background: index === activeSuggestionIndex 
-                  ? 'rgba(212, 175, 55, 0.2)' 
-                  : 'transparent'
+                padding: '0.75rem 1rem'
               }}
               onMouseEnter={() => setActiveSuggestionIndex(index)}
               onClick={() => selectPlace(suggestion)}
               role="option"
               aria-selected={index === activeSuggestionIndex}
             >
-              <div 
-                className="mr-3 flex-shrink-0"
-                style={{
-                  filter: 'brightness(0) invert(1)',
-                  opacity: '0.5',
-                  marginTop: '2px'
-                }}
-              >
+              <div className="mr-3 flex-shrink-0 text-royal-blue">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
                   <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 010-5 2.5 2.5 0 010 5z"/>
                 </svg>
               </div>
               <div className="flex-1 min-w-0">
-                <div style={{ color: 'white', fontSize: '14px', paddingRight: '3px' }}>
+                <div className="text-gray-700 text-sm font-medium">
                   {highlightMatch(suggestion.placePrediction.structuredFormat?.mainText?.text || 
                    suggestion.placePrediction.text?.text, value)}
                 </div>
                 {suggestion.placePrediction.structuredFormat?.secondaryText?.text && (
-                  <div style={{ color: 'rgba(255, 255, 255, 0.5)', fontSize: '14px' }}>
+                  <div className="text-gray-500 text-sm">
                     {suggestion.placePrediction.structuredFormat.secondaryText.text}
                   </div>
                 )}

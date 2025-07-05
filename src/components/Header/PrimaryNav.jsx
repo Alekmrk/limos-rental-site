@@ -56,18 +56,26 @@ const PrimaryNav = ({ navHidden, screenSize, setNavHidden }) => {
 
   return (
     <nav
-      className={`absolute z-10 rounded-[1rem] shadow-default md:shadow-none top-20 left-4 md:h-full right-4 sm:w-96 sm:right-4 sm:left-auto py-8 text-center md:py-0 bg-zinc-900/95 backdrop-blur-sm border border-zinc-800 md:bg-transparent md:border-0 md:static ${
+      className={`absolute z-10 rounded-[1rem] shadow-xl md:shadow-none top-20 left-4 md:h-full right-4 sm:w-96 sm:right-4 sm:left-auto py-8 text-center md:py-0 bg-warm-white/95 backdrop-blur-md border border-royal-blue/20 md:bg-transparent md:border-0 md:static ${
         navHidden && "hidden"
       }`}
     >
       <ul className="flex flex-col md:flex-row gap-12 md:gap-8 lg:gap-12 mb-8 md:mb-0 justify-center">
         <li>
-          <NavLink className="nav-link" to="/" onClick={handleNavClick}>
+          <NavLink
+            className="block text-gray-700 hover:text-royal-blue font-medium text-lg transition-all duration-200 hover:bg-royal-blue/10 px-3 py-2 rounded-lg md:bg-transparent md:hover:bg-transparent md:px-0 md:py-0"
+            to="/"
+            onClick={handleNavClick}
+          >
             Home
           </NavLink>
         </li>
         <li>
-          <NavLink className="nav-link" to="/vehicles" onClick={handleNavClick}>
+          <NavLink
+            className="block text-gray-700 hover:text-royal-blue font-medium text-lg transition-all duration-200 hover:bg-royal-blue/10 px-3 py-2 rounded-lg md:bg-transparent md:hover:bg-transparent md:px-0 md:py-0"
+            to="/vehicles"
+            onClick={handleNavClick}
+          >
             Vehicles
           </NavLink>
         </li>
@@ -75,7 +83,7 @@ const PrimaryNav = ({ navHidden, screenSize, setNavHidden }) => {
         {/* Services Dropdown */}
         <li className="relative" ref={servicesDropdownRef}>
           <button
-            className="nav-link inline-flex items-center gap-2"
+            className="block text-gray-700 hover:text-royal-blue font-medium text-lg transition-all duration-200 hover:bg-royal-blue/10 px-3 py-2 rounded-lg md:bg-transparent md:hover:bg-transparent md:px-0 md:py-0 inline-flex items-center gap-2"
             onClick={toggleServicesDropdown}
           >
             Services
@@ -90,42 +98,42 @@ const PrimaryNav = ({ navHidden, screenSize, setNavHidden }) => {
           <div
             className={`${
               servicesDropdownOpen ? "block" : "hidden"
-            } absolute top-full left-1/2 transform -translate-x-1/2 mt-2 w-64 bg-zinc-900/95 backdrop-blur-sm border border-zinc-700/50 rounded-lg shadow-lg py-2 z-20`}
+            } absolute top-full left-1/2 transform -translate-x-1/2 mt-2 w-64 bg-warm-white/95 backdrop-blur-md border border-royal-blue/30 rounded-lg shadow-xl py-2 z-20`}
           >
             <NavLink
               to="/services"
-              className="block px-4 py-3 text-sm text-zinc-300 hover:text-gold hover:bg-zinc-800/50 transition-colors font-medium"
+              className="block px-4 py-3 text-sm text-gray-700 hover:text-royal-blue hover:bg-royal-blue/10 transition-all duration-200 font-medium"
               onClick={handleNavClick}
             >
               All Services
             </NavLink>
             <div className="px-4 py-2">
-              <div className="border-t border-zinc-700/50"></div>
+              <div className="border-t border-royal-blue/20"></div>
             </div>
             <NavLink
               to="/airport-transfer"
-              className="block px-4 py-3 text-sm text-zinc-300 hover:text-gold hover:bg-zinc-800/50 transition-colors"
+              className="block px-4 py-3 text-sm text-gray-700 hover:text-royal-blue hover:bg-royal-blue/10 transition-all duration-200"
               onClick={handleNavClick}
             >
               Airport Transfer
             </NavLink>
             <NavLink
               to="/distance-transfer"
-              className="block px-4 py-3 text-sm text-zinc-300 hover:text-gold hover:bg-zinc-800/50 transition-colors"
+              className="block px-4 py-3 text-sm text-gray-700 hover:text-royal-blue hover:bg-royal-blue/10 transition-all duration-200"
               onClick={handleNavClick}
             >
               Distance Transfer
             </NavLink>
             <NavLink
               to="/hourly-transfer"
-              className="block px-4 py-3 text-sm text-zinc-300 hover:text-gold hover:bg-zinc-800/50 transition-colors"
+              className="block px-4 py-3 text-sm text-gray-700 hover:text-royal-blue hover:bg-royal-blue/10 transition-all duration-200"
               onClick={handleNavClick}
             >
               Hourly Service
             </NavLink>
             <NavLink
               to="/special-request"
-              className="block px-4 py-3 text-sm text-zinc-300 hover:text-gold hover:bg-zinc-800/50 transition-colors"
+              className="block px-4 py-3 text-sm text-gray-700 hover:text-royal-blue hover:bg-royal-blue/10 transition-all duration-200"
               onClick={handleNavClick}
             >
               Special/Personalized Transfer
@@ -136,7 +144,7 @@ const PrimaryNav = ({ navHidden, screenSize, setNavHidden }) => {
         {/* Events Dropdown */}
         <li className="relative" ref={eventsDropdownRef}>
           <button
-            className="nav-link inline-flex items-center gap-2"
+            className="block text-gray-700 hover:text-royal-blue font-medium text-lg transition-all duration-200 hover:bg-royal-blue/10 px-3 py-2 rounded-lg md:bg-transparent md:hover:bg-transparent md:px-0 md:py-0 inline-flex items-center gap-2"
             onClick={toggleEventsDropdown}
           >
             Events
@@ -151,14 +159,14 @@ const PrimaryNav = ({ navHidden, screenSize, setNavHidden }) => {
           <div
             className={`${
               eventsDropdownOpen ? "block" : "hidden"
-            } absolute top-full left-1/2 transform -translate-x-1/2 mt-2 w-64 bg-zinc-900/95 backdrop-blur-sm border border-zinc-700/50 rounded-lg shadow-lg py-2 z-20`}
+            } absolute top-full left-1/2 transform -translate-x-1/2 mt-2 w-64 bg-warm-white/95 backdrop-blur-md border border-royal-blue/30 rounded-lg shadow-xl py-2 z-20`}
           >
-            <div className="px-4 py-2 text-xs text-zinc-500 uppercase tracking-wide">
+            <div className="px-4 py-2 text-xs text-royal-blue uppercase tracking-wide font-medium">
               Premium Events
             </div>
             <NavLink
               to="/davos-forum"
-              className="block px-4 py-3 text-sm text-zinc-300 hover:text-gold hover:bg-zinc-800/50 transition-colors"
+              className="block px-4 py-3 text-sm text-gray-700 hover:text-royal-blue hover:bg-royal-blue/10 transition-all duration-200"
               onClick={handleNavClick}
             >
               Davos Forum
@@ -167,7 +175,11 @@ const PrimaryNav = ({ navHidden, screenSize, setNavHidden }) => {
         </li>
 
         <li>
-          <NavLink className="nav-link" to="/contact" onClick={handleNavClick}>
+          <NavLink
+            className="block text-gray-700 hover:text-royal-blue font-medium text-lg transition-all duration-200 hover:bg-royal-blue/10 px-3 py-2 rounded-lg md:bg-transparent md:hover:bg-transparent md:px-0 md:py-0"
+            to="/contact"
+            onClick={handleNavClick}
+          >
             Contact
           </NavLink>
         </li>

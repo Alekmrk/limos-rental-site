@@ -86,20 +86,20 @@ const TimeInput = ({ value, onChange, name, id, className, dropdownClassName }) 
       />
       
       {showPicker && (
-        <div className={`absolute z-50 top-full -mt-0 bg-zinc-800/95 backdrop-blur-sm rounded-lg shadow-lg border border-zinc-700/50 ${dropdownClassName || 'w-full'}`}>
-          <div className="p-2 flex">
+        <div className={`absolute z-50 top-full mt-1 bg-warm-white/95 backdrop-blur-md rounded-lg shadow-xl border border-royal-blue/30 ${dropdownClassName || 'w-full'}`}>
+          <div className="p-3 flex gap-2">
             {/* Hours column */}
-            <div ref={hoursRef} className="flex-1 h-[200px] overflow-y-auto scrollbar-thin scrollbar-thumb-zinc-600 scrollbar-track-transparent border-r border-zinc-700/50">
-              <div className="text-center text-sm text-zinc-400 pb-2 border-b border-zinc-700/50">Hours</div>
-              <div className="grid grid-cols-1 gap-0.5">
+            <div ref={hoursRef} className="flex-1 h-[200px] overflow-y-auto scrollbar-thin scrollbar-thumb-royal-blue/60 scrollbar-track-transparent border-r border-royal-blue/20 pr-2">
+              <div className="text-center text-sm text-royal-blue font-medium pb-2 border-b border-royal-blue/20 mb-2">Hours</div>
+              <div className="grid grid-cols-1 gap-1">
                 {hours.map((hour) => (
                   <button
                     key={hour}
                     type="button"
                     data-hour={hour}
                     onClick={() => handleTimeSelect(hour, selectedMinute)}
-                    className={`text-center px-3 py-2 hover:bg-zinc-700/70 rounded transition-colors duration-200 ${
-                      selectedHour === hour ? 'bg-gold text-black' : 'text-white'
+                    className={`text-center px-3 py-2 hover:bg-royal-blue/10 rounded-lg transition-all duration-200 ${
+                      selectedHour === hour ? 'bg-gradient-to-r from-royal-blue to-royal-blue-light text-white shadow-md' : 'text-gray-700 hover:text-royal-blue'
                     }`}
                   >
                     {hour}
@@ -109,17 +109,17 @@ const TimeInput = ({ value, onChange, name, id, className, dropdownClassName }) 
             </div>
             
             {/* Minutes column */}
-            <div ref={minutesRef} className="flex-1 h-[200px] overflow-y-auto scrollbar-thin scrollbar-thumb-zinc-600 scrollbar-track-transparent">
-              <div className="text-center text-sm text-zinc-400 pb-2 border-b border-zinc-700/50">Minutes</div>
-              <div className="grid grid-cols-1 gap-0.5">
+            <div ref={minutesRef} className="flex-1 h-[200px] overflow-y-auto scrollbar-thin scrollbar-thumb-royal-blue/60 scrollbar-track-transparent pl-2">
+              <div className="text-center text-sm text-royal-blue font-medium pb-2 border-b border-royal-blue/20 mb-2">Minutes</div>
+              <div className="grid grid-cols-1 gap-1">
                 {minutes.map((minute) => (
                   <button
                     key={minute}
                     type="button"
                     data-minute={minute}
                     onClick={() => handleTimeSelect(selectedHour, minute)}
-                    className={`text-center px-3 py-2 hover:bg-zinc-700/70 rounded transition-colors duration-200 ${
-                      selectedMinute === minute ? 'bg-gold text-black' : 'text-white'
+                    className={`text-center px-3 py-2 hover:bg-royal-blue/10 rounded-lg transition-all duration-200 ${
+                      selectedMinute === minute ? 'bg-gradient-to-r from-royal-blue to-royal-blue-light text-white shadow-md' : 'text-gray-700 hover:text-royal-blue'
                     }`}
                   >
                     {minute}
