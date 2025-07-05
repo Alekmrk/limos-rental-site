@@ -377,10 +377,13 @@ const PaymentPage = ({ scrollUp }) => {
                   reservationInfo={reservationInfo}
                 />
                 
+                {/* Payment Information List */}
                 <div className="mt-4 text-sm text-gray-600">
-                  <p>• Your payment is secured with SSL encryption</p>
-                  <p>• You will receive a confirmation email after payment</p>
-                  <p>• No additional fees will be charged</p>
+                  <li>You will be redirected to Stripe's secure payment page</li>
+                  <li>Your payment information is handled securely by Stripe</li>
+                  <li>Your card will be charged immediately</li>
+                  <li>You will receive a confirmation email</li>
+                  <li>In case of issues, contact our support at info@elitewaylimo.ch</li>
                 </div>
               </div>
             )}
