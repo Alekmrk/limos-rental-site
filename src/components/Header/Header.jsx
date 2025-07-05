@@ -47,10 +47,14 @@ const Header = () => {
           <Image
             src={logo}
             alt="Elite Way Limo"
-            className="w-28"
+            className="w-36 m-0"
+            style={{
+              filter:
+                "drop-shadow(0 0 0.001px black) drop-shadow(0 0 0.001px black) drop-shadow(0.001px 0 0 black) drop-shadow(-0.001px 0 0 black) drop-shadow(0 0.001px 0 black) drop-shadow(0 -0.001px 0 black)",
+            }}
             imageType="logo"
             priority={true}
-            sizes="112px"
+            sizes="144px"
           />
         </a>
         <PrimaryNav
