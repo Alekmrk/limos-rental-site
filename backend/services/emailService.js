@@ -344,16 +344,16 @@ const generateRouteErrorEmailContent = (routeErrorInfo) => {
     <html>
     <head>
       <style>
-        body { font-family: Arial, sans-serif; line-height: 1.6; color: #e5e5e5; background-color: #1a1a1a; }
+        body { font-family: Arial, sans-serif; line-height: 1.6; color: #374151; background: #f3f1eb; margin: 0; padding: 0; }
         .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-        .header { background-color: #dc2626; color: white; padding: 20px; text-align: center; border-radius: 8px 8px 0 0; }
-        .content { padding: 20px; background-color: #2a2a2a; border-radius: 0 0 8px 8px; }
+        .header { background-color: #4169e1; color: white; padding: 20px; text-align: center; border-radius: 8px 8px 0 0; }
+        .content { padding: 20px; background-color: #ffffff; border-radius: 0 0 8px 8px; }
         .error-section { background-color: rgba(220, 38, 38, 0.1); border: 1px solid rgba(220, 38, 38, 0.2); padding: 20px; border-radius: 8px; margin-bottom: 20px; }
-        .detail-section { background-color: rgba(0, 0, 0, 0.4); padding: 20px; border-radius: 8px; margin-bottom: 20px; }
-        .section-title { color: #f59e0b; font-size: 16px; font-weight: 600; margin-bottom: 12px; }
+        .detail-section { background-color: rgba(0, 0, 0, 0.04); padding: 20px; border-radius: 8px; margin-bottom: 20px; }
+        .section-title { color: #4169e1; font-size: 16px; font-weight: 600; margin-bottom: 12px; }
         .detail-row { margin-bottom: 8px; }
-        .detail-label { color: #d1d5db; font-weight: 500; }
-        .detail-value { color: #ffffff; margin-left: 8px; }
+        .detail-label { color: #6b7280; font-weight: 500; }
+        .detail-value { color: #374151; margin-left: 8px; }
         .footer { text-align: center; margin-top: 20px; color: #888; font-size: 12px; }
       </style>
     </head>
@@ -403,7 +403,7 @@ const generateRouteErrorEmailContent = (routeErrorInfo) => {
 
           <div class="detail-section">
             <h3 class="section-title">Recommended Actions</h3>
-            <ul style="color: #e5e5e5; margin: 0; padding-left: 20px;">
+            <ul style="color: #374151; margin: 0; padding-left: 20px;">
               ${routeErrorInfo.errorType === 'no_route_found' ? `
                 <li>Verify if the addresses are correct and accessible by road</li>
                 <li>Check for geographic restrictions or ferry connections</li>
@@ -482,22 +482,161 @@ const generateEmailContent = (reservationInfo, type = 'customer') => {
   const isHourly = reservationInfo.isHourly;
   const hasPayment = !!reservationInfo.paymentDetails;
   
-  // Shared CSS styles
+  // Updated harmonious theme styles
   const styles = `
-    body { font-family: Arial, sans-serif; line-height: 1.6; color: #e5e5e5; background-color: #1a1a1a; }
-    .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-    .header { background-color: #000; color: gold; padding: 20px; text-align: center; border-radius: 8px 8px 0 0; }
-    .content { padding: 20px; background-color: #2a2a2a; border-radius: 0 0 8px 8px; }
-    .section { background-color: rgba(0, 0, 0, 0.4); padding: 24px; border-radius: 8px; margin-bottom: 24px; }
-    .section.payment { background-color: rgba(212, 175, 55, 0.1); border: 1px solid rgba(212, 175, 55, 0.2); }
-    .section-title { color: gold; font-size: 18px; font-weight: 500; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
-    .section-content { color: #fff; }
-    .section-content p { margin: 8px 0; }
-    .section-content .subsection { margin-top: 16px; }
-    .section-content .subsection-title { color: #ccc; font-size: 14px; margin-bottom: 8px; }
-    .section-content .indent { padding-left: 16px; }
-    .detail-row { margin-bottom: 12px; }
-    .footer { text-align: center; margin-top: 20px; color: #888; font-size: 12px; }
+    body { 
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+      line-height: 1.6; 
+      color: #374151; 
+      background: linear-gradient(135deg, #f3f1eb 0%, #faf8f3 50%, #f5f2ed 100%);
+      margin: 0;
+      padding: 20px;
+    }
+    .container { 
+      max-width: 600px; 
+      margin: 0 auto; 
+      background: #ffffff;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 10px 40px rgba(65, 105, 225, 0.15);
+    }
+    .header { 
+      background: linear-gradient(135deg, #4169e1 0%, #6366f1 100%);
+      color: #ffffff; 
+      padding: 32px 24px; 
+      text-align: center;
+      position: relative;
+    }
+    .header::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #d4af37 0%, #f59e0b 100%);
+    }
+    .header h1 {
+      color: #ffffff;
+      font-size: 28px;
+      margin: 0 0 8px 0;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+    .header h2 {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 400;
+      opacity: 0.95;
+    }
+    .content { 
+      padding: 32px 24px;
+      background: #ffffff;
+    }
+    .intro {
+      text-align: center;
+      margin-bottom: 32px;
+      padding: 24px;
+      background: linear-gradient(135deg, #faf8f3 0%, #f3f1eb 100%);
+      border-radius: 12px;
+      border: 1px solid rgba(65, 105, 225, 0.1);
+    }
+    .intro h2 {
+      font-size: 24px;
+      margin-bottom: 8px;
+      color: #374151;
+      font-weight: 500;
+    }
+    .intro p {
+      color: #6b7280;
+      font-size: 16px;
+      margin: 0;
+    }
+    .section { 
+      background: linear-gradient(135deg, #faf8f3 0%, #f8f6f0 100%);
+      border: 1px solid rgba(65, 105, 225, 0.15);
+      padding: 24px; 
+      border-radius: 12px; 
+      margin-bottom: 20px;
+      backdrop-filter: blur(10px);
+    }
+    .section.payment { 
+      background: linear-gradient(135deg, rgba(212, 175, 55, 0.15) 0%, rgba(245, 158, 11, 0.1) 100%);
+      border: 1px solid rgba(212, 175, 55, 0.3);
+    }
+    .section-title { 
+      color: #4169e1; 
+      font-size: 18px; 
+      font-weight: 600; 
+      margin-bottom: 16px; 
+      display: flex; 
+      align-items: center; 
+      gap: 10px;
+    }
+    .section.payment .section-title {
+      color: #d4af37;
+    }
+    .section-content { 
+      color: #374151;
+      line-height: 1.7;
+    }
+    .section-content p { 
+      margin: 10px 0; 
+      font-size: 15px;
+    }
+    .section-content .subsection { 
+      margin-top: 20px; 
+      padding: 16px;
+      background: rgba(255, 255, 255, 0.6);
+      border-radius: 8px;
+      border-left: 3px solid #4169e1;
+    }
+    .section-content .subsection-title { 
+      color: #4169e1; 
+      font-size: 14px; 
+      font-weight: 600;
+      margin-bottom: 8px; 
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .section-content .indent { 
+      padding-left: 16px; 
+      color: #6b7280;
+    }
+    .detail-row { 
+      margin-bottom: 12px; 
+    }
+    .driver-notice {
+      background: linear-gradient(135deg, rgba(212, 175, 55, 0.1) 0%, rgba(245, 158, 11, 0.05) 100%);
+      border: 1px solid rgba(212, 175, 55, 0.3);
+      padding: 24px;
+      border-radius: 12px;
+      margin: 24px 0;
+    }
+    .driver-notice .section-title {
+      color: #d4af37;
+    }
+    .footer { 
+      text-align: center; 
+      padding: 24px;
+      background: linear-gradient(135deg, #f3f1eb 0%, #faf8f3 100%);
+      color: #6b7280; 
+      font-size: 13px;
+      border-top: 1px solid rgba(65, 105, 225, 0.1);
+    }
+    .outro {
+      text-align: center;
+      color: #6b7280;
+      margin-top: 32px;
+      padding: 24px;
+      background: linear-gradient(135deg, #faf8f3 0%, #f8f6f0 100%);
+      border-radius: 12px;
+      border: 1px solid rgba(65, 105, 225, 0.1);
+    }
+    .outro p {
+      margin: 8px 0;
+      font-size: 15px;
+    }
   `;
 
   const generateSection = (title, icon, content, className = '') => `
@@ -514,10 +653,10 @@ const generateEmailContent = (reservationInfo, type = 'customer') => {
 
   // Icons (SVG)
   const icons = {
-    payment: '<svg style="width: 20px; height: 20px;" viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/></svg>',
-    transfer: '<svg style="width: 20px; height: 20px;" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>',
-    vehicle: '<svg style="width: 20px; height: 20px;" viewBox="0 0 24 24" fill="currentColor"><path d="M21 12v-2h-2V7l-3-3-2 2-2-2-2 2-2-2-3 3v3H3v2h2v7h14v-7h2zm-5-3.5l2 2V10h-4V8.5l2-2zm-4 0l2 2V10h-4V8.5l2-2zm-4 0l2 2V10H6V8.5l2-2z"/></svg>',
-    customer: '<svg style="width: 20px; height: 20px;" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>'
+    payment: '<svg style="width: 20px; height: 20px; color: #d4af37;" viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/></svg>',
+    transfer: '<svg style="width: 20px; height: 20px; color: #4169e1;" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>',
+    vehicle: '<svg style="width: 20px; height: 20px; color: #4169e1;" viewBox="0 0 24 24" fill="currentColor"><path d="M21 12v-2h-2V7l-3-3-2 2-2-2-2 2-2-2-3 3v3H3v2h2v7h14v-7h2zm-5-3.5l2 2V10h-4V8.5l2-2zm-4 0l2 2V10h-4V8.5l2-2zm-4 0l2 2V10H6V8.5l2-2z"/></svg>',
+    customer: '<svg style="width: 20px; height: 20px; color: #4169e1;" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>'
   };
 
   // Generate payment details section if exists
@@ -613,7 +752,7 @@ const generateEmailContent = (reservationInfo, type = 'customer') => {
     ` : ''}
   `;
 
-  // Generate HTML content
+  // Generate HTML content with new harmonious theme
   const htmlContent = `
     <!DOCTYPE html>
     <html>
@@ -623,22 +762,18 @@ const generateEmailContent = (reservationInfo, type = 'customer') => {
     <body>
       <div class="container">
         <div class="header">
-          <h1 style="color: gold; font-size: 28px; margin: 0; font-weight: bold;">Elite Way Limo</h1>
-          <h2 style="margin: 10px 0 0 0;">${getEmailTitle(reservationInfo, type)}</h2>
+          <h1>Elite Way Limo</h1>
+          <h2>${getEmailTitle(reservationInfo, type)}</h2>
         </div>
         <div class="content">
           ${type === 'customer' ? `
-          <div style="text-align: center; margin-bottom: 32px;">
-            <h2 style="font-size: 24px; margin-bottom: 8px; color: #fff;">Thank You for Choosing Us!</h2>
-            <p style="color: #ccc; font-size: 18px;">
-              ${getEmailIntro(reservationInfo, type)}
-            </p>
+          <div class="intro">
+            <h2>Thank You for Choosing Us!</h2>
+            <p>${getEmailIntro(reservationInfo, type)}</p>
           </div>
           ` : `
-          <div style="text-align: center; margin-bottom: 32px;">
-            <p style="color: #ccc; font-size: 18px;">
-              ${getEmailIntro(reservationInfo, type)}
-            </p>
+          <div class="intro">
+            <p>${getEmailIntro(reservationInfo, type)}</p>
           </div>
           `}
           
@@ -649,7 +784,7 @@ const generateEmailContent = (reservationInfo, type = 'customer') => {
           
           ${type === 'customer' && !isSpecialRequest ? getDriverInfoNotice(reservationInfo, type).html : ''}
 
-          <div style="text-align: center; color: #ccc; margin-top: 32px;">
+          <div class="outro">
             <p>${getEmailOutro(reservationInfo, type)}</p>
             ${type === 'customer' ? '<p>If you have any questions, please contact us at info@elitewaylimo.ch</p>' : ''}
           </div>
@@ -766,7 +901,7 @@ const getDriverInfoNotice = (reservationInfo, type) => {
           </svg>
           Driver Information
         </h3>
-        <div class="section-content" style="color: #fff;">
+        <div class="section-content" style="color: #374151;">
           <p style="margin: 8px 0; font-size: 16px;">
             📧 <strong>We will send you a follow-up email with driver details (name, phone, vehicle info) closer to your pickup time.</strong> This follow-up email will provide you with all the necessary contact information for your assigned driver and vehicle.
           </p>
