@@ -3,7 +3,6 @@ import Button from "../../../components/Button";
 import ReservationCard from "./ReservationCard";
 import Image from "../../../components/Image";
 import bannerImage from "../../../assets/bannerNew.jpg";
-import eliteWayLogo from "../../../assets/elitewaylogo.png";
 import { FaStar, FaShieldAlt, FaClock, FaPhone } from "react-icons/fa";
 import { useEffect } from "react";
 
@@ -23,13 +22,13 @@ const BannerSection = () => {
 
   return (
     <div className="relative">
-      <div className="banner relative container-ultra-wide rounded-[1.5rem] mt-16 pb-32 md:pb-0 overflow-hidden text-center min-h-[700px] lg:min-h-[800px]">
-        {/* Optimized Background Image */}
-        <div className="absolute inset-0 z-0">
+      <div className="banner relative w-full rounded-[1.5rem] mt-16 pb-32 md:pb-0 overflow-hidden text-center min-h-[700px] lg:min-h-[800px]">
+        {/* Optimized Background Image - Full Width */}
+        <div className="absolute inset-0 z-0 -mx-4 md:-mx-8 lg:-mx-16">
           <Image
             src={bannerImage}
             alt="Elite Way Limo luxury chauffeur service"
-            className="w-full h-full object-cover"
+            className="w-[calc(100%+2rem)] md:w-[calc(100%+4rem)] lg:w-[calc(100%+8rem)] h-full object-cover"
             imageType="banner"
             priority={true}
             sizes="100vw"
@@ -46,22 +45,10 @@ const BannerSection = () => {
           <div className="absolute top-1/2 left-1/3 w-32 h-32 bg-gradient-to-br from-cream/20 to-gold/15 rounded-full blur-xl animate-float"></div>
         </div>
 
-        <div className="relative z-20 px-4 md:px-8 lg:px-16 md:mr-96 lg:mr-[28rem] xl:mr-[32rem]">
-          <div className="pt-16 md:pt-20 mb-8 md:mb-12">
-            <div className="mb-10 md:mb-12">
-              <img 
-                src={eliteWayLogo} 
-                alt="Elite Way Limo" 
-                className="h-16 sm:h-20 md:h-24 lg:h-28 xl:h-36 mx-auto object-contain animate-fade-in"
-                style={{
-                  filter: 'drop-shadow(-0.1px -0.1px 0 rgba(102,102,102,0.35)) drop-shadow(0.1px -0.1px 0 rgba(102,102,102,0.35)) drop-shadow(-0.1px 0.1px 0 rgba(102,102,102,0.35)) drop-shadow(0.1px 0.1px 0 rgba(102,102,102,0.35))'
-                }}
-                loading="eager"
-              />
-            </div>
-            
-            {/* Subtitle with softer gradient */}
-            <div className="text-xl md:text-2xl lg:text-3xl xl:text-4xl font-light text-transparent bg-gradient-to-r from-royal-blue via-gold to-royal-blue-light bg-clip-text mb-8 md:mb-10">
+        <div className="relative z-20 px-4 md:px-8 lg:px-16 md:mr-96 lg:mr-[28rem] xl:mr-[32rem] container-ultra-wide mx-auto">
+          <div className="pt-32 md:pt-40 lg:pt-48 mb-8 md:mb-12 flex items-center justify-center min-h-[400px]">
+            {/* Main Title - moved up and made bigger and bolder */}
+            <div className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-semibold text-transparent bg-gradient-to-r from-royal-blue via-gold to-royal-blue-light bg-clip-text mb-8 md:mb-10 text-center">
               Switzerland's Elite Chauffeur Service
             </div>
           </div>
@@ -94,7 +81,7 @@ const BannerSection = () => {
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16 md:mb-20">
             <Link to={"/vehicles"}>
-              <Button variant="secondary" className="transform hover:scale-105 transition-all duration-300 w-full sm:w-auto shadow-lg hover:shadow-xl bg-gradient-to-r from-royal-blue to-royal-blue-light hover:from-royal-blue-light hover:to-royal-blue text-white">
+              <Button variant="secondary" className="transform hover:scale-105 transition-all duration-300 w-full sm:w-auto">
                 Explore Our Fleet
               </Button>
             </Link>

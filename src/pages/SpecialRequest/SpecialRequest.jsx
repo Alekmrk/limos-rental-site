@@ -151,21 +151,26 @@ const SpecialRequest = ({ scrollUp }) => {
     <div className="min-h-screen">
       <div className="relative">
         {/* Hero Section with Reservation Card */}
-        <div className="relative container-big rounded-[1.5rem] text-center mt-16 pb-32 md:pb-0 md:pr-[480px] lg:pr-[520px] xl:pr-[480px] min-h-[600px] md:min-h-[700px] lg:min-h-[800px] overflow-hidden">
-          {/* Optimized Background Image */}
-          <div className="absolute inset-0 z-0">
+        <div className="relative w-full rounded-[1.5rem] text-center mt-16 pb-32 md:pb-0 md:pr-[480px] lg:pr-[520px] xl:pr-[480px] min-h-[600px] md:min-h-[700px] lg:min-h-[800px] overflow-hidden">
+          {/* Optimized Background Image - Full Width */}
+          <div className="absolute inset-0 z-0 -mx-4 md:-mx-8 lg:-mx-16">
             <Image
               src={bannerImage}
               alt="Luxury special request service"
-              className="w-full h-full object-cover"
+              className="w-[calc(100%+2rem)] md:w-[calc(100%+4rem)] lg:w-[calc(100%+8rem)] h-full object-cover"
               imageType="banner"
               priority={true}
               sizes="100vw"
             />
-            <div className="absolute inset-0 bg-gradient-to-br from-warm-gray/40 via-cream/30 to-soft-gray/40"></div>
+            <div className="absolute inset-0 bg-gradient-to-br from-warm-gray/8 via-cream/5 to-soft-gray/8"></div>
           </div>
-          
-          <div className="relative z-20">
+
+          {/* Softer Animated Background Elements */}
+          <div className="absolute inset-0 z-10" style={{ pointerEvents: 'none' }}>
+            {/* ...existing code... */}
+          </div>
+
+          <div className="relative z-20 container-big mx-auto">
             <h1 className="text-4xl sm:text-5xl md:text-8xl font-semibold pt-48 tracking-wide mb-16 md:mb-20 text-gray-700">
               <span className="text-royal-blue">Special</span> Request
             </h1>
