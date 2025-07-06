@@ -354,7 +354,7 @@ const Contact = ({ scrollUp }) => {
               
               <div>
                 <h3 className="font-medium text-gray-700 mb-2">What payment methods do you accept?</h3>
-                <p className="text-gray-600 text-sm">We accept credit cards (Visa, Mastercard, American Express) and cryptocurrency (USDT) for your convenience.</p>
+                <p className="text-gray-600 text-sm">We accept credit cards (Visa, Mastercard, American Express...) for your convenience.</p>
               </div>
             </div>
             

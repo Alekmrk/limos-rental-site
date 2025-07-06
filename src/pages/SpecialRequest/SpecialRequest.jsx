@@ -202,7 +202,7 @@ const SpecialRequest = ({ scrollUp }) => {
                 </div>
                 <div className="flex items-center gap-2 bg-cream-light/80 backdrop-blur-sm px-4 py-2 rounded-full border border-royal-blue/20 shadow-md">
                   <FontAwesomeIcon icon={faShieldAlt} className="text-emerald-500" />
-                  <span className="text-gray-700 font-medium">No Upfront Payment</span>
+                  <span className="text-gray-700 font-medium">Free Consultation</span>
                 </div>
               </div>
             </div>
@@ -219,7 +219,7 @@ const SpecialRequest = ({ scrollUp }) => {
               </div>
               <div className="flex items-center gap-2 bg-cream-light/80 backdrop-blur-sm px-4 py-2 rounded-full border border-royal-blue/20 shadow-md">
                 <FontAwesomeIcon icon={faShieldAlt} className="text-emerald-500" />
-                <span className="text-gray-700 font-medium">No Upfront Payment</span>
+                <span className="text-gray-700 font-medium">Free Consultation</span>
               </div>
             </div>
           </div>
@@ -423,7 +423,7 @@ const SpecialRequest = ({ scrollUp }) => {
               <div className="grid md:grid-cols-2 gap-8 items-center">
                 <div className="space-y-6">
                   <div className="bg-gradient-to-br from-royal-blue/15 to-gold/5 p-6 rounded-lg border border-royal-blue/20">
-                    <h3 className="text-xl font-semibold mb-3 text-royal-blue-dark">No Upfront Payment</h3>
+                    <h3 className="text-xl font-semibold mb-3 text-royal-blue-dark">Free Consultation</h3>
                     <p className="text-gray-600">
                       Submit your request with zero payment required. We'll provide a detailed quote 
                       and only proceed once you're completely satisfied with the proposal.
@@ -442,7 +442,7 @@ const SpecialRequest = ({ scrollUp }) => {
                     <h3 className="text-xl font-semibold mb-3 text-royal-blue-dark">Flexible Payment</h3>
                     <p className="text-gray-600">
                       Multiple payment options available including corporate billing, 
-                      installment plans for large events, and premium cryptocurrency options.
+                      installment plans for large events.
                     </p>
                   </div>
                 </div>
