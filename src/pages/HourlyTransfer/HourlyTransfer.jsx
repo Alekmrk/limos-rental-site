@@ -196,7 +196,7 @@ const HourlyTransfer = ({ scrollUp }) => {
         </div>
 
         {/* Softer Decorative Bottom Wave */}
-        <div className="absolute bottom-0 left-0 right-0 z-20">
+        <div className="absolute bottom-0 left-0 right-0 z-20 -mb-1">
           <svg className="w-full h-16 text-cream" viewBox="0 0 1200 80" preserveAspectRatio="none">
             <path d="M0,80V40c200,0,400,-20,600,0s400,20,600,0V80Z" fill="currentColor" opacity="0.8"/>
             <path d="M0,80V50c150,0,350,-15,600,10s450,-10,600,5V80Z" fill="currentColor"/>

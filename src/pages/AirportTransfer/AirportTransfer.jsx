@@ -44,13 +44,13 @@ const AirportTransfer = ({ scrollUp }) => {
     <div className="min-h-screen">
       <div className="relative">
         {/* Hero Section with Reservation Card */}
-        <div className="relative w-full rounded-[1.5rem] text-center mt-16 pb-32 md:pb-0 md:pr-[480px] lg:pr-[520px] xl:pr-[480px] min-h-[600px] md:min-h-[700px] lg:min-h-[800px] overflow-hidden">
+        <div className="banner-home relative w-full rounded-[1.5rem] text-center mt-16 pb-32 md:pb-0 md:pr-[480px] lg:pr-[520px] xl:pr-[480px] min-h-[600px] md:min-h-[700px] lg:min-h-[800px] overflow-hidden">
           {/* Optimized Background Image - Full Width */}
-          <div className="absolute inset-0 z-0 -mx-4 md:-mx-8 lg:-mx-16">
+          <div className="absolute inset-0 z-0">
             <Image
               src={airportTransferImage}
               alt="Luxury airport transfer service"
-              className="w-[calc(100%+2rem)] md:w-[calc(100%+4rem)] lg:w-[calc(100%+8rem)] h-full object-cover"
+              className="w-full h-full object-cover"
               imageType="banner"
               priority={true}
               sizes="100vw"
@@ -103,8 +103,8 @@ const AirportTransfer = ({ scrollUp }) => {
         </div>
 
         {/* Softer Decorative Bottom Wave */}
-        <div className="absolute bottom-0 left-0 right-0 z-20">
-          <svg className="w-full h-16 text-cream" viewBox="0 0 1200 80" preserveAspectRatio="none">
+        <div className="absolute bottom-0 left-0 right-0 z-20 -mb-1">
+          <svg className="w-full h-20 text-cream" viewBox="0 0 1200 80" preserveAspectRatio="none">
             <path d="M0,80V40c200,0,400,-20,600,0s400,20,600,0V80Z" fill="currentColor" opacity="0.8"/>
             <path d="M0,80V50c150,0,350,-15,600,10s450,-10,600,5V80Z" fill="currentColor"/>
           </svg>
