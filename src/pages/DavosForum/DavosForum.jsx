@@ -144,8 +144,15 @@ const DavosForum = ({ scrollUp }) => {
 
         {/* Softer Decorative Bottom Wave */}
         <div className="absolute bottom-0 left-0 right-0 z-20 -mb-1">
-          <svg className="w-full h-16 text-cream" viewBox="0 0 1200 80" preserveAspectRatio="none">
-            <path d="M0,80V40c200,0,400,-20,600,0s400,20,600,0V80Z" fill="currentColor" opacity="0.8"/>
+          <svg className="w-full h-20 text-warm-gray" viewBox="0 0 1200 80" preserveAspectRatio="none">
+            <defs>
+              <linearGradient id="softWaveGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stopColor="currentColor" stopOpacity="0.9"/>
+                <stop offset="50%" stopColor="#F8F7F4" stopOpacity="0.8"/>
+                <stop offset="100%" stopColor="currentColor" stopOpacity="0.9"/>
+              </linearGradient>
+            </defs>
+            <path d="M0,80V40c200,0,400,-20,600,0s400,20,600,0V80Z" fill="url(#softWaveGradient)" opacity="0.9"/>
             <path d="M0,80V50c150,0,350,-15,600,10s450,-10,600,5V80Z" fill="currentColor"/>
           </svg>
         </div>

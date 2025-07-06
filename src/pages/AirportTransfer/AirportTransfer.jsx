@@ -121,151 +121,166 @@ const AirportTransfer = ({ scrollUp }) => {
           </div>
         </div>
         
-        {/* Features Section with Darker Cream Background */}
-        <div className="bg-gradient-to-br from-cream to-warm-gray py-20">
-          <div className="container-default">
-            <div className="max-w-6xl mx-auto">
-              <div className="text-center mb-16">
-                <h2 className="text-4xl md:text-6xl font-semibold mb-6 text-gray-700">
-                  Why Choose Our <span className="text-royal-blue">Airport Service</span>
-                </h2>
-                <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-                  We understand that airport transfers require precision, reliability, and comfort. 
-                  Our specialized service ensures a stress-free journey every time.
-                </p>
-              </div>
+        {/* Softer Decorative Bottom Wave */}
+        <div className="absolute bottom-0 left-0 right-0 z-20 -mb-1">
+          <svg className="w-full h-20 text-warm-gray" viewBox="0 0 1200 80" preserveAspectRatio="none">
+            <defs>
+              <linearGradient id="softWaveGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stopColor="currentColor" stopOpacity="0.9"/>
+                <stop offset="50%" stopColor="#F8F7F4" stopOpacity="0.8"/>
+                <stop offset="100%" stopColor="currentColor" stopOpacity="0.9"/>
+              </linearGradient>
+            </defs>
+            <path d="M0,80V40c200,0,400,-20,600,0s400,20,600,0V80Z" fill="url(#softWaveGradient)" opacity="0.9"/>
+            <path d="M0,80V50c150,0,350,-15,600,10s450,-10,600,5V80Z" fill="currentColor"/>
+          </svg>
+        </div>
+      </div>
+        
+      {/* Features Section with Darker Cream Background */}
+      <div className="bg-gradient-to-br from-cream to-warm-gray py-20">
+        <div className="container-default">
+          <div className="max-w-6xl mx-auto">
+            <div className="text-center mb-16">
+              <h2 className="text-4xl md:text-6xl font-semibold mb-6 text-gray-700">
+                Why Choose Our <span className="text-royal-blue">Airport Service</span>
+              </h2>
+              <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+                We understand that airport transfers require precision, reliability, and comfort. 
+                Our specialized service ensures a stress-free journey every time.
+              </p>
+            </div>
 
-              <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-20">
-                {features.map((feature, index) => (
-                  <div key={index} className="bg-cream-light/90 p-6 rounded-lg border border-royal-blue/15 text-center hover:border-royal-blue/30 transition-all duration-300 shadow-md hover:shadow-lg">
-                    <div className="w-16 h-16 bg-royal-blue/15 rounded-full flex items-center justify-center mx-auto mb-4">
-                      <FontAwesomeIcon icon={feature.icon} className="text-royal-blue text-2xl" />
-                    </div>
-                    <h3 className="text-xl font-semibold mb-3 text-gray-700">{feature.title}</h3>
-                    <p className="text-gray-600">{feature.description}</p>
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-20">
+              {features.map((feature, index) => (
+                <div key={index} className="bg-cream-light/90 p-6 rounded-lg border border-royal-blue/15 text-center hover:border-royal-blue/30 transition-all duration-300 shadow-md hover:shadow-lg">
+                  <div className="w-16 h-16 bg-royal-blue/15 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <FontAwesomeIcon icon={feature.icon} className="text-royal-blue text-2xl" />
                   </div>
-                ))}
-              </div>
+                  <h3 className="text-xl font-semibold mb-3 text-gray-700">{feature.title}</h3>
+                  <p className="text-gray-600">{feature.description}</p>
+                </div>
+              ))}
+            </div>
 
-              {/* Service Process */}
-              <div className="mb-20">
-                <h2 className="text-4xl font-semibold mb-12 text-center text-gray-700">
-                  How Our <span className="text-royal-blue">Airport Service</span> Works
-                </h2>
+            {/* Service Process */}
+            <div className="mb-20">
+              <h2 className="text-4xl font-semibold mb-12 text-center text-gray-700">
+                How Our <span className="text-royal-blue">Airport Service</span> Works
+              </h2>
+              
+              <div className="grid md:grid-cols-3 gap-8">
+                <div className="text-center bg-cream-light/90 p-8 rounded-lg border border-royal-blue/15">
+                  <div className="w-20 h-20 bg-royal-blue/15 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <span className="text-royal-blue text-2xl font-bold">1</span>
+                  </div>
+                  <h3 className="text-xl font-semibold mb-4 text-gray-700">Book Your Transfer</h3>
+                  <p className="text-gray-600">
+                    Provide your flight details and destination. We'll handle the rest with real-time flight tracking.
+                  </p>
+                </div>
                 
-                <div className="grid md:grid-cols-3 gap-8">
-                  <div className="text-center bg-cream-light/90 p-8 rounded-lg border border-royal-blue/15">
-                    <div className="w-20 h-20 bg-royal-blue/15 rounded-full flex items-center justify-center mx-auto mb-6">
-                      <span className="text-royal-blue text-2xl font-bold">1</span>
-                    </div>
-                    <h3 className="text-xl font-semibold mb-4 text-gray-700">Book Your Transfer</h3>
-                    <p className="text-gray-600">
-                      Provide your flight details and destination. We'll handle the rest with real-time flight tracking.
-                    </p>
+                <div className="text-center bg-cream-light/90 p-8 rounded-lg border border-royal-blue/15">
+                  <div className="w-20 h-20 bg-royal-blue/15 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <span className="text-royal-blue text-2xl font-bold">2</span>
                   </div>
-                  
-                  <div className="text-center bg-cream-light/90 p-8 rounded-lg border border-royal-blue/15">
-                    <div className="w-20 h-20 bg-royal-blue/15 rounded-full flex items-center justify-center mx-auto mb-6">
-                      <span className="text-royal-blue text-2xl font-bold">2</span>
-                    </div>
-                    <h3 className="text-xl font-semibold mb-4 text-gray-700">Meet & Greet</h3>
-                    <p className="text-gray-600">
-                      Your chauffeur will be waiting in arrivals with a personalized name sign, ready to assist with luggage.
-                    </p>
-                  </div>
-                  
-                  <div className="text-center bg-cream-light/90 p-8 rounded-lg border border-royal-blue/15">
-                    <div className="w-20 h-20 bg-royal-blue/15 rounded-full flex items-center justify-center mx-auto mb-6">
-                      <span className="text-royal-blue text-2xl font-bold">3</span>
-                    </div>
-                    <h3 className="text-xl font-semibold mb-4 text-gray-700">Luxury Journey</h3>
-                    <p className="text-gray-600">
-                      Relax in comfort as we transport you to your destination via the most efficient route.
-                    </p>
-                  </div>
+                  <h3 className="text-xl font-semibold mb-4 text-gray-700">Meet & Greet</h3>
+                  <p className="text-gray-600">
+                    Your chauffeur will be waiting in arrivals with a personalized name sign, ready to assist with luggage.
+                  </p>
                 </div>
-              </div>
-
-              {/* Special Features for Airport Transfers */}
-              <div className="bg-gradient-to-br from-royal-blue/10 to-gold/5 p-8 rounded-lg border border-royal-blue/20 mb-20">
-                <h2 className="text-3xl font-semibold mb-6 text-center text-royal-blue-dark">Airport Transfer Perks</h2>
                 
-                <div className="grid md:grid-cols-2 gap-8">
-                  <div className="space-y-4">
-                    <div className="flex items-start gap-4">
-                      <FontAwesomeIcon icon={faClock} className="text-royal-blue text-xl mt-1" />
-                      <div>
-                        <h3 className="font-semibold text-gray-700 mb-1">Free Wait Time</h3>
-                        <p className="text-gray-600 text-sm">60 minutes free waiting time for international flights, 30 minutes for domestic.</p>
-                      </div>
-                    </div>
-                    
-                    <div className="flex items-start gap-4">
-                      <FontAwesomeIcon icon={faShieldAlt} className="text-emerald-500 text-xl mt-1" />
-                      <div>
-                        <h3 className="font-semibold text-gray-700 mb-1">Flight Monitoring</h3>
-                        <p className="text-gray-600 text-sm">Real-time flight tracking ensures we're always ready when you land.</p>
-                      </div>
-                    </div>
-                    
-                    <div className="flex items-start gap-4">
-                      <FontAwesomeIcon icon={faUserTie} className="text-royal-blue text-xl mt-1" />
-                      <div>
-                        <h3 className="font-semibold text-gray-700 mb-1">Meet & Greet Service</h3>
-                        <p className="text-gray-600 text-sm">Personal assistance with luggage and navigation through the airport.</p>
-                      </div>
+                <div className="text-center bg-cream-light/90 p-8 rounded-lg border border-royal-blue/15">
+                  <div className="w-20 h-20 bg-royal-blue/15 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <span className="text-royal-blue text-2xl font-bold">3</span>
+                  </div>
+                  <h3 className="text-xl font-semibold mb-4 text-gray-700">Luxury Journey</h3>
+                  <p className="text-gray-600">
+                    Relax in comfort as we transport you to your destination via the most efficient route.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Special Features for Airport Transfers */}
+            <div className="bg-gradient-to-br from-royal-blue/10 to-gold/5 p-8 rounded-lg border border-royal-blue/20 mb-20">
+              <h2 className="text-3xl font-semibold mb-6 text-center text-royal-blue-dark">Airport Transfer Perks</h2>
+              
+              <div className="grid md:grid-cols-2 gap-8">
+                <div className="space-y-4">
+                  <div className="flex items-start gap-4">
+                    <FontAwesomeIcon icon={faClock} className="text-royal-blue text-xl mt-1" />
+                    <div>
+                      <h3 className="font-semibold text-gray-700 mb-1">Free Wait Time</h3>
+                      <p className="text-gray-600 text-sm">60 minutes free waiting time for international flights, 30 minutes for domestic.</p>
                     </div>
                   </div>
                   
-                  <div className="space-y-4">
-                    <div className="flex items-start gap-4">
-                      <FontAwesomeIcon icon={faWifi} className="text-royal-blue text-xl mt-1" />
-                      <div>
-                        <h3 className="font-semibold text-gray-700 mb-1">Premium Amenities</h3>
-                        <p className="text-gray-600 text-sm">Complimentary WiFi, bottled water, and phone chargers in all vehicles.</p>
-                      </div>
+                  <div className="flex items-start gap-4">
+                    <FontAwesomeIcon icon={faShieldAlt} className="text-emerald-500 text-xl mt-1" />
+                    <div>
+                      <h3 className="font-semibold text-gray-700 mb-1">Flight Monitoring</h3>
+                      <p className="text-gray-600 text-sm">Real-time flight tracking ensures we're always ready when you land.</p>
                     </div>
-                    
-                    <div className="flex items-start gap-4">
-                      <FontAwesomeIcon icon={faCoffee} className="text-gold text-xl mt-1" />
-                      <div>
-                        <h3 className="font-semibold text-gray-700 mb-1">Refreshments</h3>
-                        <p className="text-gray-600 text-sm">Complimentary beverages and snacks available upon request.</p>
-                      </div>
+                  </div>
+                  
+                  <div className="flex items-start gap-4">
+                    <FontAwesomeIcon icon={faUserTie} className="text-royal-blue text-xl mt-1" />
+                    <div>
+                      <h3 className="font-semibold text-gray-700 mb-1">Meet & Greet Service</h3>
+                      <p className="text-gray-600 text-sm">Personal assistance with luggage and navigation through the airport.</p>
                     </div>
-                    
-                    <div className="flex items-start gap-4">
-                      <FontAwesomeIcon icon={faPlane} className="text-royal-blue text-xl mt-1" />
-                      <div>
-                        <h3 className="font-semibold text-gray-700 mb-1">Airport Expertise</h3>
-                        <p className="text-gray-600 text-sm">Our drivers know all terminals, shortcuts, and optimal pickup points.</p>
-                      </div>
+                  </div>
+                </div>
+                
+                <div className="space-y-4">
+                  <div className="flex items-start gap-4">
+                    <FontAwesomeIcon icon={faWifi} className="text-royal-blue text-xl mt-1" />
+                    <div>
+                      <h3 className="font-semibold text-gray-700 mb-1">Premium Amenities</h3>
+                      <p className="text-gray-600 text-sm">Complimentary WiFi, bottled water, and phone chargers in all vehicles.</p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-start gap-4">
+                    <FontAwesomeIcon icon={faCoffee} className="text-gold text-xl mt-1" />
+                    <div>
+                      <h3 className="font-semibold text-gray-700 mb-1">Refreshments</h3>
+                      <p className="text-gray-600 text-sm">Complimentary beverages and snacks available upon request.</p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-start gap-4">
+                    <FontAwesomeIcon icon={faPlane} className="text-royal-blue text-xl mt-1" />
+                    <div>
+                      <h3 className="font-semibold text-gray-700 mb-1">Airport Expertise</h3>
+                      <p className="text-gray-600 text-sm">Our drivers know all terminals, shortcuts, and optimal pickup points.</p>
                     </div>
                   </div>
                 </div>
               </div>
+            </div>
 
-              {/* CTA Section */}
-              <div className="text-center bg-cream-light/90 p-8 rounded-lg border border-royal-blue/20">
-                <h2 className="text-3xl font-semibold mb-4 text-royal-blue-dark">Ready for Your Airport Transfer?</h2>
-                <p className="text-gray-600 mb-6 max-w-2xl mx-auto">
-                  Book now and experience the difference of professional airport transfer service. 
-                  No stress, no delays, just luxury transportation when you need it most.
-                </p>
-                <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                  <Button 
-                    variant="secondary"
-                    onClick={scrollToReservationCard}
-                  >
-                    Book Airport Transfer
-                  </Button>
-                  <Button 
-                    variant="primary"
-                    onClick={() => window.location.href = 'tel:+41782647970'}
-                  >
-                    Call for Urgent Booking
-                  </Button>
-                </div>
+            {/* CTA Section */}
+            <div className="text-center bg-cream-light/90 p-8 rounded-lg border border-royal-blue/20">
+              <h2 className="text-3xl font-semibold mb-4 text-royal-blue-dark">Ready for Your Airport Transfer?</h2>
+              <p className="text-gray-600 mb-6 max-w-2xl mx-auto">
+                Book now and experience the difference of professional airport transfer service. 
+                No stress, no delays, just luxury transportation when you need it most.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <Button 
+                  variant="secondary"
+                  onClick={scrollToReservationCard}
+                >
+                  Book Airport Transfer
+                </Button>
+                <Button 
+                  variant="primary"
+                  onClick={() => window.location.href = 'tel:+41782647970'}
+                >
+                  Call for Urgent Booking
+                </Button>
               </div>
             </div>
           </div>
