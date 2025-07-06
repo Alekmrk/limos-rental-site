@@ -23,7 +23,6 @@ const FeaturesSection = () => {
           
           <SectionHeading
             title="Unmatched Excellence"
-            text="At Elite Way we pride ourselves in delivering comprehensive services that fulfill all of your luxury transportation needs with first-rate customer care and attention to detail."
           />
 
           {/* Softer Value Proposition Cards */}

@@ -27,7 +27,6 @@ const FleetSection = ({ setSelectedVehicle }) => {
 
             <SectionHeading
               title="Our Luxury Fleet"
-              text="We offer an extensive fleet of premium vehicles including executive sedans, luxury limousines and premium crossovers, each maintained to the highest standards"
             />
 
             {/* Softer Fleet Features */}

@@ -33,7 +33,6 @@ const ServicesSection = () => {
 
           <SectionHeading
             title="Our Exclusive Services"
-            text="We invite you to experience our world-class services, backed by our personal guarantee of complete satisfaction and luxury beyond expectations."
           />
 
           {/* Softer Quote Section */}
