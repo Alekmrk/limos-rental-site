@@ -58,13 +58,31 @@ const BannerSection = () => {
             featuring Switzerland's finest fleet of premium vehicles
           </p>
 
-          {/* Mobile Reservation Card - Right after description */}
+          {/* Mobile Layout: Reservation Card and Badges in Same Container */}
           <div className="block md:hidden mb-8">
-            <ReservationCard />
+            <div className="relative z-50">
+              <ReservationCard />
+            </div>
+            
+            {/* Mobile Trust Indicators - After reservation card */}
+            <div className="mt-8 flex flex-col sm:flex-row justify-center items-center gap-4 text-gray-600 text-sm">
+              <div className="flex items-center gap-3 bg-warm-white/80 backdrop-blur-sm px-4 py-2 rounded-full border border-royal-blue/20 shadow-md">
+                <FaShieldAlt className="text-emerald-500 text-lg" />
+                <span className="font-medium">Fully Insured</span>
+              </div>
+              <div className="flex items-center gap-3 bg-warm-white/80 backdrop-blur-sm px-4 py-2 rounded-full border border-royal-blue/20 shadow-md">
+                <FaClock className="text-royal-blue text-lg" />
+                <span className="font-medium">24/7 Available</span>            
+              </div>
+              <div className="flex items-center gap-3 bg-warm-white/80 backdrop-blur-sm px-4 py-2 rounded-full border border-royal-blue/20 shadow-md">
+                <FaPhone className="text-gold text-lg" />
+                <span className="font-medium">Instant Booking</span>
+              </div>
+            </div>
           </div>
 
-          {/* Trust Indicators - Much lower position on mobile with extra spacing */}
-          <div className="relative z-20 flex flex-col sm:flex-row justify-center items-center gap-8 sm:gap-12 mb-12 md:mb-16 mt-32 md:mt-0 text-gray-600 text-sm md:text-base">
+          {/* Desktop Trust Indicators - Original position */}
+          <div className="hidden md:flex flex-col sm:flex-row justify-center items-center gap-8 sm:gap-12 mb-12 md:mb-16 text-gray-600 text-sm md:text-base">
             <div className="flex items-center gap-3 bg-warm-white/80 backdrop-blur-sm px-4 py-2 rounded-full border border-royal-blue/20 shadow-md">
               <FaShieldAlt className="text-emerald-500 text-lg" />
               <span className="font-medium">Fully Insured</span>

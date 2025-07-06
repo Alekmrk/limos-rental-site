@@ -497,14 +497,6 @@ const ReservationCard = () => {
                   )}
                 </div>
               </div>
-
-              <div className="text-sm text-gray-600 mt-4">
-                <p>For non-airport rides the chauffeur will wait 15m at no cost.</p>
-                <p>For airport transfers the chauffeur will wait 60m at no cost.</p>
-                {reservationInfo.isHourly && (
-                  <p className="mt-2">For hourly bookings, the vehicle and chauffeur will remain at your disposal throughout the duration.</p>
-                )}
-              </div>
             </div>
           </>
         ) : (
@@ -521,7 +513,6 @@ const ReservationCard = () => {
                 <li>Group transportation</li>
               </ul>
               <div className="mt-4 pt-3 border-t border-royal-blue/20">
-                <p className="text-xs text-royal-blue">✓ No upfront payment required</p>
                 <p className="text-xs text-royal-blue">✓ Free consultation & quote</p>
                 <p className="text-xs text-royal-blue">✓ Flexible scheduling & routing</p>
               </div>

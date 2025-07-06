@@ -62,13 +62,13 @@ const DavosForum = ({ scrollUp }) => {
     <div className="min-h-screen">
       <div className="relative">
         {/* Hero Section with Reservation Card */}
-        <div className="relative w-full rounded-[1.5rem] text-center mt-16 pb-32 md:pb-0 md:pr-[480px] lg:pr-[520px] xl:pr-[480px] min-h-[600px] md:min-h-[700px] lg:min-h-[800px] overflow-hidden">
+        <div className="banner-home relative w-full rounded-[1.5rem] text-center mt-16 pb-32 md:pb-0 overflow-hidden min-h-[700px] lg:min-h-[800px]">
           {/* Optimized Background Image - Full Width */}
-          <div className="absolute inset-0 z-0 -mx-4 md:-mx-8 lg:-mx-16">
+          <div className="absolute inset-0 z-0">
             <Image
               src={davosForumImage}
               alt="Davos Forum luxury transportation"
-              className="w-[calc(100%+2rem)] md:w-[calc(100%+4rem)] lg:w-[calc(100%+8rem)] h-full object-cover"
+              className="w-full h-full object-cover"
               imageType="banner"
               priority={true}
               sizes="100vw"
@@ -84,21 +84,43 @@ const DavosForum = ({ scrollUp }) => {
             <div className="absolute bottom-20 right-10 w-24 h-24 bg-royal-blue/15 rounded-full animate-pulse"></div>
           </div>
 
-          <div className="relative z-20 container-big mx-auto">
-            <h1 className="text-4xl sm:text-5xl md:text-8xl font-semibold pt-48 tracking-wide mb-16 md:mb-20 text-gray-700">
-              <span className="text-royal-blue">Davos</span> Forum
-            </h1>
-            <p className="md:w-[50ch] mx-auto mb-12 md:mb-28 px-4 md:px-0 text-lg text-gray-600 font-medium">
+          <div className="relative z-20 px-4 md:px-8 lg:px-16 md:mr-96 lg:mr-[28rem] xl:mr-[32rem] container-ultra-wide mx-auto">
+            <div className="pt-32 md:pt-40 lg:pt-48 mb-8 md:mb-12 flex items-center justify-center min-h-[400px]">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-semibold text-transparent bg-gradient-to-r from-royal-blue via-gold to-royal-blue-light bg-clip-text mb-8 md:mb-10 text-center">
+                <span className="text-royal-blue">Davos</span> Forum
+              </h1>
+            </div>
+            
+            <p className="max-w-[55ch] mx-auto mb-12 md:mb-16 text-gray-800 text-lg md:text-xl lg:text-2xl leading-relaxed font-semibold">
               Executive transportation for the World Economic Forum and prestigious Davos events. 
               Professional service for global leaders and delegates.
             </p>
 
-            {/* Mobile Reservation Card - Right after description */}
-            <div className="block md:hidden mb-12 px-4">
-              <ReservationCard />
+            {/* Mobile Layout: Reservation Card and Badges in Same Container */}
+            <div className="block md:hidden mb-8">
+              <div className="relative z-50">
+                <ReservationCard />
+              </div>
+              
+              {/* Mobile Trust Indicators - After reservation card */}
+              <div className="mt-8 flex flex-col sm:flex-row justify-center items-center gap-4 text-gray-600 text-sm">
+                <div className="flex items-center gap-2 bg-cream-light/80 backdrop-blur-sm px-4 py-2 rounded-full border border-royal-blue/20 shadow-md">
+                  <FontAwesomeIcon icon={faShieldAlt} className="text-royal-blue" />
+                  <span className="text-gray-700 font-medium">VIP Security</span>
+                </div>
+                <div className="flex items-center gap-2 bg-cream-light/80 backdrop-blur-sm px-4 py-2 rounded-full border border-royal-blue/20 shadow-md">
+                  <FontAwesomeIcon icon={faMountain} className="text-royal-blue" />
+                  <span className="text-gray-700 font-medium">Alpine Routes</span>
+                </div>
+                <div className="flex items-center gap-2 bg-cream-light/80 backdrop-blur-sm px-4 py-2 rounded-full border border-royal-blue/20 shadow-md">
+                  <FontAwesomeIcon icon={faCrown} className="text-gold" />
+                  <span className="text-gray-700 font-medium">Executive Class</span>
+                </div>
+              </div>
             </div>
-            
-            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-20 md:mb-24 md:mt-28">
+
+            {/* Desktop Trust Indicators - Original position */}
+            <div className="hidden md:flex flex-col sm:flex-row justify-center items-center gap-8 sm:gap-12 mb-12 md:mb-16 text-gray-600 text-sm md:text-base">
               <div className="flex items-center gap-2 bg-cream-light/80 backdrop-blur-sm px-4 py-2 rounded-full border border-royal-blue/20 shadow-md">
                 <FontAwesomeIcon icon={faShieldAlt} className="text-royal-blue" />
                 <span className="text-gray-700 font-medium">VIP Security</span>
@@ -113,7 +135,7 @@ const DavosForum = ({ scrollUp }) => {
               </div>
             </div>
           </div>
-          
+
           {/* Desktop Reservation Card - Original position */}
           <div className="hidden md:block">
             <ReservationCard />
