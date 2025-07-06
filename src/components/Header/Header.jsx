@@ -66,7 +66,10 @@ const Header = () => {
         {screenSize >= screenMd && <LanguageSelector />}
 
         {screenSize < screenMd && (
-          <button onClick={() => setNavHidden(!navHidden)} className="text-lg">
+          <button
+            onClick={() => setNavHidden(!navHidden)}
+            className="flex items-center justify-center w-12 h-12 rounded-lg bg-royal-blue/10 hover:bg-royal-blue/20 transition-all duration-200 text-2xl border border-royal-blue/20"
+          >
             <FontAwesomeIcon
               icon={navHidden ? faBars : faXmark}
               style={{ color: "#4169E1" }}
