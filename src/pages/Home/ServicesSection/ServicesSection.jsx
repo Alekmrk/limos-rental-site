@@ -6,9 +6,9 @@ import { scrollToReservationCard } from "../../../utils/scrollUtils";
 
 const ServicesSection = () => {
   const stats = [
-    { icon: FaUsers, number: "10,000+", label: "Happy Clients" },
-    { icon: FaAward, number: "15+", label: "Years Experience" },
-    { icon: FaGlobeEurope, number: "50+", label: "Destinations" },
+    { icon: FaUsers, number: "7,500+", label: "Happy Clients" },
+    { icon: FaAward, number: "13+", label: "Years Experience" },
+    { icon: FaGlobeEurope, number: "35+", label: "Destinations" },
   ];
 
   return (
