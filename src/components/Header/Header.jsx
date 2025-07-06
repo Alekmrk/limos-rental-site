@@ -42,8 +42,8 @@ const Header = () => {
         shadowVisible && "shadow-default"
       }`}
     >
-      <div className="container-big flex justify-between">
-        <a href="/">
+      <div className="container-big flex items-center">
+        <a href="/" className="flex-shrink-0">
           <Image
             src={logo}
             alt="Elite Way Limo"
@@ -57,25 +57,31 @@ const Header = () => {
             sizes="144px"
           />
         </a>
-        <PrimaryNav
-          screenSize={screenSize}
-          navHidden={navHidden}
-          setNavHidden={setNavHidden}
-        />
 
-        {screenSize >= screenMd && <LanguageSelector />}
+        <div className="flex-1 flex justify-center">
+          <PrimaryNav
+            screenSize={screenSize}
+            navHidden={navHidden}
+            setNavHidden={setNavHidden}
+          />
+        </div>
 
-        {screenSize < screenMd && (
-          <button
-            onClick={() => setNavHidden(!navHidden)}
-            className="flex items-center justify-center w-12 h-12 rounded-lg bg-royal-blue/10 hover:bg-royal-blue/20 transition-all duration-200 text-2xl border border-royal-blue/20"
-          >
-            <FontAwesomeIcon
-              icon={navHidden ? faBars : faXmark}
-              style={{ color: "#4169E1" }}
-            />
-          </button>
-        )}
+        <div className="flex-shrink-0 w-36 flex justify-end">
+          {/* Language Selector temporarily hidden - see TODO */}
+          {/* {screenSize >= screenMd && <LanguageSelector />} */}
+
+          {screenSize < screenMd && (
+            <button
+              onClick={() => setNavHidden(!navHidden)}
+              className="flex items-center justify-center w-12 h-12 rounded-lg bg-royal-blue/10 hover:bg-royal-blue/20 transition-all duration-200 text-2xl border border-royal-blue/20"
+            >
+              <FontAwesomeIcon
+                icon={navHidden ? faBars : faXmark}
+                style={{ color: "#4169E1" }}
+              />
+            </button>
+          )}
+        </div>
       </div>
     </header>
   );

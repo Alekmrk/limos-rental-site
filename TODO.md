@@ -4,6 +4,13 @@
 - [ ] 
 
 ## Planned Tasks 📋
+- [ ] 🟡 Implement language selection functionality
+    - [ ] Re-enable language selector button in navigation (currently hidden in Header.jsx and PrimaryNav.jsx)
+    - [ ] Add multi-language support system (i18n)
+    - [ ] Create language switching functionality
+    - [ ] Add translations for all text content
+    - [ ] Implement language persistence in localStorage
+    - [ ] Support for German, French, Italian, and English
 - [ ] 🔴 Implement complete reservation and confirmation flow
     - [ ] Airport transfer service reservations
     - [ ] Ski resort transportation reservations

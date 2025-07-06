@@ -56,7 +56,7 @@ const PrimaryNav = ({ navHidden, screenSize, setNavHidden }) => {
 
   return (
     <nav
-      className={`absolute z-10 rounded-[1rem] shadow-xl md:shadow-none top-20 left-4 md:h-full right-4 sm:w-96 sm:right-4 sm:left-auto py-8 text-center md:py-0 bg-warm-white/95 backdrop-blur-md border border-royal-blue/20 md:bg-transparent md:border-0 md:static ${
+      className={`absolute z-10 rounded-[1rem] shadow-xl md:shadow-none top-20 left-4 md:h-full right-4 sm:w-96 sm:right-4 sm:left-auto py-8 text-center md:py-0 bg-warm-white/95 backdrop-blur-md border border-royal-blue/20 md:bg-transparent md:border-0 md:static md:w-auto md:left-auto md:right-auto ${
         navHidden && "hidden"
       }`}
     >
@@ -185,7 +185,8 @@ const PrimaryNav = ({ navHidden, screenSize, setNavHidden }) => {
         </li>
       </ul>
 
-      {screenSize < 800 && <LanguageSelector />}
+      {/* Language Selector temporarily hidden - see TODO */}
+      {/* {screenSize < 800 && <LanguageSelector />} */}
     </nav>
   );
 };
