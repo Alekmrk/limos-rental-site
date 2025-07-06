@@ -58,6 +58,17 @@
     }
   }
 
+  .banner-home {
+    position: relative;
+    min-height: 700px;
+    
+    @media (min-width: 1024px) {
+      min-height: 800px;
+    }
+    
+    // No border, shadow, or overlay - clean background
+  }
+
   .service-card button {
     width: 150px;
   }

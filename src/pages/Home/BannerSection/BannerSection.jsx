@@ -22,13 +22,13 @@ const BannerSection = () => {
 
   return (
     <div className="relative">
-      <div className="banner relative w-full rounded-[1.5rem] mt-16 pb-32 md:pb-0 overflow-hidden text-center min-h-[700px] lg:min-h-[800px]">
+      <div className="banner-home relative w-full rounded-[1.5rem] mt-16 pb-32 md:pb-0 overflow-hidden text-center min-h-[700px] lg:min-h-[800px]">
         {/* Optimized Background Image - Full Width */}
-        <div className="absolute inset-0 z-0 -mx-4 md:-mx-8 lg:-mx-16">
+        <div className="absolute inset-0 z-0">
           <Image
             src={bannerImage}
             alt="Elite Way Limo luxury chauffeur service"
-            className="w-[calc(100%+2rem)] md:w-[calc(100%+4rem)] lg:w-[calc(100%+8rem)] h-full object-cover"
+            className="w-full h-full object-cover"
             imageType="banner"
             priority={true}
             sizes="100vw"
