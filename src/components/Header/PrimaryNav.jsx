@@ -101,16 +101,6 @@ const PrimaryNav = ({ navHidden, screenSize, setNavHidden }) => {
             } absolute top-full left-1/2 transform -translate-x-1/2 mt-2 w-72 bg-warm-white/95 backdrop-blur-md border border-royal-blue/30 rounded-lg shadow-xl py-2 z-20`}
           >
             <NavLink
-              to="/services"
-              className="block px-5 py-4 text-base text-gray-700 hover:text-royal-blue hover:bg-royal-blue/10 transition-all duration-200 font-medium"
-              onClick={handleNavClick}
-            >
-              All Services
-            </NavLink>
-            <div className="px-5 py-2">
-              <div className="border-t border-royal-blue/20"></div>
-            </div>
-            <NavLink
               to="/airport-transfer"
               className="block px-5 py-4 text-base text-gray-700 hover:text-royal-blue hover:bg-royal-blue/10 transition-all duration-200"
               onClick={handleNavClick}

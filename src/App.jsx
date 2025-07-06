@@ -9,7 +9,6 @@ import Vehicles from "./pages/Vehicles/Vehicles";
 import VehicleSelection from "./pages/VehicleSelection/VehicleSelection";
 import CustomerDetails from "./pages/CustomerDetails/CustomerDetails";
 import ThankYou from "./pages/ThankYou/ThankYou";
-import ServicesPage from "./pages/ServicesPage/ServicesPage";
 import PaymentPage from "./pages/Payment/PaymentPage";
 import PaymentSuccess from "./pages/Payment/PaymentSuccess";
 import PaymentCancel from "./pages/Payment/PaymentCancel";
@@ -52,7 +51,6 @@ function App() {
       <ReservationContextProvider>
         <Routes>
           <Route path="/" element={<Home scrollUp={scrollUp} setSelectedVehicle={setSelectedVehicle} />} />
-          <Route path="/services" element={<ServicesPage scrollUp={scrollUp} />} />
           <Route path="/contact" element={<Contact scrollUp={scrollUp} />} />
           <Route path="/airport-transfer" element={<AirportTransfer scrollUp={scrollUp} />} />
           <Route path="/distance-transfer" element={<DistanceTransfer scrollUp={scrollUp} />} />

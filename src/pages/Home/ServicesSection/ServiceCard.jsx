@@ -1,8 +1,6 @@
-import Button from "../../../components/Button";
 import { useEffect } from "react";
 import Aos from "aos";
 import "aos/dist/aos.css";
-import { Link } from "react-router-dom";
 import Image from "../../../components/Image";
 
 const ServiceCard = ({ image, heading, text }) => {
@@ -31,9 +29,6 @@ const ServiceCard = ({ image, heading, text }) => {
           <h2 className="text-2xl font-semibold mb-3 text-gray-700">{heading}</h2>
           <p className="text-gray-600 mb-6 leading-relaxed">{text}</p>
         </div>
-        <Link to={"/services"} className="self-start">
-          <Button variant="secondary">Read More</Button>
-        </Link>
       </div>
     </div>
   );
