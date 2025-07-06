@@ -318,7 +318,7 @@ const ReservationCard = () => {
           e.preventDefault();
         }
       }}
-      className="reservation reserve-card w-[90%] max-w-[420px] p-8 sm:p-8 mx-auto md:mx-0 md:absolute md:bottom-12 md:right-8 lg:right-16 shadow-2xl bg-cream-light/95 backdrop-blur-md border border-royal-blue/30 rounded-[2rem] text-left text-[14px] transition-all hover:shadow-[0_20px_50px_rgba(65,105,225,0.15)] hover:border-royal-blue/50 z-50"
+      className="reservation reserve-card w-[95%] max-w-[480px] p-10 sm:p-10 mx-auto md:mx-0 md:absolute md:bottom-12 md:right-8 lg:right-16 shadow-2xl bg-cream-light/95 backdrop-blur-md border border-royal-blue/30 rounded-[2rem] text-left text-[15px] transition-all hover:shadow-[0_20px_50px_rgba(65,105,225,0.15)] hover:border-royal-blue/50 z-50"
     >
       <div className="flex justify-center gap-3 pb-4 relative">
         <button

@@ -63,8 +63,8 @@ const BannerSection = () => {
             <ReservationCard />
           </div>
 
-          {/* Softer Trust Indicators */}
-          <div className="flex flex-col sm:flex-row justify-center items-center gap-8 sm:gap-12 mb-12 md:mb-16 text-gray-600 text-sm md:text-base">
+          {/* Trust Indicators - Much lower position on mobile with extra spacing */}
+          <div className="relative z-20 flex flex-col sm:flex-row justify-center items-center gap-8 sm:gap-12 mb-12 md:mb-16 mt-32 md:mt-0 text-gray-600 text-sm md:text-base">
             <div className="flex items-center gap-3 bg-warm-white/80 backdrop-blur-sm px-4 py-2 rounded-full border border-royal-blue/20 shadow-md">
               <FaShieldAlt className="text-emerald-500 text-lg" />
               <span className="font-medium">Fully Insured</span>
