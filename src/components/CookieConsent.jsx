@@ -76,10 +76,10 @@ const CookieConsent = () => {
       
       @keyframes pulse-glow {
         0%, 100% {
-          box-shadow: 0 0 20px rgba(212,175,55,0.3);
+          box-shadow: 0 0 20px rgba(212,175,55,0.4);
         }
         50% {
-          box-shadow: 0 0 30px rgba(212,175,55,0.6);
+          box-shadow: 0 0 30px rgba(212,175,55,0.7);
         }
       }
 
@@ -103,6 +103,14 @@ const CookieConsent = () => {
         transform: scale(1);
         opacity: 1;
         transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+      }
+      
+      .cookie-toggle {
+        transition: all 0.3s ease;
+      }
+      
+      .cookie-toggle:hover {
+        transform: scale(1.05);
       }
     `;
     document.head.appendChild(style);
@@ -290,35 +298,43 @@ const CookieConsent = () => {
   return (
     <>
       {/* Cookie Banner */}
-      <div className={`fixed bottom-0 left-0 right-0 z-[300] bg-zinc-900/98 backdrop-blur-sm border-t border-gold/30 p-3 shadow-2xl ${
+      <div className={`fixed bottom-0 left-0 right-0 z-[300] bg-gradient-to-r from-warm-white/85 via-cream/85 to-warm-white/85 backdrop-blur-md border-t-2 border-gold/50 p-4 shadow-2xl ${
         animateIn ? 'cookie-banner-animate' : 'cookie-banner-enter'
       }`}>
-        <div className="container-default max-w-5xl mx-auto">
-          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
+        <div className="container-default max-w-6xl mx-auto">
+          <div className="flex flex-col lg:flex-row items-start lg:items-center gap-4">
             {/* Content */}
             <div className="flex-1">
-              <h3 className="text-base font-semibold text-white mb-1 flex items-center gap-2">
-                🍪 WE VALUE YOUR PRIVACY
-              </h3>
-              <p className="text-zinc-300 text-xs leading-relaxed">
-                We use cookies to enhance your browsing experience. You can choose which cookies to accept. 
-                <a href="/privacy-policy" className="text-gold hover:text-gold/80 underline ml-1">Learn more</a>
+              <div className="flex items-center gap-3 mb-2">
+                <div className="w-8 h-8 bg-gold/30 rounded-full flex items-center justify-center">
+                  <span className="text-lg">🍪</span>
+                </div>
+                <h3 className="text-lg font-semibold text-gray-800">
+                  Privacy & Cookie Preferences
+                </h3>
+              </div>
+              <p className="text-gray-700 text-sm leading-relaxed max-w-2xl">
+                We respect your privacy and use cookies to enhance your experience with our luxury transportation services. 
+                Choose your preferences or{' '}
+                <a href="/privacy-policy" className="text-gold hover:text-gold/80 underline font-medium">
+                  learn more in our Privacy Policy
+                </a>
               </p>
             </div>
 
             {/* Buttons */}
-            <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+            <div className="flex flex-col sm:flex-row gap-3 w-full lg:w-auto">
               <button
                 onClick={() => setShowSettings(true)}
-                className="px-3 py-1.5 text-xs border border-zinc-600 text-zinc-300 hover:text-white hover:border-zinc-500 rounded-md transition-all duration-200 order-2 sm:order-1"
+                className="px-6 py-3 text-sm border-2 border-gray-400/50 text-gray-700 hover:text-gray-800 hover:border-gold/60 hover:bg-gold/10 rounded-lg transition-all duration-300 font-medium backdrop-blur-sm"
               >
-                Customize
+                Customize Settings
               </button>
               <button
                 onClick={handleAcceptAll}
-                className="px-6 py-2 text-sm bg-gold text-black font-semibold hover:bg-gold/90 rounded-md transition-all duration-200 shadow-[0_0_15px_rgba(212,175,55,0.3)] pulse-glow order-1 sm:order-2"
+                className="px-8 py-3 text-sm bg-gradient-to-r from-gold to-gold/90 text-gray-800 font-semibold hover:from-gold/90 hover:to-gold/80 rounded-lg transition-all duration-300 shadow-lg pulse-glow"
               >
-                Accept All
+                Accept All Cookies
               </button>
             </div>
           </div>
@@ -327,17 +343,25 @@ const CookieConsent = () => {
 
       {/* Cookie Settings Modal */}
       {showSettings && (
-        <div className="fixed inset-0 z-[350] flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
-          <div className={`bg-zinc-800 border border-zinc-700/50 rounded-2xl shadow-2xl w-full max-w-2xl max-h-[80vh] overflow-y-auto ${
+        <div className="fixed inset-0 z-[350] flex items-center justify-center bg-gray-900/40 backdrop-blur-lg p-4">
+          <div className={`bg-gradient-to-br from-warm-white/95 to-cream-light/95 border-2 border-gold/30 rounded-2xl shadow-2xl w-full max-w-3xl max-h-[85vh] overflow-y-auto backdrop-blur-sm ${
             showSettings ? 'cookie-modal-animate' : 'cookie-modal-enter'
           }`}>
-            <div className="p-6">
+            <div className="p-8">
               {/* Header */}
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-2xl font-semibold text-white">Cookie Preferences</h2>
+              <div className="flex items-center justify-between mb-8">
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 bg-gradient-to-br from-gold/20 to-gold/30 rounded-full flex items-center justify-center">
+                    <span className="text-2xl">🍪</span>
+                  </div>
+                  <div>
+                    <h2 className="text-3xl font-semibold text-gray-800">Cookie Preferences</h2>
+                    <p className="text-gray-600 text-sm">Customize your privacy settings</p>
+                  </div>
+                </div>
                 <button
                   onClick={() => setShowSettings(false)}
-                  className="text-zinc-400 hover:text-white transition-colors"
+                  className="text-gray-500 hover:text-gray-700 transition-colors p-2 rounded-full hover:bg-gray-200/50"
                   aria-label="Close settings"
                 >
                   <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor">
@@ -347,133 +371,152 @@ const CookieConsent = () => {
               </div>
 
               {/* Notice */}
-              <div className="bg-blue-500/10 p-4 rounded-lg border border-blue-500/20 mb-6">
-                <h4 className="text-blue-400 font-medium mb-2">ℹ️ Your Choice Matters</h4>
-                <p className="text-sm text-zinc-300">
-                  You have full control over your privacy. Choose which cookies you're comfortable with.
-                </p>
+              <div className="bg-gradient-to-r from-gold/10 to-gold/15 p-6 rounded-xl border border-gold/30 mb-8">
+                <div className="flex items-start gap-3">
+                  <div className="w-8 h-8 bg-gold/30 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <span className="text-gold text-sm">ℹ️</span>
+                  </div>
+                  <div>
+                    <h4 className="text-gray-800 font-semibold mb-2">Your Privacy, Your Choice</h4>
+                    <p className="text-sm text-gray-700 leading-relaxed">
+                      At Elite Way Limo, we believe in transparency and giving you complete control over your data. 
+                      Choose which cookies you're comfortable with to personalize your luxury travel experience.
+                    </p>
+                  </div>
+                </div>
               </div>
 
               {/* Cookie Categories */}
-              <div className="space-y-4">
+              <div className="space-y-6">
                 {/* Essential Cookies */}
-                <div className="border border-zinc-700/50 rounded-lg p-4">
-                  <div className="flex items-start sm:items-center justify-between gap-3 mb-2">
-                    <div className="flex-1 min-w-0">
-                      <h3 className="text-lg font-medium text-white flex items-center gap-2">
-                        Essential Cookies
-                        <span className="text-xs bg-green-500/20 text-green-400 px-2 py-1 rounded-full">Required</span>
-                      </h3>
+                <div className="bg-gradient-to-r from-cream/40 to-warm-white/40 border border-soft-gray/40 rounded-xl p-6">
+                  <div className="flex items-start justify-between gap-4 mb-4">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-3 mb-2">
+                        <h3 className="text-xl font-semibold text-gray-700">Essential Cookies</h3>
+                        <span className="text-xs bg-green-500/20 text-green-700 px-3 py-1 rounded-full font-medium border border-green-500/30">
+                          Always Active
+                        </span>
+                      </div>
                     </div>
                     <div className="flex-shrink-0">
-                      <div className="w-12 h-6 bg-gold rounded-full relative">
-                        <div className="absolute top-1 right-1 w-4 h-4 bg-black rounded-full"></div>
+                      <div className="w-14 h-7 bg-gradient-to-r from-green-400 to-green-500 rounded-full relative shadow-inner">
+                        <div className="absolute top-1 right-1 w-5 h-5 bg-white rounded-full shadow-sm"></div>
                       </div>
                     </div>
                   </div>
-                  <p className="text-zinc-400 text-sm">
-                    Required for the website to function properly. These include session management, 
-                    security features, and basic functionality.
+                  <p className="text-gray-600 text-sm leading-relaxed">
+                    Required for our website to function properly. These include security features, 
+                    session management, and basic functionality that ensure a safe and reliable experience.
                   </p>
                 </div>
 
                 {/* Analytics Cookies */}
-                <div className="border border-zinc-700/50 rounded-lg p-4">
-                  <div className="flex items-start sm:items-center justify-between gap-3 mb-2">
-                    <div className="flex-1 min-w-0">
-                      <h3 className="text-lg font-medium text-white">Analytics Cookies</h3>
+                <div className="bg-gradient-to-r from-cream/20 to-warm-white/20 border border-gray-300/40 rounded-xl p-6 hover:border-gold/50 transition-all duration-300">
+                  <div className="flex items-start justify-between gap-4 mb-4">
+                    <div className="flex-1">
+                      <h3 className="text-xl font-semibold text-gray-700 mb-2">Analytics Cookies</h3>
                     </div>
                     <div className="flex-shrink-0">
                       <button
                         onClick={() => handlePreferenceChange('analytics')}
-                        className={`w-12 h-6 rounded-full relative transition-colors ${
-                          preferences.analytics ? 'bg-gold' : 'bg-zinc-600'
+                        className={`cookie-toggle w-14 h-7 rounded-full relative shadow-inner ${
+                          preferences.analytics 
+                            ? 'bg-gradient-to-r from-gold to-gold/80' 
+                            : 'bg-gradient-to-r from-gray-300 to-gray-400'
                         }`}
                         aria-label={`${preferences.analytics ? 'Disable' : 'Enable'} analytics cookies`}
                       >
-                        <div className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-transform ${
-                          preferences.analytics ? 'translate-x-6' : 'translate-x-1'
+                        <div className={`absolute top-1 w-5 h-5 bg-white rounded-full shadow-sm transition-transform duration-300 ${
+                          preferences.analytics ? 'translate-x-7' : 'translate-x-1'
                         }`}></div>
                       </button>
                     </div>
                   </div>
-                  <p className="text-zinc-400 text-sm">
-                    Help us understand how visitors interact with our website and improve your experience.
+                  <p className="text-gray-600 text-sm leading-relaxed">
+                    Help us understand how you interact with our website to improve your luxury travel experience 
+                    and optimize our services for better performance.
                   </p>
                 </div>
 
                 {/* Marketing Cookies */}
-                <div className="border border-zinc-700/50 rounded-lg p-4">
-                  <div className="flex items-start sm:items-center justify-between gap-3 mb-2">
-                    <div className="flex-1 min-w-0">
-                      <h3 className="text-lg font-medium text-white">Marketing Cookies</h3>
+                <div className="bg-gradient-to-r from-cream/20 to-warm-white/20 border border-gray-300/40 rounded-xl p-6 hover:border-gold/50 transition-all duration-300">
+                  <div className="flex items-start justify-between gap-4 mb-4">
+                    <div className="flex-1">
+                      <h3 className="text-xl font-semibold text-gray-700 mb-2">Marketing Cookies</h3>
                     </div>
                     <div className="flex-shrink-0">
                       <button
                         onClick={() => handlePreferenceChange('marketing')}
-                        className={`w-12 h-6 rounded-full relative transition-colors ${
-                          preferences.marketing ? 'bg-gold' : 'bg-zinc-600'
+                        className={`cookie-toggle w-14 h-7 rounded-full relative shadow-inner ${
+                          preferences.marketing 
+                            ? 'bg-gradient-to-r from-gold to-gold/80' 
+                            : 'bg-gradient-to-r from-gray-300 to-gray-400'
                         }`}
                         aria-label={`${preferences.marketing ? 'Disable' : 'Enable'} marketing cookies`}
                       >
-                        <div className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-transform ${
-                          preferences.marketing ? 'translate-x-6' : 'translate-x-1'
+                        <div className={`absolute top-1 w-5 h-5 bg-white rounded-full shadow-sm transition-transform duration-300 ${
+                          preferences.marketing ? 'translate-x-7' : 'translate-x-1'
                         }`}></div>
                       </button>
                     </div>
                   </div>
-                  <p className="text-zinc-400 text-sm">
-                    Allow us to show you relevant offers and measure campaign effectiveness.
+                  <p className="text-gray-600 text-sm leading-relaxed">
+                    Enable personalized offers and relevant content about our luxury transportation services. 
+                    Help us measure campaign effectiveness and show you tailored experiences.
                   </p>
                 </div>
 
                 {/* Functional Cookies */}
-                <div className="border border-zinc-700/50 rounded-lg p-4">
-                  <div className="flex items-start sm:items-center justify-between gap-3 mb-2">
-                    <div className="flex-1 min-w-0">
-                      <h3 className="text-lg font-medium text-white">Functional Cookies</h3>
+                <div className="bg-gradient-to-r from-cream/20 to-warm-white/20 border border-gray-300/40 rounded-xl p-6 hover:border-gold/50 transition-all duration-300">
+                  <div className="flex items-start justify-between gap-4 mb-4">
+                    <div className="flex-1">
+                      <h3 className="text-xl font-semibold text-gray-700 mb-2">Functional Cookies</h3>
                     </div>
                     <div className="flex-shrink-0">
                       <button
                         onClick={() => handlePreferenceChange('functional')}
-                        className={`w-12 h-6 rounded-full relative transition-colors ${
-                          preferences.functional ? 'bg-gold' : 'bg-zinc-600'
+                        className={`cookie-toggle w-14 h-7 rounded-full relative shadow-inner ${
+                          preferences.functional 
+                            ? 'bg-gradient-to-r from-gold to-gold/80' 
+                            : 'bg-gradient-to-r from-gray-300 to-gray-400'
                         }`}
                         aria-label={`${preferences.functional ? 'Disable' : 'Enable'} functional cookies`}
                       >
-                        <div className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-transform ${
-                          preferences.functional ? 'translate-x-6' : 'translate-x-1'
+                        <div className={`absolute top-1 w-5 h-5 bg-white rounded-full shadow-sm transition-transform duration-300 ${
+                          preferences.functional ? 'translate-x-7' : 'translate-x-1'
                         }`}></div>
                       </button>
                     </div>
                   </div>
-                  <p className="text-zinc-400 text-sm">
-                    Enable enhanced functionality like language preferences and personalized content.
+                  <p className="text-gray-600 text-sm leading-relaxed">
+                    Enable enhanced features like language preferences, location settings, and personalized content 
+                    to make your booking experience more convenient and tailored.
                   </p>
                 </div>
               </div>
 
               {/* Footer Buttons */}
-              <div className="flex flex-col sm:flex-row gap-3 mt-8 pt-6 border-t border-zinc-700/50">
+              <div className="flex flex-col sm:flex-row gap-4 mt-10 pt-8 border-t border-soft-gray/40">
                 <button
                   onClick={handleAcceptSelected}
-                  className="flex-1 px-4 py-2 bg-gold text-black font-medium hover:bg-gold/90 rounded-lg transition-all duration-200"
+                  className="flex-1 px-6 py-4 bg-gradient-to-r from-gray-600/80 to-gray-700/80 text-white font-semibold hover:from-gray-700/80 hover:to-gray-800/80 rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl backdrop-blur-sm"
                 >
-                  Save Preferences
+                  Save My Preferences
                 </button>
                 <button
                   onClick={handleAcceptAll}
-                  className="flex-1 px-4 py-2 bg-gold text-black font-medium hover:bg-gold/90 rounded-lg transition-all duration-200 ring-2 ring-gold/50"
+                  className="flex-1 px-6 py-4 bg-gradient-to-r from-gold to-gold/90 text-gray-800 font-semibold hover:from-gold/90 hover:to-gold/80 rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl ring-2 ring-gold/30"
                 >
-                  Accept All
+                  Accept All Cookies
                 </button>
               </div>
 
               {/* Privacy Policy Link */}
-              <div className="mt-4 text-center">
-                <p className="text-zinc-400 text-xs">
-                  For more information, read our{' '}
-                  <a href="/privacy-policy" className="text-gold hover:text-gold/80 underline">
+              <div className="mt-6 text-center">
+                <p className="text-gray-600 text-sm">
+                  For detailed information about our data practices, please read our{' '}
+                  <a href="/privacy-policy" className="text-gray-700 hover:text-gray-800 underline font-medium">
                     Privacy Policy
                   </a>
                 </p>
