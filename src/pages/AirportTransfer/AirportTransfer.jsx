@@ -5,7 +5,7 @@ import Button from "../../components/Button";
 import Image from "../../components/Image";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlane, faClock, faShieldAlt, faUserTie, faWifi, faCoffee } from "@fortawesome/free-solid-svg-icons";
-import airportTransferImage from "../../assets/original-airport-transfers.jpg";
+import airportTransferImage from "../../assets/airport.jpg";
 import { scrollToReservationCard } from "../../utils/scrollUtils";
 
 const AirportTransfer = ({ scrollUp }) => {
@@ -68,15 +68,27 @@ const AirportTransfer = ({ scrollUp }) => {
 
           <div className="relative z-20 px-4 md:px-8 lg:px-16 md:mr-96 lg:mr-[28rem] xl:mr-[32rem] container-ultra-wide mx-auto">
             <div className="pt-32 md:pt-40 lg:pt-48 mb-8 md:mb-12 flex items-center justify-center min-h-[400px]">
-              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-semibold text-transparent bg-gradient-to-r from-royal-blue via-gold to-royal-blue-light bg-clip-text mb-8 md:mb-10 text-center">
-                <span className="text-royal-blue">Airport</span> Transfer
-              </h1>
+              <div className="relative">
+                {/* Text shadow backdrop */}
+                <div className="absolute inset-0 bg-black/20 backdrop-blur-sm rounded-2xl transform translate-x-1 translate-y-1"></div>
+                <div className="relative bg-white/10 backdrop-blur-md rounded-2xl px-8 py-6 border border-white/20 shadow-2xl">
+                  <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-semibold text-transparent bg-gradient-to-r from-royal-blue via-gold to-royal-blue-light bg-clip-text mb-8 md:mb-10 text-center drop-shadow-lg">
+                    <span className="text-royal-blue drop-shadow-lg">Airport</span> Transfer
+                  </h1>
+                </div>
+              </div>
             </div>
             
-            <p className="max-w-[55ch] mx-auto mb-12 md:mb-16 text-gray-800 text-lg md:text-xl lg:text-2xl leading-relaxed font-semibold">
-              Seamless airport transfers with professional meet & greet service. 
-              Experience luxury travel from touchdown to destination.
-            </p>
+            <div className="relative max-w-[55ch] mx-auto mb-12 md:mb-16">
+              {/* Description text backdrop */}
+              <div className="absolute inset-0 bg-black/15 backdrop-blur-sm rounded-xl transform translate-x-0.5 translate-y-0.5"></div>
+              <div className="relative bg-white/20 backdrop-blur-md rounded-xl px-6 py-4 border border-white/30 shadow-xl">
+                <p className="text-gray-800 text-lg md:text-xl lg:text-2xl leading-relaxed font-semibold drop-shadow-md">
+                  Seamless airport transfers with professional meet & greet service. 
+                  Experience luxury travel from touchdown to destination.
+                </p>
+              </div>
+            </div>
 
             {/* Mobile Reservation Card - Right after description */}
             <div className="block md:hidden mb-12 px-4">
