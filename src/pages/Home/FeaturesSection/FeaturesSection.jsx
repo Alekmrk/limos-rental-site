@@ -83,11 +83,9 @@ const FeaturesSection = () => {
                 ★★★★★
               </div>
               <blockquote className="text-xl md:text-2xl lg:text-3xl font-light italic mb-8 leading-relaxed text-gray-600">
-                "My flight was delayed by 2 hours, but the driver was tracking it and adjusted pickup automatically. 
-                He was waiting with a sign when I finally arrived at 11 PM. Professional service when I needed it most."
+                "Excellence is not a skill, it's an attitude. Every journey with Elite Way Limo is crafted to exceed your expectations."
               </blockquote>
-              <div className="text-royal-blue-dark font-semibold text-lg">Marcus Chen</div>
-              <div className="text-gray-600 text-base">Business Executive, Geneva</div>
+              <div className="text-royal-blue-dark font-semibold text-lg">- Elite Way Limo Promise</div>
               
               <div className="mt-12 pt-8 border-t border-royal-blue/20">
                 <div className="grid md:grid-cols-3 gap-8 text-center">

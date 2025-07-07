@@ -43,12 +43,13 @@ const ServicesSection = () => {
               </div>
             </div>
             <p className="text-gray-600 italic text-xl leading-relaxed">
-              "Excellence is not a skill, it's an attitude. Every journey with Elite
-              Way Limo is crafted to exceed your expectations."
+              "My flight was delayed by 2 hours, but the driver was tracking it and adjusted pickup automatically. 
+              He was waiting with a sign when I finally arrived at 11 PM. Professional service when I needed it most."
             </p>
             <div className="text-base text-royal-blue-dark mt-4 font-medium">
-              - Elite Way Limo Promise
+              Marcus Chen
             </div>
+            <div className="text-gray-600 text-sm">Business Executive, Zurich</div>
           </div>
         </div>
 
