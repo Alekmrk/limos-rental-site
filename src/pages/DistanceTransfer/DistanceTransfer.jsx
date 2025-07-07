@@ -13,7 +13,7 @@ import {
   faStar,
   faUsers
 } from "@fortawesome/free-solid-svg-icons";
-import distanceTransferImage from "../../assets/banner-image.jpg";
+import distanceTransferImage from "../../assets/distance.webp";
 import { scrollToReservationCard } from "../../utils/scrollUtils";
 
 const DistanceTransfer = ({ scrollUp }) => {

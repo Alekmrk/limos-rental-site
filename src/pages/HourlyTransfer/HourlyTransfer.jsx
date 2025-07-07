@@ -14,7 +14,7 @@ import {
   faGlobe,
   faStar
 } from "@fortawesome/free-solid-svg-icons";
-import hourlyTransferImage from "../../assets/banner-image1.jpg";
+import hourlyTransferImage from "../../assets/hourly.webp";
 import { scrollToReservationCard } from "../../utils/scrollUtils";
 
 const HourlyTransfer = ({ scrollUp }) => {
