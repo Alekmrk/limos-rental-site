@@ -7,25 +7,25 @@ const features = [
     id: 1,
     featureIcon: iconBooking,
     heading: "Easy Online Booking",
-    text: "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
+    text: "Seamless reservation system with instant confirmations and flexible booking options.",
   },
   {
     id: 2,
     featureIcon: iconDrivers,
     heading: "Professional Drivers",
-    text: "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
+    text: "Experienced chauffeurs delivering exceptional service with local expertise and discretion.",
   },
   {
     id: 3,
     featureIcon: iconBrands,
-    heading: "Variety of Car Brands",
-    text: "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
+    heading: "Modern Fleet",
+    text: "Luxury vehicles from premium brands, meticulously maintained for superior performance.",
   },
   {
     id: 4,
     featureIcon: iconPayment,
     heading: "Online Payment",
-    text: "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
+    text: "Secure payment processing with multiple options for convenient and safe transactions.",
   },
 ];
 

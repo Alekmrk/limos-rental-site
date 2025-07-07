@@ -39,8 +39,8 @@ const FeaturesSection = () => {
               <div className="w-16 h-16 bg-gold/15 rounded-full flex items-center justify-center mx-auto mb-4">
                 <FaMedal className="text-2xl text-gold" />
               </div>
-              <h3 className="font-semibold text-gray-700 mb-3 text-lg">Award Winning</h3>
-              <p className="text-gray-600">Recognized excellence in luxury transportation</p>
+              <h3 className="font-semibold text-gray-700 mb-3 text-lg">Unparallel Comfort</h3>
+              <p className="text-gray-600">Luxurious interiors and premium amenities for the ultimate travel experience</p>
             </div>
             
             <div className="p-8 bg-cream-light/95 backdrop-blur-sm rounded-2xl border border-royal-blue/15 hover:border-royal-blue/25 transform hover:-translate-y-1 transition-all duration-300 shadow-md hover:shadow-lg">
