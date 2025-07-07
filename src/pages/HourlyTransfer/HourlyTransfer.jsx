@@ -137,7 +137,7 @@ const HourlyTransfer = ({ scrollUp }) => {
     <div className="min-h-screen">
       <div className="relative">
         {/* Hero Section with Reservation Card */}
-        <div className="banner-home relative w-full rounded-[1.5rem] text-center mt-16 pb-32 md:pb-0 overflow-hidden min-h-[700px] lg:min-h-[800px]">
+        <div className="banner-home relative w-full rounded-[1.5rem] text-center mt-16 pb-32 md:pb-0 overflow-hidden md:overflow-visible min-h-[700px] lg:min-h-[800px]">
           {/* Optimized Background Image - Full Width */}
           <div className="absolute inset-0 z-0">
             <Image

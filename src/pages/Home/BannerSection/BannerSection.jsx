@@ -22,7 +22,7 @@ const BannerSection = () => {
 
   return (
     <div className="relative">
-      <div className="banner-home relative w-full rounded-[1.5rem] mt-16 pb-32 md:pb-0 overflow-hidden text-center min-h-[700px] lg:min-h-[800px]">
+      <div className="banner-home relative w-full rounded-[1.5rem] mt-16 pb-32 md:pb-0 overflow-hidden md:overflow-visible text-center min-h-[700px] lg:min-h-[800px]">
         {/* Optimized Background Image - Full Width */}
         <div className="absolute inset-0 z-0">
           <Image
