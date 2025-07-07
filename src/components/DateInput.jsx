@@ -145,7 +145,7 @@ const DateInput = ({ value, onChange, name, id, className, dropdownClassName }) 
         className={className}
       />
       {showPicker && (
-        <div className={`absolute z-50 top-full mt-1 bg-warm-white/95 backdrop-blur-md rounded-lg shadow-xl border border-royal-blue/30 min-w-[280px] ${dropdownClassName || 'w-full'}`}>
+        <div className={`absolute z-50 top-full mt-1 bg-warm-white/95 backdrop-blur-md rounded-lg shadow-xl border border-royal-blue/30 ${dropdownClassName || 'w-full'}`}>
           <div className="p-4">
             <div className="flex items-center justify-between mb-4">
               <button
