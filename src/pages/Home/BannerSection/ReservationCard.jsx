@@ -318,16 +318,16 @@ const ReservationCard = () => {
           e.preventDefault();
         }
       }}
-      className="reservation reserve-card w-[95%] max-w-[480px] p-10 sm:p-10 mx-auto md:mx-0 md:absolute md:bottom-12 md:right-8 lg:right-16 shadow-2xl bg-cream-light/95 backdrop-blur-md border border-royal-blue/30 rounded-[2rem] text-left text-[15px] transition-all hover:shadow-[0_20px_50px_rgba(65,105,225,0.15)] hover:border-royal-blue/50 z-50"
+      className="reservation reserve-card w-[95%] min-w-[280px] max-w-[480px] pt-4 px-6 pb-10 sm:pt-6 sm:px-10 sm:pb-10 mx-auto md:mx-0 md:absolute md:bottom-12 md:right-8 lg:right-16 shadow-2xl bg-cream-light/95 backdrop-blur-md border border-royal-blue/30 rounded-[2rem] text-left text-[15px] transition-all hover:shadow-[0_20px_50px_rgba(65,105,225,0.15)] hover:border-royal-blue/50 z-50"
     >
-      <div className="flex justify-center gap-3 pb-4 relative">
+      <div className="flex justify-center gap-1 sm:gap-3 pb-4 mb-4 relative w-full">
         <button
           type="button"
           onClick={() => handleModeChange('distance')}
           className={
             !reservationInfo.isHourly && !reservationInfo.isSpecialRequest
-              ? "py-2.5 px-4 rounded-xl bg-royal-blue text-white shadow-lg transform transition-all duration-200"
-              : "py-2.5 px-4 rounded-xl text-gray-600 hover:text-royal-blue transition-all duration-200 hover:bg-royal-blue/10"
+              ? "py-2.5 px-2 sm:px-4 rounded-xl bg-royal-blue text-white shadow-lg transform transition-all duration-200 text-sm sm:text-base flex-1 max-w-[90px] sm:max-w-none"
+              : "py-2.5 px-2 sm:px-4 rounded-xl text-gray-600 hover:text-royal-blue transition-all duration-200 hover:bg-royal-blue/10 text-sm sm:text-base flex-1 max-w-[90px] sm:max-w-none"
           }
         >
           Distance
@@ -337,8 +337,8 @@ const ReservationCard = () => {
           onClick={() => handleModeChange('hourly')}
           className={
             reservationInfo.isHourly
-              ? "py-2.5 px-4 rounded-xl bg-royal-blue text-white shadow-lg transform transition-all duration-200"
-              : "py-2.5 px-4 rounded-xl text-gray-600 hover:text-royal-blue transition-all duration-200 hover:bg-royal-blue/10"
+              ? "py-2.5 px-2 sm:px-4 rounded-xl bg-royal-blue text-white shadow-lg transform transition-all duration-200 text-sm sm:text-base flex-1 max-w-[90px] sm:max-w-none"
+              : "py-2.5 px-2 sm:px-4 rounded-xl text-gray-600 hover:text-royal-blue transition-all duration-200 hover:bg-royal-blue/10 text-sm sm:text-base flex-1 max-w-[90px] sm:max-w-none"
           }
         >
           Hourly
@@ -348,8 +348,8 @@ const ReservationCard = () => {
           onClick={() => handleModeChange('special')}
           className={
             reservationInfo.isSpecialRequest
-              ? "py-2.5 px-4 rounded-xl bg-royal-blue text-white shadow-lg transform transition-all duration-200"
-              : "py-2.5 px-4 rounded-xl text-gray-600 hover:text-royal-blue transition-all duration-200 hover:bg-royal-blue/10"
+              ? "py-2.5 px-2 sm:px-4 rounded-xl bg-royal-blue text-white shadow-lg transform transition-all duration-200 text-sm sm:text-base flex-1 max-w-[90px] sm:max-w-none"
+              : "py-2.5 px-2 sm:px-4 rounded-xl text-gray-600 hover:text-royal-blue transition-all duration-200 hover:bg-royal-blue/10 text-sm sm:text-base flex-1 max-w-[90px] sm:max-w-none"
           }
         >
           Special
@@ -357,7 +357,7 @@ const ReservationCard = () => {
         <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-gradient-to-r from-royal-blue/20 via-royal-blue/40 to-royal-blue/20"></div>
       </div>
       
-      <div className="space-y-5 mt-2 min-h-[250px]">
+      <div className="space-y-5 min-h-[250px]">
         {!reservationInfo.isSpecialRequest ? (
           <>
             <div className="space-y-4">
