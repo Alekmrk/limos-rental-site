@@ -78,6 +78,16 @@ const LegalNotice = ({ scrollUp }) => {
                 we make no warranties or representations regarding the completeness, accuracy, or reliability of any information.
               </p>
               
+              <h3 className="text-xl font-medium text-gray-700 mb-3">Service Information</h3>
+              <div className="bg-warm-white/80 p-4 rounded-lg border border-royal-blue/15">
+                <h4 className="font-medium text-gray-700 mb-2">Waiting Time Policy</h4>
+                <ul className="list-disc list-inside space-y-1 text-sm">
+                  <li>For non-airport rides the chauffeur will wait 15 minutes at no cost</li>
+                  <li>For airport transfers the chauffeur will wait 60 minutes at no cost</li>
+                  <li>For hourly bookings, the vehicle and chauffeur remain at your disposal throughout the duration</li>
+                </ul>
+              </div>
+              
               <h3 className="text-xl font-medium text-gray-700 mb-3">Service Availability</h3>
               <p>
                 Service availability is subject to vehicle availability, weather conditions, and operational capacity. 

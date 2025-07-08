@@ -199,8 +199,9 @@ const TermsOfService = ({ scrollUp }) => {
               <h3 className="text-xl font-medium text-gray-700 mb-3">6.5 Waiting Time</h3>
               <ul className="list-disc list-inside space-y-2 ml-4">
                 <li>Airport transfers: 60 minutes complimentary waiting time included for all scheduled flights arrivals</li>
-                <li>Other pickups: 15 minutes free waiting time</li>
-                <li>Additional waiting time charged at hourly rates</li>
+                <li>Non-airport rides: 15 minutes complimentary waiting time at pickup location</li>
+                <li>Hourly bookings: Vehicle and chauffeur remain at your disposal throughout the booked duration</li>
+                <li>Additional waiting time beyond the complimentary period is charged at standard hourly rates</li>
               </ul>
             </div>
           </section>
