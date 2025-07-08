@@ -203,6 +203,25 @@ const TermsOfService = ({ scrollUp }) => {
                 <li>Hourly bookings: Vehicle and chauffeur remain at your disposal throughout the booked duration</li>
                 <li>Additional waiting time beyond the complimentary period is charged at standard hourly rates</li>
               </ul>
+
+              <h3 className="text-xl font-medium text-gray-700 mb-3">6.6 Hourly Service Terms</h3>
+              <div className="bg-amber-50 p-4 rounded-lg border border-amber-200 mb-4">
+                <h4 className="text-amber-700 font-medium mb-2">Kilometer Limitation for Hourly Bookings</h4>
+                <div className="text-gray-600 space-y-3">
+                  <p>
+                    <strong>Included Distance:</strong> Each hour of hourly service includes up to 20 kilometers of travel at no additional charge.
+                  </p>
+                  <p>
+                    <strong>Overage Charges:</strong> Any distance exceeding the included 20km per hour will be charged separately at the time of service completion based on current rates.
+                  </p>
+                  <p>
+                    <strong>Distance Calculation:</strong> Total distance is measured from pickup to final drop-off, including all intermediate stops and waiting periods during the service.
+                  </p>
+                  <p className="text-sm text-amber-600">
+                    <strong>Important:</strong> Overage charges are billed on-site at service completion and cannot be pre-calculated as they depend on actual routes taken and customer requirements during the service.
+                  </p>
+                </div>
+              </div>
             </div>
           </section>
 

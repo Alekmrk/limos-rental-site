@@ -88,6 +88,15 @@ const LegalNotice = ({ scrollUp }) => {
                 </ul>
               </div>
               
+              <div className="bg-amber-50 p-4 rounded-lg border border-amber-200 mt-4">
+                <h4 className="font-medium text-amber-700 mb-2">Hourly Service Distance Limitation</h4>
+                <ul className="list-disc list-inside space-y-1 text-sm text-gray-600">
+                  <li>Each hour of hourly service includes up to 20km of travel at no additional charge</li>
+                  <li>Distance exceeding 20km per hour will be billed separately on-site at service completion</li>
+                  <li>Additional charges are calculated based on actual distance traveled and current rates</li>
+                </ul>
+              </div>
+              
               <h3 className="text-xl font-medium text-gray-700 mb-3">Service Availability</h3>
               <p>
                 Service availability is subject to vehicle availability, weather conditions, and operational capacity. 
