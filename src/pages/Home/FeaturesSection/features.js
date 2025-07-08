@@ -7,7 +7,7 @@ const features = [
     id: 1,
     featureIcon: iconBooking,
     heading: "Easy Online Booking",
-    text: "Seamless reservation system with instant confirmations and flexible booking options.",
+    text: "Seamless reservation system with instant confirmations and flexible booking options available.",
   },
   {
     id: 2,
