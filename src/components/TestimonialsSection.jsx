@@ -79,17 +79,17 @@ const TestimonialsSection = () => {
           {testimonials.map((testimonial, index) => (
             <div 
               key={testimonial.id} 
-              className="bg-cream-light/90 p-8 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 border border-royal-blue/15 hover:border-royal-blue/30"
+              className="bg-cream-light/90 p-8 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 border border-royal-blue/15 hover:border-royal-blue/30 flex flex-col h-full"
             >
               <FaQuoteLeft className="text-2xl text-gold mb-4" />
               
               <ReviewStars rating={testimonial.rating} />
               
-              <p className="text-gray-600 mb-6 leading-relaxed">
+              <p className="text-gray-600 mb-6 leading-relaxed flex-grow">
                 "{testimonial.text}"
               </p>
               
-              <div className="flex items-center gap-4">
+              <div className="flex items-center gap-4 mt-auto">
                 <div className="w-12 h-12 bg-gradient-to-br from-royal-blue to-royal-blue-light rounded-full flex items-center justify-center">
                   <FaUser className="text-white" />
                 </div>
