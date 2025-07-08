@@ -1,9 +1,10 @@
 import Image from "../../components/Image";
 import logoFooter from "../../assets/elitewaylogo.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faInstagram, faWhatsapp } from "@fortawesome/free-brands-svg-icons";
+import { faWhatsapp } from "@fortawesome/free-brands-svg-icons";
 import { faTelegram } from "@fortawesome/free-brands-svg-icons";
-import { useLocation } from "react-router-dom";
+import { faEnvelope } from "@fortawesome/free-solid-svg-icons";
+import { useLocation, Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 
 const Footer = () => {
@@ -61,9 +62,6 @@ const Footer = () => {
           `https://wa.me/${phoneNumber.replace("+", "")}?text=${message}`,
           "_blank"
         );
-        break;
-      case "instagram":
-        window.open("https://instagram.com/elitewaylimo", "_blank");
         break;
       case "telegram":
         window.open(`https://t.me/${phoneNumber.replace("+", "")}`, "_blank");
@@ -177,16 +175,16 @@ const Footer = () => {
                   className="text-lg group-hover:scale-110 transition-transform text-gray-700 group-hover:text-white"
                 />
               </button>
-              <button
-                onClick={() => handleSocialClick("instagram")}
-                className="w-10 h-10 bg-warm-gray hover:bg-pink-500 rounded-lg flex items-center justify-center transition-colors group border border-royal-blue/20"
-                aria-label="Instagram"
+              <Link
+                to="/contact"
+                className="w-10 h-10 bg-warm-gray hover:bg-royal-blue rounded-lg flex items-center justify-center transition-colors group border border-royal-blue/20"
+                aria-label="Contact"
               >
                 <FontAwesomeIcon
-                  icon={faInstagram}
+                  icon={faEnvelope}
                   className="text-lg group-hover:scale-110 transition-transform text-gray-700 group-hover:text-white"
                 />
-              </button>
+              </Link>
               <button
                 onClick={() => handleSocialClick("telegram")}
                 className="w-10 h-10 bg-warm-gray hover:bg-blue-500 rounded-lg flex items-center justify-center transition-colors group border border-royal-blue/20"
