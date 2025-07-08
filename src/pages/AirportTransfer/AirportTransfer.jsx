@@ -163,45 +163,6 @@ const AirportTransfer = ({ scrollUp }) => {
               ))}
             </div>
 
-            {/* Service Process */}
-            <div className="mb-20">
-              <h2 className="text-4xl font-semibold mb-12 text-center text-gray-700">
-                How Our <span className="text-royal-blue">Airport Service</span> Works
-              </h2>
-              
-              <div className="grid md:grid-cols-3 gap-8">
-                <div className="text-center bg-cream-light/90 p-8 rounded-lg border border-royal-blue/15">
-                  <div className="w-20 h-20 bg-royal-blue/15 rounded-full flex items-center justify-center mx-auto mb-6">
-                    <span className="text-royal-blue text-2xl font-bold">1</span>
-                  </div>
-                  <h3 className="text-xl font-semibold mb-4 text-gray-700">Book Your Transfer</h3>
-                  <p className="text-gray-600">
-                    Provide your flight details and destination. We'll handle the rest with real-time flight tracking.
-                  </p>
-                </div>
-                
-                <div className="text-center bg-cream-light/90 p-8 rounded-lg border border-royal-blue/15">
-                  <div className="w-20 h-20 bg-royal-blue/15 rounded-full flex items-center justify-center mx-auto mb-6">
-                    <span className="text-royal-blue text-2xl font-bold">2</span>
-                  </div>
-                  <h3 className="text-xl font-semibold mb-4 text-gray-700">Meet & Greet</h3>
-                  <p className="text-gray-600">
-                    Your chauffeur will be waiting in arrivals with a personalized name sign, ready to assist with luggage.
-                  </p>
-                </div>
-                
-                <div className="text-center bg-cream-light/90 p-8 rounded-lg border border-royal-blue/15">
-                  <div className="w-20 h-20 bg-royal-blue/15 rounded-full flex items-center justify-center mx-auto mb-6">
-                    <span className="text-royal-blue text-2xl font-bold">3</span>
-                  </div>
-                  <h3 className="text-xl font-semibold mb-4 text-gray-700">Luxury Journey</h3>
-                  <p className="text-gray-600">
-                    Relax in comfort as we transport you to your destination via the most efficient route.
-                  </p>
-                </div>
-              </div>
-            </div>
-
             {/* Special Features for Airport Transfers */}
             <div className="bg-gradient-to-br from-royal-blue/10 to-gold/5 p-8 rounded-lg border border-royal-blue/20 mb-20">
               <h2 className="text-3xl font-semibold mb-6 text-center text-royal-blue-dark">Airport Transfer Perks</h2>
@@ -257,6 +218,45 @@ const AirportTransfer = ({ scrollUp }) => {
                       <p className="text-gray-600 text-sm">Our drivers know all terminals, shortcuts, and optimal pickup points.</p>
                     </div>
                   </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Service Process */}
+            <div className="mb-20">
+              <h2 className="text-4xl font-semibold mb-12 text-center text-gray-700">
+                How Our <span className="text-royal-blue">Airport Service</span> Works
+              </h2>
+              
+              <div className="grid md:grid-cols-3 gap-8">
+                <div className="text-center bg-cream-light/90 p-8 rounded-lg border border-royal-blue/15">
+                  <div className="w-20 h-20 bg-royal-blue/15 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <span className="text-royal-blue text-2xl font-bold">1</span>
+                  </div>
+                  <h3 className="text-xl font-semibold mb-4 text-gray-700">Book Your Transfer</h3>
+                  <p className="text-gray-600">
+                    Provide your flight details and destination. We'll handle the rest with real-time flight tracking.
+                  </p>
+                </div>
+                
+                <div className="text-center bg-cream-light/90 p-8 rounded-lg border border-royal-blue/15">
+                  <div className="w-20 h-20 bg-royal-blue/15 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <span className="text-royal-blue text-2xl font-bold">2</span>
+                  </div>
+                  <h3 className="text-xl font-semibold mb-4 text-gray-700">Meet & Greet</h3>
+                  <p className="text-gray-600">
+                    Your chauffeur will be waiting in arrivals with a personalized name sign, ready to assist with luggage.
+                  </p>
+                </div>
+                
+                <div className="text-center bg-cream-light/90 p-8 rounded-lg border border-royal-blue/15">
+                  <div className="w-20 h-20 bg-royal-blue/15 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <span className="text-royal-blue text-2xl font-bold">3</span>
+                  </div>
+                  <h3 className="text-xl font-semibold mb-4 text-gray-700">Luxury Journey</h3>
+                  <p className="text-gray-600">
+                    Relax in comfort as we transport you to your destination via the most efficient route.
+                  </p>
                 </div>
               </div>
             </div>
