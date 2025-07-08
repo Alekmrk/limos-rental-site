@@ -1,7 +1,10 @@
-import imgBenzSClass from "../assets/cars/sclass(2).png";
+import imgBenzSClass from "../assets/cars/sclass3.png";
 import imgBenzVClass from "../assets/cars/car-benz-v-class.png";
-import imgAudiA8 from "../assets/cars/car-audi-a8.png";
-import imgEscalade from "../assets/cars/car-cadillac-escalade.png";
+import imgAudiA8 from "../assets/cars/sclass(2).png";
+import imgEClass from "../assets/cars/eclass.png";
+import imgVClass1 from "../assets/cars/v-class1.png";
+import imgVClass2 from "../assets/cars/v-class2.png";
+
 
 const cars = [
   {
@@ -30,7 +33,7 @@ const cars = [
     name: "Mercedes V first class Van",
     detail:
       "Exciting, bold, iconic—move through the world in a vehicle befitting your status. In motion and at rest, Escalade demands attention with exceptional physicality and magnificent design. Witness as luxury transforms into legendary.",
-    image: imgEscalade,
+    image: imgAudiA8,
     seats: 5,
     luggage: 6,
     type: ["luxury", "business", "crossover"],
@@ -73,7 +76,55 @@ const cars = [
     name: "Mercedes E business class",
     detail:
       "Live the future with us. A design that takes elegance and dynamics to a new level, with numerous assistance systems, a new operating concept that offers a new level of intuitive use, and above all more space. Configure your own personal space in the back, more flexible and comfortable than ever before, and experience even greater luxury in the new Audi A8 L.",
-    image: imgAudiA8,
+    image: imgEClass,
+    seats: 2,
+    luggage: 2,
+    type: ["business"],
+    class: "Business Class",
+    baseRate: 3.2, // CHF per km
+    minimumFare: 75, // CHF
+    hourlyRate: 120, // CHF per hour
+    features: [
+      "Professional comfort",
+      "Business amenities",
+      "Reliable performance",
+      "Efficient service",
+    ],
+    upgradeAvailable: true,
+    upgradeOptions: [
+      "First Class - subject to availability",
+      "First Class Van - subject to availability",
+    ],
+  },
+     {id: 5,
+    name: "Mercedes E business class",
+    detail:
+      "Live the future with us. A design that takes elegance and dynamics to a new level, with numerous assistance systems, a new operating concept that offers a new level of intuitive use, and above all more space. Configure your own personal space in the back, more flexible and comfortable than ever before, and experience even greater luxury in the new Audi A8 L.",
+    image: imgVClass1,
+    seats: 2,
+    luggage: 2,
+    type: ["business"],
+    class: "Business Class",
+    baseRate: 3.2, // CHF per km
+    minimumFare: 75, // CHF
+    hourlyRate: 120, // CHF per hour
+    features: [
+      "Professional comfort",
+      "Business amenities",
+      "Reliable performance",
+      "Efficient service",
+    ],
+    upgradeAvailable: true,
+    upgradeOptions: [
+      "First Class - subject to availability",
+      "First Class Van - subject to availability",
+    ],
+  },{
+        id: 6,
+    name: "Mercedes E business class",
+    detail:
+      "Live the future with us. A design that takes elegance and dynamics to a new level, with numerous assistance systems, a new operating concept that offers a new level of intuitive use, and above all more space. Configure your own personal space in the back, more flexible and comfortable than ever before, and experience even greater luxury in the new Audi A8 L.",
+    image: imgVClass2,
     seats: 2,
     luggage: 2,
     type: ["business"],
