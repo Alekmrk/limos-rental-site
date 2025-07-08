@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPhone, faEnvelope, faMapMarkerAlt, faClock } from "@fortawesome/free-solid-svg-icons";
-import { faInstagram, faFacebook, faLinkedin, faTwitter } from "@fortawesome/free-brands-svg-icons";
 import Button from "../../components/Button";
 
 const Contact = ({ scrollUp }) => {
@@ -96,33 +95,6 @@ const Contact = ({ scrollUp }) => {
       title: "Hours",
       content: "24/7 Available",
       link: null
-    }
-  ];
-
-  const socialLinks = [
-    {
-      icon: faInstagram,
-      name: "Instagram",
-      url: "#",
-      color: "text-pink-500"
-    },
-    {
-      icon: faFacebook,
-      name: "Facebook", 
-      url: "#",
-      color: "text-blue-600"
-    },
-    {
-      icon: faLinkedin,
-      name: "LinkedIn",
-      url: "#",
-      color: "text-blue-500"
-    },
-    {
-      icon: faTwitter,
-      name: "Twitter",
-      url: "#",
-      color: "text-blue-400"
     }
   ];
 
@@ -283,29 +255,6 @@ const Contact = ({ scrollUp }) => {
                   </div>
                 ))}
               </div>
-            </div>
-
-            {/* Social Media */}
-            <div className="bg-cream-light/90 p-8 rounded-lg border border-royal-blue/20 shadow-lg">
-              <h3 className="text-2xl font-semibold mb-6 text-royal-blue">Follow Us</h3>
-              <div className="flex gap-4">
-                {socialLinks.map((social, index) => (
-                  <a
-                    key={index}
-                    href={social.url}
-                    className={`w-12 h-12 bg-warm-gray/20 rounded-lg flex items-center justify-center hover:bg-warm-gray/30 transition-all duration-200 group ${social.color}`}
-                    aria-label={social.name}
-                  >
-                    <FontAwesomeIcon 
-                      icon={social.icon} 
-                      className="text-lg group-hover:scale-110 transition-transform" 
-                    />
-                  </a>
-                ))}
-              </div>
-              <p className="text-gray-600 text-sm mt-4">
-                Stay connected for exclusive offers and luxury travel inspiration.
-              </p>
             </div>
 
             {/* Quick Contact */}
