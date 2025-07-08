@@ -288,11 +288,11 @@ const PaymentPage = ({ scrollUp }) => {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-royal-blue/5 p-3 rounded-lg">
                       <p className="text-sm break-words text-gray-700">Passengers: {reservationInfo.passengers}</p>
                       <p className="text-sm break-words text-gray-700">Bags: {reservationInfo.bags}</p>
-                      {reservationInfo.childSeats > 0 && (
-                        <p className="text-sm break-words text-gray-700">Child Seats (4-7): {reservationInfo.childSeats}</p>
+                      {reservationInfo.boosterSeats > 0 && (
+                        <p className="text-sm break-words text-gray-700">Booster Seats (4-7): {reservationInfo.boosterSeats}</p>
                       )}
-                      {reservationInfo.babySeats > 0 && (
-                        <p className="text-sm break-words text-gray-700">Baby Seats (0-3): {reservationInfo.babySeats}</p>
+                      {reservationInfo.childSeats > 0 && (
+                        <p className="text-sm break-words text-gray-700">Child Seats (0-3): {reservationInfo.childSeats}</p>
                       )}
                       {reservationInfo.skiEquipment > 0 && (
                         <p className="text-sm break-words text-gray-700">Ski Equipment: {reservationInfo.skiEquipment}</p>

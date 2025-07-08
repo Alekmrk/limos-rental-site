@@ -119,8 +119,8 @@ module.exports = async (req, res) => {
             // Passenger Details
             passengers: parseInt(metadata.passengers) || 0,
             bags: parseInt(metadata.bags) || 0,
+            boosterSeats: parseInt(metadata.boosterSeats) || 0,
             childSeats: parseInt(metadata.childSeats) || 0,
-            babySeats: parseInt(metadata.babySeats) || 0,
             skiEquipment: parseInt(metadata.skiEquipment) || 0,
 
             // Additional Details
@@ -248,8 +248,8 @@ module.exports = async (req, res) => {
             // Passenger Details
             passengers: parseInt(metadata.passengers) || 0,
             bags: parseInt(metadata.bags) || 0,
+            boosterSeats: parseInt(metadata.boosterSeats) || 0,
             childSeats: parseInt(metadata.childSeats) || 0,
-            babySeats: parseInt(metadata.babySeats) || 0,
             skiEquipment: parseInt(metadata.skiEquipment) || 0,
 
             // Additional Details
@@ -356,8 +356,8 @@ module.exports = async (req, res) => {
             // Passenger Details
             passengers: parseInt(metadata.passengers) || 0,
             bags: parseInt(metadata.bags) || 0,
+            boosterSeats: parseInt(metadata.boosterSeats) || 0,
             childSeats: parseInt(metadata.childSeats) || 0,
-            babySeats: parseInt(metadata.babySeats) || 0,
             skiEquipment: parseInt(metadata.skiEquipment) || 0,
 
             // Additional Details
@@ -491,8 +491,8 @@ module.exports = async (req, res) => {
             // Passenger Details
             passengers: parseInt(metadata.passengers) || 0,
             bags: parseInt(metadata.bags) || 0,
+            boosterSeats: parseInt(metadata.boosterSeats) || 0,
             childSeats: parseInt(metadata.childSeats) || 0,
-            babySeats: parseInt(metadata.babySeats) || 0,
             skiEquipment: parseInt(metadata.skiEquipment) || 0,
 
             // Additional Details
@@ -614,8 +614,8 @@ module.exports = async (req, res) => {
             // Passenger Details
             passengers: parseInt(metadata.passengers) || 0,
             bags: parseInt(metadata.bags) || 0,
+            boosterSeats: parseInt(metadata.boosterSeats) || 0,
             childSeats: parseInt(metadata.childSeats) || 0,
-            babySeats: parseInt(metadata.babySeats) || 0,
             skiEquipment: parseInt(metadata.skiEquipment) || 0,
 
             // Additional Details
@@ -714,8 +714,8 @@ module.exports = async (req, res) => {
             // Passenger Details
             passengers: parseInt(metadata.passengers) || 0,
             bags: parseInt(metadata.bags) || 0,
+            boosterSeats: parseInt(metadata.boosterSeats) || 0,
             childSeats: parseInt(metadata.childSeats) || 0,
-            babySeats: parseInt(metadata.babySeats) || 0,
             skiEquipment: parseInt(metadata.skiEquipment) || 0,
 
             // Additional Details

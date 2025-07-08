@@ -49,8 +49,8 @@ const StripePayment = ({ amount, onSuccess, onError, reservationInfo }) => {
             // Passenger Details
             passengers: String(reservationInfo.passengers || '0'),
             bags: String(reservationInfo.bags || '0'),
+            boosterSeats: String(reservationInfo.boosterSeats || '0'),
             childSeats: String(reservationInfo.childSeats || '0'),
-            babySeats: String(reservationInfo.babySeats || '0'),
             skiEquipment: String(reservationInfo.skiEquipment || '0'),
             
             // Additional Information

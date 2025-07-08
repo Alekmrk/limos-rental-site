@@ -164,7 +164,7 @@ const TermsOfService = ({ scrollUp }) => {
               <div className="text-gray-600 space-y-3">
                 <p>We provide the following additional equipment and services upon request:</p>
                 <ul className="list-disc list-inside space-y-2 ml-4">
-                  <li><strong>Child and Baby Seats:</strong> Provided free of charge when declared during booking. Must specify exact ages and weights of children.</li>
+                  <li><strong>Booster and Child Seats:</strong> Provided free of charge when declared during booking. Must specify exact ages and weights of children.</li>
                   <li><strong>Ski Equipment Transport:</strong> Subject to vehicle capacity and must be declared during booking. Additional charges may apply for oversized or excess equipment.</li>
                   <li><strong>Special Equipment:</strong> Other special equipment requests subject to availability and additional charges.</li>
                 </ul>

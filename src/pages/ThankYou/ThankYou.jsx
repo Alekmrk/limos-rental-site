@@ -221,11 +221,11 @@ const ThankYou = ({ scrollUp }) => {
                     <p className="break-words">Vehicle: {dataToShow.selectedVehicle?.name}</p>
                     <p className="break-words">Passengers: {dataToShow.passengers}</p>
                     <p className="break-words">Bags: {dataToShow.bags}</p>
-                    {dataToShow.childSeats > 0 && (
-                      <p className="break-words">Child Seats (4-7): {dataToShow.childSeats}</p>
+                    {dataToShow.boosterSeats > 0 && (
+                      <p className="break-words">Booster Seats (4-7): {dataToShow.boosterSeats}</p>
                     )}
-                    {dataToShow.babySeats > 0 && (
-                      <p className="break-words">Baby Seats (0-3): {dataToShow.babySeats}</p>
+                    {dataToShow.childSeats > 0 && (
+                      <p className="break-words">Child Seats (0-3): {dataToShow.childSeats}</p>
                     )}
                     {dataToShow.skiEquipment > 0 && (
                       <p className="break-words">Ski Equipment: {dataToShow.skiEquipment}</p>

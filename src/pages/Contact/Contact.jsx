@@ -298,7 +298,7 @@ const Contact = ({ scrollUp }) => {
               
               <div>
                 <h3 className="font-medium text-gray-700 mb-2">Do you provide child seats?</h3>
-                <p className="text-gray-600 text-sm">Yes, we provide child and baby seats free of charge. Please specify your requirements when booking.</p>
+                <p className="text-gray-600 text-sm">Yes, we provide booster and child seats free of charge. Please specify your requirements when booking.</p>
               </div>
               
               <div>

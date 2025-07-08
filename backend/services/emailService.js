@@ -726,8 +726,8 @@ const generateEmailContent = (reservationInfo, type = 'customer') => {
     <p>Vehicle: ${reservationInfo.selectedVehicle?.name || 'Not selected'}</p>
     <p>Passengers: ${reservationInfo.passengers || '0'}</p>
     <p>Bags: ${reservationInfo.bags || '0'}</p>
-    ${Number(reservationInfo.childSeats) > 0 ? `<p>Child Seats (4-7): ${reservationInfo.childSeats}</p>` : ''}
-    ${Number(reservationInfo.babySeats) > 0 ? `<p>Baby Seats (0-3): ${reservationInfo.babySeats}</p>` : ''}
+    ${Number(reservationInfo.boosterSeats) > 0 ? `<p>Booster Seats (4-7): ${reservationInfo.boosterSeats}</p>` : ''}
+    ${Number(reservationInfo.childSeats) > 0 ? `<p>Child Seats (0-3): ${reservationInfo.childSeats}</p>` : ''}
     ${Number(reservationInfo.skiEquipment) > 0 ? `<p>Ski Equipment: ${reservationInfo.skiEquipment}</p>` : ''}
   ` : '';
 
@@ -826,8 +826,8 @@ ${!isSpecialRequest ? `VEHICLE DETAILS
 Vehicle: ${reservationInfo.selectedVehicle?.name}
 Passengers: ${reservationInfo.passengers}
 Bags: ${reservationInfo.bags}
-${reservationInfo.childSeats > 0 ? `Child Seats (4-7): ${reservationInfo.childSeats}` : ''}
-${reservationInfo.babySeats > 0 ? `Baby Seats (0-3): ${reservationInfo.babySeats}` : ''}
+${reservationInfo.boosterSeats > 0 ? `Booster Seats (4-7): ${reservationInfo.boosterSeats}` : ''}
+${reservationInfo.childSeats > 0 ? `Child Seats (0-3): ${reservationInfo.childSeats}` : ''}
 ${reservationInfo.skiEquipment > 0 ? `Ski Equipment: ${reservationInfo.skiEquipment}` : ''}` : ''}
 
 CUSTOMER DETAILS
@@ -944,8 +944,8 @@ ${!reservationInfo.isSpecialRequest ? `VEHICLE DETAILS
 Vehicle: ${reservationInfo.selectedVehicle?.name}
 Passengers: ${reservationInfo.passengers}
 Bags: ${reservationInfo.bags}
-${reservationInfo.childSeats > 0 ? `Child Seats (4-7): ${reservationInfo.childSeats}` : ''}
-${reservationInfo.babySeats > 0 ? `Baby Seats (0-3): ${reservationInfo.babySeats}` : ''}
+${reservationInfo.boosterSeats > 0 ? `Booster Seats (4-7): ${reservationInfo.boosterSeats}` : ''}
+${reservationInfo.childSeats > 0 ? `Child Seats (0-3): ${reservationInfo.childSeats}` : ''}
 ${reservationInfo.skiEquipment > 0 ? `Ski Equipment: ${reservationInfo.skiEquipment}` : ''}` : ''}
 
 CUSTOMER DETAILS

@@ -349,7 +349,7 @@ const CustomerDetails = ({ scrollUp }) => {
                     onClick={() => setShowAdditionalDetails(!showAdditionalDetails)}
                     className="flex items-center justify-between w-full p-3 bg-gradient-to-r from-cream-light/80 to-warm-white/80 backdrop-blur-sm rounded-lg border border-royal-blue/20 text-left hover:border-royal-blue/40 transition-all duration-300"
                   >
-                    <span className="text-base font-medium text-gray-700">Additional Details <span className="text-sm text-gray-500">(Flight number, meeting board, child seats)</span></span>
+                    <span className="text-base font-medium text-gray-700">Additional Details <span className="text-sm text-gray-500">(Flight number, meeting board, booster/child seats)</span></span>
                     <svg
                       className={`w-4 h-4 text-royal-blue transition-transform duration-300 ${
                         showAdditionalDetails ? 'rotate-180' : ''
@@ -410,6 +410,22 @@ const CustomerDetails = ({ scrollUp }) => {
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
                         <div>
                           <NumberDropdown
+                            id="boosterSeats"
+                            name="boosterSeats"
+                            value={reservationInfo.boosterSeats}
+                            onChange={handleInputChange}
+                            min={0}
+                            max={3}
+                            label={
+                              <span className="text-gray-700">
+                                Booster Seats <span className="text-xs text-gray-500 font-normal">(Ages 4-7 / 15-36 kg)</span>
+                              </span>
+                            }
+                          />
+                        </div>
+                        
+                        <div>
+                          <NumberDropdown
                             id="childSeats"
                             name="childSeats"
                             value={reservationInfo.childSeats}
@@ -418,23 +434,7 @@ const CustomerDetails = ({ scrollUp }) => {
                             max={3}
                             label={
                               <span className="text-gray-700">
-                                Child Seats <span className="text-xs text-gray-500 font-normal">(Ages 4-7 / 15-36 kg)</span>
-                              </span>
-                            }
-                          />
-                        </div>
-                        
-                        <div>
-                          <NumberDropdown
-                            id="babySeats"
-                            name="babySeats"
-                            value={reservationInfo.babySeats}
-                            onChange={handleInputChange}
-                            min={0}
-                            max={3}
-                            label={
-                              <span className="text-gray-700">
-                                Baby Seats <span className="text-xs text-gray-500 font-normal">(Ages 0-3 / up to 18 kg)</span>
+                                Child Seats <span className="text-xs text-gray-500 font-normal">(Ages 0-3 / up to 18 kg)</span>
                               </span>
                             }
                           />
@@ -448,7 +448,7 @@ const CustomerDetails = ({ scrollUp }) => {
                             <path d="m9 12 2 2 4-4"/>
                           </svg>
                           <p className="text-xs text-emerald-700">
-                            Child and baby seats are provided free of charge. Please specify the exact number needed for your journey.
+                            Booster and child seats are provided free of charge. Please specify the exact number needed for your journey.
                           </p>
                         </div>
                       </div>

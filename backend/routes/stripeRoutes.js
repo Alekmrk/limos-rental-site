@@ -77,8 +77,8 @@ router.get('/verify-session/:sessionId', async (req, res) => {
         // Passenger Details
         passengers: parseInt(session.metadata.passengers) || 0,
         bags: parseInt(session.metadata.bags) || 0,
+        boosterSeats: parseInt(session.metadata.boosterSeats) || 0,
         childSeats: parseInt(session.metadata.childSeats) || 0,
-        babySeats: parseInt(session.metadata.babySeats) || 0,
         skiEquipment: parseInt(session.metadata.skiEquipment) || 0,
 
         // Additional Details
@@ -151,8 +151,8 @@ router.get('/canceled-session/:sessionId', async (req, res) => {
       // Passenger Details
       passengers: parseInt(session.metadata.passengers) || 0,
       bags: parseInt(session.metadata.bags) || 0,
+      boosterSeats: parseInt(session.metadata.boosterSeats) || 0,
       childSeats: parseInt(session.metadata.childSeats) || 0,
-      babySeats: parseInt(session.metadata.babySeats) || 0,
       skiEquipment: parseInt(session.metadata.skiEquipment) || 0,
 
       // Additional Details
