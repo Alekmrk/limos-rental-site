@@ -212,7 +212,7 @@ const AirportTransfer = ({ scrollUp }) => {
                     <FontAwesomeIcon icon={faClock} className="text-royal-blue text-xl mt-1" />
                     <div>
                       <h3 className="font-semibold text-gray-700 mb-1">Free Wait Time</h3>
-                      <p className="text-gray-600 text-sm">60 minutes free waiting time for international flights, 30 minutes for domestic.</p>
+                      <p className="text-gray-600 text-sm">60 minutes complimentary waiting time included for all scheduled flights arrivals.</p>
                     </div>
                   </div>
                   

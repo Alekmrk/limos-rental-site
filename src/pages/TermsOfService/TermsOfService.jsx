@@ -198,7 +198,7 @@ const TermsOfService = ({ scrollUp }) => {
               
               <h3 className="text-xl font-medium text-gray-700 mb-3">6.5 Waiting Time</h3>
               <ul className="list-disc list-inside space-y-2 ml-4">
-                <li>Airport transfers: 60 minutes free waiting time for international flights, 30 minutes for domestic</li>
+                <li>Airport transfers: 60 minutes complimentary waiting time included for all scheduled flights arrivals</li>
                 <li>Other pickups: 15 minutes free waiting time</li>
                 <li>Additional waiting time charged at hourly rates</li>
               </ul>
