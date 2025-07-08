@@ -1,4 +1,4 @@
-import imgBenzSClass from "../assets/cars/Image.png";
+import imgBenzSClass from "../assets/cars/sclass(2).png";
 import imgBenzVClass from "../assets/cars/car-benz-v-class.png";
 import imgAudiA8 from "../assets/cars/car-audi-a8.png";
 import imgEscalade from "../assets/cars/car-cadillac-escalade.png";
