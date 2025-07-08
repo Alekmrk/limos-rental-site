@@ -324,7 +324,7 @@ const DistanceTransfer = ({ scrollUp }) => {
                     </div>
                     <div className="flex items-center gap-3">
                       <div className="w-2 h-2 bg-royal-blue rounded-full"></div>
-                      <span className="text-gray-700">Fuel and toll charges included</span>
+                      <span className="text-gray-700">All charges and tolls included</span>
                     </div>
                     <div className="flex items-center gap-3">
                       <div className="w-2 h-2 bg-royal-blue rounded-full"></div>

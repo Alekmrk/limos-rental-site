@@ -79,7 +79,7 @@ const PricingTransparency = () => {
           </h2>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
             No hidden fees. Clear pricing for popular destinations. All prices include VAT, 
-            fuel, and professional chauffeur service.
+            tolls, and professional chauffeur service.
           </p>
         </div>
 
@@ -122,7 +122,7 @@ const PricingTransparency = () => {
             <h3 className="text-xl font-semibold text-royal-blue mb-4">What's Included</h3>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm text-gray-600">
               <div>✓ Professional chauffeur</div>
-              <div>✓ Fuel & tolls</div>
+              <div>✓ Tolls & charges</div>
               <div>✓ Airport waiting time (60min)</div>
               <div>✓ Flight tracking</div>
               <div>✓ Vehicle insurance</div>

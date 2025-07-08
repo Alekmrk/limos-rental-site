@@ -378,7 +378,7 @@ const HourlyTransfer = ({ scrollUp }) => {
                     </div>
                     <div className="flex items-center gap-3">
                       <div className="w-2 h-2 bg-royal-blue rounded-full"></div>
-                      <span className="text-gray-700">Fuel, parking, and tolls included</span>
+                      <span className="text-gray-700">Parking and tolls included</span>
                     </div>
                     <div className="flex items-center gap-3">
                       <div className="w-2 h-2 bg-royal-blue rounded-full"></div>

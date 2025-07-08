@@ -208,7 +208,7 @@ const LegalNotice = ({ scrollUp }) => {
               </p>
               <div className="bg-warm-white/80 p-4 rounded-lg border border-royal-blue/15">
                 <ul className="list-disc list-inside space-y-2 text-sm">
-                  <li>Regular vehicle maintenance for optimal fuel efficiency</li>
+                  <li>Regular vehicle maintenance for optimal operational efficiency</li>
                   <li>Route optimization to minimize environmental impact</li>
                   <li>Consideration of hybrid and electric vehicles for fleet expansion</li>
                   <li>Digital-first approach to reduce paper usage</li>
