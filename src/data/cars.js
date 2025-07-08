@@ -123,11 +123,27 @@ export const popularRoutes = [
   },
   {
     from: "Zurich Airport",
-    to: "St. Moritz",
+    to: "Grindelwald",
     distance: "209km",
     duration: "3h",
     businessClass: "650 CHF",
     firstClass: "780 CHF",
+  },
+  {
+    from: "Zurich Airport",
+    to: "Lauterbrunnen",
+    distance: "145km",
+    duration: "2h",
+    businessClass: "520 CHF",
+    firstClass: "620 CHF",
+  },
+  {
+    from: "Zurich Airport",
+    to: "Como",
+    distance: "270km",
+    duration: "3h30min",
+    businessClass: "780 CHF",
+    firstClass: "940 CHF",
   },
 ];
 
