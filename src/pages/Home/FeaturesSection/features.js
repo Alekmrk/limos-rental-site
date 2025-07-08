@@ -19,13 +19,13 @@ const features = [
     id: 3,
     featureIcon: iconBrands,
     heading: "Modern Fleet",
-    text: "Luxury vehicles from premium brands, meticulously maintained for superior performance.",
+    text: "Luxury vehicles from premium brands, meticulously maintained for superior performance today.",
   },
   {
     id: 4,
     featureIcon: iconPayment,
     heading: "Online Payment",
-    text: "Secure payment processing with multiple options for convenient and safe transactions.",
+    text: "Secure payment processing with multiple options for convenient and safe transaction handling.",
   },
 ];
 

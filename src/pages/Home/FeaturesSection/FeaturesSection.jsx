@@ -56,12 +56,12 @@ const FeaturesSection = () => {
         {/* Softer Features Grid */}
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8 max-w-7xl mx-auto">
           {features.map((feature, index) => (
-            <div key={feature.id} className="group">
-              <div className="relative">
+            <div key={feature.id} className="group h-full">
+              <div className="relative h-full">
                 {/* Softer decorative border */}
                 <div className="absolute inset-0 bg-gradient-to-r from-royal-blue/15 to-gold/15 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 transform group-hover:scale-102"></div>
-                <div className="relative bg-cream-light/90 backdrop-blur-sm p-1 rounded-xl">
-                  <div className="bg-cream-light/95 rounded-xl p-6 shadow-md group-hover:shadow-lg transition-all duration-300 border border-royal-blue/15 group-hover:border-royal-blue/25">
+                <div className="relative bg-cream-light/90 backdrop-blur-sm p-1 rounded-xl h-full">
+                  <div className="bg-cream-light/95 rounded-xl p-6 shadow-md group-hover:shadow-lg transition-all duration-300 border border-royal-blue/15 group-hover:border-royal-blue/25 h-full min-h-[280px] flex">
                     <FeatureItem
                       key={feature.id}
                       icon={feature.featureIcon}
