@@ -64,25 +64,25 @@ const DistanceTransfer = ({ scrollUp }) => {
       highlights: ["Rhine River route", "Cultural centers", "Cross-border access"]
     },
     {
-      from: "Geneva",
+      from: "Zurich",
       to: "Lausanne",
-      distance: "65 km",
-      time: "0.8 hours", 
-      highlights: ["Lake Leman scenic", "Olympic Museum", "Wine region"]
+      distance: "225 km",
+      time: "2.5 hours", 
+      highlights: ["Lake Geneva region", "Olympic Museum", "Wine country views"]
     },
     {
       from: "Zurich",
       to: "Lucerne",
       distance: "55 km",
-      time: "0.7 hours",
+      time: "45 minutes",
       highlights: ["Alpine scenery", "Lake Lucerne", "Historic old town"]
     },
     {
-      from: "Bern",
+      from: "Zurich",
       to: "Interlaken",
-      distance: "60 km",
-      time: "0.8 hours",
-      highlights: ["Bernese Oberland", "Jungfrau region", "Adventure tourism"]
+      distance: "125 km",
+      time: "1.5 hours",
+      highlights: ["Bernese Oberland", "Jungfrau region", "Alpine gateway"]
     },
     {
       from: "St. Gallen",
