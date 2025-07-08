@@ -480,45 +480,50 @@ const VehicleSelection = ({ scrollUp }) => {
 
             {!reservationInfo.isHourly ? (
               <div className="mt-4 grid md:grid-cols-2 gap-4">
-                <div className="bg-black/20 rounded-lg p-4">
+                <div className="bg-royal-blue/10 border border-royal-blue/20 rounded-lg p-4">
                   <div className="flex flex-col gap-3">
                     <div className="flex items-center gap-2">
-                      <svg className="w-5 h-5 text-gold" viewBox="0 0 24 24" fill="currentColor">
+                      <svg className="w-5 h-5 text-royal-blue" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/>
                       </svg>
-                      <span className="text-sm text-zinc-300">Total Distance: {reservationInfo.routeInfo?.distance || '0 km'}</span>
+                      <span className="text-sm font-medium text-gray-700">Total Distance: {reservationInfo.routeInfo?.distance || '0 km'}</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <svg className="w-5 h-5 text-gold" viewBox="0 0 24 24" fill="currentColor">
+                      <svg className="w-5 h-5 text-royal-blue" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/>
                       </svg>
-                      <span className="text-sm text-zinc-300">Total Duration: {reservationInfo.routeInfo?.duration || '0 min'}</span>
+                      <span className="text-sm font-medium text-gray-700">Total Duration: {reservationInfo.routeInfo?.duration || '0 min'}</span>
                     </div>
                   </div>
-                  <p className="hidden text-xs text-zinc-500 mt-3">
+                  <p className="hidden text-xs text-gray-600 mt-3">
                     * Total duration includes estimated traffic and processing time at each stop.
                   </p>
                 </div>
 
-                <div className="bg-black/20 rounded-lg p-4">
-                  <p className="text-sm text-zinc-400">
+                <div className="bg-cream-light/80 border border-royal-blue/20 rounded-lg p-4">
+                  <p className="text-sm text-gray-700">
                     Need multiple stops? Consider:
-                    <br/>• Hourly booking - Vehicle at your disposal
-                    <br/>• Special request - Craft a custom plan just for you
+                    <br/>• <span className="font-medium text-royal-blue">Hourly booking</span> - Vehicle at your disposal
+                    <br/>• <span className="font-medium text-royal-blue">Special request</span> - Craft a custom plan just for you
                   </p>
                 </div>
               </div>
             ) : (
-              <div className="mt-4 bg-black/20 rounded-lg p-4">
+              <div className="mt-4 bg-royal-blue/10 border border-royal-blue/20 rounded-lg p-4">
                 <div className="flex items-center gap-2">
-                  <svg className="w-5 h-5 text-gold" viewBox="0 0 24 24" fill="currentColor">
+                  <svg className="w-5 h-5 text-royal-blue" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/>
                   </svg>
-                  <span className="text-sm text-zinc-300">Duration: {reservationInfo.hours || 3} hours</span>
+                  <span className="text-sm font-medium text-gray-700">Duration: {reservationInfo.hours || 3} hours</span>
                 </div>
-                <p className="text-xs text-zinc-500 mt-2">
-                  * For hourly bookings, the vehicle and chauffeur will remain at your disposal throughout the duration, starting from the pickup location.
-                </p>
+                <div className="mt-3 space-y-1">
+                  <p className="text-xs text-gray-600">
+                    * For hourly bookings, the vehicle and chauffeur will remain at your disposal throughout the duration, starting from the pickup location.
+                  </p>
+                  <p className="text-xs text-gray-600">
+                    * Each hour includes up to 20km of driving. Distance exceeding this limit will be billed additionally at service completion.
+                  </p>
+                </div>
               </div>
             )}
           </div>
