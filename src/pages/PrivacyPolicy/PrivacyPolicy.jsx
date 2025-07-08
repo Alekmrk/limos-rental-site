@@ -28,7 +28,7 @@ const PrivacyPolicy = ({ scrollUp }) => {
             <h2 className="text-2xl font-semibold text-royal-blue mb-4">Introduction</h2>
             <div className="text-gray-600 space-y-4">
               <p>
-                Elite Way Limo ("we," "our," or "us") is committed to protecting your privacy and ensuring 
+                Elite Way GmbH ("we," "our," or "us") is committed to protecting your privacy and ensuring 
                 the security of your personal information. This Privacy Policy explains how we collect, use, 
                 disclose, and safeguard your information when you visit our website or use our services.
               </p>

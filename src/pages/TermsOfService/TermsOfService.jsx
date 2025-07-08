@@ -24,7 +24,7 @@ const TermsOfService = ({ scrollUp }) => {
             <h2 className="text-2xl font-semibold text-royal-blue mb-4">1. Introduction</h2>
             <div className="text-gray-600 space-y-4">
               <p>
-                Welcome to Elite Way Limo. These Terms of Service ("Terms") govern your use of our luxury transportation services and website located at elitewaylimo.ch (the "Service") operated by Elite Way Limo ("we," "us," or "our").
+                Welcome to Elite Way GmbH. These Terms of Service ("Terms") govern your use of our luxury transportation services and website located at elitewaylimo.ch (the "Service") operated by Elite Way GmbH ("we," "us," or "our").
               </p>
               <p>
                 By booking our services or using our website, you agree to be bound by these Terms. If you disagree with any part of these Terms, you may not use our Service.
@@ -39,7 +39,7 @@ const TermsOfService = ({ scrollUp }) => {
           <section className="mb-8">
             <h2 className="text-2xl font-semibold text-royal-blue mb-4">2. Service Description</h2>
             <div className="text-gray-600 space-y-4">
-              <p>Elite Way Limo provides luxury chauffeur and transportation services including:</p>
+              <p>Elite Way GmbH provides luxury chauffeur and transportation services including:</p>
               <ul className="list-disc list-inside space-y-2 ml-4">
                 <li>Airport transfers</li>
                 <li>Point-to-point transportation</li>
@@ -116,7 +116,7 @@ const TermsOfService = ({ scrollUp }) => {
                 Please contact us at info@elitewaylimo.ch or +41 78 264 79 70 for changes.
               </p>
               
-              <h3 className="text-xl font-medium text-gray-700 mb-3">5.3 Cancellation by Elite Way Limo</h3>
+              <h3 className="text-xl font-medium text-gray-700 mb-3">5.3 Cancellation by Elite Way GmbH</h3>
               <p>
                 We reserve the right to cancel services due to weather conditions, vehicle breakdown, or other circumstances beyond our control. 
                 In such cases, we will provide full refund or alternative arrangements.
@@ -176,7 +176,7 @@ const TermsOfService = ({ scrollUp }) => {
               <h3 className="text-xl font-medium text-gray-700 mb-3">6.4 Vehicle Availability and Substitution</h3>
               <div className="bg-warm-white/80 p-4 rounded-lg border border-royal-blue/15 mb-4">
                 <p className="mb-3">
-                  Elite Way Limo reserves the right to provide vehicles of similar class, quality, and passenger capacity when the exact vehicle model displayed or selected during booking is not available. This may occur due to:
+                  Elite Way GmbH reserves the right to provide vehicles of similar class, quality, and passenger capacity when the exact vehicle model displayed or selected during booking is not available. This may occur due to:
                 </p>
                 <ul className="list-disc list-inside space-y-2 ml-4 text-sm mb-3">
                   <li>Scheduled maintenance or mandatory safety inspections</li>

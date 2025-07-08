@@ -28,7 +28,7 @@ const LegalNotice = ({ scrollUp }) => {
                   <div>
                     <h3 className="text-gray-700 font-medium mb-3">Business Details</h3>
                     <div className="space-y-2 text-sm">
-                      <p><strong>Company Name:</strong> Elite Way Limo</p>
+                      <p><strong>Company Name:</strong> Elite Way GmbH</p>
                       <p><strong>Business Type:</strong> Luxury Transportation Services</p>
                       <p><strong>Country of Operation:</strong> Switzerland</p>
                       <p><strong>Primary Location:</strong> Zurich, Switzerland</p>
@@ -53,7 +53,7 @@ const LegalNotice = ({ scrollUp }) => {
             <h2 className="text-2xl font-semibold text-royal-blue mb-4">Professional Licenses and Compliance</h2>
             <div className="text-gray-600 space-y-4">
               <p>
-                Elite Way Limo operates in full compliance with Swiss transportation regulations and holds all necessary permits for commercial passenger transportation services.
+                Elite Way GmbH operates in full compliance with Swiss transportation regulations and holds all necessary permits for commercial passenger transportation services.
               </p>
               <div className="bg-warm-white/80 p-4 rounded-lg border border-royal-blue/15">
                 <h3 className="text-gray-700 font-medium mb-3">Regulatory Compliance</h3>
@@ -87,7 +87,7 @@ const LegalNotice = ({ scrollUp }) => {
               <h3 className="text-xl font-medium text-gray-700 mb-3">Vehicle Availability and Substitution</h3>
               <div className="bg-warm-white/80 p-4 rounded-lg border border-royal-blue/15">
                 <p className="mb-3">
-                  Elite Way Limo reserves the right to provide vehicles of similar class, quality, and capacity when the exact vehicle model displayed or selected during booking is not available due to:
+                  Elite Way GmbH reserves the right to provide vehicles of similar class, quality, and capacity when the exact vehicle model displayed or selected during booking is not available due to:
                 </p>
                 <ul className="list-disc list-inside space-y-1 ml-4 text-sm mb-3">
                   <li>Maintenance requirements or safety inspections</li>
@@ -114,20 +114,20 @@ const LegalNotice = ({ scrollUp }) => {
             <div className="text-gray-600 space-y-4">
               <h3 className="text-xl font-medium text-gray-700 mb-3">Copyright</h3>
               <p>
-                All content on this website, including text, graphics, logos, images, and software, is the property of Elite Way Limo 
+                All content on this website, including text, graphics, logos, images, and software, is the property of Elite Way GmbH 
                 or its content suppliers and is protected by Swiss and international copyright laws.
               </p>
               
               <h3 className="text-xl font-medium text-gray-700 mb-3">Trademarks</h3>
               <p>
-                "Elite Way Limo" and associated logos are trademarks of Elite Way Limo. 
+                "Elite Way GmbH" and associated logos are trademarks of Elite Way GmbH. 
                 All other trademarks mentioned on this website are the property of their respective owners.
               </p>
               
               <h3 className="text-xl font-medium text-gray-700 mb-3">Usage Rights</h3>
               <p>
                 You may view, download, and print content from this website for personal, non-commercial use only. 
-                Any other use requires prior written permission from Elite Way Limo.
+                Any other use requires prior written permission from Elite Way GmbH.
               </p>
             </div>
           </section>
@@ -204,7 +204,7 @@ const LegalNotice = ({ scrollUp }) => {
             <h2 className="text-2xl font-semibold text-royal-blue mb-4">Environmental Responsibility</h2>
             <div className="text-gray-600 space-y-4">
               <p>
-                Elite Way Limo is committed to environmental sustainability and responsible business practices:
+                Elite Way GmbH is committed to environmental sustainability and responsible business practices:
               </p>
               <div className="bg-warm-white/80 p-4 rounded-lg border border-royal-blue/15">
                 <ul className="list-disc list-inside space-y-2 text-sm">
