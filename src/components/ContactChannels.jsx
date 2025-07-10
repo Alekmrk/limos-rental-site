@@ -95,28 +95,32 @@ const ContactChannels = ({ className = "", position = "fixed" }) => {
       <>
         <div className={`fixed bottom-6 right-6 z-50 flex flex-col gap-3 ${className}`}>
           {/* WhatsApp Button */}
-          <button
-            onClick={handleWhatsAppClick}
-            className="bg-green-500 hover:bg-green-600 text-white p-4 rounded-full shadow-lg transition-all duration-300 hover:scale-110 group"
-            title="Chat on WhatsApp"
-          >
-            <FaWhatsapp className="text-2xl" />
-            <span className="absolute right-16 top-1/2 -translate-y-1/2 bg-gray-800 text-white px-3 py-1 rounded-lg text-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">
+          <div className="relative group">
+            <button
+              onClick={handleWhatsAppClick}
+              className="bg-green-500 hover:bg-green-600 text-white p-4 rounded-full shadow-lg transition-all duration-300 hover:scale-110"
+              title="Chat on WhatsApp"
+            >
+              <FaWhatsapp className="text-2xl" />
+            </button>
+            <span className="absolute right-16 top-1/2 -translate-y-1/2 bg-gray-800 text-white px-3 py-1 rounded-lg text-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap pointer-events-none">
               Chat on WhatsApp
             </span>
-          </button>
+          </div>
 
           {/* Phone Button */}
-          <button
-            onClick={handlePhoneClick}
-            className="bg-blue-500 hover:bg-blue-600 text-white p-4 rounded-full shadow-lg transition-all duration-300 hover:scale-110 group"
-            title="Call Us"
-          >
-            <FaPhone className="text-xl" />
-            <span className="absolute right-16 top-1/2 -translate-y-1/2 bg-gray-800 text-white px-3 py-1 rounded-lg text-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">
+          <div className="relative group">
+            <button
+              onClick={handlePhoneClick}
+              className="bg-blue-500 hover:bg-blue-600 text-white p-4 rounded-full shadow-lg transition-all duration-300 hover:scale-110"
+              title="Call Us"
+            >
+              <FaPhone className="text-xl" />
+            </button>
+            <span className="absolute right-16 top-1/2 -translate-y-1/2 bg-gray-800 text-white px-3 py-1 rounded-lg text-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap pointer-events-none">
               Call {phoneNumber}
             </span>
-          </button>
+          </div>
         </div>
 
         {/* Confirmation Popup */}
