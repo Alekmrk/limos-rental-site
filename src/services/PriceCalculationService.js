@@ -7,26 +7,26 @@
 const VEHICLE_RATES = {
   // Base per km rates for point-to-point transfers
   BASE_KM_RATE: {
-    'Mercedes S first class': 5.5,
-    'Mercedes V first class Van': 4.5,
-    'Mercedes V business class Van': 4.0,
-    'Mercedes E business class': 3.8
+    'S First Class': 5.5,
+    'V First Class Van': 4.5,
+    'V Business Class Van': 4.0,
+    'E Business Class': 3.8
   },
   
   // Hourly rates (CHF per hour)
   HOURLY_RATE: {
-    'Mercedes S first class': 130,
-    'Mercedes V first class Van': 110,
-    'Mercedes V business class Van': 100,
-    'Mercedes E business class': 90
+    'S First Class': 130,
+    'V First Class Van': 110,
+    'V Business Class Van': 100,
+    'E Business Class': 90
   },
   
   // Minimum charges (in CHF) for point-to-point transfers
   MINIMUM_TRANSFER_CHARGE: {
-    'Mercedes S first class': 130,
-    'Mercedes V first class Van': 110,
-    'Mercedes V business class Van': 95,
-    'Mercedes E business class': 95
+    'S First Class': 130,
+    'V First Class Van': 110,
+    'V Business Class Van': 95,
+    'E Business Class': 95
   },
   
   // Minimum hours for hourly bookings
@@ -35,10 +35,10 @@ const VEHICLE_RATES = {
 
 // Legacy vehicle category mappings (for backward compatibility)
 const VEHICLE_CATEGORIES = {
-  'Mercedes S first class': 'luxury',
-  'Mercedes V first class Van': 'premium', 
-  'Mercedes V business class Van': 'premium',
-  'Mercedes E business class': 'business'
+  'S First Class': 'luxury',
+  'V First Class Van': 'premium', 
+  'V Business Class Van': 'premium',
+  'E Business Class': 'business'
 };
 
 // Legacy price per km (for backward compatibility with calculatePriceByDistance)
@@ -68,7 +68,7 @@ const MINIMUM_CHARGES = {
  * @param {number} hours - Number of hours for hourly booking (default: 0)
  * @returns {number} - Calculated total price
  */
-export const calculatePrice = (distance = 0, duration = 0, vehicleType = 'Mercedes V business class Van', extraStops = 0, isHourly = false, hours = 0) => {
+export const calculatePrice = (distance = 0, duration = 0, vehicleType = 'V Business Class Van', extraStops = 0, isHourly = false, hours = 0) => {
   try {
     // Get rates for selected vehicle, fallback to highest rates if vehicle not found
     const kmRate = VEHICLE_RATES.BASE_KM_RATE[vehicleType] || 
