@@ -1,0 +1,97 @@
+- makni sve keys that are exposed in GitHub (stripe for example)
+https://github.com/Alekmrk/limos-rental-site/commit/beb5d7a3a9d11835869a63cc4ac1958452bdcfeb#diff-cc1e0cf4be0b264190045cb78e7dc28a36e9648776d83e3d929eecee12924f70
+https://github.com/Alekmrk/limos-rental-site/commit/761854c0a4fb719d09c834a42286a6a1331196a8#diff-4369ef4b00246e9d4da59ea0640859c98814a6402ecb82f741d1783e718d6408
+-
+
+# da se stavi napomena da korisnici lepo provere adrese jer se cesto desavaju greske
+- kad se udari refresh na thankyou sta radi
+# additional stops
+/ dizajniraj stripe payment form slicnu kao ostatak sajta
+- Special request mozda treba ceo da se redizajnira (da se pomeri negde drugde)
+# Treba da se vidi sta cemo za special request hardcoded sekciju, to mora da se resi
+# na naplati pise nikolin broj telefona, mozda je bolje da stoji mejl
+# mora da se promene secret na githubu i i kodu direktno za google znam, vrv jos sto
+# vrv je mnogo 30 secondi timeout za mejlove (proveri koliko je)
+# da se doda google pay i applepay.
+# vreme uvek treba da je u swiss time, to treba da napomenemo ljudima
+# resi gresku sto salje za /en u console.
+# dodaj dugme da mogu da se zamene adrese na drop off i pickup
+
+For non-airport rides the chauffeur will wait 15m at no cost.
+For airport transfers the chauffeur will wait 60m at no cost.
+For hourly bookings, the vehicle and chauffeur will remain at your disposal throughout the duration.
+
+Greške sajt laptop
+Prvi ulazak na stranicu da ne stoji trenutno vreme za pick up time nego 00:00 možda ili nešto fiksno npr 12:00
+Pored datuma da piše i dan u nedelji 
+Pored satnice stoji "CET", sad je letnje računanje vremena, treba da stoji "CEST"
+Distance transfer prvi korak stoji broj km pa "km KM"
+
+Baby seats (ages 0-1)
+Child seats (ages 1-4) 
+Booster seats (ages 4-12)
+Da ne može back stranica posle plaćanja ili da back odvede na home page
+Mail potvrde rezervacije ka nama da se skloni "thank you for choosing us" i još malo da se doradi
+Hourly booking homepage po default stoji samo 2 za vreme. Treba da piše ono u pozadini "duration" pa preko toga da se kuca satnica. I treba negde da se naglasi da je 20 km uključeno u cenu po satu. Km preko se dodatno naplaćuju.
+Za hourly booking da se na mapi obeleži pick up address 
+Planned activities polje da ne bude obavezno za unos
+Da se naglasi na kraju gde piše da je confirmation mail poslat da provere i spam folder (čekirao sam više puta da nije spam ali svaki put šalje u spam)
+
+Hourly prices
+
+Business class Van 100 chf po satu
+First class Van 110 chf po satu
+First class  130 chf po satu
+Sve tri klase min 3 sata
+
+Distance prices 
+
+Merc V business class Van 4 chf po 1 km
+Min cena 95 chf max 6 persons max 6 baggages
+Merc V first class Van 4.5 chf po 1 km
+Min cena 110 chf max 5 persons max 6 baggages 
+Merc S first class        5.5 chf po 1 km
+Min cena 130 chf max 2 Persons max 2 baggages
+
+glavne:
+/ logo
+# na step 1 promeni datum i vreme da lepo pise a ne ovako nabijeno
+/ Da se proveri konkurentnost backenda i frontenda
+# PRODJI SAM AGENTOM I ODRADITE KORAK PO KORAK IZLISTAVANJE KONFIGURACIJE> ZNACI DA SVAKI SLEDECI AGENT MOZE TO DA VIDI I ODMAH DA ZNA SA CIME RADIMO
+
+Prioritet:
+# Stavi tamo da je napomenuto i na reservationCard da je datum sve po svajcarskom vremenu
+# highlighter na hourly mapi mozda treba da se redizajnira da bude lepsi
+/ skloni sve iz konzole.i logove i warnninge ali samo na produ.
+# da proverimo jel ima jos nekih drzava osim susednih u kojima poslujemo
+# treba da se makne cena da nije 0.5 i treba da se makne one precice za popup window
+# treba da e sve testira na svim pretrazivacima  da se vidi sta ne radi i sta je warning
+?/ modal for when distance or duration is 0
+# coockies
+# privacy-policy treba da se updatuje sa coockies
+# phone number should be validated if it's in good format
+# book now nas vodi do home-page-a
+# skloni stranice koje se ne koriste ili su useless
+# change on stripe WhatsApp number too
+# da izdamo racun kao prilog PDF?
+# stavi da se slika prikazuje u mejlu
+# da se vidi da se sredi da se na contact salje mejl lepo i da nema ono videocall kad klikne user na broj.
+# za telefon mailto ne radi
+# kako da gledamo logove na frontu i na backendu
+# coockies ne lja sto kad odemo na thank you page izlaze. 
+# da se stavi link ka sajtu u mejlu
+# da saljemo invoice
+#  izmenjaj: Privacy Policy, Terms of Service, Legal Notice
+# promeni secrets i 0.5 i koristi pravi webhook
+# da se makne svuda mercedes
+# kratak text za easy online reservation
+# satisfaction rate i tkt da se skloni
+# da se proveri popular routes jel dobra cena i da se doda sta je Nikola naveo u cetu
+# coveculjke da se zameni satovima (poslao je radnije sliku nikola)
+# vidi svuda gde je sranje text da se izmenja
+# da se stavi i slika iznutra ako treba i tkt kao mozda posebna sekcija ili sta vec
+# 20km je ukljuceno u sat vremena, sve preko se naplacuje po kilometru
+# promeni da je svuda zvanicno elite way gmbh
+# sve rute treba da se provere daljina, vreme cena
+# da se vidi gde da stavimo disclamere (proveri jel dobar text za disclamere)
+# preaci booser esats ispod childseats u metadata

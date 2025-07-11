@@ -1,0 +1,195 @@
+- makni sve keys that are exposed in GitHub (stripe for example)
+https://github.com/Alekmrk/limos-rental-site/commit/beb5d7a3a9d11835869a63cc4ac1958452bdcfeb#diff-cc1e0cf4be0b264190045cb78e7dc28a36e9648776d83e3d929eecee12924f70
+https://github.com/Alekmrk/limos-rental-site/commit/761854c0a4fb719d09c834a42286a6a1331196a8#diff-4369ef4b00246e9d4da59ea0640859c98814a6402ecb82f741d1783e718d6408
+-
+
++ da se rotira godina i mesec u step 1
++ u mejlu se na payment deo opet racuna 2 sata manje.
++ treba u mejlu da stoji detalji svi koje je korisnik izlistao
++ da se na hourly oznaci lepo mesto na mapi
+# da se stavi napomena da korisnici lepo provere adrese jer se cesto desavaju greske
++ da se proveri kad pisemo CET a kad pisemo zurich time (nekad nije isto)
++ popravi kalkulator
++ poprravi da se ne moze rezervisati dva tri sata unapred
++ POPRAVI KAKO IZGLEDA MAIL I NAMA adminu I KORISNIKU. Tu obavezno za admina promeni date format.
++ strelicom na padajuci da radi na enter
+- kad se udari refresh na thankyou sta radi
++ pay button should be disabled until payment form is loaded
++ da se vidi zasto ne ide na top na customer details
++ da se vidi zasto na telefonu ne izgleda lepo onaj progress bar kad je na stavci 3
+# additional stops
++ elitewaylimo.ch ne radi lepo. mora da se doda https ili www. resi to
++ payment errors su duplo prikazane
++ cena koja je izracunata, tj ona koja se naplacuje i ona koja se prikazuje nije uvek ista.
++ proveri jel se greske lepo prikazuju na inputu (jel ima mesta)
+/ dizajniraj stripe payment form slicnu kao ostatak sajta
++ da se stavi vreme i datum na vehicle stepu lepo
++ dodaj kad je neuspesno placanje da se posalje mejl adminu
++ payment should be card not stripe or credit card
++ ORDER SUMMARY treba da sadrzi broj sedista i putnika i sve sto se vec nalazi u thank you page (mozda ne vreme trajanja i tome slicno)
++ Special erquest: Thnak you page treba da box ne prelazi sirinu i na desctopu treba da je podeljeno po pola a ne 2/3 da su popunjene a poslednja trecina da je prazna
+- Special request mozda treba ceo da se redizajnira (da se pomeri negde drugde)
+# Treba da se vidi sta cemo za special request hardcoded sekciju, to mora da se resi
++ payment details treba da je izdvojeno na vrhu i thank you page i mailovima
++ u special request vehicle details ne treba da postoji u thank you page. Ne treba da se zove additional request nego special request
++ U mejlovima proveri naslove za svaki od booking varijante
++ Treba da moze enter u additional req i special request i planned activities
++ payment failed treba da ima detaljnije info
++ (vrv da koliko sam proverio) da li se onaj payment code nekako mapira u stripe-u?
+# na naplati pise nikolin broj telefona, mozda je bolje da stoji mejl
++ trepce ono ispod glavne slike na desktopu
+# mora da se promene secret na githubu i i kodu direktno za google znam, vrv jos sto
+# vrv je mnogo 30 secondi timeout za mejlove (proveri koliko je)
++ popravi da summarize sadrzi sve info kao i thank you page
+# da se doda google pay i applepay.
+# vreme uvek treba da je u swiss time, to treba da napomenemo ljudima
+# resi gresku sto salje za /en u console.
++ resi sve warning u consoli
++ resi coockies issue
++ input za brojeve nije dobro, unese ga od pocetka.
++ thank you page ono zlatno prelazi
++ order summary isto prolaze stvari (drop off, pickup, flight number)  text onaj dugi je dobar
++ da se promene svi inputi (znaci kako se prikazuju errori, koji sve inputi postoje i kad se klikne na broj da je sve selectovano i da kucanjem cleanuje input) 
++ I bilo bi dobro da se prvo postavi pitanje ima li dece medju putnicima i onda da otvori ona polja za sedišta
+# dodaj dugme da mogu da se zamene adrese na drop off i pickup
++ vidi sta znaci ono autocomplete off na input za pickup
++ za special request treba da se srede errori.
++ location in swiss error treba da je kraca poruka da bi stala lepo na telefonu
++ date and time ne hvata najbolje kada se uporedi sa danasnjim danom i vremenom u svici
++ reservationCard ne trea da je preko hedera
++ da li radi reply to/all reservation mail
+
+For non-airport rides the chauffeur will wait 15m at no cost.
+For airport transfers the chauffeur will wait 60m at no cost.
+For hourly bookings, the vehicle and chauffeur will remain at your disposal throughout the duration.
+
+Greške sajt laptop
+Prvi ulazak na stranicu da ne stoji trenutno vreme za pick up time nego 00:00 možda ili nešto fiksno npr 12:00
+Pored datuma da piše i dan u nedelji 
+Pored satnice stoji "CET", sad je letnje računanje vremena, treba da stoji "CEST"
+Distance transfer prvi korak stoji broj km pa "km KM"
+
+Baby seats (ages 0-1)
+Child seats (ages 1-4) 
+Booster seats (ages 4-12)
+Da ne može back stranica posle plaćanja ili da back odvede na home page
+Mail potvrde rezervacije ka nama da se skloni "thank you for choosing us" i još malo da se doradi
+Hourly booking homepage po default stoji samo 2 za vreme. Treba da piše ono u pozadini "duration" pa preko toga da se kuca satnica. I treba negde da se naglasi da je 20 km uključeno u cenu po satu. Km preko se dodatno naplaćuju.
+Za hourly booking da se na mapi obeleži pick up address 
+Planned activities polje da ne bude obavezno za unos
+Da se naglasi na kraju gde piše da je confirmation mail poslat da provere i spam folder (čekirao sam više puta da nije spam ali svaki put šalje u spam)
+
+Hourly prices
+
+Business class Van 100 chf po satu
+First class Van 110 chf po satu
+First class  130 chf po satu
+Sve tri klase min 3 sata
+
+Distance prices 
+
+Merc V business class Van 4 chf po 1 km
+Min cena 95 chf max 6 persons max 6 baggages
+Merc V first class Van 4.5 chf po 1 km
+Min cena 110 chf max 5 persons max 6 baggages 
+Merc S first class        5.5 chf po 1 km
+Min cena 130 chf max 2 Persons max 2 baggages
+
+glavne:
++placanje
++kalkulator
++ mejl da se sredi lepo details svi. Da se napise da ne odgovaraju na mejl
+/ logo
++ da sklone sve nepotrebne stranice na aplikaciji
++ da se vidi kako ce customer da salje nama mejl
++ da se ne moze rezervisati tri sata unapred
++ stavi cenu za svaki auto ispod (referenca je limosinealiance sajt)
+# na step 1 promeni datum i vreme da lepo pise a ne ovako nabijeno
++ mejl za hourly treba da se updatuje date i ono to adresa da se skloni
++ mejl za special isto treba da se sredi da prikaze sve info koje smo skupili od cx.
+/ Da se proveri konkurentnost backenda i frontenda
+# PRODJI SAM AGENTOM I ODRADITE KORAK PO KORAK IZLISTAVANJE KONFIGURACIJE> ZNACI DA SVAKI SLEDECI AGENT MOZE TO DA VIDI I ODMAH DA ZNA SA CIME RADIMO
+
+Prioritet:
++ da se vidi zasto kada se prihvati neka adresa, one je ne unese kao sto je bila izlistana u dropoff meniju.
++ Kalkulator
++ kada brises/dodajes stvari obrisi/dodaj ih i iz mejla i iz metadata
++ date cannot be in the past je bug za 23h
++ kada ne izracuna dobro distancu treba da odbije ili nama mejl da posalje. A korisnika da posalje da ponovo nese rucno lokaciju ili sta vec
++ da se vidi kuda sve ima da se stavi nas mejl
++ ako se rezervise za drugog da se stavi
++ makni is validating state
+# Stavi tamo da je napomenuto i na reservationCard da je datum sve po svajcarskom vremenu
+# highlighter na hourly mapi mozda treba da se redizajnira da bude lepsi
+/ skloni sve iz konzole.i logove i warnninge ali samo na produ.
+# da proverimo jel ima jos nekih drzava osim susednih u kojima poslujemo
++ da vidimo kako cemo da koristimo address input. Uporedi sa alliance pa sta cemo dalje
++ da se testira kako izgleda kad ruta ne moe da se nadje
++ kada korisnik krene da kuca, treba da se resetuje za tu adresu sta je izabrano
++ special time date format nije dobar
+# treba da se makne cena da nije 0.5 i treba da se makne one precice za popup window
++ inputi treba da prijavljuju gresku svima na isti nacin an e popup window. generalno sve greske treba da se prodju
++ greska treba da dae focus na koo smo bacili
++ Zurich airport baca na swiss???????
++ proci kroz sve dropdownove i videti jel sve okej. 
++ da l ise presporo ucitavaju vozila na vehicle selection?
++ proveriti jel dobro radi na phone sve
+# treba da e sve testira na svim pretrazivacima  da se vidi sta ne radi i sta je warning
+?/ modal for when distance or duration is 0
++ napraviti napomenu da ce se naplatiti dodatan prtjag na licu mesta ili se voznja nece voziti bez refunda
++ vidi gde ces da stavis reverence info na thank you page (mozda i ona cost page?)
++ stripe da se proveri jel oke da je onako oko linka
+# coockies
+# privacy-policy treba da se updatuje sa coockies
++ prodi kroz sve pageove koje referenciramo a nemamo ih
+# phone number should be validated if it's in good format
+# book now nas vodi do home-page-a
+# skloni stranice koje se ne koriste ili su useless
++ paynow should be scrolled into when user presses card button
++ try payment again button ne radi
++ greske u console kad lupamo neke random lokacije koje nisu pune
++ api i ono drugo modul mozda treba da se aktivira samo kad se klikne na reserve now button a pre toga da se pokusa jos koji put
++ payment failed/canceled da vidimo sta salje mejl
++ add WhatsApp number
+# change on stripe WhatsApp number too
++ desava nam se da opet pitamo za coockies na thankyou page ili na payment failed page
++ thank you i mailovi customera treba da sadrze info@elitewaylimo.ch
++ rules da se napravi da ask:
++ mejlovi za cancel i sta vec ne treba da sadrze thank you i bla bla vec samo info
+# da izdamo racun kao prilog PDF?
+# stavi da se slika prikazuje u mejlu
+# da se vidi da se sredi da se na contact salje mejl lepo i da nema ono videocall kad klikne user na broj.
+# za telefon mailto ne radi
++ popravi footer stranica
++ malo smeta WhatsApp i phone
+# kako da gledamo logove na frontu i na backendu
+# coockies ne lja sto kad odemo na thank you page izlaze. 
+# da se stavi link ka sajtu u mejlu
++ Ovo da sklonim i footer da resim. refund policy da se resi.  Da se pomeri ono za whatsapp i phone negde bolje. Ona glupost sticker ispod. Da se text na reservationCard izmenja. Da se mejl salje preko m360 service. Da se proveri spam.
+# da saljemo invoice
+#  izmenjaj: Privacy Policy, Terms of Service, Legal Notice
+# promeni secrets i 0.5 i koristi pravi webhook
++ Da se promeni text za reference number.
++ get started now dugme ne radi
+# da se makne svuda mercedes
++ award winning
+# kratak text za easy online reservation
++ komentari ljudi da se izmeni sa home page (mozda americka imena) i da se makne lokacija
++ da se promeni redosled
+# satisfaction rate i tkt da se skloni
++ da se make fuel i da se stavi tolls i tkt
+# da se proveri popular routes jel dobra cena i da se doda sta je Nikola naveo u cetu
+# coveculjke da se zameni satovima (poslao je radnije sliku nikola)
++ sa se stavi first class van umesto s klasa kao promocija
++ for domestic stavi 60 minuta a ne 30
++ popuni umesto wedding da je npr corporate event ili hourly service
+# vidi svuda gde je sranje text da se izmenja
++ skloni posto nemamo drugi jezik
++ stavi slike sto ti poslao Nikola
+# da se stavi i slika iznutra ako treba i tkt kao mozda posebna sekcija ili sta vec
+# 20km je ukljuceno u sat vremena, sve preko se naplacuje po kilometru
++ stavi gde treba one disclamere sto smo makli sa reservationCard-a
+# promeni da je svuda zvanicno elite way gmbh
+# sve rute treba da se provere daljina, vreme cena
+# da se vidi gde da stavimo disclamere (proveri jel dobar text za disclamere)
+# preaci booser esats ispod childseats u metadata
