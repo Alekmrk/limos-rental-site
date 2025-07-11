@@ -25,7 +25,6 @@ const Home = ({ scrollUp, setSelectedVehicle }) => {
       <FeaturesSection />
       <FleetSection setSelectedVehicle={setSelectedVehicle} />
       <TestimonialStatsSection />
-      <TestimonialsSection />
       <PricingTransparency />
       <EventsSection />
     </>
