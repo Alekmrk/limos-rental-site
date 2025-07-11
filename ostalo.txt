@@ -95,3 +95,7 @@ Prioritet:
 # sve rute treba da se provere daljina, vreme cena
 # da se vidi gde da stavimo disclamere (proveri jel dobar text za disclamere)
 # preaci booser esats ispod childseats u metadata
+# Da se u sekciji za auta stavi i interijer koji imamo
+# Da se provere cene oni putovanja sto smo naveli
+# Da vidimo gde cemo disclamere da stavimo (mejl mozda?)
+# I one glavne pozadinske slike
