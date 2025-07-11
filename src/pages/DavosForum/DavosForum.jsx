@@ -4,7 +4,7 @@ import Button from "../../components/Button";
 import Image from "../../components/Image";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMountain, faUsers, faShieldAlt, faCalendarAlt, faSnowflake, faCrown } from "@fortawesome/free-solid-svg-icons";
-import davosForumImage from "../../assets/davos.png";
+import davosForumImage from "../../assets/davos.jpg";
 import { scrollToReservationCard } from "../../utils/scrollUtils";
 
 const DavosForum = ({ scrollUp }) => {

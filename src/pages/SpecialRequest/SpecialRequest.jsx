@@ -21,7 +21,7 @@ import {
   faGift,
   faShieldAlt
 } from "@fortawesome/free-solid-svg-icons";
-import bannerImage from "../../assets/banner-image.jpg";
+import bannerImage from "../../assets/special.jpg";
 import { scrollToReservationCard } from "../../utils/scrollUtils";
 
 const SpecialRequest = ({ scrollUp }) => {
