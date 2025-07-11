@@ -86,17 +86,17 @@ const HourlyTransfer = ({ scrollUp }) => {
     {
       duration: "3-4 Hours",
       price: "From CHF 450",
-      features: ["Perfect for meetings", "City center tours", "Shopping trips", "Business appointments"]
+      features: ["Perfect for meetings", "City center tours"]
     },
     {
       duration: "5-8 Hours", 
       price: "From CHF 650",
-      features: ["Extended sightseeing", "Multiple destinations", "Day-long events", "Corporate services"]
+      features: ["Multiple destinations", "Shopping trips"]
     },
     {
       duration: "9-12 Hours",
       price: "From CHF 950",
-      features: ["Full day tours", "Special events", "Long-distance trips", "VIP experiences"]
+      features: ["Day-long events", "Corporate events"]
     }
   ];
 
