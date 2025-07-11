@@ -32,7 +32,7 @@ const ServicesSection = () => {
           </div>
 
           <SectionHeading
-            title="Our Exclusive Services"
+            title="Where Luxury Meets Reliability"
           />
 
           {/* Softer Quote Section */}
