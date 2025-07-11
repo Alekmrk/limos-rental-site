@@ -7,6 +7,7 @@ import ServicesSection from "./ServicesSection/ServicesSection";
 import PricingTransparency from "../../components/PricingTransparency";
 import EventsSection from "../../components/EventsSection";
 import TestimonialsSection from "../../components/TestimonialsSection";
+import TestimonialStatsSection from "../../components/TestimonialStatsSection";
 
 const Home = ({ scrollUp, setSelectedVehicle }) => {
   const { clearReservation } = useContext(ReservationContext);
@@ -21,8 +22,9 @@ const Home = ({ scrollUp, setSelectedVehicle }) => {
     <>
       <BannerSection />
       <ServicesSection />
-      <FleetSection setSelectedVehicle={setSelectedVehicle} />
       <FeaturesSection />
+      <FleetSection setSelectedVehicle={setSelectedVehicle} />
+      <TestimonialStatsSection />
       <TestimonialsSection />
       <PricingTransparency />
       <EventsSection />
