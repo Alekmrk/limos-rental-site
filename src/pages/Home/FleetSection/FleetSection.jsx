@@ -20,14 +20,12 @@ const FleetSection = ({ setSelectedVehicle }) => {
         <div className="container-wide relative z-10">
           {/* Harmonious Header */}
           <div className="text-center mb-16">
-            <div className="inline-flex items-center gap-3 bg-royal-blue/15 backdrop-blur-sm text-royal-blue-dark px-6 py-3 rounded-full text-sm font-medium mb-6 border border-royal-blue/25 shadow-md">
-              <FaCar className="text-lg" />
-              <span className="text-base font-semibold">Premium Fleet</span>
+            <div className="inline-flex items-center gap-4 bg-royal-blue/20 backdrop-blur-sm text-royal-blue-dark px-8 py-4 rounded-2xl border border-royal-blue/30 shadow-lg mb-8">
+              <FaCar className="text-2xl" />
+              <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-royal-blue-dark">
+                Our Luxury Fleet
+              </h2>
             </div>
-
-            <SectionHeading
-              title="Our Luxury Fleet"
-            />
 
             {/* Softer Fleet Features */}
             <div className="flex flex-col sm:flex-row justify-center items-center gap-8 mt-12 text-gray-600">
