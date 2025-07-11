@@ -196,42 +196,10 @@ const SpecialRequest = ({ scrollUp }) => {
               </div>
             </div>
 
-            {/* Mobile Layout: Reservation Card and Badges in Same Container */}
+            {/* Mobile Layout: Reservation Card */}
             <div className="block md:hidden mb-8">
               <div className="relative z-50">
                 <ReservationCard />
-              </div>
-              
-              {/* Mobile Trust Indicators - After reservation card */}
-              <div className="mt-8 flex flex-col sm:flex-row justify-center items-center gap-4 text-gray-600 text-sm">
-                <div className="flex items-center gap-2 bg-cream-light/80 backdrop-blur-sm px-4 py-2 rounded-full border border-royal-blue/20 shadow-md">
-                  <FontAwesomeIcon icon={faCrown} className="text-royal-blue" />
-                  <span className="text-gray-700 font-medium">Bespoke Service</span>
-                </div>
-                <div className="flex items-center gap-2 bg-cream-light/80 backdrop-blur-sm px-4 py-2 rounded-full border border-royal-blue/20 shadow-md">
-                  <FontAwesomeIcon icon={faUsers} className="text-royal-blue" />
-                  <span className="text-gray-700 font-medium">Group Coordination</span>
-                </div>
-                <div className="flex items-center gap-2 bg-cream-light/80 backdrop-blur-sm px-4 py-2 rounded-full border border-royal-blue/20 shadow-md">
-                  <FontAwesomeIcon icon={faShieldAlt} className="text-emerald-500" />
-                  <span className="text-gray-700 font-medium">Free Consultation</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Desktop Trust Indicators - Original position */}
-            <div className="hidden md:flex flex-col sm:flex-row justify-center items-center gap-8 sm:gap-12 mb-12 md:mb-16 text-gray-600 text-sm md:text-base">
-              <div className="flex items-center gap-2 bg-cream-light/80 backdrop-blur-sm px-4 py-2 rounded-full border border-royal-blue/20 shadow-md">
-                <FontAwesomeIcon icon={faCrown} className="text-royal-blue" />
-                <span className="text-gray-700 font-medium">Bespoke Service</span>
-              </div>
-              <div className="flex items-center gap-2 bg-cream-light/80 backdrop-blur-sm px-4 py-2 rounded-full border border-royal-blue/20 shadow-md">
-                <FontAwesomeIcon icon={faUsers} className="text-royal-blue" />
-                <span className="text-gray-700 font-medium">Group Coordination</span>
-              </div>
-              <div className="flex items-center gap-2 bg-cream-light/80 backdrop-blur-sm px-4 py-2 rounded-full border border-royal-blue/20 shadow-md">
-                <FontAwesomeIcon icon={faShieldAlt} className="text-emerald-500" />
-                <span className="text-gray-700 font-medium">Free Consultation</span>
               </div>
             </div>
           </div>
