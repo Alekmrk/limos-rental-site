@@ -98,7 +98,7 @@ const PrimaryNav = ({ navHidden, screenSize, setNavHidden }) => {
           <div
             className={`${
               servicesDropdownOpen ? "block" : "hidden"
-            } absolute top-full left-1/2 transform -translate-x-1/2 mt-2 w-72 bg-warm-white/95 backdrop-blur-md border border-royal-blue/30 rounded-lg shadow-xl py-2 z-20`}
+            } absolute top-full left-1/2 transform -translate-x-1/2 mt-2 w-72 bg-warm-white border border-royal-blue/30 rounded-lg shadow-xl py-2 z-20`}
           >
             <NavLink
               to="/airport-transfer"
@@ -149,7 +149,7 @@ const PrimaryNav = ({ navHidden, screenSize, setNavHidden }) => {
           <div
             className={`${
               eventsDropdownOpen ? "block" : "hidden"
-            } absolute top-full left-1/2 transform -translate-x-1/2 mt-2 w-72 bg-warm-white/95 backdrop-blur-md border border-royal-blue/30 rounded-lg shadow-xl py-2 z-20`}
+            } absolute top-full left-1/2 transform -translate-x-1/2 mt-2 w-72 bg-warm-white border border-royal-blue/30 rounded-lg shadow-xl py-2 z-20`}
           >
             <div className="px-5 py-3 text-sm text-royal-blue uppercase tracking-wide font-medium">
               Premium Events
