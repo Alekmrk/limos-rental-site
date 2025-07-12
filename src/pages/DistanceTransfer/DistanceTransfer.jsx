@@ -143,8 +143,9 @@ const DistanceTransfer = ({ scrollUp }) => {
               <div className="relative max-w-4xl mx-auto">
                 <div className="absolute inset-0 bg-black/15 backdrop-blur-sm rounded-2xl transform translate-x-1 translate-y-1"></div>
                 <div className="relative bg-white/20 backdrop-blur-md rounded-2xl px-6 py-4 border border-white/30 shadow-2xl">
-                  <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-semibold text-transparent bg-gradient-to-r from-royal-blue via-gold to-royal-blue-light bg-clip-text text-center drop-shadow-lg">
-                    <span className="text-royal-blue">Distance</span> Transfer
+                  <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-semibold text-center drop-shadow-lg">
+                    <span className="text-royal-blue drop-shadow-lg">Distance</span>{" "}
+                    <span className="text-gold drop-shadow-lg">Transfer</span>
                   </h1>
                 </div>
               </div>
