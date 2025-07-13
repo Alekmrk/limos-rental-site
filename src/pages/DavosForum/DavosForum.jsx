@@ -14,9 +14,9 @@ const DavosForum = ({ scrollUp }) => {
 
   const features = [
     {
-      icon: faShieldAlt,
-      title: "VIP Security",
-      description: "Enhanced security protocols and discrete professional service for high-profile clients."
+      icon: faCrown,
+      title: "Luxury Experience",
+      description: "Premium vehicles and amenities for a first-class travel experience in Davos."
     },
     {
       icon: faUsers,
@@ -29,9 +29,9 @@ const DavosForum = ({ scrollUp }) => {
       description: "Coordinated transfers for multiple attendees with precise timing and scheduling."
     },
     {
-      icon: faSnowflake,
-      title: "Alpine Expertise", 
-      description: "Winter driving specialists familiar with mountain roads and weather conditions."
+      icon: faUsers,
+      title: "Group Transfers",
+      description: "Seamless transportation for teams, families, or delegations of any size."
     }
   ];
 
@@ -98,16 +98,7 @@ const DavosForum = ({ scrollUp }) => {
               </div>
             </div>
             
-            <div className="relative max-w-[55ch] mx-auto mb-12 md:mb-16">
-              {/* Description text with glassy background */}
-              <div className="absolute inset-0 bg-black/15 backdrop-blur-sm rounded-xl transform translate-x-0.5 translate-y-0.5"></div>
-              <div className="relative bg-white/20 backdrop-blur-md rounded-xl px-6 py-4 border border-white/30 shadow-xl">
-                <p className="text-gray-800 text-lg md:text-xl lg:text-2xl leading-relaxed font-semibold drop-shadow-md">
-                  Executive transportation for the World Economic Forum and prestigious Davos events. 
-                  Professional service for global leaders and delegates.
-                </p>
-              </div>
-            </div>
+            {/* Description text hidden per request */}
 
             {/* Mobile Layout: Reservation Card and Badges in Same Container */}
             <div className="block md:hidden mb-8">
@@ -118,16 +109,16 @@ const DavosForum = ({ scrollUp }) => {
               {/* Mobile Trust Indicators - After reservation card */}
               <div className="mt-8 flex flex-col sm:flex-row justify-center items-center gap-4 text-gray-600 text-sm">
                 <div className="flex items-center gap-2 bg-cream-light/80 backdrop-blur-sm px-4 py-2 rounded-full border border-royal-blue/20 shadow-md">
-                  <FontAwesomeIcon icon={faShieldAlt} className="text-royal-blue" />
-                  <span className="text-gray-700 font-medium">VIP Security</span>
+                  <FontAwesomeIcon icon={faCrown} className="text-gold" />
+                  <span className="text-gray-700 font-medium">Executive Class</span>
                 </div>
                 <div className="flex items-center gap-2 bg-cream-light/80 backdrop-blur-sm px-4 py-2 rounded-full border border-royal-blue/20 shadow-md">
                   <FontAwesomeIcon icon={faMountain} className="text-royal-blue" />
                   <span className="text-gray-700 font-medium">Alpine Routes</span>
                 </div>
                 <div className="flex items-center gap-2 bg-cream-light/80 backdrop-blur-sm px-4 py-2 rounded-full border border-royal-blue/20 shadow-md">
-                  <FontAwesomeIcon icon={faCrown} className="text-gold" />
-                  <span className="text-gray-700 font-medium">Executive Class</span>
+                  <FontAwesomeIcon icon={faCalendarAlt} className="text-royal-blue" />
+                  <span className="text-gray-700 font-medium">24/7 Available</span>
                 </div>
               </div>
             </div>
@@ -135,16 +126,16 @@ const DavosForum = ({ scrollUp }) => {
             {/* Desktop Trust Indicators - Original position */}
             <div className="hidden md:flex flex-col sm:flex-row justify-center items-center gap-8 sm:gap-12 mb-12 md:mb-16 text-gray-600 text-sm md:text-base">
               <div className="flex items-center gap-2 bg-cream-light/80 backdrop-blur-sm px-4 py-2 rounded-full border border-royal-blue/20 shadow-md">
-                <FontAwesomeIcon icon={faShieldAlt} className="text-royal-blue" />
-                <span className="text-gray-700 font-medium">VIP Security</span>
+                <FontAwesomeIcon icon={faCrown} className="text-gold" />
+                <span className="text-gray-700 font-medium">Executive Class</span>
               </div>
               <div className="flex items-center gap-2 bg-cream-light/80 backdrop-blur-sm px-4 py-2 rounded-full border border-royal-blue/20 shadow-md">
                 <FontAwesomeIcon icon={faMountain} className="text-royal-blue" />
                 <span className="text-gray-700 font-medium">Alpine Routes</span>
               </div>
               <div className="flex items-center gap-2 bg-cream-light/80 backdrop-blur-sm px-4 py-2 rounded-full border border-royal-blue/20 shadow-md">
-                <FontAwesomeIcon icon={faCrown} className="text-gold" />
-                <span className="text-gray-700 font-medium">Executive Class</span>
+                <FontAwesomeIcon icon={faCalendarAlt} className="text-royal-blue" />
+                <span className="text-gray-700 font-medium">24/7 Available</span>
               </div>
             </div>
           </div>

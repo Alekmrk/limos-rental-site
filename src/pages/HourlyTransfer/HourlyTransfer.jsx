@@ -173,16 +173,7 @@ const HourlyTransfer = ({ scrollUp }) => {
               </div>
             </div>
             
-            <div className="relative max-w-[55ch] mx-auto mb-12 md:mb-16">
-              {/* Description text with glassy background */}
-              <div className="absolute inset-0 bg-black/15 backdrop-blur-sm rounded-xl transform translate-x-0.5 translate-y-0.5"></div>
-              <div className="relative bg-white/20 backdrop-blur-md rounded-xl px-6 py-4 border border-white/30 shadow-xl">
-                <p className="text-gray-800 text-lg md:text-xl lg:text-2xl leading-relaxed font-semibold drop-shadow-md">
-                  Premium chauffeur service by the hour. Perfect for business meetings, 
-                  sightseeing tours, and flexible transportation needs.
-                </p>
-              </div>
-            </div>
+            {/* Description text hidden per request */}
 
             {/* Mobile Reservation Card - Right after description */}
             <div className="block md:hidden mb-12 px-4">
