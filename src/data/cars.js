@@ -1,6 +1,6 @@
 import imgBenzSClass from "../assets/cars/sclass3.png";
 import imgBenzVClass from "../assets/cars/car-benz-v-class.png";
-import imgAudiA8 from "../assets/cars/sclass(2).png";
+import imgAudiA8 from "../assets/cars/classeV.png";
 import imgEClass from "../assets/cars/eclass.png";
 import imgVClass1 from "../assets/cars/v-class1.png";
 import imgVClass2 from "../assets/cars/v-class2.png";
