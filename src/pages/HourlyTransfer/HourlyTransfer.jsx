@@ -85,17 +85,17 @@ const HourlyTransfer = ({ scrollUp }) => {
   const pricingTiers = [
     {
       duration: "3-4 Hours",
-      price: "From CHF 450",
+      price: "From CHF 270",
       features: ["Perfect for meetings", "City center tours"]
     },
     {
       duration: "5-8 Hours", 
-      price: "From CHF 650",
+      price: "From CHF 450",
       features: ["Multiple destinations", "Shopping trips"]
     },
     {
       duration: "9-12 Hours",
-      price: "From CHF 950",
+      price: "From CHF 810",
       features: ["Day-long events", "Corporate events"]
     }
   ];
@@ -103,7 +103,7 @@ const HourlyTransfer = ({ scrollUp }) => {
   const popularActivities = [
     {
       activity: "Rhine Falls & Schaffhausen",
-      duration: "6 hours",
+      duration: "5 hours",
       highlights: ["Europe's most powerful waterfall", "Medieval old town", "Castle views"]
     },
     {
@@ -113,22 +113,22 @@ const HourlyTransfer = ({ scrollUp }) => {
     },
     {
       activity: "Jungfraujoch Day Trip",
-      duration: "10 hours",
+      duration: "12 hours",
       highlights: ["Top of Europe", "Alpine railway", "Glacier views"]
     },
     {
       activity: "Zurich Business District",
-      duration: "4 hours",
+      duration: "3 hours",
       highlights: ["Financial center", "Corporate meetings", "Hotel transfers"]
     },
     {
       activity: "Lucerne & Mount Pilatus",
-      duration: "8 hours",
+      duration: "7 hours",
       highlights: ["Historic city center", "Lake cruise", "Mountain experience"]
     },
     {
       activity: "St. Moritz Luxury Tour",
-      duration: "12 hours",
+      duration: "10 hours",
       highlights: ["Alpine resort", "Luxury shopping", "Scenic mountain roads"]
     }
   ];

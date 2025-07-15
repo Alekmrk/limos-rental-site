@@ -52,43 +52,43 @@ const DistanceTransfer = ({ scrollUp }) => {
     {
       from: "Zurich Airport",
       to: "Geneva",
-      distance: "280 km",
-      time: "3.0 hours",
+      distance: "278 km",
+      time: "3h10min",
       highlights: ["Lake Geneva views", "Highway comfort", "Business district access"]
     },
     {
       from: "Zurich",
       to: "Basel",
-      distance: "85 km", 
-      time: "1.0 hour",
+      distance: "87 km", 
+      time: "1h5min",
       highlights: ["Rhine River route", "Cultural centers", "Cross-border access"]
     },
     {
       from: "Zurich",
       to: "Lausanne",
-      distance: "225 km",
-      time: "2.5 hours", 
+      distance: "222 km",
+      time: "2h30min", 
       highlights: ["Lake Geneva region", "Olympic Museum", "Wine country views"]
     },
     {
       from: "Zurich",
       to: "Lucerne",
-      distance: "55 km",
-      time: "45 minutes",
+      distance: "58 km",
+      time: "50min",
       highlights: ["Alpine scenery", "Lake Lucerne", "Historic old town"]
     },
     {
       from: "Zurich",
       to: "Interlaken",
-      distance: "125 km",
-      time: "1.5 hours",
+      distance: "122 km",
+      time: "1h30min",
       highlights: ["Bernese Oberland", "Jungfrau region", "Alpine gateway"]
     },
     {
       from: "St. Gallen",
       to: "Zurich",
-      distance: "95 km",
-      time: "1.2 hours",
+      distance: "93 km",
+      time: "1h15min",
       highlights: ["Eastern Switzerland", "Textile heritage", "Abbey district"]
     }
   ];
