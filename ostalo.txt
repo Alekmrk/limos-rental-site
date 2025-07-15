@@ -99,3 +99,4 @@ Prioritet:
 # Da se provere cene oni putovanja sto smo naveli
 # Da vidimo gde cemo disclamere da stavimo (mejl mozda?)
 # I one glavne pozadinske slike
+# da se doda termce i privacy u ono details information na stripe profilu
