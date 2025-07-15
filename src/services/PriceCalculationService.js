@@ -7,26 +7,26 @@
 const VEHICLE_RATES = {
   // Base per km rates for point-to-point transfers
   BASE_KM_RATE: {
-    'S First Class': 5.5,
-    'V First Class Van': 4.5,
-    'V Business Class Van': 4.0,
-    'E Business Class': 3.8
+    'First Class': 5.5,
+    'First Class Van': 4.5,
+    'Business Class Van': 4.0,
+    'Business Class': 3.8
   },
   
   // Hourly rates (CHF per hour)
   HOURLY_RATE: {
-    'S First Class': 130,
-    'V First Class Van': 110,
-    'V Business Class Van': 100,
-    'E Business Class': 90
+    'First Class': 130,
+    'First Class Van': 110,
+    'Business Class Van': 100,
+    'Business Class': 90
   },
   
   // Minimum charges (in CHF) for point-to-point transfers
   MINIMUM_TRANSFER_CHARGE: {
-    'S First Class': 130,
-    'V First Class Van': 110,
-    'V Business Class Van': 95,
-    'E Business Class': 95
+    'First Class': 130,
+    'First Class Van': 110,
+    'Business Class Van': 95,
+    'Business Class': 95
   },
   
   // Minimum hours for hourly bookings
@@ -35,10 +35,10 @@ const VEHICLE_RATES = {
 
 // Legacy vehicle category mappings (for backward compatibility)
 const VEHICLE_CATEGORIES = {
-  'S First Class': 'luxury',
-  'V First Class Van': 'premium', 
-  'V Business Class Van': 'premium',
-  'E Business Class': 'business'
+  'First Class': 'luxury',
+  'First Class Van': 'premium', 
+  'Business Class Van': 'premium',
+  'Business Class': 'business'
 };
 
 // Legacy price per km (for backward compatibility with calculatePriceByDistance)
@@ -68,7 +68,7 @@ const MINIMUM_CHARGES = {
  * @param {number} hours - Number of hours for hourly booking (default: 0)
  * @returns {number} - Calculated total price
  */
-export const calculatePrice = (distance = 0, duration = 0, vehicleType = 'V Business Class Van', extraStops = 0, isHourly = false, hours = 0) => {
+export const calculatePrice = (distance = 0, duration = 0, vehicleType = 'Business Class Van', extraStops = 0, isHourly = false, hours = 0) => {
   try {
     // Get rates for selected vehicle, fallback to highest rates if vehicle not found
     const kmRate = VEHICLE_RATES.BASE_KM_RATE[vehicleType] || 

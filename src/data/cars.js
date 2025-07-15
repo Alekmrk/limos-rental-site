@@ -7,7 +7,7 @@ import imgVClass1 from "../assets/cars/firstClassV4.png";
 const cars = [
   {
     id: 1,
-    name: "S First Class",
+    name: "First Class",
     detail:
       'The campaign for the new S-Class provides authentic insights into the lives of Alicia Keys, Lewis Hamilton and Roger Federer. The spot shows what "Cares for what matters" really means to our testimonials.',
     image: imgBenzSClass,
@@ -28,7 +28,7 @@ const cars = [
   },
   {
     id: 2,
-    name: "V First Class Van",
+    name: "First Class Van",
     detail:
       "Exciting, bold, iconic—move through the world in a vehicle befitting your status. In motion and at rest, Escalade demands attention with exceptional physicality and magnificent design. Witness as luxury transforms into legendary.",
     image: imgVClass1,
@@ -49,7 +49,7 @@ const cars = [
   },
   {
     id: 3,
-    name: "V Business Class Van",
+    name: "Business Class Van",
     detail:
       "The V-Class impresses with its modern design and high-class appeal – both inside and out. Strong character lines and high-quality materials as well as the attractive operating and display concept make it a highly desirable vehicle.",
     image: imgVClass2,
@@ -71,7 +71,7 @@ const cars = [
   },
   {
     id: 4,
-    name: "E Business Class",
+    name: "Business Class",
     detail:
       "Live the future with us. A design that takes elegance and dynamics to a new level, with numerous assistance systems, a new operating concept that offers a new level of intuitive use, and above all more space. Configure your own personal space in the back, more flexible and comfortable than ever before, and experience even greater luxury in the new Audi A8 L.",
     image: imgEClass,
