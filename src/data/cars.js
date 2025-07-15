@@ -15,9 +15,9 @@ const cars = [
     luggage: 2,
     type: ["luxury"],
     class: "First Class",
-    baseRate: 4.5, // CHF per km
-    minimumFare: 120, // CHF
-    hourlyRate: 180, // CHF per hour
+    baseRate: 5.5, // CHF per km
+    minimumFare: 130, // CHF
+    hourlyRate: 130, // CHF per hour
     features: [
       "Executive interior",
       "Privacy partition",
@@ -36,9 +36,9 @@ const cars = [
     luggage: 6,
     type: ["luxury", "business", "crossover"],
     class: "First Class Van",
-    baseRate: 5.2, // CHF per km
-    minimumFare: 150, // CHF
-    hourlyRate: 220, // CHF per hour
+    baseRate: 4.5, // CHF per km
+    minimumFare: 110, // CHF
+    hourlyRate: 110, // CHF per hour
     features: [
       "Spacious interior",
       "Group seating",
@@ -57,9 +57,9 @@ const cars = [
     luggage: 6,
     type: ["crossover"],
     class: "Business Van",
-    baseRate: 3.8, // CHF per km
-    minimumFare: 90, // CHF
-    hourlyRate: 140, // CHF per hour
+    baseRate: 4.0, // CHF per km
+    minimumFare: 95, // CHF
+    hourlyRate: 100, // CHF per hour
     features: [
       "Comfortable seating",
       "Ample luggage space",
@@ -79,9 +79,9 @@ const cars = [
     luggage: 2,
     type: ["business"],
     class: "Business Class",
-    baseRate: 3.2, // CHF per km
-    minimumFare: 75, // CHF
-    hourlyRate: 120, // CHF per hour
+    baseRate: 3.8, // CHF per km
+    minimumFare: 95, // CHF
+    hourlyRate: 90, // CHF per hour
     features: [
       "Professional comfort",
       "Business amenities",
