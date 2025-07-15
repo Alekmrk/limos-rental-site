@@ -22,7 +22,7 @@ const Vehicles = ({ scrollUp, selectedVehicle, setSelectedVehicle }) => {
       </h1>
       <p className="md:w-2/3 text-gray-600">
         We offer a variety of luxurious vehicles for you to choose. Select your
-        vehicle of choice from our collection of luxury, crossover and business
+        vehicle of choice from our collection of luxury, premium van and business
         class vehicles.
       </p>
       <div className="grid md:grid-cols-2 gap-12 my-16">
