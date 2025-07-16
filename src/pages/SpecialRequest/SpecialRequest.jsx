@@ -19,7 +19,9 @@ import {
   faWineGlass,
   faCamera,
   faGift,
-  faShieldAlt
+  faShieldAlt,
+  faPlaneDeparture,
+  faSkiing
 } from "@fortawesome/free-solid-svg-icons";
 import bannerImage from "../../assets/special.jpg";
 import { scrollToReservationCard } from "../../utils/scrollUtils";
@@ -93,6 +95,13 @@ const SpecialRequest = ({ scrollUp }) => {
       icon: faGift,
       description: "Transportation for anniversaries, proposals, birthday celebrations, and other milestone events.",
       features: ["Surprise coordination", "Special decorations", "Champagne service", "Memory making"]
+    },
+    {
+      title: "Alpine Resort & Ski Transfers",
+      duration: "Mountain luxury",
+      icon: faSkiing,
+      description: "Premium transportation to exclusive Alpine resorts, ski destinations, and mountain retreats with specialized equipment handling.",
+      features: ["Ski equipment transport", "Resort coordination", "Mountain weather expertise", "Après-ski arrangements"]
     }
   ];
 
