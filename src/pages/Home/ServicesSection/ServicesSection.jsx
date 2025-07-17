@@ -152,10 +152,10 @@ const ServicesSection = () => {
                 {/* Mobile Previous Arrow */}
                 <button
                   onClick={prevTestimonial}
-                  className="md:hidden w-8 h-8 bg-royal-blue/20 hover:bg-royal-blue/30 rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110"
+                  className="md:hidden w-10 h-10 bg-royal-blue/20 hover:bg-royal-blue/30 rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110"
                   aria-label="Previous testimonial"
                 >
-                  <FaChevronLeft className="text-royal-blue-dark text-sm" />
+                  <FaChevronLeft className="text-royal-blue-dark text-base" />
                 </button>
 
                 {/* Indicator Dots */}
@@ -177,10 +177,10 @@ const ServicesSection = () => {
                 {/* Mobile Next Arrow */}
                 <button
                   onClick={nextTestimonial}
-                  className="md:hidden w-8 h-8 bg-royal-blue/20 hover:bg-royal-blue/30 rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110"
+                  className="md:hidden w-10 h-10 bg-royal-blue/20 hover:bg-royal-blue/30 rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110"
                   aria-label="Next testimonial"
                 >
-                  <FaChevronRight className="text-royal-blue-dark text-sm" />
+                  <FaChevronRight className="text-royal-blue-dark text-base" />
                 </button>
               </div>
             </div>
