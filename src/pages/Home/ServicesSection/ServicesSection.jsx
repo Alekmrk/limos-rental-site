@@ -73,10 +73,10 @@ const ServicesSection = () => {
           {/* Enhanced Rotating Quote Section */}
           <div className="max-w-4xl mx-auto mt-12 relative">
             <div className="bg-darker-cream/90 backdrop-blur-sm rounded-2xl shadow-lg border border-royal-blue/15 p-8 relative overflow-hidden">
-              {/* Navigation Arrows */}
+              {/* Desktop Navigation Arrows - Hidden on mobile */}
               <button
                 onClick={prevTestimonial}
-                className="absolute left-4 top-1/2 transform -translate-y-1/2 w-10 h-10 bg-royal-blue/20 hover:bg-royal-blue/30 rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110 z-10"
+                className="hidden md:flex absolute left-4 top-1/2 transform -translate-y-1/2 w-10 h-10 bg-royal-blue/20 hover:bg-royal-blue/30 rounded-full items-center justify-center transition-all duration-300 hover:scale-110 z-10"
                 aria-label="Previous testimonial"
               >
                 <FaChevronLeft className="text-royal-blue-dark" />
@@ -84,14 +84,14 @@ const ServicesSection = () => {
               
               <button
                 onClick={nextTestimonial}
-                className="absolute right-4 top-1/2 transform -translate-y-1/2 w-10 h-10 bg-royal-blue/20 hover:bg-royal-blue/30 rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110 z-10"
+                className="hidden md:flex absolute right-4 top-1/2 transform -translate-y-1/2 w-10 h-10 bg-royal-blue/20 hover:bg-royal-blue/30 rounded-full items-center justify-center transition-all duration-300 hover:scale-110 z-10"
                 aria-label="Next testimonial"
               >
                 <FaChevronRight className="text-royal-blue-dark" />
               </button>
 
               {/* Testimonial Content */}
-              <div className="px-12">
+              <div className="px-4 md:px-12">
                 <div className="flex items-center justify-center mb-6">
                   <div className="w-12 h-12 bg-royal-blue/15 rounded-full flex items-center justify-center">
                     <FaQuoteLeft className="text-xl text-royal-blue-dark" />
@@ -114,20 +114,41 @@ const ServicesSection = () => {
                 </div>
               </div>
 
-              {/* Testimonial Indicators */}
-              <div className="flex justify-center gap-2 mt-6">
-                {testimonials.map((_, index) => (
-                  <button
-                    key={index}
-                    onClick={() => setCurrentTestimonial(index)}
-                    className={`w-3 h-3 rounded-full transition-all duration-300 ${
-                      index === currentTestimonial 
-                        ? 'bg-royal-blue-dark scale-110' 
-                        : 'bg-royal-blue/30 hover:bg-royal-blue/50'
-                    }`}
-                    aria-label={`Go to testimonial ${index + 1}`}
-                  />
-                ))}
+              {/* Testimonial Indicators with Mobile Navigation */}
+              <div className="flex justify-center items-center gap-4 mt-6">
+                {/* Mobile Previous Arrow */}
+                <button
+                  onClick={prevTestimonial}
+                  className="md:hidden w-8 h-8 bg-royal-blue/20 hover:bg-royal-blue/30 rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110"
+                  aria-label="Previous testimonial"
+                >
+                  <FaChevronLeft className="text-royal-blue-dark text-sm" />
+                </button>
+
+                {/* Indicator Dots */}
+                <div className="flex gap-2">
+                  {testimonials.map((_, index) => (
+                    <button
+                      key={index}
+                      onClick={() => setCurrentTestimonial(index)}
+                      className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                        index === currentTestimonial 
+                          ? 'bg-royal-blue-dark scale-110' 
+                          : 'bg-royal-blue/30 hover:bg-royal-blue/50'
+                      }`}
+                      aria-label={`Go to testimonial ${index + 1}`}
+                    />
+                  ))}
+                </div>
+
+                {/* Mobile Next Arrow */}
+                <button
+                  onClick={nextTestimonial}
+                  className="md:hidden w-8 h-8 bg-royal-blue/20 hover:bg-royal-blue/30 rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110"
+                  aria-label="Next testimonial"
+                >
+                  <FaChevronRight className="text-royal-blue-dark text-sm" />
+                </button>
               </div>
             </div>
           </div>

@@ -130,16 +130,11 @@ const TestimonialsSection = () => {
           </p>
         </div>
 
-        {/* Testimonials Carousel - Enhanced with Navigation */}
-        <div 
-          className="relative mb-16"
-          onMouseEnter={handleMouseEnter}
-          onMouseLeave={handleMouseLeave}
-        >
-          {/* Navigation Arrows */}
+        {/* Mobile Navigation - Above testimonials */}
+        <div className="flex md:hidden justify-center gap-4 mb-6">
           <button
             onClick={prevSlide}
-            className="absolute left-0 top-1/2 transform -translate-y-1/2 -translate-x-4 z-10 w-12 h-12 bg-cream-light/90 hover:bg-royal-blue/20 rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110 shadow-lg border border-royal-blue/20"
+            className="w-12 h-12 bg-cream-light/90 hover:bg-royal-blue/20 rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110 shadow-lg border border-royal-blue/20"
             aria-label="Previous testimonials"
           >
             <FaChevronLeft className="text-royal-blue-dark text-lg" />
@@ -147,7 +142,31 @@ const TestimonialsSection = () => {
           
           <button
             onClick={nextSlide}
-            className="absolute right-0 top-1/2 transform -translate-y-1/2 translate-x-4 z-10 w-12 h-12 bg-cream-light/90 hover:bg-royal-blue/20 rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110 shadow-lg border border-royal-blue/20"
+            className="w-12 h-12 bg-cream-light/90 hover:bg-royal-blue/20 rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110 shadow-lg border border-royal-blue/20"
+            aria-label="Next testimonials"
+          >
+            <FaChevronRight className="text-royal-blue-dark text-lg" />
+          </button>
+        </div>
+
+        {/* Testimonials Carousel - Enhanced with Navigation */}
+        <div 
+          className="relative mb-16"
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
+        >
+          {/* Desktop Navigation Arrows - Hidden on mobile */}
+          <button
+            onClick={prevSlide}
+            className="hidden md:flex absolute left-0 top-1/2 transform -translate-y-1/2 -translate-x-4 z-10 w-12 h-12 bg-cream-light/90 hover:bg-royal-blue/20 rounded-full items-center justify-center transition-all duration-300 hover:scale-110 shadow-lg border border-royal-blue/20"
+            aria-label="Previous testimonials"
+          >
+            <FaChevronLeft className="text-royal-blue-dark text-lg" />
+          </button>
+          
+          <button
+            onClick={nextSlide}
+            className="hidden md:flex absolute right-0 top-1/2 transform -translate-y-1/2 translate-x-4 z-10 w-12 h-12 bg-cream-light/90 hover:bg-royal-blue/20 rounded-full items-center justify-center transition-all duration-300 hover:scale-110 shadow-lg border border-royal-blue/20"
             aria-label="Next testimonials"
           >
             <FaChevronRight className="text-royal-blue-dark text-lg" />
