@@ -7,6 +7,8 @@ import { useState, useEffect } from "react";
 
 const ServicesSection = () => {
   const [currentTestimonial, setCurrentTestimonial] = useState(0);
+  const [touchStart, setTouchStart] = useState(null);
+  const [touchEnd, setTouchEnd] = useState(null);
 
   const testimonials = [
     {
@@ -46,6 +48,32 @@ const ServicesSection = () => {
     setCurrentTestimonial((prev) => (prev - 1 + testimonials.length) % testimonials.length);
   };
 
+  // Swipe functionality
+  const minSwipeDistance = 50;
+
+  const onTouchStart = (e) => {
+    setTouchEnd(null);
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+
+  const onTouchMove = (e) => {
+    setTouchEnd(e.targetTouches[0].clientX);
+  };
+
+  const onTouchEnd = () => {
+    if (!touchStart || !touchEnd) return;
+    
+    const distance = touchStart - touchEnd;
+    const isLeftSwipe = distance > minSwipeDistance;
+    const isRightSwipe = distance < -minSwipeDistance;
+
+    if (isLeftSwipe) {
+      nextTestimonial();
+    } else if (isRightSwipe) {
+      prevTestimonial();
+    }
+  };
+
   return (
     <div className="relative bg-gradient-to-br from-cream-dark via-cream to-warm-gray py-24 mt-0">
       {/* Softer Decorative Background Pattern */}
@@ -72,7 +100,12 @@ const ServicesSection = () => {
 
           {/* Enhanced Rotating Quote Section */}
           <div className="max-w-4xl mx-auto mt-12 relative">
-            <div className="bg-darker-cream/90 backdrop-blur-sm rounded-2xl shadow-lg border border-royal-blue/15 p-8 relative overflow-hidden">
+            <div 
+              className="bg-darker-cream/90 backdrop-blur-sm rounded-2xl shadow-lg border border-royal-blue/15 p-8 relative overflow-hidden touch-pan-y"
+              onTouchStart={onTouchStart}
+              onTouchMove={onTouchMove}
+              onTouchEnd={onTouchEnd}
+            >
               {/* Desktop Navigation Arrows - Hidden on mobile */}
               <button
                 onClick={prevTestimonial}
