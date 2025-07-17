@@ -1,8 +1,11 @@
-import React from 'react';
-import { FaStar, FaQuoteLeft, FaUser } from 'react-icons/fa';
+import React, { useState, useEffect } from 'react';
+import { FaStar, FaQuoteLeft, FaUser, FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import { scrollToReservationCard } from '../utils/scrollUtils';
 
 const TestimonialsSection = () => {
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [isAutoPlaying, setIsAutoPlaying] = useState(true);
+
   const testimonials = [
     {
       id: 1,
@@ -30,8 +33,61 @@ const TestimonialsSection = () => {
       rating: 5,
       text: "I regularly use Elite Way for airport transfers and business meetings. The reliability, comfort, and professional service make them my go-to choice for luxury transportation.",
       image: null
+    },
+    {
+      id: 4,
+      name: "Maria Gonzalez",
+      role: "Wedding Planner",
+      location: "Lucerne",
+      rating: 5,
+      text: "Elite Way exceeded all expectations for our luxury wedding transfers. The fleet coordination was seamless, vehicles were pristine, and every detail was perfectly executed. Highly recommended!",
+      image: null
+    },
+    {
+      id: 5,
+      name: "Roberto Martinelli",
+      role: "Investment Banker",
+      location: "Lugano",
+      rating: 5,
+      text: "Outstanding service for high-profile client meetings. The discretion, punctuality, and luxury vehicles create the perfect impression. Elite Way is our preferred transportation partner.",
+      image: null
     }
   ];
+
+  const itemsPerPage = 3;
+  const totalPages = Math.ceil(testimonials.length / itemsPerPage);
+
+  const nextSlide = () => {
+    setCurrentIndex((prevIndex) => (prevIndex + 1) % totalPages);
+  };
+
+  const prevSlide = () => {
+    setCurrentIndex((prevIndex) => (prevIndex - 1 + totalPages) % totalPages);
+  };
+
+  const goToSlide = (index) => {
+    setCurrentIndex(index);
+  };
+
+  // Auto-play functionality
+  useEffect(() => {
+    if (!isAutoPlaying) return;
+
+    const timer = setInterval(() => {
+      nextSlide();
+    }, 5000);
+
+    return () => clearInterval(timer);
+  }, [currentIndex, isAutoPlaying]);
+
+  // Pause auto-play on hover
+  const handleMouseEnter = () => setIsAutoPlaying(false);
+  const handleMouseLeave = () => setIsAutoPlaying(true);
+
+  const getCurrentTestimonials = () => {
+    const start = currentIndex * itemsPerPage;
+    return testimonials.slice(start, start + itemsPerPage);
+  };
 
   const ReviewStars = ({ rating }) => {
     return (
@@ -74,33 +130,86 @@ const TestimonialsSection = () => {
           </p>
         </div>
 
-        {/* Testimonials Grid - Harmonious Theme */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
-          {testimonials.map((testimonial, index) => (
+        {/* Testimonials Carousel - Enhanced with Navigation */}
+        <div 
+          className="relative mb-16"
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
+        >
+          {/* Navigation Arrows */}
+          <button
+            onClick={prevSlide}
+            className="absolute left-0 top-1/2 transform -translate-y-1/2 -translate-x-4 z-10 w-12 h-12 bg-cream-light/90 hover:bg-royal-blue/20 rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110 shadow-lg border border-royal-blue/20"
+            aria-label="Previous testimonials"
+          >
+            <FaChevronLeft className="text-royal-blue-dark text-lg" />
+          </button>
+          
+          <button
+            onClick={nextSlide}
+            className="absolute right-0 top-1/2 transform -translate-y-1/2 translate-x-4 z-10 w-12 h-12 bg-cream-light/90 hover:bg-royal-blue/20 rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110 shadow-lg border border-royal-blue/20"
+            aria-label="Next testimonials"
+          >
+            <FaChevronRight className="text-royal-blue-dark text-lg" />
+          </button>
+
+          {/* Testimonials Grid */}
+          <div className="overflow-hidden">
             <div 
-              key={testimonial.id} 
-              className="bg-cream-light/90 p-8 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 border border-royal-blue/15 hover:border-royal-blue/30 flex flex-col h-full"
+              className="flex transition-transform duration-500 ease-in-out"
+              style={{ transform: `translateX(-${currentIndex * 100}%)` }}
             >
-              <FaQuoteLeft className="text-2xl text-gold mb-4" />
-              
-              <ReviewStars rating={testimonial.rating} />
-              
-              <p className="text-gray-600 mb-6 leading-relaxed flex-grow">
-                "{testimonial.text}"
-              </p>
-              
-              <div className="flex items-center gap-4 mt-auto">
-                <div className="w-12 h-12 bg-gradient-to-br from-royal-blue to-royal-blue-light rounded-full flex items-center justify-center">
-                  <FaUser className="text-white" />
+              {Array.from({ length: totalPages }, (_, pageIndex) => (
+                <div key={pageIndex} className="w-full flex-shrink-0">
+                  <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 px-4">
+                    {testimonials
+                      .slice(pageIndex * itemsPerPage, (pageIndex + 1) * itemsPerPage)
+                      .map((testimonial) => (
+                        <div 
+                          key={testimonial.id} 
+                          className="bg-cream-light/90 p-8 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 border border-royal-blue/15 hover:border-royal-blue/30 flex flex-col h-full"
+                        >
+                          <FaQuoteLeft className="text-2xl text-gold mb-4" />
+                          
+                          <ReviewStars rating={testimonial.rating} />
+                          
+                          <p className="text-gray-600 mb-6 leading-relaxed flex-grow">
+                            "{testimonial.text}"
+                          </p>
+                          
+                          <div className="flex items-center gap-4 mt-auto">
+                            <div className="w-12 h-12 bg-gradient-to-br from-royal-blue to-royal-blue-light rounded-full flex items-center justify-center">
+                              <FaUser className="text-white" />
+                            </div>
+                            <div>
+                              <div className="font-semibold text-gray-700">{testimonial.name}</div>
+                              <div className="text-sm text-gray-600">{testimonial.role}</div>
+                              <div className="text-xs text-gray-500">{testimonial.location}</div>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                  </div>
                 </div>
-                <div>
-                  <div className="font-semibold text-gray-700">{testimonial.name}</div>
-                  <div className="text-sm text-gray-600">{testimonial.role}</div>
-                  <div className="text-xs text-gray-500">{testimonial.location}</div>
-                </div>
-              </div>
+              ))}
             </div>
-          ))}
+          </div>
+
+          {/* Carousel Indicators */}
+          <div className="flex justify-center gap-2 mt-8">
+            {Array.from({ length: totalPages }, (_, index) => (
+              <button
+                key={index}
+                onClick={() => goToSlide(index)}
+                className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                  index === currentIndex 
+                    ? 'bg-royal-blue-dark scale-125' 
+                    : 'bg-royal-blue/30 hover:bg-royal-blue/50'
+                }`}
+                aria-label={`Go to testimonial page ${index + 1}`}
+              />
+            ))}
+          </div>
         </div>
 
         {/* Trust Indicators - Harmonious Theme */}

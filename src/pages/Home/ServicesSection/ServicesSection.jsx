@@ -1,15 +1,50 @@
 import SectionHeading from "../../../components/SectionHeading";
 import ServiceCard from "./ServiceCard";
 import services from "../../../data/services";
-import { FaQuoteLeft, FaAward, FaUsers, FaGlobeEurope, FaStar } from "react-icons/fa";
+import { FaQuoteLeft, FaAward, FaUsers, FaGlobeEurope, FaStar, FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import { scrollToReservationCard } from "../../../utils/scrollUtils";
+import { useState, useEffect } from "react";
 
 const ServicesSection = () => {
+  const [currentTestimonial, setCurrentTestimonial] = useState(0);
+
+  const testimonials = [
+    {
+      id: 1,
+      text: "My flight was delayed by 2 hours, but the driver was tracking it and adjusted pickup automatically. He was waiting with a sign when I finally arrived at 11 PM. Professional service when I needed it most.",
+      name: "Marcus Chen",
+      role: "Business Executive",
+      location: "Zurich"
+    },
+    {
+      id: 2,
+      text: "Exceptional luxury experience from start to finish. The Mercedes S-Class was immaculate, and our chauffeur provided insider knowledge about Zurich's best restaurants. Truly five-star service.",
+      name: "Isabella Rodriguez",
+      role: "Hotel Director",
+      location: "St. Moritz"
+    },
+    {
+      id: 3,
+      text: "Elite Way handled our entire wedding party transportation flawlessly. Multiple vehicles, precise timing, and elegant presentation. Our guests were thoroughly impressed with the attention to detail.",
+      name: "Sophie Laurent",
+      role: "Event Coordinator",
+      location: "Geneva"
+    }
+  ];
+
   const stats = [
     { icon: FaUsers, number: "7,500+", label: "Happy Clients" },
     { icon: FaAward, number: "13+", label: "Years Experience" },
     { icon: FaGlobeEurope, number: "35+", label: "Destinations" },
   ];
+
+  const nextTestimonial = () => {
+    setCurrentTestimonial((prev) => (prev + 1) % testimonials.length);
+  };
+
+  const prevTestimonial = () => {
+    setCurrentTestimonial((prev) => (prev - 1 + testimonials.length) % testimonials.length);
+  };
 
   return (
     <div className="relative bg-gradient-to-br from-cream-dark via-cream to-warm-gray py-24 mt-0">
@@ -35,21 +70,66 @@ const ServicesSection = () => {
             title="Where Luxury Meets Reliability"
           />
 
-          {/* Softer Quote Section */}
-          <div className="max-w-3xl mx-auto mt-12 p-8 bg-darker-cream/90 backdrop-blur-sm rounded-2xl shadow-lg border border-royal-blue/15">
-            <div className="flex items-center justify-center mb-4">
-              <div className="w-12 h-12 bg-royal-blue/15 rounded-full flex items-center justify-center">
-                <FaQuoteLeft className="text-xl text-royal-blue-dark" />
+          {/* Enhanced Rotating Quote Section */}
+          <div className="max-w-4xl mx-auto mt-12 relative">
+            <div className="bg-darker-cream/90 backdrop-blur-sm rounded-2xl shadow-lg border border-royal-blue/15 p-8 relative overflow-hidden">
+              {/* Navigation Arrows */}
+              <button
+                onClick={prevTestimonial}
+                className="absolute left-4 top-1/2 transform -translate-y-1/2 w-10 h-10 bg-royal-blue/20 hover:bg-royal-blue/30 rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110 z-10"
+                aria-label="Previous testimonial"
+              >
+                <FaChevronLeft className="text-royal-blue-dark" />
+              </button>
+              
+              <button
+                onClick={nextTestimonial}
+                className="absolute right-4 top-1/2 transform -translate-y-1/2 w-10 h-10 bg-royal-blue/20 hover:bg-royal-blue/30 rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110 z-10"
+                aria-label="Next testimonial"
+              >
+                <FaChevronRight className="text-royal-blue-dark" />
+              </button>
+
+              {/* Testimonial Content */}
+              <div className="px-12">
+                <div className="flex items-center justify-center mb-6">
+                  <div className="w-12 h-12 bg-royal-blue/15 rounded-full flex items-center justify-center">
+                    <FaQuoteLeft className="text-xl text-royal-blue-dark" />
+                  </div>
+                </div>
+                
+                <div className="min-h-[120px] flex items-center justify-center">
+                  <p className="text-gray-600 italic text-xl leading-relaxed text-center transition-all duration-500">
+                    "{testimonials[currentTestimonial].text}"
+                  </p>
+                </div>
+                
+                <div className="text-center mt-6">
+                  <div className="text-base text-royal-blue-dark font-medium transition-all duration-500">
+                    {testimonials[currentTestimonial].name}
+                  </div>
+                  <div className="text-gray-600 text-sm transition-all duration-500">
+                    {testimonials[currentTestimonial].role}, {testimonials[currentTestimonial].location}
+                  </div>
+                </div>
+              </div>
+
+              {/* Testimonial Indicators */}
+              <div className="flex justify-center gap-2 mt-6">
+                {testimonials.map((_, index) => (
+                  <button
+                    key={index}
+                    onClick={() => setCurrentTestimonial(index)}
+                    className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                      index === currentTestimonial 
+                        ? 'bg-royal-blue-dark scale-110' 
+                        : 'bg-royal-blue/30 hover:bg-royal-blue/50'
+                    }`}
+                    aria-label={`Go to testimonial ${index + 1}`}
+                  />
+                ))}
               </div>
             </div>
-            <p className="text-gray-600 italic text-xl leading-relaxed">
-              "My flight was delayed by 2 hours, but the driver was tracking it and adjusted pickup automatically. 
-              He was waiting with a sign when I finally arrived at 11 PM. Professional service when I needed it most."
-            </p>
-            <div className="text-base text-royal-blue-dark mt-4 font-medium">
-              Marcus Chen
-            </div>
-            <div className="text-gray-600 text-sm">Business Executive, Zurich</div>
           </div>
         </div>
 
