@@ -68,7 +68,7 @@ const MINIMUM_CHARGES = {
  * @param {number} hours - Number of hours for hourly booking (default: 0)
  * @returns {number} - Calculated total price
  */
-export const calculatePrice = (distance = 0, duration = 0, vehicleType = 'First Class Van', extraStops = 0, isHourly = false, hours = 0) => {
+export const calculatePrice = (distance = 0, duration = 0, vehicleType = 'Business Class Van', extraStops = 0, isHourly = false, hours = 0) => {
   try {
     // Get rates for selected vehicle, fallback to highest rates if vehicle not found
     const kmRate = VEHICLE_RATES.BASE_KM_RATE[vehicleType] || 
