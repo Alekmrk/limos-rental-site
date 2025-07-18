@@ -96,6 +96,9 @@ const cars = [
   },
 ];
 
+// Filter out Business Class Van from being displayed or selectable
+const filteredCars = cars.filter(car => car.name !== "Business Class Van");
+
 // Popular route pricing examples
 export const popularRoutes = [
   {
@@ -148,4 +151,4 @@ export const popularRoutes = [
   },
 ];
 
-export default cars;
+export default filteredCars;
