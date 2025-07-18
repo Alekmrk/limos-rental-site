@@ -5,6 +5,41 @@ import SliderCard from "../../../components/SliderCard";
 import { useEffect } from "react";
 import Aos from "aos";
 import "aos/dist/aos.css";
+
+// Custom CSS for the carousel
+const carouselStyles = `
+  .react-multi-carousel-list {
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    position: relative;
+  }
+  
+  .react-multi-carousel-track {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: row;
+    position: relative;
+    transform-style: preserve-3d;
+    backface-visibility: hidden;
+    will-change: transform, transition;
+  }
+  
+  .react-multi-carousel-item {
+    position: relative;
+    transform-style: preserve-3d;
+    backface-visibility: hidden;
+  }
+`;
+
+// Inject the styles
+if (typeof document !== 'undefined') {
+  const styleSheet = document.createElement('style');
+  styleSheet.textContent = carouselStyles;
+  document.head.appendChild(styleSheet);
+}
 const CarSlider = ({ setSelectedVehicle }) => {
   useEffect(() => {
     Aos.init({ duration: 1000 });
@@ -12,25 +47,24 @@ const CarSlider = ({ setSelectedVehicle }) => {
 
   const responsive = {
     superLargeDesktop: {
-      // the naming can be any, depends on you.
-      breakpoint: { max: 4000, min: 3000 },
-      items: 4,
-      partialVisibilityGutter: 40,
+      breakpoint: { max: 4000, min: 1200 },
+      items: 2.5, // Show 2.5 items to indicate more content
+      slidesToSlide: 1,
     },
     desktop: {
-      breakpoint: { max: 3000, min: 1000 },
-      items: 3,
-      partialVisibilityGutter: 40,
+      breakpoint: { max: 1200, min: 768 },
+      items: 2,
+      slidesToSlide: 1,
     },
     tablet: {
-      breakpoint: { max: 1000, min: 480 },
-      items: 2,
-      partialVisibilityGutter: 30,
+      breakpoint: { max: 768, min: 464 },
+      items: 1.5, // Show 1.5 items to indicate more content
+      slidesToSlide: 1,
     },
     mobile: {
-      breakpoint: { max: 480, min: 0 },
+      breakpoint: { max: 464, min: 0 },
       items: 1,
-      partialVisibilityGutter: 30,
+      slidesToSlide: 1,
     },
   };
 
@@ -43,23 +77,34 @@ const CarSlider = ({ setSelectedVehicle }) => {
       className="flex justify-center w-full mx-auto relative"
       data-aos="fade-left"
     >
-      <Carousel
-        responsive={responsive}
-        showDots={true}
-        partialVisible={false}
-        swipeable={true}
-        draggable={true}
-      >
-        {/* Show all vehicles without filtering */}
-        {cars.map((car, i) => (
-          <SliderCard
-            {...car}
-            index={i}
-            key={car.id}
-            chooseVehicle={chooseVehicle}
-          />
-        ))}
-      </Carousel>
+      <div className="w-full max-w-7xl">
+        <Carousel
+          responsive={responsive}
+          showDots={true}
+          infinite={true}
+          swipeable={true}
+          draggable={true}
+          arrows={true}
+          autoPlay={false}
+          keyBoardControl={true}
+          customTransition="transform 300ms ease-in-out"
+          transitionDuration={300}
+          containerClass="carousel-container"
+          removeArrowOnDeviceType={[]}
+          partialVisible={true}
+        >
+          {/* Show all vehicles without filtering */}
+          {cars.map((car, i) => (
+            <div key={car.id} className="p-4">
+              <SliderCard
+                {...car}
+                index={i}
+                chooseVehicle={chooseVehicle}
+              />
+            </div>
+          ))}
+        </Carousel>
+      </div>
     </div>
   );
 };
