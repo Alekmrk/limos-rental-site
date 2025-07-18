@@ -14,7 +14,7 @@ import {
   faGlobe,
   faStar
 } from "@fortawesome/free-solid-svg-icons";
-import hourlyTransferImage from "../../assets/hourly.webp";
+import hourlyTransferImage from "../../assets/hourly(u169).jpg";
 import { scrollToReservationCard } from "../../utils/scrollUtils";
 
 const HourlyTransfer = ({ scrollUp }) => {
@@ -158,7 +158,7 @@ const HourlyTransfer = ({ scrollUp }) => {
             <Image
               src={hourlyTransferImage}
               alt="Luxury hourly transfer service"
-              className="w-[calc(100%+2rem)] md:w-[calc(100%+4rem)] lg:w-[calc(100%+8rem)] h-full object-cover"
+              className="w-full h-full object-cover object-top"
               imageType="banner"
               priority={true}
               sizes="100vw"
