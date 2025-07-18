@@ -48,7 +48,7 @@ const CarSlider = ({ setSelectedVehicle }) => {
   const responsive = {
     superLargeDesktop: {
       breakpoint: { max: 4000, min: 1200 },
-      items: 2.5, // Show 2.5 items to indicate more content
+      items: 2,
       slidesToSlide: 1,
     },
     desktop: {
@@ -58,7 +58,7 @@ const CarSlider = ({ setSelectedVehicle }) => {
     },
     tablet: {
       breakpoint: { max: 768, min: 464 },
-      items: 1.5, // Show 1.5 items to indicate more content
+      items: 1,
       slidesToSlide: 1,
     },
     mobile: {
