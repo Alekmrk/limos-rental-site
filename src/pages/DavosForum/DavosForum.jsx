@@ -12,6 +12,21 @@ const DavosForum = ({ scrollUp }) => {
     scrollUp();
   }, [scrollUp]);
 
+  // Preload critical banner image
+  useEffect(() => {
+    const link = document.createElement('link');
+    link.rel = 'preload';
+    link.as = 'image';
+    link.href = davosForumImage;
+    document.head.appendChild(link);
+    
+    return () => {
+      if (document.head.contains(link)) {
+        document.head.removeChild(link);
+      }
+    };
+  }, []);
+
   const features = [
     {
       icon: faCrown,

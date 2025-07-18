@@ -25,6 +25,21 @@ const DistanceTransfer = ({ scrollUp }) => {
     clearReservation();
   }, [scrollUp, clearReservation]);
 
+  // Preload critical banner image
+  useEffect(() => {
+    const link = document.createElement('link');
+    link.rel = 'preload';
+    link.as = 'image';
+    link.href = distanceTransferImage;
+    document.head.appendChild(link);
+    
+    return () => {
+      if (document.head.contains(link)) {
+        document.head.removeChild(link);
+      }
+    };
+  }, []);
+
   const features = [
     {
       icon: faRoute,

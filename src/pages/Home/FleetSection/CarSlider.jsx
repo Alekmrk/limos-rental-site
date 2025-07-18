@@ -45,6 +45,38 @@ const CarSlider = ({ setSelectedVehicle }) => {
     Aos.init({ duration: 1000 });
   }, []);
 
+  // Preload critical car images for even faster loading
+  useEffect(() => {
+    // Use the first 3 available cars for preloading
+    const preloadPromises = cars.slice(0, 3).map(car => {
+      return new Promise((resolve, reject) => {
+        const link = document.createElement('link');
+        link.rel = 'preload';
+        link.as = 'image';
+        link.href = car.image;
+        link.onload = resolve;
+        link.onerror = reject;
+        document.head.appendChild(link);
+      });
+    });
+
+    Promise.all(preloadPromises).catch(error => {
+      console.warn('Car image preload failed:', error);
+    });
+
+    return () => {
+      // Cleanup preload links when component unmounts
+      const preloadLinks = document.querySelectorAll('link[rel="preload"][as="image"]');
+      preloadLinks.forEach(link => {
+        if (cars.some(car => car.image === link.href)) {
+          if (document.head.contains(link)) {
+            document.head.removeChild(link);
+          }
+        }
+      });
+    };
+  }, []);
+
   const responsive = {
     superLargeDesktop: {
       breakpoint: { max: 4000, min: 1200 },

@@ -22,6 +22,8 @@ const SliderCard = ({ index, image, name, seats, luggage, chooseVehicle }) => {
             alt={name + " - image"}
             sizes="(max-width: 768px) 300px, (max-width: 1280px) 400px, 500px"
             imageType="car"
+            priority={true}
+            loading="eager"
           />
         </div>
         <div className="vehicle-info bg-cream-light/70 backdrop-blur-sm px-4 py-3 rounded-lg border border-royal-blue/15 shadow-sm my-4">

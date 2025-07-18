@@ -20,8 +20,8 @@ const ServiceCard = ({ image, heading, text }) => {
           src={image}
           alt={`${heading} service illustration`}
           sizes="(max-width: 640px) 260px, (max-width: 1024px) 300px, 400px"
-          loading="eager"
-          imageType="standard"
+          loading="lazy"
+          imageType="service"
         />
       </div>
       <div className="card-content flex flex-col justify-between flex-grow">

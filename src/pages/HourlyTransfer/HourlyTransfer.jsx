@@ -28,6 +28,21 @@ const HourlyTransfer = ({ scrollUp }) => {
     setIsHourly(true);
   }, [scrollUp, clearReservation, setIsHourly]);
 
+  // Preload critical banner image
+  useEffect(() => {
+    const link = document.createElement('link');
+    link.rel = 'preload';
+    link.as = 'image';
+    link.href = hourlyTransferImage;
+    document.head.appendChild(link);
+    
+    return () => {
+      if (document.head.contains(link)) {
+        document.head.removeChild(link);
+      }
+    };
+  }, []);
+
   const features = [
     {
       icon: faClock,
