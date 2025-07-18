@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import Button from "../../../components/Button";
 import ReservationCard from "./ReservationCard";
 import Image from "../../../components/Image";
-import bannerImage from "../../../assets/bannerNew.jpg";
+import bannerImage from "../../../assets/bannerNew(u169).jpg";
 import { FaStar, FaShieldAlt, FaClock, FaPhone } from "react-icons/fa";
 import { useEffect } from "react";
 
@@ -28,7 +28,7 @@ const BannerSection = () => {
           <Image
             src={bannerImage}
             alt="Elite Way Limo luxury chauffeur service"
-            className="w-full h-full object-cover"
+            className="w-full h-full object-cover object-top"
             imageType="banner"
             priority={true}
             sizes="100vw"
