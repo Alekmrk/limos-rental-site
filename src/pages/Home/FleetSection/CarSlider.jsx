@@ -39,11 +39,14 @@ const CarSlider = ({ setSelectedVehicle }) => {
   };
 
   return (
-    <div className="md:pl-16" data-aos="fade-left">
+    <div
+      className="flex justify-center w-full mx-auto relative"
+      data-aos="fade-left"
+    >
       <Carousel
         responsive={responsive}
         showDots={true}
-        partialVisible={true}
+        partialVisible={false}
         swipeable={true}
         draggable={true}
       >
