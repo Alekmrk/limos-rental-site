@@ -63,7 +63,7 @@ const PrimaryNav = ({ navHidden, screenSize, setNavHidden }) => {
       <ul className="flex flex-col md:flex-row gap-12 md:gap-8 lg:gap-12 mb-8 md:mb-0 justify-center items-center">
         <li>
           <NavLink
-            className="block text-gray-700 hover:text-royal-blue font-medium text-xl md:text-2xl transition-all duration-200 hover:bg-royal-blue/10 px-4 py-3 rounded-lg md:bg-transparent md:hover:bg-transparent md:px-2 md:py-1"
+            className="block text-gray-700 hover:text-royal-blue font-medium text-base md:text-lg transition-all duration-200 hover:bg-royal-blue/10 px-4 py-3 rounded-lg md:bg-transparent md:hover:bg-transparent md:px-2 md:py-1"
             to="/"
             onClick={handleNavClick}
           >
@@ -72,7 +72,7 @@ const PrimaryNav = ({ navHidden, screenSize, setNavHidden }) => {
         </li>
         <li>
           <NavLink
-            className="block text-gray-700 hover:text-royal-blue font-medium text-xl md:text-2xl transition-all duration-200 hover:bg-royal-blue/10 px-4 py-3 rounded-lg md:bg-transparent md:hover:bg-transparent md:px-2 md:py-1"
+            className="block text-gray-700 hover:text-royal-blue font-medium text-base md:text-lg transition-all duration-200 hover:bg-royal-blue/10 px-4 py-3 rounded-lg md:bg-transparent md:hover:bg-transparent md:px-2 md:py-1"
             to="/vehicles"
             onClick={handleNavClick}
           >
@@ -83,7 +83,7 @@ const PrimaryNav = ({ navHidden, screenSize, setNavHidden }) => {
         {/* Services Dropdown - CENTER ITEM */}
         <li className="relative" ref={servicesDropdownRef}>
           <button
-            className="block text-gray-700 hover:text-royal-blue font-medium text-xl md:text-2xl transition-all duration-200 hover:bg-royal-blue/10 px-4 py-3 rounded-lg md:bg-transparent md:hover:bg-transparent md:px-2 md:py-1 inline-flex items-center gap-2"
+            className="block text-gray-700 hover:text-royal-blue font-medium text-base md:text-lg transition-all duration-200 hover:bg-royal-blue/10 px-4 py-3 rounded-lg md:bg-transparent md:hover:bg-transparent md:px-2 md:py-1 inline-flex items-center gap-2"
             onClick={toggleServicesDropdown}
           >
             Services
@@ -134,7 +134,7 @@ const PrimaryNav = ({ navHidden, screenSize, setNavHidden }) => {
         {/* Events Dropdown */}
         <li className="relative" ref={eventsDropdownRef}>
           <button
-            className="block text-gray-700 hover:text-royal-blue font-medium text-xl md:text-2xl transition-all duration-200 hover:bg-royal-blue/10 px-4 py-3 rounded-lg md:bg-transparent md:hover:bg-transparent md:px-2 md:py-1 inline-flex items-center gap-2"
+            className="block text-gray-700 hover:text-royal-blue font-medium text-base md:text-lg transition-all duration-200 hover:bg-royal-blue/10 px-4 py-3 rounded-lg md:bg-transparent md:hover:bg-transparent md:px-2 md:py-1 inline-flex items-center gap-2"
             onClick={toggleEventsDropdown}
           >
             Events
@@ -166,7 +166,7 @@ const PrimaryNav = ({ navHidden, screenSize, setNavHidden }) => {
 
         <li>
           <NavLink
-            className="block text-gray-700 hover:text-royal-blue font-medium text-xl md:text-2xl transition-all duration-200 hover:bg-royal-blue/10 px-4 py-3 rounded-lg md:bg-transparent md:hover:bg-transparent md:px-2 md:py-1"
+            className="block text-gray-700 hover:text-royal-blue font-medium text-base md:text-lg transition-all duration-200 hover:bg-royal-blue/10 px-4 py-3 rounded-lg md:bg-transparent md:hover:bg-transparent md:px-2 md:py-1"
             to="/contact"
             onClick={handleNavClick}
           >
