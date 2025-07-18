@@ -5,7 +5,7 @@ import Button from "../../components/Button";
 import ProgressBar from "../../components/ProgressBar";
 import AddressInput from "../../components/AddressInput";
 import NumberDropdown from "../../components/NumberDropdown";
-import cars from "../../data/cars";
+import cars, { getMaxPassengers, getMaxBags } from "../../data/cars";
 import MapPreview from "../../components/MapPreview";
 import { calculatePrice, calculatePriceByDistance, addSurcharges, formatPrice } from "../../services/PriceCalculationService";
 
@@ -544,7 +544,7 @@ const VehicleSelection = ({ scrollUp }) => {
                 value={reservationInfo.passengers}
                 onChange={handleDropdownChange}
                 min={1}
-                max={6}
+                max={getMaxPassengers()}
                 label="Number of Passengers *"
                 error={errors.passengers}
               />
@@ -555,7 +555,7 @@ const VehicleSelection = ({ scrollUp }) => {
                 value={reservationInfo.bags}
                 onChange={handleDropdownChange}
                 min={0}
-                max={6}
+                max={getMaxBags()}
                 label="Number of Bags"
                 error={errors.bags}
               />

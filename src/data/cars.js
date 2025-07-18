@@ -4,7 +4,7 @@ import imgVClass2 from "../assets/cars/v-class2.png";
 import imgVClass1 from "../assets/cars/firstClassV4.png";
 
 
-const cars = [
+let cars = [
   {
     id: 1,
     name: "First Class",
@@ -97,7 +97,16 @@ const cars = [
 ];
 
 // Filter out Business Class Van from being displayed or selectable
-const filteredCars = cars.filter(car => car.name !== "Business Class Van");
+cars = cars.filter(car => car.name !== "Business Class Van");
+
+// Utility functions to get maximum values from all available cars
+export const getMaxPassengers = () => {
+  return Math.max(...cars.map(car => car.seats));
+};
+
+export const getMaxBags = () => {
+  return Math.max(...cars.map(car => car.luggage));
+};
 
 // Popular route pricing examples
 export const popularRoutes = [
@@ -151,4 +160,4 @@ export const popularRoutes = [
   },
 ];
 
-export default filteredCars;
+export default cars;
