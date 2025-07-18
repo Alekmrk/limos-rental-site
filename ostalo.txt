@@ -37,6 +37,30 @@ Za hourly booking da se na mapi obeleži pick up address
 Planned activities polje da ne bude obavezno za unos
 Da se naglasi na kraju gde piše da je confirmation mail poslat da provere i spam folder (čekirao sam više puta da nije spam ali svaki put šalje u spam)
 
+
+
+Optimal Dimensions:
+Width: 1920px - 2560px (for sharp display on high-resolution screens)
+Height: 800px - 1200px
+Aspect Ratio: 16:9 (1920x1080) or 21:9 (2560x1080)
+Minimum Requirements:
+Width: 1200px minimum
+Height: 600px minimum
+File Format: JPG or WebP (for better compression)
+File Size: Under 500KB for optimal loading
+Why These Dimensions:
+16:9 Aspect Ratio (1920x1080):
+
+Most common screen ratio
+Works well for both mobile and desktop
+Good balance of width and height content
+21:9 Aspect Ratio (2560x1080):
+
+Better for ultrawide displays
+More cinematic feel
+Allows for more horizontal content
+
+
 Hourly prices
 
 Business class Van 100 chf po satu
