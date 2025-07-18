@@ -4,7 +4,7 @@ import Button from "../../components/Button";
 import Image from "../../components/Image";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMountain, faUsers, faShieldAlt, faCalendarAlt, faSnowflake, faCrown } from "@fortawesome/free-solid-svg-icons";
-import davosForumImage from "../../assets/background1.jpg";
+import davosForumImage from "../../assets/man-using-his-car-s-options-while-driving.jpg";
 import { scrollToReservationCard } from "../../utils/scrollUtils";
 
 const DavosForum = ({ scrollUp }) => {
@@ -83,7 +83,7 @@ const DavosForum = ({ scrollUp }) => {
             <Image
               src={davosForumImage}
               alt="Davos Forum luxury transportation"
-              className="w-full h-full object-cover"
+              className="w-full h-full object-cover object-top"
               imageType="banner"
               priority={true}
               sizes="100vw"

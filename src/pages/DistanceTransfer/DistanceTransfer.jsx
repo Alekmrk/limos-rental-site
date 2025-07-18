@@ -13,7 +13,7 @@ import {
   faStar,
   faUsers
 } from "@fortawesome/free-solid-svg-icons";
-import distanceTransferImage from "../../assets/distance.jpg";
+import distanceTransferImage from "../../assets/businesswoman-sitting-backseat-taxi.jpg";
 import { scrollToReservationCard } from "../../utils/scrollUtils";
 
 const DistanceTransfer = ({ scrollUp }) => {
@@ -136,7 +136,7 @@ const DistanceTransfer = ({ scrollUp }) => {
             <Image
               src={distanceTransferImage}
               alt="Luxury distance transfer service"
-              className="w-[calc(100%+2rem)] md:w-[calc(100%+4rem)] lg:w-[calc(100%+8rem)] h-full object-cover"
+              className="w-full h-full object-cover object-top"
               imageType="banner"
               priority={true}
               sizes="100vw"

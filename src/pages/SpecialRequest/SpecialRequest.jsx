@@ -181,7 +181,7 @@ const SpecialRequest = ({ scrollUp }) => {
             <Image
               src={bannerImage}
               alt="Luxury special request service"
-              className="w-full h-full object-cover"
+              className="w-full h-full object-cover object-top"
               imageType="banner"
               priority={true}
               sizes="100vw"
