@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import cars from "../../data/cars";
 import SliderCard from "../../components/SliderCard";
 import Button from "../../components/Button";
@@ -7,9 +7,21 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
 
 const Vehicles = ({ scrollUp, selectedVehicle, setSelectedVehicle }) => {
+  const imageRef = useRef(null);
+
   useEffect(() => {
     scrollUp();
   }, []);
+
+  // Scroll to image when selected vehicle changes
+  useEffect(() => {
+    if (imageRef.current) {
+      imageRef.current.scrollIntoView({ 
+        behavior: 'smooth', 
+        block: 'center' 
+      });
+    }
+  }, [selectedVehicle]);
 
   const chooseVehicle = (name) => {
     setSelectedVehicle(cars.find((car) => car.name === name));
@@ -26,7 +38,10 @@ const Vehicles = ({ scrollUp, selectedVehicle, setSelectedVehicle }) => {
         class vehicles.
       </p>
       <div className="grid md:grid-cols-2 gap-12 my-16">
-        <div className="bg-cream-light/90 p-4 rounded-[1rem] flex items-center border border-royal-blue/20 shadow-lg">
+        <div 
+          ref={imageRef}
+          className="bg-cream-light/90 p-4 rounded-[1rem] flex items-center border border-royal-blue/20 shadow-lg"
+        >
           <img className="w-full" src={selectedVehicle.image} alt="" />
         </div>
         <div className="mt-4">
