@@ -98,6 +98,7 @@ Prioritet:
 # Da se u sekciji za auta stavi i interijer koji imamo
 # Da se provere cene oni putovanja sto smo naveli
 # Da vidimo gde cemo disclamere da stavimo (mejl mozda?)
+# da se dodao u mejlu ili gde vec link ka nasem sajtu
 # I one glavne pozadinske slike
 # da se doda termce i privacy u ono details information na stripe profilu
 # ne koristimo optimized images at all.
