@@ -22,69 +22,9 @@ const Image = ({
         // Get the original image source
         const originalSrc = typeof src === 'string' ? src : src?.default || src?.src;
         
-        if (!originalSrc || !useOptimized) {
-          setImageSrc(originalSrc);
-          return;
-        }
-
-        // Extract filename from the original source
-        const filename = originalSrc.split('/').pop()?.replace(/\.[^/.]+$/, '');
-        
-        if (!filename) {
-          setImageSrc(originalSrc);
-          return;
-        }
-        
-        // Get optimized images configuration based on imageType
-        const imageConfig = {
-          banner: [768, 1024, 1536, 2048],
-          car: [400, 600, 800],
-          logo: [96, 192],
-          feature: [200, 400],
-          standard: [400, 800]
-        }[imageType] || [400, 800];
-
-        // Try to use optimized WebP images
-        try {
-          // Import the optimized images dynamically to check if they exist
-          const optimizedImages = await Promise.all(
-            imageConfig.map(async (size) => {
-              try {
-                const optimizedPath = `/src/assets/optimized/${filename}-${size}.webp`;
-                // Try to import the optimized image
-                const module = await import(/* @vite-ignore */ optimizedPath);
-                return { size, path: module.default };
-              } catch {
-                return null;
-              }
-            })
-          );
-
-          const validOptimizedImages = optimizedImages.filter(Boolean);
-          
-          if (validOptimizedImages.length > 0) {
-            // Use the smallest optimized image as the main source
-            const smallestImage = validOptimizedImages.reduce((prev, current) => 
-              prev.size < current.size ? prev : current
-            );
-            
-            setImageSrc(smallestImage.path);
-            
-            // Create srcset for responsive images
-            const srcSetString = validOptimizedImages
-              .map(img => `${img.path} ${img.size}w`)
-              .join(', ');
-            setSrcSet(srcSetString);
-          } else {
-            // No optimized images found, use original
-            setUseOptimized(false);
-            setImageSrc(originalSrc);
-          }
-        } catch (optimizedError) {
-          // Fallback to original image
-          setUseOptimized(false);
-          setImageSrc(originalSrc);
-        }
+        // Simply use the original image source directly
+        setImageSrc(originalSrc);
+        setUseOptimized(false);
         
       } catch (err) {
         console.error('Error loading image:', err);
@@ -93,7 +33,7 @@ const Image = ({
     };
 
     loadImage();
-  }, [src, imageType, useOptimized]);
+  }, [src]);
 
   const handleLoad = () => {
     setLoaded(true);

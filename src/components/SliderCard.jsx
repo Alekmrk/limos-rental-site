@@ -4,7 +4,8 @@ import Image from "./Image";
 import { Link } from "react-router-dom";
 
 const SliderCard = ({ index, image, name, seats, luggage, chooseVehicle }) => {
-  return (
+  try {
+    return (
     <Link to={"/vehicles"} state={name}>
       <div
         onClick={() => chooseVehicle(name)}
@@ -20,6 +21,7 @@ const SliderCard = ({ index, image, name, seats, luggage, chooseVehicle }) => {
             src={image}
             alt={name + " - image"}
             sizes="(max-width: 768px) 300px, (max-width: 1280px) 400px, 500px"
+            imageType="car"
           />
         </div>
         <div className="vehicle-info bg-cream-light/70 backdrop-blur-sm px-4 py-3 rounded-lg border border-royal-blue/15 shadow-sm my-4">
@@ -32,6 +34,10 @@ const SliderCard = ({ index, image, name, seats, luggage, chooseVehicle }) => {
       </div>
     </Link>
   );
+  } catch (error) {
+    console.error('Error in SliderCard:', error);
+    return <div className="bg-red-100 p-4 rounded">Error loading car card</div>;
+  }
 };
 
 export default SliderCard;
