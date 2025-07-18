@@ -5,7 +5,7 @@ import Button from "../../components/Button";
 import Image from "../../components/Image";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlane, faClock, faShieldAlt, faUserTie, faWifi, faCoffee } from "@fortawesome/free-solid-svg-icons";
-import airportTransferImage from "../../assets/airport(u).jpg";
+import airportTransferImage from "../../assets/airport(u169).jpg";
 import { scrollToReservationCard } from "../../utils/scrollUtils";
 
 const AirportTransfer = ({ scrollUp }) => {
@@ -65,7 +65,7 @@ const AirportTransfer = ({ scrollUp }) => {
             <Image
               src={airportTransferImage}
               alt="Luxury airport transfer service"
-              className="w-full h-full object-cover"
+              className="w-full h-full object-cover object-top"
               imageType="banner"
               priority={true}
               sizes="100vw"
