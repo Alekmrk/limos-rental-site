@@ -591,14 +591,14 @@ const VehicleSelection = ({ scrollUp }) => {
                   </div>
                 </div>
               ) : hasNoAvailableVehicles ? (
-                <div className="bg-red-500/10 border border-red-500/30 rounded-lg p-8 text-center">
+                <div className="bg-red-500/20 border border-red-500/50 rounded-lg p-8 text-center shadow-lg">
                   <div className="flex flex-col items-center gap-4">
-                    <svg className="w-12 h-12 text-red-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <svg className="w-12 h-12 text-red-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                       <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
                     </svg>
                     <div>
-                      <p className="text-lg font-medium text-red-300 mb-2">No Vehicles Available</p>
-                      <p className="text-sm text-red-200">
+                      <p className="text-lg font-medium text-red-600 mb-2">No Vehicles Available</p>
+                      <p className="text-sm text-red-700">
                         Sorry, we don't have vehicles that can accommodate {reservationInfo.passengers} passengers and {reservationInfo.bags} bags.
                         <br />Please adjust your passenger or bag count to see available options.
                       </p>
