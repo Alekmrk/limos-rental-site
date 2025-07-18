@@ -5,17 +5,12 @@ import { FaCar, FaStar, FaShieldAlt } from "react-icons/fa";
 const FleetSection = ({ setSelectedVehicle }) => {
   return (
     <div className="mt-32 overflow-x-hidden">
-      {/* Harmonious Background with Softer Tones */}
+      {/* Harmonious Background with Soft Gradient and a Large Blurred Gold Accent */}
       <div className="relative bg-gradient-to-br from-warm-gray via-cream to-cream-light py-24">
-        {/* Softer Decorative Elements */}
-        <div className="absolute inset-0 opacity-12">
-          <div
-            className="absolute inset-0"
-            style={{
-              backgroundImage: `url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%234169E1' fill-opacity='0.3'%3E%3Cpath d='M20 20h60v60H20z' stroke='%234169E1' stroke-width='1' fill='none'/%3E%3C/g%3E%3Cg fill='%23D4AF37' fill-opacity='0.2'%3E%3Ccircle cx='30' cy='30' r='3'/%3E%3Ccircle cx='70' cy='70' r='3'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
-            }}
-          ></div>
-        </div>
+        {/* Decorative Gold Accent Blob */}
+        <div className="absolute -top-32 -left-32 w-[500px] h-[500px] bg-gradient-to-br from-gold/30 to-cream/0 rounded-full blur-3xl opacity-40 pointer-events-none"></div>
+        {/* Decorative Blue Accent Blob */}
+        <div className="absolute bottom-0 right-0 w-[350px] h-[350px] bg-gradient-to-tr from-royal-blue/20 to-cream/0 rounded-full blur-2xl opacity-30 pointer-events-none"></div>
 
         <div className="container-wide relative z-10">
           {/* Harmonious Header */}
