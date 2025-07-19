@@ -216,14 +216,14 @@ const SpecialRequest = ({ scrollUp }) => {
             {/* Mobile Layout: Reservation Card */}
             <div className="block md:hidden mb-8">
               <div className="relative z-50">
-                <ReservationCard />
+                <ReservationCard idPrefix="mobile-" />
               </div>
             </div>
           </div>
 
           {/* Desktop Reservation Card - Original position */}
           <div className="hidden md:block">
-            <ReservationCard />
+            <ReservationCard idPrefix="desktop-" />
           </div>
         </div>
 

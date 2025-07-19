@@ -64,7 +64,7 @@ const BannerSection = () => {
           {/* Mobile Layout: Reservation Card and Badges in Same Container */}
           <div className="block md:hidden mb-8">
             <div className="relative z-50">
-              <ReservationCard />
+              <ReservationCard idPrefix="mobile-" />
             </div>
             
             {/* Mobile Trust Indicators - After reservation card */}
@@ -111,7 +111,7 @@ const BannerSection = () => {
 
         {/* Desktop Reservation Card - Original position */}
         <div className="hidden md:block">
-          <ReservationCard />
+          <ReservationCard idPrefix="desktop-" />
         </div>
       </div>
       

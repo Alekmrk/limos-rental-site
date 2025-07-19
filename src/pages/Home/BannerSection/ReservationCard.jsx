@@ -9,7 +9,7 @@ import AddressInput from "../../../components/AddressInput";
 import { validateAddresses } from "../../../services/GoogleMapsService";
 import { DateTime } from 'luxon';
 
-const ReservationCard = () => {
+const ReservationCard = ({ idPrefix = '' }) => {
   const navigate = useNavigate();
   const { 
     reservationInfo, 
@@ -233,10 +233,76 @@ const ReservationCard = () => {
     const isValid = Object.keys(newErrors).length === 0;
     debugRef.current.lastValidationResult = { isValid, errors: newErrors, timestamp: Date.now() };
     
+    // If there are errors, scroll to the first error field with priority for address fields
+    if (Object.keys(newErrors).length > 0) {
+      // Check if we have the Switzerland error that's displayed globally
+      const hasSwitzerlandError = newErrors.pickup === "At least one location must be in Switzerland" || 
+                                  newErrors.dropoff === "At least one location must be in Switzerland";
+      
+      if (hasSwitzerlandError) {
+        // For Switzerland errors, scroll to the submit button area where the global error is displayed
+        scrollToErrorField(`${idPrefix}reserve-button`);
+      } else {
+        // Define priority order - address errors first
+        const errorPriority = ['pickup', 'dropoff'];
+        const allErrorFields = Object.keys(newErrors);
+        
+        // Find the highest priority error field
+        let firstErrorField = null;
+        for (const priorityField of errorPriority) {
+          if (allErrorFields.includes(priorityField)) {
+            firstErrorField = priorityField;
+            break;
+          }
+        }
+        
+        // If no priority field has error, use the first error field
+        if (!firstErrorField) {
+          firstErrorField = allErrorFields[0];
+        }
+        
+        scrollToErrorField(`${idPrefix}${firstErrorField}`);
+      }
+    }
+    
     console.log(`✅ Validation ${isValid ? 'PASSED' : 'FAILED'}`);
     console.groupEnd();
     
     return isValid;
+  };
+
+  // Function to scroll to the error field
+  const scrollToErrorField = (fieldName) => {
+    setTimeout(() => {
+      console.log('🔍 Attempting to scroll to error field:', fieldName);
+      const fieldElement = document.getElementById(fieldName);
+      console.log('📍 Found field element:', fieldElement);
+      
+      if (fieldElement) {
+        console.log('✅ Scrolling to field:', fieldName);
+        fieldElement.scrollIntoView({ 
+          behavior: 'smooth', 
+          block: 'center',
+          inline: 'nearest'
+        });
+      } else {
+        console.warn('❌ Could not find field element with id:', fieldName);
+        // Try to find the field by name attribute as fallback (only for form fields)
+        if (!fieldName.includes('reserve-button')) {
+          // Remove prefix to get the original field name for name attribute search
+          const originalFieldName = fieldName.replace(idPrefix, '');
+          const fieldByName = document.querySelector(`[name="${originalFieldName}"]`);
+          if (fieldByName) {
+            console.log('✅ Found field by name, scrolling to:', fieldName);
+            fieldByName.scrollIntoView({ 
+              behavior: 'smooth', 
+              block: 'center',
+              inline: 'nearest'
+            });
+          }
+        }
+      }
+    }, 100); // Small delay to ensure error state is rendered
   };
 
   const handleSubmit = async (e) => {
@@ -362,7 +428,7 @@ const ReservationCard = () => {
           <>
             <div className="space-y-4">
               <div>
-                <label className="block text-sm uppercase mb-2 tracking-wide text-gray-700 font-medium" htmlFor="pickup">
+                <label className="block text-sm uppercase mb-2 tracking-wide text-gray-700 font-medium" htmlFor={`${idPrefix}pickup`}>
                   Pick-up point
                 </label>
                 <div className="relative">
@@ -371,6 +437,7 @@ const ReservationCard = () => {
                     onChange={handleInput}
                     onPlaceSelected={(placeInfo) => handlePlaceSelection('pickup', placeInfo)}
                     name="pickup"
+                    id={`${idPrefix}pickup`}
                     placeholder="TYPE LOCATION..."
                     className={`${
                       errors.pickup && errors.pickup !== "At least one location must be in Switzerland" 
@@ -388,7 +455,7 @@ const ReservationCard = () => {
 
               {!reservationInfo.isHourly && (
                 <div>
-                  <label className="block text-sm uppercase mb-2 tracking-wide text-gray-700 font-medium" htmlFor="dropoff">
+                  <label className="block text-sm uppercase mb-2 tracking-wide text-gray-700 font-medium" htmlFor={`${idPrefix}dropoff`}>
                     Drop-off point
                   </label>
                   <div className="relative">
@@ -397,6 +464,7 @@ const ReservationCard = () => {
                       onChange={handleInput}
                       onPlaceSelected={(placeInfo) => handlePlaceSelection('dropoff', placeInfo)}
                       name="dropoff"
+                      id={`${idPrefix}dropoff`}
                       placeholder="TYPE LOCATION..."
                       className={`${
                         errors.dropoff && errors.dropoff !== "At least one location must be in Switzerland" 
@@ -415,7 +483,7 @@ const ReservationCard = () => {
 
               {reservationInfo.isHourly && (
                 <div>
-                  <label className="block text-sm uppercase mb-2 tracking-wide text-gray-700 font-medium" htmlFor="hours">
+                  <label className="block text-sm uppercase mb-2 tracking-wide text-gray-700 font-medium" htmlFor={`${idPrefix}hours`}>
                     Duration (hours)
                   </label>
                   <div className="relative">
@@ -423,7 +491,7 @@ const ReservationCard = () => {
                       type="number"
                       onInvalid={(e) => e.preventDefault()}
                       name="hours"
-                      id="hours"
+                      id={`${idPrefix}hours`}
                       value={reservationInfo.hours}
                       onChange={(e) => {
                         const value = parseInt(e.target.value);
@@ -449,7 +517,7 @@ const ReservationCard = () => {
 
             <div className="space-y-4">
               <div>
-                <label className="block text-sm uppercase mb-2 tracking-wide text-gray-700 font-medium" htmlFor="date">
+                <label className="block text-sm uppercase mb-2 tracking-wide text-gray-700 font-medium" htmlFor={`${idPrefix}date`}>
                   When will the service take place?
                 </label>
                 <div className="relative">
@@ -460,7 +528,7 @@ const ReservationCard = () => {
                       handleInput(e);
                     }}
                     name="date"
-                    id="date"
+                    id={`${idPrefix}date`}
                     className={`bg-warm-white/80 rounded-xl py-3 px-4 w-full border text-gray-700 transition-all duration-200 hover:border-royal-blue/30 focus:border-royal-blue/50 focus:shadow-[0_0_15px_rgba(65,105,225,0.2)] ${
                       errors.date ? 'border-red-500 ring-1 ring-red-500/50 animate-shake' : 'border-royal-blue/20'
                     }`}
@@ -474,7 +542,7 @@ const ReservationCard = () => {
               </div>
 
               <div>
-                <label className="block text-sm uppercase mb-2 tracking-wide text-gray-700 font-medium" htmlFor="time">
+                <label className="block text-sm uppercase mb-2 tracking-wide text-gray-700 font-medium" htmlFor={`${idPrefix}time`}>
                   When do you want to be picked up?
                 </label>
                 <div className="relative">
@@ -485,7 +553,7 @@ const ReservationCard = () => {
                       handleInput(e);
                     }}
                     name="time"
-                    id="time"
+                    id={`${idPrefix}time`}
                     className={`bg-warm-white/80 rounded-xl py-3 px-4 w-full border text-gray-700 transition-all duration-200 hover:border-royal-blue/30 focus:border-royal-blue/50 focus:shadow-[0_0_15px_rgba(65,105,225,0.2)] ${
                       errors.time ? 'border-red-500 ring-1 ring-red-500/50 animate-shake' : 'border-royal-blue/20'
                     }`}
@@ -525,6 +593,7 @@ const ReservationCard = () => {
           <div className="flex justify-center mt-8">
             <div className="relative w-full">
               <Button 
+                id={`${idPrefix}reserve-button`}
                 type="submit" 
                 variant="secondary" 
                 className={`w-full py-4 text-base font-medium tracking-wide transition-all duration-200 hover:shadow-[0_0_20px_rgba(65,105,225,0.15)] ${

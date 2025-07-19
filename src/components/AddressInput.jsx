@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { useGoogleMapsApi } from "../hooks/useGoogleMapsApi";
 
-const AddressInput = ({ value, onChange, name, placeholder, onPlaceSelected, className }) => {
+const AddressInput = ({ value, onChange, name, id, placeholder, onPlaceSelected, className, error: externalError }) => {
   const [error, setError] = useState(null);
   const [isLocationSelected, setIsLocationSelected] = useState(false);
   const [predictions, setPredictions] = useState([]);
@@ -372,14 +372,15 @@ const AddressInput = ({ value, onChange, name, placeholder, onPlaceSelected, cla
       <input
         ref={inputRef}
         type="text"
+        id={id || name}
         value={value}
         onChange={handleInputChange}
         onKeyDown={handleKeyDown}
         onFocus={handleInputFocus}
         name={name}
         placeholder={placeholder || "Enter location"}
-        className={`bg-warm-white/80 backdrop-blur-sm mb-3 py-3 px-4 w-full border text-gray-700 transition-all duration-200 hover:border-royal-blue/30 focus:border-royal-blue/50 focus:shadow-[0_0_15px_rgba(65,105,225,0.1)] focus:outline-none ${
-          error ? 'border-red-500 ring-1 ring-red-500/50' : isLocationSelected ? 'border-gold/50 ring-1 ring-gold/20' : 'border-royal-blue/20'
+        className={`bg-warm-white/80 backdrop-blur-sm py-3 px-4 w-full border text-gray-700 transition-all duration-200 hover:border-royal-blue/30 focus:border-royal-blue/50 focus:shadow-[0_0_15px_rgba(65,105,225,0.1)] focus:outline-none ${
+          (error || externalError) ? 'border-red-500 ring-1 ring-red-500/50 animate-shake' : isLocationSelected ? 'border-gold/50 ring-1 ring-gold/20' : 'border-royal-blue/20'
         } ${className || ''} ${showSuggestions ? 'rounded-t-lg rounded-b-none' : 'rounded-lg'}`}
         autoComplete="off"
         aria-label={placeholder || "Location input"}
@@ -438,7 +439,7 @@ const AddressInput = ({ value, onChange, name, placeholder, onPlaceSelected, cla
 
       {error && (
         <div 
-          id={`${name}-error`}
+          id={`${id || name}-error`}
           className="absolute -bottom-1 left-0 text-red-500 text-sm"
           role="alert"
         >

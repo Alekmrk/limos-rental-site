@@ -193,7 +193,7 @@ const HourlyTransfer = ({ scrollUp }) => {
             {/* Mobile Reservation Card - Right after description */}
             <div className="block md:hidden mb-12 px-4">
               <div className="relative z-50">
-                <ReservationCard />
+                <ReservationCard idPrefix="mobile-" />
               </div>
               
               {/* Mobile Trust Indicators - After reservation card */}
@@ -216,7 +216,7 @@ const HourlyTransfer = ({ scrollUp }) => {
 
           {/* Desktop Reservation Card - Original position */}
           <div className="hidden md:block">
-            <ReservationCard />
+            <ReservationCard idPrefix="desktop-" />
           </div>
         </div>
         

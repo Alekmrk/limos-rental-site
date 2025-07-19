@@ -127,4 +127,5 @@ Prioritet:
 # da se doda termce i privacy u ono details information na stripe profilu
 # ne koristimo optimized images at all.
 # izbaci wedding jer nam ne treba
+# vidi za error o lokaciji u svici na booking stranici
 

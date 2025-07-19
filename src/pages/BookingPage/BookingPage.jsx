@@ -246,10 +246,74 @@ const BookingPage = ({ scrollUp }) => {
     const isValid = Object.keys(newErrors).length === 0;
     debugRef.current.lastValidationResult = { isValid, errors: newErrors, timestamp: Date.now() };
     
+    // If there are errors, scroll to the first error field with priority for address fields
+    if (Object.keys(newErrors).length > 0) {
+      // Check if we have the Switzerland error that's displayed globally
+      const hasSwitzerlandError = newErrors.pickup === "At least one location must be in Switzerland" || 
+                                  newErrors.dropoff === "At least one location must be in Switzerland";
+      
+      if (hasSwitzerlandError) {
+        // For Switzerland errors, scroll to the submit button area where the global error is displayed
+        scrollToErrorField('submit-section');
+      } else {
+        // Define priority order - address errors first
+        const errorPriority = ['pickup', 'dropoff'];
+        const allErrorFields = Object.keys(newErrors);
+        
+        // Find the highest priority error field
+        let firstErrorField = null;
+        for (const priorityField of errorPriority) {
+          if (allErrorFields.includes(priorityField)) {
+            firstErrorField = priorityField;
+            break;
+          }
+        }
+        
+        // If no priority field has error, use the first error field
+        if (!firstErrorField) {
+          firstErrorField = allErrorFields[0];
+        }
+        
+        scrollToErrorField(firstErrorField);
+      }
+    }
+    
     console.log(`✅ Validation ${isValid ? 'PASSED' : 'FAILED'}`);
     console.groupEnd();
     
     return isValid;
+  };
+
+  // Function to scroll to the error field
+  const scrollToErrorField = (fieldName) => {
+    setTimeout(() => {
+      console.log('🔍 Attempting to scroll to error field:', fieldName);
+      const fieldElement = document.getElementById(fieldName);
+      console.log('📍 Found field element:', fieldElement);
+      
+      if (fieldElement) {
+        console.log('✅ Scrolling to field:', fieldName);
+        fieldElement.scrollIntoView({ 
+          behavior: 'smooth', 
+          block: 'center',
+          inline: 'nearest'
+        });
+      } else {
+        console.warn('❌ Could not find field element with id:', fieldName);
+        // Try to find the field by name attribute as fallback (only for form fields)
+        if (fieldName !== 'submit-section') {
+          const fieldByName = document.querySelector(`[name="${fieldName}"]`);
+          if (fieldByName) {
+            console.log('✅ Found field by name, scrolling to:', fieldName);
+            fieldByName.scrollIntoView({ 
+              behavior: 'smooth', 
+              block: 'center',
+              inline: 'nearest'
+            });
+          }
+        }
+      }
+    }, 100); // Small delay to ensure error state is rendered
   };
 
   const handleSubmit = async (e) => {
@@ -529,17 +593,11 @@ const BookingPage = ({ scrollUp }) => {
                               onPlaceSelected={(placeInfo) => handlePlaceSelection('pickup', placeInfo)}
                               name="pickup"
                               placeholder="Enter pick-up location..."
-                              className={`pl-10 ${
-                                errors.pickup && errors.pickup !== "At least one location must be in Switzerland" 
-                                  ? 'border-red-500 ring-1 ring-red-500/50 animate-shake' 
-                                  : 'border-royal-blue/20'
-                              }`}
+                              error={errors.pickup && errors.pickup !== "At least one location must be in Switzerland" ? errors.pickup : null}
+                              className="pl-10"
                             />
                             {errors.pickup && errors.pickup !== "At least one location must be in Switzerland" && (
-                              <div className="mt-2 text-red-500 text-sm flex items-center gap-2">
-                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.728-.833-2.598 0L4.732 15.5c-.77.833.192 2.5 1.732 2.5z" />
-                                </svg>
+                              <div className="absolute left-1/8 right-0 bottom-0 w-4/4 translate-y-1/2 bg-warm-white/95 text-red-500 text-[11px] py-1 px-3 rounded-2xl z-10 text-right backdrop-blur-sm border border-red-500/30">
                                 {errors.pickup}
                               </div>
                             )}
@@ -564,17 +622,11 @@ const BookingPage = ({ scrollUp }) => {
                                 onPlaceSelected={(placeInfo) => handlePlaceSelection('dropoff', placeInfo)}
                                 name="dropoff"
                                 placeholder="Enter drop-off location..."
-                                className={`pl-10 ${
-                                  errors.dropoff && errors.dropoff !== "At least one location must be in Switzerland" 
-                                    ? 'border-red-500 ring-1 ring-red-500/50 animate-shake' 
-                                    : 'border-royal-blue/20'
-                                }`}
+                                error={errors.dropoff && errors.dropoff !== "At least one location must be in Switzerland" ? errors.dropoff : null}
+                                className="pl-10"
                               />
                               {errors.dropoff && errors.dropoff !== "At least one location must be in Switzerland" && (
-                                <div className="mt-2 text-red-500 text-sm flex items-center gap-2">
-                                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.728-.833-2.598 0L4.732 15.5c-.77.833.192 2.5 1.732 2.5z" />
-                                  </svg>
+                                <div className="absolute left-1/8 right-0 bottom-0 w-4/4 translate-y-1/2 bg-warm-white/95 text-red-500 text-[11px] py-1 px-3 rounded-2xl z-10 text-right backdrop-blur-sm border border-red-500/30">
                                   {errors.dropoff}
                                 </div>
                               )}
@@ -613,10 +665,7 @@ const BookingPage = ({ scrollUp }) => {
                                 max="24"
                               />
                               {errors.hours && (
-                                <div className="mt-2 text-red-500 text-sm flex items-center gap-2">
-                                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.728-.833-2.598 0L4.732 15.5c-.77.833.192 2.5 1.732 2.5z" />
-                                  </svg>
+                                <div className="absolute left-1/8 right-0 bottom-0 w-4/4 translate-y-1/2 bg-warm-white/95 text-red-500 text-[11px] py-1 px-3 rounded-2xl z-10 text-right backdrop-blur-sm border border-red-500/30">
                                   {errors.hours}
                                 </div>
                               )}
@@ -651,10 +700,7 @@ const BookingPage = ({ scrollUp }) => {
                             }`}
                           />
                           {errors.date && (
-                            <div className="mt-2 text-red-500 text-sm flex items-center gap-2">
-                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.728-.833-2.598 0L4.732 15.5c-.77.833.192 2.5 1.732 2.5z" />
-                              </svg>
+                            <div className="absolute left-1/8 right-0 bottom-0 w-4/4 translate-y-1/2 bg-warm-white/95 text-red-500 text-[11px] py-1 px-3 rounded-2xl z-10 text-right backdrop-blur-sm border border-red-500/30">
                               {errors.date}
                             </div>
                           )}
@@ -684,10 +730,7 @@ const BookingPage = ({ scrollUp }) => {
                             }`}
                           />
                           {errors.time && (
-                            <div className="mt-2 text-red-500 text-sm flex items-center gap-2">
-                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.728-.833-2.598 0L4.732 15.5c-.77.833.192 2.5 1.732 2.5z" />
-                              </svg>
+                            <div className="absolute left-1/8 right-0 bottom-0 w-4/4 translate-y-1/2 bg-warm-white/95 text-red-500 text-[11px] py-1 px-3 rounded-2xl z-10 text-right backdrop-blur-sm border border-red-500/30">
                               {errors.time}
                             </div>
                           )}
@@ -800,23 +843,20 @@ const BookingPage = ({ scrollUp }) => {
                   </>
                 )}
 
-                {/* Global Switzerland Error */}
-                {(errors.pickup === "At least one location must be in Switzerland" || errors.dropoff === "At least one location must be in Switzerland") && (
-                  <div className="bg-red-50 border border-red-200 rounded-xl p-6">
-                    <div className="flex items-center gap-3">
-                      <svg className="w-6 h-6 text-red-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.728-.833-2.598 0L4.732 15.5c-.77.833.192 2.5 1.732 2.5z" />
-                      </svg>
-                      <div>
-                        <p className="text-red-600 font-medium text-lg">Service Area Notice</p>
-                        <p className="text-red-600 text-sm mt-1">At least one location must be in Switzerland for our transportation services.</p>
+                {/* Submit Button */}
+                <div id="submit-section" className="text-center pt-8 relative">
+                  {/* Global Switzerland Error - Positioned absolutely to not affect layout */}
+                  {(errors.pickup === "At least one location must be in Switzerland" || errors.dropoff === "At least one location must be in Switzerland") && (
+                    <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 bg-red-50 border border-red-200 rounded-lg p-3 shadow-lg z-10 min-w-[300px]">
+                      <div className="flex items-center gap-2">
+                        <svg className="w-4 h-4 text-red-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.728-.833-2.598 0L4.732 15.5c-.77.833.192 2.5 1.732 2.5z" />
+                        </svg>
+                        <p className="text-red-600 text-sm">At least one location must be in Switzerland.</p>
                       </div>
                     </div>
-                  </div>
-                )}
-
-                {/* Submit Button */}
-                <div className="text-center pt-8">
+                  )}
+                  
                   <Button 
                     type="submit" 
                     variant="secondary" 
