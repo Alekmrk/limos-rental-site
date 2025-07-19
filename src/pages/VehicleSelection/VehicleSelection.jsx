@@ -24,6 +24,11 @@ const VehicleSelection = ({ scrollUp }) => {
   const latestStopsRef = useRef(reservationInfo.extraStops);
   const [prices, setPrices] = useState({});
 
+  // Scroll to top immediately when component mounts - run this first
+  useEffect(() => {
+    scrollUp && scrollUp();
+  }, [scrollUp]);
+
   useEffect(() => {
     latestStopsRef.current = reservationInfo.extraStops;
   }, [reservationInfo.extraStops]);
@@ -268,10 +273,6 @@ const VehicleSelection = ({ scrollUp }) => {
       setPrices(newPrices);
     }
   }, [reservationInfo.routeInfo, availableVehicles, reservationInfo.time, reservationInfo.date]);
-
-  useEffect(() => {
-    scrollUp();
-  }, [scrollUp]);
 
   // Format date to dd-mm-yyyy
   const formatDate = (dateString) => {
