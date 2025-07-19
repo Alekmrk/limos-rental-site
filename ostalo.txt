@@ -133,3 +133,4 @@ Prioritet:
 # kada ne mozemo da izracunamo da vidimo da unapredimo google api i da kazemo da gleda nesto u blizini ako e moze bas identicno da se nadje mesto
 # da se vidi sto nekad ucitava dosta za test stripe. da vidimo jel tako i za pravi?
 # da se posalje neka teemetrija kad korisnik dodje do poslenjeg koraka. pa posle i da li je stisnuo na pay ili nije itd
+# proveriti koliko dugo treba sajtu da se inicijalno ucita. da li je predugo.
