@@ -27,6 +27,7 @@ const Footer = () => {
 
   // Hide footer or make it basic for reservation flow pages
   const reservationFlowPages = [
+    "/booking",
     "/vehicle-selection",
     "/customer-details",
     "/payment",
@@ -161,9 +162,16 @@ const Footer = () => {
           {/* Connect */}
           <div>
             <h3 className="text-lg font-medium text-royal-blue-dark mb-4">Connect</h3>
-            <p className="text-gray-600 text-sm mb-4">
-              Stay connected for updates and exclusive offers.
-            </p>
+            <ul className="space-y-2 mb-4">
+              <li>
+                <Link
+                  to="/contact"
+                  className="text-gray-600 hover:text-royal-blue transition-colors text-sm"
+                >
+                  Contact Us
+                </Link>
+              </li>
+            </ul>
             <div className="flex gap-3 justify-center md:justify-start">
               <button
                 onClick={() => handleSocialClick("whatsapp")}
