@@ -7,7 +7,12 @@ router.post('/create-checkout-session', express.json(), async (req, res) => {
   try {
     const { amount, currency = 'chf', metadata = {} } = req.body;
     
-    // Prepare session configuration
+    // Validate required fields early
+    if (!amount || amount <= 0) {
+      return res.status(400).json({ error: 'Invalid amount' });
+    }
+
+    // Start preparing session config immediately
     const sessionConfig = {
       payment_method_types: ['card'],
       line_items: [
@@ -16,7 +21,7 @@ router.post('/create-checkout-session', express.json(), async (req, res) => {
             currency: currency.toLowerCase(),
             product_data: {
               name: 'Elite Way Limo Reservation',
-              description: `Reservation for ${metadata.vehicleName || 'Vehicle'}`,
+              description: `${metadata.vehicleName || 'Vehicle'} - ${metadata.date || ''} ${metadata.time || ''}`.trim(),
             },
             unit_amount: Math.round(amount * 100),
           },
@@ -26,7 +31,13 @@ router.post('/create-checkout-session', express.json(), async (req, res) => {
       mode: 'payment',
       success_url: `${process.env.FRONTEND_URL || 'http://localhost:5173'}/payment-success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${process.env.FRONTEND_URL || 'http://localhost:5173'}/payment-cancel?session_id={CHECKOUT_SESSION_ID}`,
-      metadata: metadata
+      metadata: metadata,
+      // Add faster processing options
+      payment_intent_data: {
+        capture_method: 'automatic',
+      },
+      // Optimize for faster checkout
+      expires_at: Math.floor(Date.now() / 1000) + (30 * 60), // 30 minutes from now
     };
 
     // Prefill customer email if available
@@ -34,12 +45,26 @@ router.post('/create-checkout-session', express.json(), async (req, res) => {
       sessionConfig.customer_email = metadata.email;
     }
     
-    const session = await stripe.checkout.sessions.create(sessionConfig);
+    // Create session with timeout handling
+    const sessionPromise = stripe.checkout.sessions.create(sessionConfig);
+    const timeoutPromise = new Promise((_, reject) => 
+      setTimeout(() => reject(new Error('Stripe API timeout')), 30000)
+    );
+
+    const session = await Promise.race([sessionPromise, timeoutPromise]);
 
     res.json({ url: session.url });
   } catch (err) {
     console.error('Error creating checkout session:', err);
-    res.status(500).json({ error: err.message });
+    
+    // Provide more specific error messages
+    if (err.message === 'Stripe API timeout') {
+      res.status(504).json({ error: 'Payment service temporarily unavailable. Please try again in a moment.' });
+    } else if (err.type === 'StripeCardError') {
+      res.status(400).json({ error: 'Card validation error: ' + err.message });
+    } else {
+      res.status(500).json({ error: 'Unable to process payment request. Please try again.' });
+    }
   }
 });
 
