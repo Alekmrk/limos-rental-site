@@ -69,6 +69,20 @@ const BookingPage = ({ scrollUp }) => {
     setShowRouteErrorModal(false);
   };
 
+  // Function to scroll to Travel Details section
+  const scrollToTravelDetails = () => {
+    const travelDetailsElement = document.getElementById('travel-details');
+    if (travelDetailsElement) {
+      const elementPosition = travelDetailsElement.getBoundingClientRect().top + window.pageYOffset;
+      const offsetPosition = elementPosition - 100; // Scroll 100px above the element
+      
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: 'smooth'
+      });
+    }
+  };
+
   // Debug logging for mode changes
   const handleModeChange = (mode) => {
     console.log('🔄 Mode change:', {
@@ -90,6 +104,11 @@ const BookingPage = ({ scrollUp }) => {
       setIsHourly(false);
       setIsSpecialRequest(false);
     }
+    
+    // Scroll to Travel Details section
+    setTimeout(() => {
+      scrollToTravelDetails();
+    }, 100);
   };
 
   // Format date to dd-MM-yyyy (Swiss format)
@@ -573,7 +592,7 @@ const BookingPage = ({ scrollUp }) => {
                   <>
                     {/* Location Fields */}
                     <div className="space-y-6">
-                      <h3 className="text-2xl font-semibold text-gray-700 text-center">Travel Details</h3>
+                      <h3 id="travel-details" className="text-2xl font-semibold text-gray-700 text-center">Travel Details</h3>
                       
                       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                         <div>
