@@ -6,7 +6,7 @@ import Image from "../../components/Image";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlane, faClock, faShieldAlt, faUserTie, faWifi, faCoffee } from "@fortawesome/free-solid-svg-icons";
 import airportTransferImage from "../../assets/airport(u169).jpg";
-import { scrollToReservationCard } from "../../utils/scrollUtils";
+import { Link } from "react-router-dom";
 
 const AirportTransfer = ({ scrollUp }) => {
   const { clearReservation } = useContext(ReservationContext);
@@ -275,12 +275,13 @@ const AirportTransfer = ({ scrollUp }) => {
                 No stress, no delays, just luxury transportation when you need it most.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Button 
-                  variant="secondary"
-                  onClick={scrollToReservationCard}
-                >
-                  Book Airport Transfer
-                </Button>
+                <Link to="/booking">
+                  <Button 
+                    variant="secondary"
+                  >
+                    Book Airport Transfer
+                  </Button>
+                </Link>
                 <Button 
                   variant="primary"
                   onClick={() => window.location.href = 'tel:+41782647970'}

@@ -3,6 +3,7 @@ import ReservationContext from "../../contexts/ReservationContext";
 import ReservationCard from "../../pages/Home/BannerSection/ReservationCard";
 import Button from "../../components/Button";
 import Image from "../../components/Image";
+import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { 
   faRoute, 
@@ -14,7 +15,6 @@ import {
   faUsers
 } from "@fortawesome/free-solid-svg-icons";
 import distanceTransferImage from "../../assets/businesswoman-sitting-backseat-taxi.jpg";
-import { scrollToReservationCard } from "../../utils/scrollUtils";
 
 const DistanceTransfer = ({ scrollUp }) => {
   const { clearReservation } = useContext(ReservationContext);
@@ -370,12 +370,13 @@ const DistanceTransfer = ({ scrollUp }) => {
                 across Switzerland's most beautiful routes.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Button 
-                  variant="secondary"
-                  onClick={scrollToReservationCard}
-                >
-                  Book Distance Transfer
-                </Button>
+                <Link to="/booking">
+                  <Button 
+                    variant="secondary"
+                  >
+                    Book Distance Transfer
+                  </Button>
+                </Link>
                 <Button 
                   variant="primary"
                   onClick={() => window.location.href = '/contact'}

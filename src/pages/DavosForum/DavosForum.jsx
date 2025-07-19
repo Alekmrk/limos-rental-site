@@ -5,7 +5,7 @@ import Image from "../../components/Image";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMountain, faUsers, faShieldAlt, faCalendarAlt, faSnowflake, faCrown } from "@fortawesome/free-solid-svg-icons";
 import davosForumImage from "../../assets/man-using-his-car-s-options-while-driving.jpg";
-import { scrollToReservationCard } from "../../utils/scrollUtils";
+import { Link } from "react-router-dom";
 
 const DavosForum = ({ scrollUp }) => {
   useEffect(() => {
@@ -390,12 +390,13 @@ const DavosForum = ({ scrollUp }) => {
                 Book now for guaranteed availability during the event season.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Button 
-                  variant="secondary"
-                  onClick={scrollToReservationCard}
-                >
-                  Book Davos Transfer
-                </Button>
+                <Link to="/booking">
+                  <Button 
+                    variant="secondary"
+                  >
+                    Book Davos Transfer
+                  </Button>
+                </Link>
                 <Button 
                   variant="outline"
                   onClick={() => window.location.href = '/contact'}

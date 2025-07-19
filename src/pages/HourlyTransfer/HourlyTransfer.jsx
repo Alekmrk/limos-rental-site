@@ -3,6 +3,7 @@ import ReservationContext from "../../contexts/ReservationContext";
 import ReservationCard from "../../pages/Home/BannerSection/ReservationCard";
 import Button from "../../components/Button";
 import Image from "../../components/Image";
+import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { 
   faClock, 
@@ -15,7 +16,6 @@ import {
   faStar
 } from "@fortawesome/free-solid-svg-icons";
 import hourlyTransferImage from "../../assets/hourly(u169).jpg";
-import { scrollToReservationCard } from "../../utils/scrollUtils";
 
 const HourlyTransfer = ({ scrollUp }) => {
   const { clearReservation, setIsHourly } = useContext(ReservationContext);
@@ -424,12 +424,13 @@ const HourlyTransfer = ({ scrollUp }) => {
                 personalized transportation across Switzerland.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Button 
-                  variant="secondary"
-                  onClick={scrollToReservationCard}
-                >
-                  Book Hourly Service
-                </Button>
+                <Link to="/booking">
+                  <Button 
+                    variant="secondary"
+                  >
+                    Book Hourly Service
+                  </Button>
+                </Link>
                 <Button 
                   variant="primary"
                   onClick={() => window.location.href = '/contact'}

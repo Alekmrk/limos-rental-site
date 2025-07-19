@@ -3,6 +3,7 @@ import ReservationContext from "../../contexts/ReservationContext";
 import ReservationCard from "../../pages/Home/BannerSection/ReservationCard";
 import Button from "../../components/Button";
 import Image from "../../components/Image";
+import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { 
   faStar, 
@@ -24,7 +25,6 @@ import {
   faSkiing
 } from "@fortawesome/free-solid-svg-icons";
 import bannerImage from "../../assets/special.jpg";
-import { scrollToReservationCard } from "../../utils/scrollUtils";
 
 const SpecialRequest = ({ scrollUp }) => {
   const { clearReservation, setIsSpecialRequest } = useContext(ReservationContext);
@@ -485,12 +485,13 @@ const SpecialRequest = ({ scrollUp }) => {
                 we're here to exceed your expectations with our custom transportation solutions.
               </p>
               <div className="flex justify-center">
-                <Button 
-                  variant="secondary"
-                  onClick={scrollToReservationCard}
-                >
-                  Submit Special Request
-                </Button>
+                <Link to="/booking">
+                  <Button 
+                    variant="secondary"
+                  >
+                    Submit Special Request
+                  </Button>
+                </Link>
               </div>
             </div>
           </div>
