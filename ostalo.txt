@@ -126,3 +126,5 @@ Prioritet:
 # I one glavne pozadinske slike
 # da se doda termce i privacy u ono details information na stripe profilu
 # ne koristimo optimized images at all.
+# izbaci wedding jer nam ne treba
+
