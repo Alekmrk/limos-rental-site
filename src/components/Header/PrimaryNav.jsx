@@ -73,6 +73,15 @@ const PrimaryNav = ({ navHidden, screenSize, setNavHidden }) => {
         <li>
           <NavLink
             className="block text-gray-700 hover:text-royal-blue font-medium text-xl md:text-2xl transition-all duration-200 hover:bg-royal-blue/10 px-4 py-3 rounded-lg md:bg-transparent md:hover:bg-transparent md:px-2 md:py-1"
+            to="/booking"
+            onClick={handleNavClick}
+          >
+            Book Now
+          </NavLink>
+        </li>
+        <li>
+          <NavLink
+            className="block text-gray-700 hover:text-royal-blue font-medium text-xl md:text-2xl transition-all duration-200 hover:bg-royal-blue/10 px-4 py-3 rounded-lg md:bg-transparent md:hover:bg-transparent md:px-2 md:py-1"
             to="/vehicles"
             onClick={handleNavClick}
           >

@@ -150,7 +150,13 @@ const VehicleSelection = ({ scrollUp }) => {
   };
 
   const handleBack = () => {
-    navigate('/');
+    // Check if user came from booking page
+    const hasBookingHistory = window.history.length > 1;
+    if (hasBookingHistory) {
+      navigate(-1); // Go back to previous page
+    } else {
+      navigate('/'); // Default to homepage
+    }
   };
 
   const handleRemoveExtraStop = useCallback((index) => {

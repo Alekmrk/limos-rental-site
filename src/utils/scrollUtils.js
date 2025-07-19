@@ -53,3 +53,8 @@ export const scrollToReservationCard = () => {
     });
   }
 };
+
+// Utility function to navigate to BookingPage
+export const navigateToBookingPage = () => {
+  window.location.href = '/booking';
+};

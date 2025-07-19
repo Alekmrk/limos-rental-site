@@ -19,6 +19,7 @@ import DistanceTransfer from "./pages/DistanceTransfer/DistanceTransfer";
 import HourlyTransfer from "./pages/HourlyTransfer/HourlyTransfer";
 import SpecialRequest from "./pages/SpecialRequest/SpecialRequest";
 import DavosForum from "./pages/DavosForum/DavosForum";
+import BookingPage from "./pages/BookingPage/BookingPage";
 import BackToTopButton from "./components/BackToTopButton";
 import CookieConsent from "./components/CookieConsent";
 import ContactChannels from "./components/ContactChannels";
@@ -51,6 +52,7 @@ function App() {
       <ReservationContextProvider>
         <Routes>
           <Route path="/" element={<Home scrollUp={scrollUp} setSelectedVehicle={setSelectedVehicle} />} />
+          <Route path="/booking" element={<BookingPage scrollUp={scrollUp} />} />
           <Route path="/contact" element={<Contact scrollUp={scrollUp} />} />
           <Route path="/airport-transfer" element={<AirportTransfer scrollUp={scrollUp} />} />
           <Route path="/distance-transfer" element={<DistanceTransfer scrollUp={scrollUp} />} />
