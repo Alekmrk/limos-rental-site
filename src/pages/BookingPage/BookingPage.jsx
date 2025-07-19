@@ -510,21 +510,47 @@ const BookingPage = ({ scrollUp }) => {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   {/* Distance Transfer */}
                   <div 
-                    className={`cursor-pointer transition-all duration-300 ${
+                    className={`group cursor-pointer transition-all duration-300 relative overflow-hidden ${
                       !reservationInfo.isHourly && !reservationInfo.isSpecialRequest
                         ? "bg-gradient-to-br from-royal-blue/10 to-royal-blue/5 border-2 border-royal-blue shadow-lg transform scale-105"
-                        : "bg-warm-white/80 border border-royal-blue/20 hover:border-royal-blue/40 hover:shadow-lg"
+                        : "bg-warm-white/80 border border-royal-blue/20 hover:border-royal-blue/50 hover:shadow-xl hover:transform hover:scale-102"
                     } rounded-2xl p-6 backdrop-blur-sm`}
                     onClick={() => handleModeChange('distance')}
                   >
+                    {/* Selection indicator */}
+                    {!reservationInfo.isHourly && !reservationInfo.isSpecialRequest && (
+                      <div className="absolute top-3 right-3 w-6 h-6 bg-royal-blue rounded-full flex items-center justify-center">
+                        <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                        </svg>
+                      </div>
+                    )}
+                    
+                    {/* Click hint for unselected */}
+                    {(reservationInfo.isHourly || reservationInfo.isSpecialRequest) && (
+                      <div className="absolute top-3 right-3">
+                        <div className="w-6 h-6 border-2 border-royal-blue/40 rounded-full flex items-center justify-center">
+                          <div className="w-2 h-2 bg-royal-blue/40 rounded-full"></div>
+                        </div>
+                      </div>
+                    )}
+                    
                     <div className="text-center">
-                      <div className="w-16 h-16 bg-royal-blue/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <svg className="w-8 h-8 text-royal-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <div className={`w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 transition-all duration-300 ${
+                        !reservationInfo.isHourly && !reservationInfo.isSpecialRequest
+                          ? "bg-royal-blue/20"
+                          : "bg-royal-blue/10 group-hover:bg-royal-blue/15"
+                      }`}>
+                        <svg className={`w-8 h-8 transition-all duration-300 ${
+                          !reservationInfo.isHourly && !reservationInfo.isSpecialRequest
+                            ? "text-royal-blue"
+                            : "text-royal-blue group-hover:scale-110"
+                        }`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                         </svg>
                       </div>
-                      <h3 className="text-xl font-semibold text-gray-700 mb-2">Distance Transfer</h3>
+                      <h3 className="text-xl font-semibold text-gray-700 mb-2 group-hover:text-royal-blue transition-colors duration-200">Distance Transfer</h3>
                       <p className="text-gray-600 text-sm mb-4">Point-to-point transportation with fixed pricing</p>
                       <ul className="text-xs text-gray-500 space-y-1">
                         <li>• Airport transfers</li>
@@ -532,24 +558,57 @@ const BookingPage = ({ scrollUp }) => {
                         <li>• One-way trips</li>
                       </ul>
                     </div>
+                    
+                    {/* Subtle "Click to select" hint */}
+                    {(reservationInfo.isHourly || reservationInfo.isSpecialRequest) && (
+                      <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-all duration-200 translate-y-2 group-hover:translate-y-0">
+                        <span className="text-xs text-royal-blue/70 bg-white/80 px-2 py-1 rounded-full">Click to select</span>
+                      </div>
+                    )}
                   </div>
 
                   {/* Hourly Service */}
                   <div 
-                    className={`cursor-pointer transition-all duration-300 ${
+                    className={`group cursor-pointer transition-all duration-300 relative overflow-hidden ${
                       reservationInfo.isHourly
                         ? "bg-gradient-to-br from-royal-blue/10 to-royal-blue/5 border-2 border-royal-blue shadow-lg transform scale-105"
-                        : "bg-warm-white/80 border border-royal-blue/20 hover:border-royal-blue/40 hover:shadow-lg"
+                        : "bg-warm-white/80 border border-royal-blue/20 hover:border-royal-blue/50 hover:shadow-xl hover:transform hover:scale-102"
                     } rounded-2xl p-6 backdrop-blur-sm`}
                     onClick={() => handleModeChange('hourly')}
                   >
+                    {/* Selection indicator */}
+                    {reservationInfo.isHourly && (
+                      <div className="absolute top-3 right-3 w-6 h-6 bg-royal-blue rounded-full flex items-center justify-center">
+                        <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                        </svg>
+                      </div>
+                    )}
+                    
+                    {/* Click hint for unselected */}
+                    {!reservationInfo.isHourly && (
+                      <div className="absolute top-3 right-3">
+                        <div className="w-6 h-6 border-2 border-royal-blue/40 rounded-full flex items-center justify-center">
+                          <div className="w-2 h-2 bg-royal-blue/40 rounded-full"></div>
+                        </div>
+                      </div>
+                    )}
+                    
                     <div className="text-center">
-                      <div className="w-16 h-16 bg-royal-blue/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <svg className="w-8 h-8 text-royal-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <div className={`w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 transition-all duration-300 ${
+                        reservationInfo.isHourly
+                          ? "bg-royal-blue/20"
+                          : "bg-royal-blue/10 group-hover:bg-royal-blue/15"
+                      }`}>
+                        <svg className={`w-8 h-8 transition-all duration-300 ${
+                          reservationInfo.isHourly
+                            ? "text-royal-blue"
+                            : "text-royal-blue group-hover:scale-110"
+                        }`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
                       </div>
-                      <h3 className="text-xl font-semibold text-gray-700 mb-2">Hourly Service</h3>
+                      <h3 className="text-xl font-semibold text-gray-700 mb-2 group-hover:text-royal-blue transition-colors duration-200">Hourly Service</h3>
                       <p className="text-gray-600 text-sm mb-4">Vehicle at your disposal for multiple stops</p>
                       <ul className="text-xs text-gray-500 space-y-1">
                         <li>• Business meetings</li>
@@ -557,24 +616,57 @@ const BookingPage = ({ scrollUp }) => {
                         <li>• Wait & return service</li>
                       </ul>
                     </div>
+                    
+                    {/* Subtle "Click to select" hint */}
+                    {!reservationInfo.isHourly && (
+                      <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-all duration-200 translate-y-2 group-hover:translate-y-0">
+                        <span className="text-xs text-royal-blue/70 bg-white/80 px-2 py-1 rounded-full">Click to select</span>
+                      </div>
+                    )}
                   </div>
 
                   {/* Special Request */}
                   <div 
-                    className={`cursor-pointer transition-all duration-300 ${
+                    className={`group cursor-pointer transition-all duration-300 relative overflow-hidden ${
                       reservationInfo.isSpecialRequest
                         ? "bg-gradient-to-br from-royal-blue/10 to-royal-blue/5 border-2 border-royal-blue shadow-lg transform scale-105"
-                        : "bg-warm-white/80 border border-royal-blue/20 hover:border-royal-blue/40 hover:shadow-lg"
+                        : "bg-warm-white/80 border border-royal-blue/20 hover:border-royal-blue/50 hover:shadow-xl hover:transform hover:scale-102"
                     } rounded-2xl p-6 backdrop-blur-sm`}
                     onClick={() => handleModeChange('special')}
                   >
+                    {/* Selection indicator */}
+                    {reservationInfo.isSpecialRequest && (
+                      <div className="absolute top-3 right-3 w-6 h-6 bg-royal-blue rounded-full flex items-center justify-center">
+                        <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                        </svg>
+                      </div>
+                    )}
+                    
+                    {/* Click hint for unselected */}
+                    {!reservationInfo.isSpecialRequest && (
+                      <div className="absolute top-3 right-3">
+                        <div className="w-6 h-6 border-2 border-royal-blue/40 rounded-full flex items-center justify-center">
+                          <div className="w-2 h-2 bg-royal-blue/40 rounded-full"></div>
+                        </div>
+                      </div>
+                    )}
+                    
                     <div className="text-center">
-                      <div className="w-16 h-16 bg-gold/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <svg className="w-8 h-8 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <div className={`w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 transition-all duration-300 ${
+                        reservationInfo.isSpecialRequest
+                          ? "bg-gold/20"
+                          : "bg-gold/10 group-hover:bg-gold/15"
+                      }`}>
+                        <svg className={`w-8 h-8 transition-all duration-300 ${
+                          reservationInfo.isSpecialRequest
+                            ? "text-gold"
+                            : "text-gold group-hover:scale-110"
+                        }`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
                         </svg>
                       </div>
-                      <h3 className="text-xl font-semibold text-gray-700 mb-2">Special Request</h3>
+                      <h3 className="text-xl font-semibold text-gray-700 mb-2 group-hover:text-royal-blue transition-colors duration-200">Special Request</h3>
                       <p className="text-gray-600 text-sm mb-4">Custom transportation solutions</p>
                       <ul className="text-xs text-gray-500 space-y-1">
                         <li>• Multi-city tours</li>
@@ -582,6 +674,13 @@ const BookingPage = ({ scrollUp }) => {
                         <li>• Group transportation</li>
                       </ul>
                     </div>
+                    
+                    {/* Subtle "Click to select" hint */}
+                    {!reservationInfo.isSpecialRequest && (
+                      <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-all duration-200 translate-y-2 group-hover:translate-y-0">
+                        <span className="text-xs text-royal-blue/70 bg-white/80 px-2 py-1 rounded-full">Click to select</span>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
