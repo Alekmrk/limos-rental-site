@@ -130,3 +130,5 @@ Prioritet:
 # vidi za error o lokaciji u svici na booking stranici
 # ako se vraca buissness klasa, da se mozda vrati da se ono na carSlide stavi 2.5 ili tako nesto
 # promeni dugmice da budu lepe boje
+# kada ne mozemo da izracunamo da vidimo da unapredimo google api i da kazemo da gleda nesto u blizini ako e moze bas identicno da se nadje mesto
+# da se vidi sto nekad ucitava dosta za test stripe. da vidimo jel tako i za pravi?
