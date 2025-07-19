@@ -33,11 +33,11 @@ import LegalNotice from "./pages/LegalNotice/LegalNotice";
 function App() {
   const { isLoaded, loadError } = useGoogleMapsApi();
   
+  // Scroll to top on next tick to ensure content is rendered before scrolling
   const scrollUp = () => {
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth",
-    });
+    setTimeout(() => {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }, 0);
   };
 
   const [selectedVehicle, setSelectedVehicle] = useState(cars[0]);
