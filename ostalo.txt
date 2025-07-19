@@ -134,3 +134,4 @@ Prioritet:
 # da se vidi sto nekad ucitava dosta za test stripe. da vidimo jel tako i za pravi?
 # da se posalje neka teemetrija kad korisnik dodje do poslenjeg koraka. pa posle i da li je stisnuo na pay ili nije itd
 # proveriti koliko dugo treba sajtu da se inicijalno ucita. da li je predugo.
+# proveriti jel se auta ucitavaju brzo bez da blokiraju ostale stvari
