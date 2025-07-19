@@ -447,7 +447,7 @@ const BookingPage = ({ scrollUp }) => {
           
           {/* Hero Section */}
           <div className="text-center mb-16">
-            <h1 className="text-5xl md:text-7xl font-bold mb-8 text-gray-700">
+            <h1 className="text-5xl md:text-7xl font-bold mb-8 text-gray-700 mt-[50px]">
               <span className="text-royal-blue">Book Your</span> 
               <br className="md:hidden" />
               <span className="text-gold"> Premium</span> Transfer
