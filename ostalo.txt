@@ -128,4 +128,4 @@ Prioritet:
 # ne koristimo optimized images at all.
 # izbaci wedding jer nam ne treba
 # vidi za error o lokaciji u svici na booking stranici
-
+# ako se vraca buissness klasa, da se mozda vrati da se ono na carSlide stavi 2.5 ili tako nesto
