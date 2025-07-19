@@ -70,10 +70,13 @@ const BookingPage = ({ scrollUp }) => {
   };
 
   // Function to scroll to Travel Details section
-  const scrollToTravelDetails = () => {
-    const travelDetailsElement = document.getElementById('travel-details');
-    if (travelDetailsElement) {
-      const elementPosition = travelDetailsElement.getBoundingClientRect().top + window.pageYOffset;
+  const scrollToTravelDetails = (targetMode = null) => {
+    // Use the passed targetMode or fall back to current state
+    const isSpecialMode = targetMode === 'special' || (!targetMode && reservationInfo.isSpecialRequest);
+    const targetId = isSpecialMode ? 'custom-request-details' : 'travel-details';
+    const targetElement = document.getElementById(targetId);
+    if (targetElement) {
+      const elementPosition = targetElement.getBoundingClientRect().top + window.pageYOffset;
       const offsetPosition = elementPosition - 100; // Scroll 100px above the element
       
       window.scrollTo({
@@ -107,7 +110,7 @@ const BookingPage = ({ scrollUp }) => {
     
     // Scroll to Travel Details section
     setTimeout(() => {
-      scrollToTravelDetails();
+      scrollToTravelDetails(mode);
     }, 100);
   };
 
@@ -878,7 +881,7 @@ const BookingPage = ({ scrollUp }) => {
                   <>
                     {/* Special Request Information */}
                     <div className="space-y-6">
-                      <h3 className="text-2xl font-semibold text-gray-700 text-center">Custom Transportation Request</h3>
+                      <h3 id="custom-request-details" className="text-2xl font-semibold text-gray-700 text-center">Custom Transportation Request</h3>
                       
                       <div className="bg-gradient-to-br from-gold/10 to-royal-blue/5 border border-gold/30 rounded-2xl p-8">
                         <div className="text-center mb-6">
