@@ -30,11 +30,6 @@ const BookingPage = ({ scrollUp }) => {
     lastValidationResult: null
   });
 
-  // Clear reservation when component mounts (fresh start)
-  useEffect(() => {
-    clearReservation();
-  }, [clearReservation]);
-
   // Scroll to top when component mounts
   useEffect(() => {
     scrollUp && scrollUp();
