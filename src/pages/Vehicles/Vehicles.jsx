@@ -63,7 +63,7 @@ const Vehicles = ({ scrollUp, selectedVehicle, setSelectedVehicle }) => {
               {selectedVehicle.seats}
             </span>
           </p>
-          <Link to={"/"}>
+          <Link to={"/booking"}>
             <Button variant="secondary">
               Book Now
               <FontAwesomeIcon
