@@ -29,6 +29,10 @@ import { ReservationContextProvider } from "./contexts/ReservationContext";
 import { useGoogleMapsApi } from "./hooks/useGoogleMapsApi";
 import TermsOfService from "./pages/TermsOfService/TermsOfService";
 import LegalNotice from "./pages/LegalNotice/LegalNotice";
+import PrototypeHorizontal from "./pages/PrototypeHorizontal/PrototypeHorizontal";
+import PrototypeCentered from "./pages/PrototypeCentered/PrototypeCentered";
+import PrototypeSplit from "./pages/PrototypeSplit/PrototypeSplit";
+import PrototypeNavigation from "./pages/PrototypeNavigation/PrototypeNavigation";
 
 function App() {
   const { isLoaded, loadError } = useGoogleMapsApi();
@@ -93,6 +97,13 @@ function App() {
           <Route path="/privacy-policy" element={<PrivacyPolicy scrollUp={scrollUp} />} />
           <Route path="/terms-of-service" element={<TermsOfService scrollUp={scrollUp} />} />
           <Route path="/legal-notice" element={<LegalNotice scrollUp={scrollUp} />} />
+          
+          {/* Prototype Routes */}
+          <Route path="/prototypes" element={<PrototypeNavigation />} />
+          <Route path="/prototype-horizontal" element={<PrototypeHorizontal scrollUp={scrollUp} />} />
+          <Route path="/prototype-centered" element={<PrototypeCentered scrollUp={scrollUp} />} />
+          <Route path="/prototype-split" element={<PrototypeSplit scrollUp={scrollUp} />} />
+          
           <Route path="*" element={<NotFound scrollUp={scrollUp} />} />
         </Routes>
       </ReservationContextProvider>
