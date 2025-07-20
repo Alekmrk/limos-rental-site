@@ -63,7 +63,7 @@ const PrimaryNav = ({ navHidden, screenSize, setNavHidden }) => {
       <ul className="flex flex-col md:flex-row gap-12 md:gap-8 lg:gap-12 mb-8 md:mb-0 justify-center items-center">
         <li>
           <NavLink
-            className="block text-gray-700 hover:text-royal-blue font-medium text-xl md:text-2xl transition-all duration-200 hover:bg-royal-blue/10 px-4 py-3 rounded-lg md:bg-transparent md:hover:bg-transparent md:px-2 md:py-1"
+            className="block text-gray-700 hover:text-royal-blue font-medium text-lg md:text-xl font-sans transition-all duration-200 hover:bg-royal-blue/10 px-4 py-3 rounded-lg md:bg-transparent md:hover:bg-transparent md:px-2 md:py-1"
             to="/"
             onClick={handleNavClick}
           >
@@ -72,7 +72,7 @@ const PrimaryNav = ({ navHidden, screenSize, setNavHidden }) => {
         </li>
         <li>
           <NavLink
-            className="block text-gray-700 hover:text-royal-blue font-medium text-xl md:text-2xl transition-all duration-200 hover:bg-royal-blue/10 px-4 py-3 rounded-lg md:bg-transparent md:hover:bg-transparent md:px-2 md:py-1"
+            className="block text-gray-700 hover:text-royal-blue font-medium text-lg md:text-xl font-sans transition-all duration-200 hover:bg-royal-blue/10 px-4 py-3 rounded-lg md:bg-transparent md:hover:bg-transparent md:px-2 md:py-1"
             to="/booking"
             onClick={handleNavClick}
           >
@@ -81,7 +81,7 @@ const PrimaryNav = ({ navHidden, screenSize, setNavHidden }) => {
         </li>
         <li>
           <NavLink
-            className="block text-gray-700 hover:text-royal-blue font-medium text-xl md:text-2xl transition-all duration-200 hover:bg-royal-blue/10 px-4 py-3 rounded-lg md:bg-transparent md:hover:bg-transparent md:px-2 md:py-1"
+            className="block text-gray-700 hover:text-royal-blue font-medium text-lg md:text-xl font-sans transition-all duration-200 hover:bg-royal-blue/10 px-4 py-3 rounded-lg md:bg-transparent md:hover:bg-transparent md:px-2 md:py-1"
             to="/vehicles"
             onClick={handleNavClick}
           >
@@ -92,13 +92,13 @@ const PrimaryNav = ({ navHidden, screenSize, setNavHidden }) => {
         {/* Services Dropdown - CENTER ITEM */}
         <li className="relative" ref={servicesDropdownRef}>
           <button
-            className="block text-gray-700 hover:text-royal-blue font-medium text-xl md:text-2xl transition-all duration-200 hover:bg-royal-blue/10 px-4 py-3 rounded-lg md:bg-transparent md:hover:bg-transparent md:px-2 md:py-1 inline-flex items-center gap-2"
+            className="block text-gray-700 hover:text-royal-blue font-medium text-lg md:text-xl font-sans transition-all duration-200 hover:bg-royal-blue/10 px-4 py-3 rounded-lg md:bg-transparent md:hover:bg-transparent md:px-2 md:py-1 inline-flex items-center gap-2"
             onClick={toggleServicesDropdown}
           >
             Services
             <FontAwesomeIcon
               icon={faChevronDown}
-              className={`text-base transition-transform ${
+              className={`text-lg transition-transform ${
                 servicesDropdownOpen ? "rotate-180" : ""
               }`}
             />
@@ -111,28 +111,28 @@ const PrimaryNav = ({ navHidden, screenSize, setNavHidden }) => {
           >
             <NavLink
               to="/airport-transfer"
-              className="block px-5 py-4 text-base text-gray-700 hover:text-royal-blue hover:bg-royal-blue/10 transition-all duration-200"
+              className="block px-5 py-4 text-base text-gray-700 hover:text-royal-blue hover:bg-royal-blue/10 font-sans transition-all duration-200"
               onClick={handleNavClick}
             >
               Airport Transfer
             </NavLink>
             <NavLink
               to="/distance-transfer"
-              className="block px-5 py-4 text-base text-gray-700 hover:text-royal-blue hover:bg-royal-blue/10 transition-all duration-200"
+              className="block px-5 py-4 text-base text-gray-700 hover:text-royal-blue hover:bg-royal-blue/10 font-sans transition-all duration-200"
               onClick={handleNavClick}
             >
               Distance Transfer
             </NavLink>
             <NavLink
               to="/hourly-transfer"
-              className="block px-5 py-4 text-base text-gray-700 hover:text-royal-blue hover:bg-royal-blue/10 transition-all duration-200"
+              className="block px-5 py-4 text-base text-gray-700 hover:text-royal-blue hover:bg-royal-blue/10 font-sans transition-all duration-200"
               onClick={handleNavClick}
             >
               Hourly Service
             </NavLink>
             <NavLink
               to="/special-request"
-              className="block px-5 py-4 text-base text-gray-700 hover:text-royal-blue hover:bg-royal-blue/10 transition-all duration-200"
+              className="block px-5 py-4 text-base text-gray-700 hover:text-royal-blue hover:bg-royal-blue/10 font-sans transition-all duration-200"
               onClick={handleNavClick}
             >
               Special/Personalized Transfer
@@ -143,13 +143,13 @@ const PrimaryNav = ({ navHidden, screenSize, setNavHidden }) => {
         {/* Events Dropdown */}
         <li className="relative" ref={eventsDropdownRef}>
           <button
-            className="block text-gray-700 hover:text-royal-blue font-medium text-xl md:text-2xl transition-all duration-200 hover:bg-royal-blue/10 px-4 py-3 rounded-lg md:bg-transparent md:hover:bg-transparent md:px-2 md:py-1 inline-flex items-center gap-2"
+            className="block text-gray-700 hover:text-royal-blue font-medium text-lg md:text-xl font-sans transition-all duration-200 hover:bg-royal-blue/10 px-4 py-3 rounded-lg md:bg-transparent md:hover:bg-transparent md:px-2 md:py-1 inline-flex items-center gap-2"
             onClick={toggleEventsDropdown}
           >
             Events
             <FontAwesomeIcon
               icon={faChevronDown}
-              className={`text-base transition-transform ${
+              className={`text-lg transition-transform ${
                 eventsDropdownOpen ? "rotate-180" : ""
               }`}
             />
@@ -160,12 +160,12 @@ const PrimaryNav = ({ navHidden, screenSize, setNavHidden }) => {
               eventsDropdownOpen ? "block" : "hidden"
             } absolute top-full left-1/2 transform -translate-x-1/2 mt-2 w-72 bg-warm-white border border-royal-blue/30 rounded-lg shadow-xl py-2 z-20`}
           >
-            <div className="px-5 py-3 text-sm text-royal-blue uppercase tracking-wide font-medium">
+            <div className="px-5 py-3 text-sm text-royal-blue uppercase tracking-wide font-medium font-sans">
               Premium Events
             </div>
             <NavLink
               to="/davos-forum"
-              className="block px-5 py-4 text-base text-gray-700 hover:text-royal-blue hover:bg-royal-blue/10 transition-all duration-200"
+              className="block px-5 py-4 text-base text-gray-700 hover:text-royal-blue hover:bg-royal-blue/10 font-sans transition-all duration-200"
               onClick={handleNavClick}
             >
               Davos Forum
@@ -175,7 +175,7 @@ const PrimaryNav = ({ navHidden, screenSize, setNavHidden }) => {
 
         <li>
           <NavLink
-            className="block text-gray-700 hover:text-royal-blue font-medium text-xl md:text-2xl transition-all duration-200 hover:bg-royal-blue/10 px-4 py-3 rounded-lg md:bg-transparent md:hover:bg-transparent md:px-2 md:py-1"
+            className="block text-gray-700 hover:text-royal-blue font-medium text-lg md:text-xl font-sans transition-all duration-200 hover:bg-royal-blue/10 px-4 py-3 rounded-lg md:bg-transparent md:hover:bg-transparent md:px-2 md:py-1"
             to="/contact"
             onClick={handleNavClick}
           >
