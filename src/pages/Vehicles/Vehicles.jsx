@@ -25,6 +25,13 @@ const Vehicles = ({ scrollUp, selectedVehicle, setSelectedVehicle }) => {
 
   const chooseVehicle = (name) => {
     setSelectedVehicle(cars.find((car) => car.name === name));
+    // Always scroll to image when a car is selected, even if it's the same one
+    if (imageRef.current) {
+      imageRef.current.scrollIntoView({ 
+        behavior: 'smooth', 
+        block: 'center' 
+      });
+    }
   };
 
   return (
