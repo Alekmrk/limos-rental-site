@@ -21,7 +21,9 @@ router.post('/create-checkout-session', express.json(), async (req, res) => {
             currency: currency.toLowerCase(),
             product_data: {
               name: 'Elite Way Limo Reservation',
-              description: `${metadata.vehicleName || 'Vehicle'} - ${metadata.date || ''} ${metadata.time || ''}`.trim(),
+              description: metadata.isHourly === 'true' 
+                ? `${metadata.vehicleName || 'Vehicle'} - ${metadata.hours || ''} hours - ${metadata.date || ''} ${metadata.time || ''}`.trim()
+                : `${metadata.vehicleName || 'Vehicle'} - ${metadata.pickup || ''} to ${metadata.dropoff || ''} - ${metadata.date || ''} ${metadata.time || ''}`.trim(),
             },
             unit_amount: Math.round(amount * 100),
           },
