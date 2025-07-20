@@ -77,6 +77,9 @@ Min cena 110 chf max 5 persons max 6 baggages
 Merc S first class        5.5 chf po 1 km
 Min cena 130 chf max 2 Persons max 2 baggages
 
+
+google cloud api: https://console.cloud.google.com/apis/dashboard?authuser=0&inv=1&invt=Ab3StQ&project=limos-rental-site&pageState=(%22duration%22:(%22groupValue%22:%22PT12H%22,%22customValue%22:null))
+
 glavne:
 / logo
 # na step 1 promeni datum i vreme da lepo pise a ne ovako nabijeno
@@ -135,3 +138,7 @@ Prioritet:
 # da se posalje neka teemetrija kad korisnik dodje do poslenjeg koraka. pa posle i da li je stisnuo na pay ili nije itd
 # proveriti koliko dugo treba sajtu da se inicijalno ucita. da li je predugo.
 # proveriti jel se auta ucitavaju brzo bez da blokiraju ostale stvari
+# da se izravna ovo sto je na macu lose
+# da se proveri Publishable Key
+# da se vidi koji domen koristimo
+# da se vidi health check sta proveravamo koji domen (https://limos-rental-api.azurewebsites.net/health   and    https://limos-rental-api.azurewebsites.net/ )
