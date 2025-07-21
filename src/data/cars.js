@@ -1,6 +1,6 @@
 import imgBenzSClass from "../assets/cars/sclass3.png";
 import imgEClass from "../assets/cars/model1.png";
-import imgVClass2 from "../assets/cars/v-class2.png";
+import imgVClass2 from "../assets/cars/v-class4.png";
 import imgVClass1 from "../assets/cars/firstClassV4.png";
 
 
