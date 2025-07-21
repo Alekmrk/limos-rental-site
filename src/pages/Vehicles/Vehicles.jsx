@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
 import cars from "../../data/cars";
 import SliderCard from "../../components/SliderCard";
+import VehicleImageSlider from "../../components/VehicleImageSlider";
 import Button from "../../components/Button";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -45,11 +46,11 @@ const Vehicles = ({ scrollUp, selectedVehicle, setSelectedVehicle }) => {
         class vehicles.
       </p>
       <div className="grid md:grid-cols-2 gap-12 my-16">
-        <div 
-          ref={imageRef}
-          className="bg-cream-light/90 p-4 rounded-[1rem] flex items-center border border-royal-blue/20 shadow-lg"
-        >
-          <img className="w-full" src={selectedVehicle.image} alt="" />
+        <div ref={imageRef}>
+          <VehicleImageSlider 
+            images={selectedVehicle.images || [selectedVehicle.image]} 
+            vehicleName={selectedVehicle.name}
+          />
         </div>
         <div className="mt-4">
           <h2 className="text-4xl font-semibold text-royal-blue">
