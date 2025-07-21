@@ -59,7 +59,7 @@ const AirportTransfer = ({ scrollUp }) => {
     <div className="min-h-screen">
       <div className="relative">
         {/* Hero Section with Reservation Card */}
-        <div className="banner-home relative w-full rounded-[1.5rem] text-center mt-16 pb-32 md:pb-0 overflow-hidden md:overflow-visible min-h-[700px] lg:min-h-[800px]">
+        <div className="banner-home relative w-full rounded-[1.5rem] text-center mt-16 pb-32 md:pb-0 overflow-visible min-h-[700px] lg:min-h-[800px]">
           {/* Optimized Background Image - Full Width */}
           <div className="absolute inset-0 z-0">
             <Image
@@ -166,8 +166,8 @@ const AirportTransfer = ({ scrollUp }) => {
           </div>
         </div>
         
-        {/* Softer Decorative Bottom Wave */}
-        <div className="absolute bottom-0 left-0 right-0 z-20 -mb-1">
+        {/* Softer Decorative Bottom Wave - MOVED INSIDE BANNER */}
+        <div className="absolute bottom-0 left-0 right-0 z-10 -mb-1" style={{ pointerEvents: 'none' }}>
           <svg className="w-full h-20 text-warm-gray" viewBox="0 0 1200 80" preserveAspectRatio="none">
             <defs>
               <linearGradient id="softWaveGradient" x1="0%" y1="0%" x2="100%" y2="0%">

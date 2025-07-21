@@ -22,7 +22,7 @@ const BannerSection = () => {
 
   return (
     <div className="relative">
-      <div className="banner-home relative w-full rounded-[1.5rem] mt-16 pb-32 md:pb-0 overflow-hidden md:overflow-visible text-center min-h-[700px] lg:min-h-[800px]">
+      <div className="banner-home relative w-full rounded-[1.5rem] mt-16 pb-32 md:pb-0 overflow-visible text-center min-h-[700px] lg:min-h-[800px]">
         {/* Optimized Background Image - Full Width */}
         <div className="absolute inset-0 z-0">
           <Image
@@ -145,21 +145,20 @@ const BannerSection = () => {
           </div>
         </div>
 
-      </div>
-      
-      {/* Softer Decorative Bottom Wave */}
-      <div className="absolute bottom-0 left-0 right-0 z-20">
-        <svg className="w-full h-20 text-warm-gray" viewBox="0 0 1200 80" preserveAspectRatio="none">
-          <defs>
-            <linearGradient id="softWaveGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" stopColor="currentColor" stopOpacity="0.9"/>
-              <stop offset="50%" stopColor="#F8F7F4" stopOpacity="0.8"/>
-              <stop offset="100%" stopColor="currentColor" stopOpacity="0.9"/>
-            </linearGradient>
-          </defs>
-          <path d="M0,80V40c200,0,400,-20,600,0s400,20,600,0V80Z" fill="url(#softWaveGradient)" opacity="0.9"/>
-          <path d="M0,80V50c150,0,350,-15,600,10s450,-10,600,5V80Z" fill="currentColor"/>
-        </svg>
+        {/* Softer Decorative Bottom Wave - MOVED INSIDE BANNER */}
+        <div className="absolute bottom-0 left-0 right-0 z-10 -mb-1" style={{ pointerEvents: 'none' }}>
+          <svg className="w-full h-20 text-warm-gray" viewBox="0 0 1200 80" preserveAspectRatio="none">
+            <defs>
+              <linearGradient id="softWaveGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stopColor="currentColor" stopOpacity="0.9"/>
+                <stop offset="50%" stopColor="#F8F7F4" stopOpacity="0.8"/>
+                <stop offset="100%" stopColor="currentColor" stopOpacity="0.9"/>
+              </linearGradient>
+            </defs>
+            <path d="M0,80V40c200,0,400,-20,600,0s400,20,600,0V80Z" fill="url(#softWaveGradient)" opacity="0.9"/>
+            <path d="M0,80V50c150,0,350,-15,600,10s450,-10,600,5V80Z" fill="currentColor"/>
+          </svg>
+        </div>
       </div>
     </div>
   );
