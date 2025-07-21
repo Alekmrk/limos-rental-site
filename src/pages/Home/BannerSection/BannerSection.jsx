@@ -45,13 +45,64 @@ const BannerSection = () => {
           <div className="absolute top-1/2 left-1/3 w-32 h-32 bg-gradient-to-br from-cream/20 to-gold/15 rounded-full blur-xl animate-float"></div>
         </div>
 
-        <div className="relative z-20 px-4 md:px-8 lg:px-16 md:mr-96 lg:mr-[28rem] xl:mr-[32rem] container-ultra-wide mx-auto">
-          <div className="pt-32 md:pt-40 lg:pt-48 mb-8 md:mb-12">
+        {/* Desktop Layout - Split Container */}
+        <div className="hidden md:block relative z-20 h-full">
+          <div className="grid grid-cols-12 gap-8 px-4 md:px-6 lg:px-16 container-ultra-wide mx-auto h-full min-h-[700px] lg:min-h-[800px]">
+            {/* Left Content Area - Takes up 7 columns */}
+            <div className="col-span-7 pt-32 md:pt-40 lg:pt-48">
+              {/* Main Title with glassy background */}
+              <div className="relative mb-8 md:mb-10">
+                <div className="absolute inset-0 bg-black/15 backdrop-blur-sm rounded-2xl transform translate-x-1 translate-y-1"></div>
+                <div className="relative bg-white/20 backdrop-blur-md rounded-2xl px-6 py-4 border border-white/30 shadow-2xl">
+                  <h1 className="text-3xl sm:text-4xl md:text-4xl lg:text-5xl xl:text-6xl font-semibold text-center drop-shadow-lg">
+                    <span className="text-royal-blue drop-shadow-lg">Switzerland's Elite</span>{" "}
+                    <span className="text-gold drop-shadow-lg">Chauffeur Service</span>
+                  </h1>
+                </div>
+              </div>
+
+              {/* Desktop Trust Indicators */}
+              <div className="flex flex-col lg:flex-row justify-center items-center gap-4 lg:gap-6 mb-8 md:mb-12 text-gray-600 text-sm">
+                <div className="flex items-center gap-3 bg-warm-white/80 backdrop-blur-sm px-3 py-2 rounded-full border border-royal-blue/20 shadow-md">
+                  <FaShieldAlt className="text-emerald-500 text-base" />
+                  <span className="font-medium">Fully Insured</span>
+                </div>
+                <div className="flex items-center gap-3 bg-warm-white/80 backdrop-blur-sm px-3 py-2 rounded-full border border-royal-blue/20 shadow-md">
+                  <FaClock className="text-royal-blue text-base" />
+                  <span className="font-medium">24/7 Available</span>            
+                </div>
+                <div className="flex items-center gap-3 bg-warm-white/80 backdrop-blur-sm px-3 py-2 rounded-full border border-royal-blue/20 shadow-md">
+                  <FaPhone className="text-gold text-base" />
+                  <span className="font-medium">Instant Booking</span>
+                </div>
+              </div>
+
+              <div className="flex justify-center mb-12 md:mb-16">
+                <Link to={"/vehicles"}>
+                  <Button variant="secondary" className="transform hover:scale-105 transition-all duration-300">
+                    Explore Our Fleet
+                  </Button>
+                </Link>
+              </div>
+            </div>
+
+            {/* Right Reservation Card Area - Takes up 5 columns */}
+            <div className="col-span-5 relative h-full flex items-end">
+              <div className="w-full pb-8">
+                <ReservationCard idPrefix="desktop-" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Mobile Layout: Reservation Card and Badges in Same Container */}
+        <div className="block md:hidden relative z-20 px-4">
+          <div className="pt-32 mb-8">
             {/* Main Title with glassy background */}
-            <div className="relative max-w-4xl mx-auto mb-8 md:mb-10">
+            <div className="relative max-w-4xl mx-auto mb-8">
               <div className="absolute inset-0 bg-black/15 backdrop-blur-sm rounded-2xl transform translate-x-1 translate-y-1"></div>
               <div className="relative bg-white/20 backdrop-blur-md rounded-2xl px-6 py-4 border border-white/30 shadow-2xl">
-                <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-semibold text-center drop-shadow-lg">
+                <h1 className="text-3xl sm:text-4xl font-semibold text-center drop-shadow-lg">
                   <span className="text-royal-blue drop-shadow-lg">Switzerland's Elite</span>{" "}
                   <span className="text-gold drop-shadow-lg">Chauffeur Service</span>
                 </h1>
@@ -59,10 +110,7 @@ const BannerSection = () => {
             </div>
           </div>
 
-          {/* Description text hidden per request */}
-
-          {/* Mobile Layout: Reservation Card and Badges in Same Container */}
-          <div className="block md:hidden mb-8">
+          <div className="mb-8">
             <div className="relative z-50">
               <ReservationCard idPrefix="mobile-" />
             </div>
@@ -82,37 +130,17 @@ const BannerSection = () => {
                 <span className="font-medium">Instant Booking</span>
               </div>
             </div>
-          </div>
 
-          {/* Desktop Trust Indicators - Original position */}
-          <div className="hidden md:flex flex-col sm:flex-row justify-center items-center gap-8 sm:gap-12 mb-8 md:mb-12 text-gray-600 text-sm md:text-base">
-            <div className="flex items-center gap-3 bg-warm-white/80 backdrop-blur-sm px-4 py-2 rounded-full border border-royal-blue/20 shadow-md">
-              <FaShieldAlt className="text-emerald-500 text-lg" />
-              <span className="font-medium">Fully Insured</span>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center mt-8">
+              <Link to={"/vehicles"}>
+                <Button variant="secondary" className="transform hover:scale-105 transition-all duration-300 w-full sm:w-auto">
+                  Explore Our Fleet
+                </Button>
+              </Link>
             </div>
-            <div className="flex items-center gap-3 bg-warm-white/80 backdrop-blur-sm px-4 py-2 rounded-full border border-royal-blue/20 shadow-md">
-              <FaClock className="text-royal-blue text-lg" />
-              <span className="font-medium">24/7 Available</span>            
-            </div>
-            <div className="flex items-center gap-3 bg-warm-white/80 backdrop-blur-sm px-4 py-2 rounded-full border border-royal-blue/20 shadow-md">
-              <FaPhone className="text-gold text-lg" />
-              <span className="font-medium">Instant Booking</span>
-            </div>
-          </div>
-
-          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12 md:mb-16">
-            <Link to={"/vehicles"}>
-              <Button variant="secondary" className="transform hover:scale-105 transition-all duration-300 w-full sm:w-auto">
-                Explore Our Fleet
-              </Button>
-            </Link>
           </div>
         </div>
 
-        {/* Desktop Reservation Card - Original position */}
-        <div className="hidden md:block">
-          <ReservationCard idPrefix="desktop-" />
-        </div>
       </div>
       
       {/* Softer Decorative Bottom Wave */}
