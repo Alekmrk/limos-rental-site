@@ -204,22 +204,22 @@ const DavosForum = ({ scrollUp }) => {
             </div>
 
             {/* Davos Venues */}
-            <div className="bg-cream-light/90 p-8 rounded-lg border border-royal-blue/20 shadow-lg mb-20">
+            <div className="bg-cream-light/90 p-4 sm:p-8 rounded-lg border border-royal-blue/20 shadow-lg mb-20">
               <h2 className="text-3xl font-semibold mb-8 text-center text-royal-blue-dark">Key Davos Locations</h2>
               
-              <div className="grid md:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
                 {venues.map((venue, index) => (
-                  <div key={index} className="bg-warm-white/80 p-6 rounded-lg border border-royal-blue/15">
-                    <div className="flex items-start gap-4">
-                      <div className="w-12 h-12 bg-royal-blue/15 rounded-lg flex items-center justify-center flex-shrink-0">
+                  <div key={index} className="bg-warm-white/80 p-4 sm:p-6 rounded-lg border border-royal-blue/15 min-w-0">
+                    <div className="flex items-start gap-3 sm:gap-4">
+                      <div className="w-10 h-10 sm:w-12 sm:h-12 bg-royal-blue/15 rounded-lg flex items-center justify-center flex-shrink-0">
                         <FontAwesomeIcon icon={faMountain} className="text-royal-blue" />
                       </div>
-                      <div className="flex-1">
-                        <div className="flex items-center gap-3 mb-2">
-                          <h3 className="font-semibold text-gray-700">{venue.name}</h3>
-                          <span className="text-xs bg-royal-blue/20 text-royal-blue px-2 py-1 rounded-full">{venue.type}</span>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 mb-2">
+                          <h3 className="font-semibold text-gray-700 text-sm sm:text-base break-words">{venue.name}</h3>
+                          <span className="text-xs bg-royal-blue/20 text-royal-blue px-2 py-1 rounded-full self-start sm:self-auto whitespace-nowrap">{venue.type}</span>
                         </div>
-                        <p className="text-gray-600 text-sm">{venue.description}</p>
+                        <p className="text-gray-600 text-xs sm:text-sm break-words">{venue.description}</p>
                       </div>
                     </div>
                   </div>
