@@ -1,22 +1,51 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 
 const VehicleImageSlider = ({ images, vehicleName }) => {
-  const [currentIndex, setCurrentIndex] = useState(0);
+  const [currentIndex, setCurrentIndex] = useState(1); // Start at index 1 (first real image)
+  const [isTransitioning, setIsTransitioning] = useState(false);
   const touchStartX = useRef(null);
   const touchEndX = useRef(null);
+  
+  // Create infinite loop array: [last, ...images, first]
+  const infiniteImages = [images[images.length - 1], ...images, images[0]];
 
   const nextSlide = () => {
-    setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
+    if (isTransitioning) return;
+    setIsTransitioning(true);
+    setCurrentIndex(prev => prev + 1);
   };
 
   const prevSlide = () => {
-    setCurrentIndex((prevIndex) => (prevIndex - 1 + images.length) % images.length);
+    if (isTransitioning) return;
+    setIsTransitioning(true);
+    setCurrentIndex(prev => prev - 1);
   };
 
   const goToSlide = (index) => {
-    setCurrentIndex(index);
+    if (isTransitioning) return;
+    setIsTransitioning(true);
+    setCurrentIndex(index + 1); // +1 because we have the duplicate at start
   };
+
+  // Handle infinite loop transitions
+  useEffect(() => {
+    if (!isTransitioning) return;
+
+    const timer = setTimeout(() => {
+      setIsTransitioning(false);
+      
+      if (currentIndex === 0) {
+        // If we're at the duplicate last image, jump to real last image
+        setCurrentIndex(images.length);
+      } else if (currentIndex === infiniteImages.length - 1) {
+        // If we're at the duplicate first image, jump to real first image
+        setCurrentIndex(1);
+      }
+    }, 300); // Match transition duration
+
+    return () => clearTimeout(timer);
+  }, [currentIndex, isTransitioning, images.length, infiniteImages.length]);
 
   // Touch handlers for swipe functionality
   const handleTouchStart = (e) => {
@@ -47,27 +76,38 @@ const VehicleImageSlider = ({ images, vehicleName }) => {
   };
 
   return (
-    <div className="bg-cream-light/90 p-0 pb-6 rounded-[1rem] border border-royal-blue/20 shadow-lg">        {/* Main Image Container */}
-        <div className="relative overflow-hidden rounded-lg">
+    <div className="bg-cream-light/90 p-0 pb-6 rounded-[1rem] border border-royal-blue/20 shadow-lg">
+      {/* Main Image Container */}
+      <div className="relative overflow-hidden rounded-lg">
+        <div className="relative">
           <div 
-            className="relative h-80 md:h-96 flex items-center justify-center cursor-grab active:cursor-grabbing"
+            className="flex transition-transform duration-300 ease-in-out cursor-grab active:cursor-grabbing"
+            style={{ 
+              transform: `translateX(-${currentIndex * 100}%)`,
+              transition: isTransitioning ? 'transform 0.3s ease-in-out' : 'none'
+            }}
             onTouchStart={handleTouchStart}
             onTouchMove={handleTouchMove}
             onTouchEnd={handleTouchEnd}
           >
-            <img 
-              className="w-full h-full object-contain transition-transform duration-300" 
-              src={images[currentIndex]} 
-              alt={`${vehicleName} - ${currentIndex === 0 ? 'Exterior' : 'Interior'} view`}
-            />
-            
-            {/* Image Counter */}
-            {images.length > 1 && (
-              <div className="absolute top-2 right-2 bg-black/50 text-white px-2 py-1 rounded text-sm z-10">
-                {currentIndex + 1} / {images.length}
+            {infiniteImages.map((image, index) => (
+              <div key={index} className="w-full h-80 md:h-96 flex-shrink-0 flex items-center justify-center">
+                <img 
+                  className="w-full h-full object-contain" 
+                  src={image} 
+                  alt={`${vehicleName} - ${index === 0 || index === infiniteImages.length - 1 ? 'Exterior' : 'Interior'} view`}
+                />
               </div>
-            )}
+            ))}
           </div>
+          
+          {/* Image Counter */}
+          {images.length > 1 && (
+            <div className="absolute top-2 right-2 bg-black/50 text-white px-2 py-1 rounded text-sm z-10">
+              {((currentIndex - 1 + images.length) % images.length) + 1} / {images.length}
+            </div>
+          )}
+        </div>
           
           {/* Thumbnail Navigation */}
           {images.length > 1 && (
@@ -79,7 +119,7 @@ const VehicleImageSlider = ({ images, vehicleName }) => {
                     key={index}
                     onClick={() => goToSlide(index)}
                     className={`w-16 h-12 rounded-lg overflow-hidden border-2 transition-all duration-300 ${
-                      index === currentIndex 
+                      ((currentIndex - 1 + images.length) % images.length) === index
                         ? 'border-royal-blue scale-110 shadow-lg' 
                         : 'border-royal-blue/30 hover:border-royal-blue/60 hover:scale-105'
                     }`}
