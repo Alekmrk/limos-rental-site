@@ -97,7 +97,7 @@ let cars = [
 ];
 
 // Filter out Business Class Van from being displayed or selectable
-cars = cars.filter(car => car.name !== "Business Class Van");
+//cars = cars.filter(car => car.name !== "Business Class Van");
 
 // Utility functions to get maximum values from all available cars
 export const getMaxPassengers = () => {
