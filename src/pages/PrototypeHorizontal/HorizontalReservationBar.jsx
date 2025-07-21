@@ -192,22 +192,7 @@ const HorizontalReservationBar = () => {
               )}
             </div>
 
-            {/* Passengers */}
-            <div className="w-20">
-              <label className="block text-xs font-medium text-gray-700 mb-1">
-                Guests
-              </label>
-              <select
-                name="passengers"
-                value={reservationInfo.passengers}
-                onChange={handleInput}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-royal-blue focus:border-transparent"
-              >
-                {[1,2,3,4,5,6,7,8].map(num => (
-                  <option key={num} value={num}>{num}</option>
-                ))}
-              </select>
-            </div>
+
 
             {/* Submit Button */}
             <div className="flex-shrink-0">

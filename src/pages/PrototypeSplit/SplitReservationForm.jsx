@@ -169,40 +169,22 @@ const SplitReservationForm = () => {
             )}
           </div>
 
-          {/* Time and Passengers */}
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
-                Time
-              </label>
-              <TimeInput
-                name="time"
-                value={reservationInfo.time}
-                onChange={handleInput}
-                className={`w-full px-4 py-3 border-2 rounded-xl text-lg ${
-                  errors.time ? 'border-red-500' : 'border-gray-200'
-                } focus:ring-2 focus:ring-royal-blue focus:border-royal-blue transition-all`}
-              />
-              {errors.time && (
-                <p className="text-red-500 text-sm mt-2">{errors.time}</p>
-              )}
-            </div>
-
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
-                Passengers
-              </label>
-              <select
-                name="passengers"
-                value={reservationInfo.passengers}
-                onChange={handleInput}
-                className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl text-lg focus:ring-2 focus:ring-royal-blue focus:border-royal-blue transition-all"
-              >
-                {[1,2,3,4,5,6,7,8].map(num => (
-                  <option key={num} value={num}>{num}</option>
-                ))}
-              </select>
-            </div>
+          {/* Time */}
+          <div>
+            <label className="block text-sm font-semibold text-gray-700 mb-2">
+              Time
+            </label>
+            <TimeInput
+              name="time"
+              value={reservationInfo.time}
+              onChange={handleInput}
+              className={`w-full px-4 py-3 border-2 rounded-xl text-lg ${
+                errors.time ? 'border-red-500' : 'border-gray-200'
+              } focus:ring-2 focus:ring-royal-blue focus:border-royal-blue transition-all`}
+            />
+            {errors.time && (
+              <p className="text-red-500 text-sm mt-2">{errors.time}</p>
+            )}
           </div>
 
           {/* Submit Button */}

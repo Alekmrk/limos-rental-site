@@ -152,8 +152,8 @@ const CenteredReservationCard = () => {
             </div>
           </div>
 
-          {/* Date, Time, Passengers */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {/* Date, Time */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Date
@@ -188,21 +188,7 @@ const CenteredReservationCard = () => {
               )}
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Passengers
-              </label>
-              <select
-                name="passengers"
-                value={reservationInfo.passengers}
-                onChange={handleInput}
-                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-royal-blue focus:border-transparent transition-all"
-              >
-                {[1,2,3,4,5,6,7,8].map(num => (
-                  <option key={num} value={num}>{num} {num === 1 ? 'Guest' : 'Guests'}</option>
-                ))}
-              </select>
-            </div>
+
           </div>
 
           {/* Submit Button */}
