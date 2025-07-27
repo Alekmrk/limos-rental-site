@@ -36,6 +36,22 @@ const Header = () => {
     else setNavHidden(true);
   }, [screenSize]);
 
+  // prevent body scroll when mobile navigation is open
+  useEffect(() => {
+    if (screenSize < screenMd && !navHidden) {
+      // Disable body scroll when nav is open on mobile
+      document.body.style.overflow = "hidden";
+    } else {
+      // Enable body scroll when nav is closed or on desktop
+      document.body.style.overflow = "unset";
+    }
+
+    // Cleanup function to ensure scroll is re-enabled when component unmounts
+    return () => {
+      document.body.style.overflow = "unset";
+    };
+  }, [navHidden, screenSize]);
+
   return (
     <header
       className={`py-3 fixed z-[100] bg-cream/95 backdrop-blur-sm border-b border-royal-blue/20 left-0 right-0 top-0 ${
