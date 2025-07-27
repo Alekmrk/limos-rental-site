@@ -27,9 +27,9 @@ const ServicesSection = () => {
     },
     {
       id: 3,
-      text: "Elite Way handled our entire wedding party transportation flawlessly. Multiple vehicles, precise timing, and elegant presentation. Our guests were thoroughly impressed with the attention to detail.",
+      text: "Elite Way handled our corporate annual retreat transportation flawlessly. Multiple vehicles, precise timing, and elegant presentation. Our board members were thoroughly impressed with the attention to detail.",
       name: "Sophie Laurent",
-      role: "Event Coordinator",
+      role: "Executive Assistant",
       location: "Geneva"
     }
   ];

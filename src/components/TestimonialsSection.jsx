@@ -37,10 +37,10 @@ const TestimonialsSection = () => {
     {
       id: 4,
       name: "Maria Gonzalez",
-      role: "Wedding Planner",
+      role: "Event Coordinator",
       location: "Lucerne",
       rating: 5,
-      text: "Elite Way exceeded all expectations for our luxury wedding transfers. The fleet coordination was seamless, vehicles were pristine, and every detail was perfectly executed. Highly recommended!",
+      text: "Elite Way provided outstanding transportation for our luxury corporate gala. The fleet coordination was seamless, vehicles were pristine, and every detail was perfectly executed. Highly recommended!",
       image: null
     },
     {
