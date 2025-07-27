@@ -4,7 +4,7 @@ import Button from "../../components/Button";
 import Image from "../../components/Image";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMountain, faUsers, faShieldAlt, faCalendarAlt, faSnowflake, faCrown } from "@fortawesome/free-solid-svg-icons";
-import davosForumImage from "../../assets/man-using-his-car-s-options-while-driving.jpg";
+import davosForumImage from "../../assets/background2(u169).jpg";
 import { Link } from "react-router-dom";
 
 const DavosForum = ({ scrollUp }) => {
