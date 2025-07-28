@@ -63,6 +63,97 @@ const CookieConsent = () => {
     functional: false // GDPR compliant: default false
   });
 
+  // Enhanced mobile device detection with cache awareness
+  const detectMobileAndCache = () => {
+    try {
+      const userAgent = navigator.userAgent || '';
+      const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(userAgent);
+      const isTablet = /iPad|Android(?!.*Mobile)/i.test(userAgent);
+      const isIOS = /iPad|iPhone|iPod/.test(userAgent);
+      const isAndroid = /Android/.test(userAgent);
+      
+      // Check for touch capability as additional mobile indicator
+      const hasTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+      
+      // Consider smaller screens as mobile
+      const isSmallScreen = window.innerWidth <= 768;
+      
+      const detectedAsMobile = isMobile || (hasTouch && isSmallScreen) || isTablet;
+      
+      // Check for potential cache issues on mobile
+      const isLikelyWebKit = /AppleWebKit/.test(userAgent) && !/Chrome/.test(userAgent);
+      const isLikelySafari = isLikelyWebKit && /Safari/.test(userAgent);
+      
+      // Detect potential cache-related browser behaviors
+      const cacheRisks = {
+        iosSafari: isIOS && isLikelySafari, // iOS Safari has aggressive memory management
+        androidMemoryOptimization: isAndroid && /Chrome/.test(userAgent), // Chrome on Android optimizes memory
+        lowMemoryDevice: navigator.deviceMemory && navigator.deviceMemory < 4, // Low memory devices
+        privateMode: false // Will be detected separately
+      };
+      
+      // Try to detect private/incognito mode (affects localStorage)
+      try {
+        localStorage.setItem('__private_test__', '1');
+        localStorage.removeItem('__private_test__');
+        // If we get here, we're likely not in private mode
+      } catch (e) {
+        cacheRisks.privateMode = true;
+      }
+      
+      // Check for potential app version cache issues
+      const appVersion = '2024.01.15'; // Update this when making significant cookie changes
+      const lastKnownVersion = localStorage.getItem('app-version');
+      const isVersionMismatch = lastKnownVersion && lastKnownVersion !== appVersion;
+      
+      if (isVersionMismatch) {
+        console.log('🍪 App version mismatch detected - may have cached JS:', { lastKnownVersion, appVersion });
+        cacheRisks.versionMismatch = true;
+      }
+      
+      // Update version
+      try {
+        localStorage.setItem('app-version', appVersion);
+      } catch (e) {
+        console.warn('🍪 Could not update app version in localStorage');
+      }
+      
+      console.log('🍪 Enhanced device detection:', {
+        userAgent: userAgent.substring(0, 100) + '...',
+        isMobile,
+        isTablet,
+        isIOS,
+        isAndroid,
+        hasTouch,
+        isSmallScreen,
+        detectedAsMobile,
+        screenWidth: window.innerWidth,
+        cacheRisks,
+        deviceMemory: navigator.deviceMemory || 'unknown',
+        appVersion,
+        lastKnownVersion
+      });
+      
+      return {
+        isMobile: detectedAsMobile,
+        isIOS,
+        isAndroid,
+        cacheRisks,
+        // Suggest more aggressive retry strategy for high-risk devices
+        needsAggressiveRetry: cacheRisks.iosSafari || cacheRisks.androidMemoryOptimization || cacheRisks.lowMemoryDevice || cacheRisks.versionMismatch
+      };
+    } catch (error) {
+      console.error('Error in mobile/cache detection:', error);
+      return {
+        isMobile: false,
+        isIOS: false,
+        isAndroid: false,
+        cacheRisks: {},
+        needsAggressiveRetry: false
+      };
+    }
+  };
+
   // Add styles only once using a ref to prevent re-injection
   useEffect(() => {
     // Check if styles already exist
@@ -120,9 +211,25 @@ const CookieConsent = () => {
   // Check consent status and expiration
   const checkConsentStatus = () => {
     try {
-      // Double-check localStorage availability
+      // Enhanced localStorage availability check for mobile browsers
       if (typeof localStorage === 'undefined' || !localStorage) {
         console.warn('🍪 localStorage not available');
+        return { hasConsent: false, expired: false };
+      }
+
+      // Test localStorage read/write capability (mobile browsers sometimes have issues)
+      try {
+        const testKey = '__localStorage_test__';
+        localStorage.setItem(testKey, 'test');
+        const testValue = localStorage.getItem(testKey);
+        localStorage.removeItem(testKey);
+        
+        if (testValue !== 'test') {
+          console.warn('🍪 localStorage not functioning properly');
+          return { hasConsent: false, expired: false };
+        }
+      } catch (storageError) {
+        console.warn('🍪 localStorage access denied:', storageError);
         return { hasConsent: false, expired: false };
       }
 
@@ -183,6 +290,12 @@ const CookieConsent = () => {
   };
 
   useEffect(() => {
+    // Enhanced device and cache detection
+    const deviceInfo = detectMobileAndCache();
+    const { isMobile, isIOS, isAndroid, cacheRisks, needsAggressiveRetry } = deviceInfo;
+    
+    console.log('🍪 Initializing cookie consent with device info:', deviceInfo);
+
     // Add a small delay to ensure localStorage is fully available after page load/redirect
     const checkAndInitialize = () => {
       try {
@@ -191,15 +304,17 @@ const CookieConsent = () => {
         
         const { hasConsent, expired, preferences: savedPreferences, isRecentConsent } = checkConsentStatus();
         
-        console.log('🍪 Cookie consent check:', { hasConsent, expired, preferences: savedPreferences, isRecentConsent });
+        console.log('🍪 Cookie consent check:', { hasConsent, expired, preferences: savedPreferences, isRecentConsent, deviceInfo });
         
         if (!hasConsent || expired) {
           // Show banner after a short delay, but only if we really don't have consent
           console.log('🍪 No valid consent found, showing banner');
+          // Use longer delays for mobile devices and cache-risky browsers
+          const showDelay = isMobile ? (cacheRisks.iosSafari ? 3000 : 2000) : 1000;
           const timer = setTimeout(() => {
             setShowBanner(true);
             setTimeout(() => setAnimateIn(true), 50);
-          }, 1000);
+          }, showDelay);
           setIsInitialized(true);
           return () => clearTimeout(timer);
         } else {
@@ -218,15 +333,17 @@ const CookieConsent = () => {
       } catch (error) {
         console.error('Error accessing localStorage during consent check:', error);
         
-        // Retry after a longer delay in case of localStorage access issues after redirect
+        // Retry with device-aware strategy
         let retryCount = 0;
-        const maxRetries = 3;
+        const maxRetries = needsAggressiveRetry ? 7 : (isMobile ? 5 : 3);
         
         const retryCheck = () => {
           retryCount++;
+          console.log(`🍪 Retry ${retryCount}/${maxRetries} (device: ${isMobile ? 'mobile' : 'desktop'}, aggressive: ${needsAggressiveRetry})`);
+          
           try {
             const { hasConsent, expired, preferences: savedPreferences, isRecentConsent } = checkConsentStatus();
-            console.log(`🍪 Retry ${retryCount}: Consent check result:`, { hasConsent, expired, isRecentConsent });
+            console.log(`🍪 Retry ${retryCount}: Consent check result:`, { hasConsent, expired, isRecentConsent, deviceInfo });
             
             if (hasConsent && !expired) {
               setPreferences(savedPreferences);
@@ -246,17 +363,58 @@ const CookieConsent = () => {
             setTimeout(() => setAnimateIn(true), 50);
             setIsInitialized(true);
           } else {
-            // Try again after a longer delay
-            setTimeout(retryCheck, 500 * retryCount);
+            // Progressive delay strategy based on device type and cache risks
+            let retryDelay = 500 * retryCount; // Base delay
+            
+            if (isMobile) {
+              retryDelay = 1000 * retryCount; // Longer for mobile
+            }
+            
+            if (cacheRisks.iosSafari) {
+              retryDelay = Math.max(retryDelay, 1500 * retryCount); // Even longer for iOS Safari
+            }
+            
+            if (cacheRisks.privateMode) {
+              retryDelay = Math.max(retryDelay, 2000 * retryCount); // Longest for private mode
+            }
+            
+            if (cacheRisks.versionMismatch) {
+              retryDelay = Math.max(retryDelay, 1200 * retryCount); // Extra delay for version mismatches
+            }
+            
+            console.log(`🍪 Scheduling retry ${retryCount + 1} in ${retryDelay}ms (cache risks:`, Object.keys(cacheRisks).filter(k => cacheRisks[k]).join(', '), ')');
+            setTimeout(retryCheck, retryDelay);
           }
         };
         
-        setTimeout(retryCheck, 500);
+        const initialRetryDelay = isMobile ? (cacheRisks.iosSafari ? 1500 : 1000) : 500;
+        setTimeout(retryCheck, initialRetryDelay);
       }
     };
 
-    // Use a small timeout to ensure localStorage is accessible after redirects
-    const initTimer = setTimeout(checkAndInitialize, 300);
+    // Use device-aware initialization timeout
+    let initDelay = 300; // Default desktop
+    
+    if (isMobile) {
+      initDelay = 1000; // Standard mobile
+      
+      if (cacheRisks.iosSafari) {
+        initDelay = 1500; // iOS Safari needs more time
+      }
+      
+      if (cacheRisks.privateMode) {
+        initDelay = 2000; // Private mode needs even more time
+      }
+      
+      if (cacheRisks.versionMismatch) {
+        initDelay = Math.max(initDelay, 1200); // Version mismatch needs extra time
+      }
+    } else if (cacheRisks.versionMismatch) {
+      initDelay = 800; // Even desktop needs more time for version mismatches
+    }
+    
+    console.log(`🍪 Starting initialization with ${initDelay}ms delay for device type:`, deviceInfo);
+    const initTimer = setTimeout(checkAndInitialize, initDelay);
     return () => clearTimeout(initTimer);
   }, []); // Empty dependency array to run only once on mount
 
