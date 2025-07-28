@@ -19,7 +19,13 @@
       }
     },
     {
-      "route": "/*.{js,css,woff,woff2,ttf}",
+      "route": "/*.{js,css}",
+      "headers": {
+        "Cache-Control": "public, max-age=300, must-revalidate"
+      }
+    },
+    {
+      "route": "/*.{woff,woff2,ttf}",
       "headers": {
         "Cache-Control": "public, max-age=3600, must-revalidate"
       }

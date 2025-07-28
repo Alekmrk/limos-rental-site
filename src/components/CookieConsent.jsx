@@ -102,18 +102,30 @@ const CookieConsent = () => {
       }
       
       // Check for potential app version cache issues
-      const appVersion = '2024.01.15'; // Update this when making significant cookie changes
+      const appVersion = '2025.07.28.001'; // Update this when making significant cookie changes
       const lastKnownVersion = localStorage.getItem('app-version');
       const isVersionMismatch = lastKnownVersion && lastKnownVersion !== appVersion;
       
       if (isVersionMismatch) {
         console.log('🍪 App version mismatch detected - may have cached JS:', { lastKnownVersion, appVersion });
         cacheRisks.versionMismatch = true;
+        
+        // For mobile browsers with old cached JS, try to force a refresh
+        if (detectedAsMobile && lastKnownVersion && lastKnownVersion < '2025.07.28') {
+          console.warn('🍪 Mobile device with significantly old cached JavaScript detected');
+          console.warn('🍪 Recommend manual refresh: Ctrl+F5 or Cmd+Shift+R');
+          
+          // Add more aggressive detection flag
+          cacheRisks.criticalVersionMismatch = true;
+        }
       }
       
       // Update version
       try {
         localStorage.setItem('app-version', appVersion);
+        
+        // Add a runtime marker to detect if we're running the latest code
+        localStorage.setItem('cookie-runtime-marker', 'enhanced-mobile-v1');
       } catch (e) {
         console.warn('🍪 Could not update app version in localStorage');
       }
@@ -140,7 +152,7 @@ const CookieConsent = () => {
         isAndroid,
         cacheRisks,
         // Suggest more aggressive retry strategy for high-risk devices
-        needsAggressiveRetry: cacheRisks.iosSafari || cacheRisks.androidMemoryOptimization || cacheRisks.lowMemoryDevice || cacheRisks.versionMismatch
+        needsAggressiveRetry: cacheRisks.iosSafari || cacheRisks.androidMemoryOptimization || cacheRisks.lowMemoryDevice || cacheRisks.versionMismatch || cacheRisks.criticalVersionMismatch
       };
     } catch (error) {
       console.error('Error in mobile/cache detection:', error);
@@ -295,6 +307,24 @@ const CookieConsent = () => {
     const { isMobile, isIOS, isAndroid, cacheRisks, needsAggressiveRetry } = deviceInfo;
     
     console.log('🍪 Initializing cookie consent with device info:', deviceInfo);
+    
+    // Special diagnostic for mobile cache issues
+    if (isMobile) {
+      const isFromStripeRedirect = document.referrer.includes('stripe') || window.location.search.includes('payment_success');
+      const runtimeMarker = localStorage.getItem('cookie-runtime-marker');
+      
+      console.log('🍪 Mobile diagnostic:', {
+        isFromStripeRedirect,
+        runtimeMarker,
+        hasOldMarker: runtimeMarker && runtimeMarker !== 'enhanced-mobile-v1',
+        referrer: document.referrer,
+        searchParams: window.location.search
+      });
+      
+      if (isFromStripeRedirect && !runtimeMarker) {
+        console.warn('🍪 Mobile user returning from Stripe with no runtime marker - likely cached JS');
+      }
+    }
 
     // Add a small delay to ensure localStorage is fully available after page load/redirect
     const checkAndInitialize = () => {
@@ -382,6 +412,10 @@ const CookieConsent = () => {
               retryDelay = Math.max(retryDelay, 1200 * retryCount); // Extra delay for version mismatches
             }
             
+            if (cacheRisks.criticalVersionMismatch) {
+              retryDelay = Math.max(retryDelay, 2500 * retryCount); // Much longer delay for critical mismatches
+            }
+            
             console.log(`🍪 Scheduling retry ${retryCount + 1} in ${retryDelay}ms (cache risks:`, Object.keys(cacheRisks).filter(k => cacheRisks[k]).join(', '), ')');
             setTimeout(retryCheck, retryDelay);
           }
@@ -409,8 +443,14 @@ const CookieConsent = () => {
       if (cacheRisks.versionMismatch) {
         initDelay = Math.max(initDelay, 1200); // Version mismatch needs extra time
       }
+      
+      if (cacheRisks.criticalVersionMismatch) {
+        initDelay = Math.max(initDelay, 2500); // Critical mismatch needs much more time
+      }
     } else if (cacheRisks.versionMismatch) {
       initDelay = 800; // Even desktop needs more time for version mismatches
+    } else if (cacheRisks.criticalVersionMismatch) {
+      initDelay = 1500; // Desktop critical mismatch
     }
     
     console.log(`🍪 Starting initialization with ${initDelay}ms delay for device type:`, deviceInfo);
