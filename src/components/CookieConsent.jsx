@@ -117,7 +117,7 @@ const CookieConsent = () => {
   }, []);
 
   // Check consent status and expiration
-  const checkConsentStatus = useCallback(() => {
+  const checkConsentStatus = () => {
     try {
       const consent = localStorage.getItem('cookie-consent');
       const timestamp = localStorage.getItem('cookie-consent-timestamp');
@@ -147,25 +147,47 @@ const CookieConsent = () => {
       localStorage.removeItem('cookie-consent-timestamp');
       return { hasConsent: false, expired: false };
     }
-  }, []);
+  };
 
   useEffect(() => {
-    const { hasConsent, expired, preferences: savedPreferences } = checkConsentStatus();
-    
-    if (!hasConsent) {
-      // Show banner after a short delay
-      const timer = setTimeout(() => {
-        setShowBanner(true);
-        setTimeout(() => setAnimateIn(true), 50);
-      }, 1000);
-      return () => clearTimeout(timer);
-    } else {
-      // Load saved preferences and apply them
-      setPreferences(savedPreferences);
-      initializeTracking(savedPreferences);
-      setShowBanner(false);
-    }
-  }, [checkConsentStatus]);
+    // Add a small delay to ensure localStorage is fully available after page load/redirect
+    const checkAndInitialize = () => {
+      try {
+        // Additional check to ensure localStorage is accessible
+        const testAccess = localStorage.getItem('test');
+        
+        const { hasConsent, expired, preferences: savedPreferences } = checkConsentStatus();
+        
+        console.log('🍪 Cookie consent check:', { hasConsent, expired, preferences: savedPreferences });
+        
+        if (!hasConsent) {
+          // Show banner after a short delay
+          const timer = setTimeout(() => {
+            setShowBanner(true);
+            setTimeout(() => setAnimateIn(true), 50);
+          }, 1000);
+          return () => clearTimeout(timer);
+        } else {
+          // Load saved preferences and apply them
+          setPreferences(savedPreferences);
+          initializeTracking(savedPreferences);
+          setShowBanner(false);
+        }
+      } catch (error) {
+        console.error('Error accessing localStorage during consent check:', error);
+        // If localStorage is not accessible, show the banner as fallback
+        const timer = setTimeout(() => {
+          setShowBanner(true);
+          setTimeout(() => setAnimateIn(true), 50);
+        }, 1000);
+        return () => clearTimeout(timer);
+      }
+    };
+
+    // Use a small timeout to ensure localStorage is accessible after redirects
+    const initTimer = setTimeout(checkAndInitialize, 100);
+    return () => clearTimeout(initTimer);
+  }, []); // Empty dependency array to run only once on mount
 
   const initializeTracking = useCallback((prefs) => {
     // Clean up cookies for disabled categories first
