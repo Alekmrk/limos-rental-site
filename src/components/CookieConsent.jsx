@@ -54,6 +54,7 @@ const CookieConsent = () => {
   const [showBanner, setShowBanner] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const [animateIn, setAnimateIn] = useState(false);
+  const [isInitialized, setIsInitialized] = useState(false);
   // GDPR Compliant: Default all non-essential to false
   const [preferences, setPreferences] = useState({
     essential: true, // Always true, can't be disabled
@@ -119,32 +120,64 @@ const CookieConsent = () => {
   // Check consent status and expiration
   const checkConsentStatus = () => {
     try {
-      const consent = localStorage.getItem('cookie-consent');
-      const timestamp = localStorage.getItem('cookie-consent-timestamp');
-      
-      if (!consent || !timestamp) {
+      // Double-check localStorage availability
+      if (typeof localStorage === 'undefined' || !localStorage) {
+        console.warn('🍪 localStorage not available');
         return { hasConsent: false, expired: false };
       }
 
-      // Check if consent is older than 12 months (GDPR requirement)
+      const consent = localStorage.getItem('cookie-consent');
+      const timestamp = localStorage.getItem('cookie-consent-timestamp');
+      
+      console.log('🍪 Raw localStorage values:', { consent, timestamp });
+      
+      if (!consent || !timestamp) {
+        console.log('🍪 No consent or timestamp found in localStorage');
+        return { hasConsent: false, expired: false };
+      }
+
+      // Check if consent was given very recently (within last 5 minutes)
+      // This helps prevent re-showing banner after redirects from payment processors
       const consentDate = new Date(timestamp);
       const now = new Date();
+      const minutesOld = (now.getTime() - consentDate.getTime()) / (1000 * 60);
+      
+      console.log('🍪 Consent age in minutes:', minutesOld);
+
+      // Check if consent is older than 12 months (GDPR requirement)
       const monthsOld = (now.getTime() - consentDate.getTime()) / (1000 * 60 * 60 * 24 * 30);
+      
+      console.log('🍪 Consent age in months:', monthsOld);
       
       if (monthsOld > 12) {
         // Consent expired, clear old data
+        console.log('🍪 Consent expired, clearing data');
         localStorage.removeItem('cookie-consent');
         localStorage.removeItem('cookie-consent-timestamp');
         return { hasConsent: false, expired: true };
       }
 
       const savedPreferences = JSON.parse(consent);
-      return { hasConsent: true, expired: false, preferences: savedPreferences };
+      console.log('🍪 Valid consent found:', savedPreferences);
+      
+      // If consent was given very recently, it's likely from a redirect scenario
+      const isRecentConsent = minutesOld < 5;
+      
+      return { 
+        hasConsent: true, 
+        expired: false, 
+        preferences: savedPreferences,
+        isRecentConsent 
+      };
     } catch (error) {
       console.error('Error checking consent status:', error);
       // Clear corrupted data
-      localStorage.removeItem('cookie-consent');
-      localStorage.removeItem('cookie-consent-timestamp');
+      try {
+        localStorage.removeItem('cookie-consent');
+        localStorage.removeItem('cookie-consent-timestamp');
+      } catch (clearError) {
+        console.error('Error clearing corrupted localStorage:', clearError);
+      }
       return { hasConsent: false, expired: false };
     }
   };
@@ -156,36 +189,74 @@ const CookieConsent = () => {
         // Additional check to ensure localStorage is accessible
         const testAccess = localStorage.getItem('test');
         
-        const { hasConsent, expired, preferences: savedPreferences } = checkConsentStatus();
+        const { hasConsent, expired, preferences: savedPreferences, isRecentConsent } = checkConsentStatus();
         
-        console.log('🍪 Cookie consent check:', { hasConsent, expired, preferences: savedPreferences });
+        console.log('🍪 Cookie consent check:', { hasConsent, expired, preferences: savedPreferences, isRecentConsent });
         
-        if (!hasConsent) {
-          // Show banner after a short delay
+        if (!hasConsent || expired) {
+          // Show banner after a short delay, but only if we really don't have consent
+          console.log('🍪 No valid consent found, showing banner');
           const timer = setTimeout(() => {
             setShowBanner(true);
             setTimeout(() => setAnimateIn(true), 50);
           }, 1000);
+          setIsInitialized(true);
           return () => clearTimeout(timer);
         } else {
           // Load saved preferences and apply them
+          console.log('🍪 Valid consent found, hiding banner');
           setPreferences(savedPreferences);
           initializeTracking(savedPreferences);
           setShowBanner(false);
+          setIsInitialized(true);
+          
+          // If consent is very recent, it's likely from a redirect - don't show banner
+          if (isRecentConsent) {
+            console.log('🍪 Recent consent detected - likely from redirect, ensuring banner stays hidden');
+          }
         }
       } catch (error) {
         console.error('Error accessing localStorage during consent check:', error);
-        // If localStorage is not accessible, show the banner as fallback
-        const timer = setTimeout(() => {
-          setShowBanner(true);
-          setTimeout(() => setAnimateIn(true), 50);
-        }, 1000);
-        return () => clearTimeout(timer);
+        
+        // Retry after a longer delay in case of localStorage access issues after redirect
+        let retryCount = 0;
+        const maxRetries = 3;
+        
+        const retryCheck = () => {
+          retryCount++;
+          try {
+            const { hasConsent, expired, preferences: savedPreferences, isRecentConsent } = checkConsentStatus();
+            console.log(`🍪 Retry ${retryCount}: Consent check result:`, { hasConsent, expired, isRecentConsent });
+            
+            if (hasConsent && !expired) {
+              setPreferences(savedPreferences);
+              initializeTracking(savedPreferences);
+              setShowBanner(false);
+              setIsInitialized(true);
+              return;
+            }
+          } catch (retryError) {
+            console.error(`🍪 Retry ${retryCount} failed:`, retryError);
+          }
+          
+          // If we've exhausted retries or still no consent, show the banner
+          if (retryCount >= maxRetries) {
+            console.log('🍪 Max retries reached, showing banner as fallback');
+            setShowBanner(true);
+            setTimeout(() => setAnimateIn(true), 50);
+            setIsInitialized(true);
+          } else {
+            // Try again after a longer delay
+            setTimeout(retryCheck, 500 * retryCount);
+          }
+        };
+        
+        setTimeout(retryCheck, 500);
       }
     };
 
     // Use a small timeout to ensure localStorage is accessible after redirects
-    const initTimer = setTimeout(checkAndInitialize, 100);
+    const initTimer = setTimeout(checkAndInitialize, 300);
     return () => clearTimeout(initTimer);
   }, []); // Empty dependency array to run only once on mount
 
@@ -314,6 +385,11 @@ const CookieConsent = () => {
       delete window.showCookieSettings;
     };
   }, [showCookieSettings]);
+
+  if (!showBanner && !isInitialized) {
+    // Don't render anything until we've determined consent status
+    return null;
+  }
 
   if (!showBanner) return null;
 
