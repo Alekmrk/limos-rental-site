@@ -161,7 +161,7 @@ const CookieConsent = () => {
       console.log('🍪 Valid consent found:', savedPreferences);
       
       // If consent was given very recently, it's likely from a redirect scenario
-      const isRecentConsent = minutesOld < 5;
+      const isRecentConsent = minutesOld < 0.1;
       
       return { 
         hasConsent: true, 
