@@ -1,6 +1,7 @@
 import React, { useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import ReservationContext from "../../contexts/ReservationContext";
+import usePaymentFlowCookieSuppression from "../../hooks/usePaymentFlowCookieSuppression";
 
 const API_BASE_URL = import.meta.env.PROD 
   ? 'https://api.elitewaylimo.ch'
@@ -9,6 +10,9 @@ const API_BASE_URL = import.meta.env.PROD
 const PaymentSuccess = () => {
   const navigate = useNavigate();
   const { handleInput } = useContext(ReservationContext);
+  
+  // Suppress cookie consent during payment success flow
+  const { clearSuppression } = usePaymentFlowCookieSuppression(true, 45000); // 45 seconds
 
   useEffect(() => {
     const verifySession = async () => {
@@ -18,6 +22,7 @@ const PaymentSuccess = () => {
         
         if (!sessionId) {
           console.error('No session ID found');
+          clearSuppression();
           navigate('/payment');
           return;
         }
@@ -27,6 +32,7 @@ const PaymentSuccess = () => {
 
         if (!data.success) {
           console.error('Session verification failed:', data.error);
+          clearSuppression();
           navigate('/payment');
           return;
         }
@@ -42,16 +48,17 @@ const PaymentSuccess = () => {
           });
         }
 
-        // Navigate to thank you page
+        // Navigate to thank you page (suppression will be cleared by the hook timeout)
         navigate('/thankyou', { replace: true });
       } catch (error) {
         console.error('Error verifying payment:', error);
+        clearSuppression();
         navigate('/payment');
       }
     };
 
     verifySession();
-  }, [navigate, handleInput]);
+  }, [navigate, handleInput, clearSuppression]);
 
   return (
     <div className="container-default mt-28 text-center">

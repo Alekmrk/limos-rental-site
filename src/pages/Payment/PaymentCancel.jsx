@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useRef } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import Button from "../../components/Button";
 import ReservationContext from "../../contexts/ReservationContext";
+import usePaymentFlowCookieSuppression from "../../hooks/usePaymentFlowCookieSuppression";
 
 const API_BASE_URL = import.meta.env.PROD 
   ? 'https://api.elitewaylimo.ch'
@@ -14,6 +15,9 @@ const PaymentCancel = () => {
   const hasSetRetryFlag = useRef(false);
   const hasRestoredSession = useRef(false);
   const hasSentCancelEmail = useRef(false);
+  
+  // Suppress cookie consent during payment cancel flow
+  const { clearSuppression } = usePaymentFlowCookieSuppression(true, 30000); // 30 seconds
 
   // Send cancellation notification to admin
   const sendCancellationNotification = async (reservationData) => {
@@ -59,6 +63,8 @@ const PaymentCancel = () => {
         if (reservationInfo?.email) {
           await sendCancellationNotification(reservationInfo);
         }
+        // Clear suppression if no session to restore
+        clearSuppression();
         return;
       }
 
@@ -103,6 +109,11 @@ const PaymentCancel = () => {
         if (reservationInfo?.email) {
           await sendCancellationNotification(reservationInfo);
         }
+      } finally {
+        // Clear suppression after restoration attempt
+        setTimeout(() => {
+          clearSuppression();
+        }, 2000); // Short delay to ensure page is fully loaded
       }
     };
 
@@ -118,7 +129,7 @@ const PaymentCancel = () => {
         }
       });
     }
-  }, [searchParams, handleInput, reservationInfo]);
+  }, [searchParams, handleInput, reservationInfo, clearSuppression]);
 
   const handleRetry = () => {
     // Clear any previous payment details and errors

@@ -7,6 +7,7 @@ import ProgressBar from "../../components/ProgressBar";
 import { calculatePrice, formatPrice } from "../../services/PriceCalculationService";
 import { sendPaymentConfirmation, sendCryptoPaymentConfirmation } from "../../services/EmailService";
 import StripePayment from '../../components/StripePayment';
+import usePaymentFlowCookieSuppression from '../../hooks/usePaymentFlowCookieSuppression';
 
 const PaymentPage = ({ scrollUp }) => {
   const navigate = useNavigate();
@@ -19,6 +20,9 @@ const PaymentPage = ({ scrollUp }) => {
   const [errorMessage, setErrorMessage] = useState('');
   const [retryCount, setRetryCount] = useState(0);
   const maxRetries = 3;
+
+  // Suppress cookie consent during payment flow
+  const { clearSuppression } = usePaymentFlowCookieSuppression(true, 60000); // 60 seconds
 
   useEffect(() => {
     // Skip validation if user is retrying payment from cancel page
@@ -47,6 +51,8 @@ const PaymentPage = ({ scrollUp }) => {
       navigate('/customer-details');
     }
   }, [reservationInfo, navigate, handleInput]);
+
+  // Remove the separate useEffect for cookie suppression since we're using the hook now
 
   useEffect(() => {
     scrollUp();

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 
 // Cookie consent hook for easy access throughout the app
 const useCookieConsent = () => {
@@ -9,52 +9,83 @@ const useCookieConsent = () => {
     functional: false
   });
   const [hasConsented, setHasConsented] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    // Load consent from localStorage
+  // Load consent from storage
+  const loadConsent = useCallback(() => {
     try {
       const savedConsent = localStorage.getItem('cookie-consent');
       const timestamp = localStorage.getItem('cookie-consent-timestamp');
       
       if (savedConsent && timestamp) {
-        const parsedConsent = JSON.parse(savedConsent);
-        setConsent(parsedConsent);
-        setHasConsented(true);
+        // Check if consent is still valid (not older than 12 months)
+        const consentDate = new Date(timestamp);
+        const now = new Date();
+        const monthsOld = (now.getTime() - consentDate.getTime()) / (1000 * 60 * 60 * 24 * 30);
+        
+        if (monthsOld <= 12) {
+          const parsedConsent = JSON.parse(savedConsent);
+          setConsent(parsedConsent);
+          setHasConsented(true);
+          return true;
+        } else {
+          // Consent expired
+          localStorage.removeItem('cookie-consent');
+          localStorage.removeItem('cookie-consent-timestamp');
+        }
       }
+      return false;
     } catch (error) {
       console.error('Error loading cookie consent:', error);
+      return false;
     }
+  }, []);
 
-    // Listen for consent updates
+  useEffect(() => {
+    // Initial load with small delay to ensure localStorage is available
+    const timer = setTimeout(() => {
+      loadConsent();
+      setIsLoading(false);
+    }, 50);
+
+    // Listen for consent updates in other tabs/windows
     const handleStorageChange = (e) => {
       if (e.key === 'cookie-consent') {
-        try {
-          const newConsent = JSON.parse(e.newValue);
-          setConsent(newConsent);
-          setHasConsented(true);
-        } catch (error) {
-          console.error('Error parsing consent update:', error);
-        }
+        console.log('🍪 Cookie consent updated in another tab');
+        loadConsent();
       }
     };
 
+    // Listen for consent updates in the same tab
+    const handleConsentUpdate = () => {
+      console.log('🍪 Cookie consent updated in current tab');
+      loadConsent();
+    };
+
     window.addEventListener('storage', handleStorageChange);
-    return () => window.removeEventListener('storage', handleStorageChange);
-  }, []);
+    window.addEventListener('cookieConsentUpdated', handleConsentUpdate);
+    
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener('cookieConsentUpdated', handleConsentUpdate);
+    };
+  }, [loadConsent]);
 
-  const canUse = (category) => {
+  const canUse = useCallback((category) => {
     return consent[category] === true;
-  };
+  }, [consent]);
 
-  const showSettings = () => {
+  const showSettings = useCallback(() => {
     if (window.showCookieSettings) {
       window.showCookieSettings();
     }
-  };
+  }, []);
 
   return {
     consent,
     hasConsented,
+    isLoading,
     canUse,
     showSettings
   };

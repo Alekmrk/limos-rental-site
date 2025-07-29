@@ -54,6 +54,8 @@ const CookieConsent = () => {
   const [showBanner, setShowBanner] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const [animateIn, setAnimateIn] = useState(false);
+  const [isInitialized, setIsInitialized] = useState(false);
+  const [consentChecked, setConsentChecked] = useState(false);
   // GDPR Compliant: Default all non-essential to false
   const [preferences, setPreferences] = useState({
     essential: true, // Always true, can't be disabled
@@ -116,14 +118,15 @@ const CookieConsent = () => {
     document.head.appendChild(style);
   }, []);
 
-  // Check consent status and expiration
+  // Enhanced consent status checking with better persistence
   const checkConsentStatus = useCallback(() => {
     try {
       const consent = localStorage.getItem('cookie-consent');
       const timestamp = localStorage.getItem('cookie-consent-timestamp');
+      const lastHidden = localStorage.getItem('cookie-consent-last-hidden');
       
       if (!consent || !timestamp) {
-        return { hasConsent: false, expired: false };
+        return { hasConsent: false, expired: false, lastHidden: lastHidden };
       }
 
       // Check if consent is older than 12 months (GDPR requirement)
@@ -132,40 +135,139 @@ const CookieConsent = () => {
       const monthsOld = (now.getTime() - consentDate.getTime()) / (1000 * 60 * 60 * 24 * 30);
       
       if (monthsOld > 12) {
-        // Consent expired, clear old data
+        // Consent expired, clear old data but keep last hidden timestamp
         localStorage.removeItem('cookie-consent');
         localStorage.removeItem('cookie-consent-timestamp');
-        return { hasConsent: false, expired: true };
+        return { hasConsent: false, expired: true, lastHidden: lastHidden };
       }
 
       const savedPreferences = JSON.parse(consent);
-      return { hasConsent: true, expired: false, preferences: savedPreferences };
+      return { hasConsent: true, expired: false, preferences: savedPreferences, lastHidden: lastHidden };
     } catch (error) {
       console.error('Error checking consent status:', error);
-      // Clear corrupted data
+      // Clear corrupted data but preserve last hidden timestamp
+      const lastHidden = localStorage.getItem('cookie-consent-last-hidden');
       localStorage.removeItem('cookie-consent');
       localStorage.removeItem('cookie-consent-timestamp');
-      return { hasConsent: false, expired: false };
+      return { hasConsent: false, expired: false, lastHidden: lastHidden };
     }
-  }, []);
+  }, []); // Empty dependency array to prevent recreation
 
+  // Enhanced initialization with better persistence and redirect handling
   useEffect(() => {
-    const { hasConsent, expired, preferences: savedPreferences } = checkConsentStatus();
+    // Prevent multiple initialization runs
+    if (isInitialized || consentChecked) return;
     
-    if (!hasConsent) {
-      // Show banner after a short delay
-      const timer = setTimeout(() => {
-        setShowBanner(true);
-        setTimeout(() => setAnimateIn(true), 50);
-      }, 1000);
-      return () => clearTimeout(timer);
-    } else {
-      // Load saved preferences and apply them
-      setPreferences(savedPreferences);
-      initializeTracking(savedPreferences);
-      setShowBanner(false);
-    }
-  }, [checkConsentStatus]);
+    // Add a small delay to ensure localStorage is available and navigation is complete
+    const initTimer = setTimeout(() => {
+      // Multiple checks for consent suppression/recent setting
+      const justSet = sessionStorage.getItem('cookie-consent-just-set');
+      const tempMarker = localStorage.getItem('cookie-consent-temp-marker');
+      const suppressedThisSession = sessionStorage.getItem('cookie-consent-suppressed');
+      const lastSetTimestamp = localStorage.getItem('cookie-consent-timestamp');
+      const currentTime = new Date().getTime();
+      
+      // Check if consent was set within the last 5 minutes (more robust)
+      const recentlySet = lastSetTimestamp && 
+        (currentTime - new Date(lastSetTimestamp).getTime()) < (5 * 60 * 1000);
+      
+      // Check temp marker for payment flow returns
+      let tempMarkerRecent = false;
+      if (tempMarker) {
+        try {
+          const marker = JSON.parse(tempMarker);
+          const markerTime = new Date(marker.timestamp).getTime();
+          tempMarkerRecent = (currentTime - markerTime) < (10 * 60 * 1000); // 10 minutes
+        } catch (e) {
+          localStorage.removeItem('cookie-consent-temp-marker');
+        }
+      }
+      
+      if (justSet || recentlySet || tempMarkerRecent) {
+        console.log('🍪 Cookie consent was recently set, skipping banner', {
+          sessionMarker: !!justSet,
+          recentlySet: recentlySet,
+          tempMarkerRecent: tempMarkerRecent,
+          timeSinceSet: lastSetTimestamp ? Math.round((currentTime - new Date(lastSetTimestamp).getTime()) / 60000) + ' minutes' : 'N/A'
+        });
+        setConsentChecked(true);
+        setIsInitialized(true);
+        return;
+      }
+      
+      // Check for suppression in current session (for payment flows)
+      if (suppressedThisSession) {
+        console.log('🍪 Cookie consent suppressed for this session (payment flow)');
+        setConsentChecked(true);
+        setIsInitialized(true);
+        return;
+      }
+      
+      const { hasConsent, expired, preferences: savedPreferences, lastHidden } = checkConsentStatus();
+      
+      console.log('🍪 Cookie consent check:', { 
+        hasConsent, 
+        expired, 
+        savedPreferences,
+        lastHidden: lastHidden ? new Date(lastHidden).toLocaleString() : 'Never'
+      });
+      
+      setConsentChecked(true);
+      
+      if (!hasConsent) {
+        // Check if user recently dismissed banner (within last hour) to prevent spam
+        if (lastHidden) {
+          const timeSinceHidden = currentTime - new Date(lastHidden).getTime();
+          const oneHour = 60 * 60 * 1000;
+          
+          if (timeSinceHidden < oneHour) {
+            console.log('🍪 Banner was recently hidden, waiting before showing again');
+            setIsInitialized(true);
+            return;
+          }
+        }
+        
+        // Show banner after additional delay to ensure page is fully loaded
+        const bannerTimer = setTimeout(() => {
+          console.log('🍪 Showing cookie banner');
+          setShowBanner(true);
+          setTimeout(() => setAnimateIn(true), 50);
+        }, 1000); // Increased delay for external redirects and slow networks
+        
+        setIsInitialized(true);
+        return () => clearTimeout(bannerTimer);
+      } else {
+        // Load saved preferences and apply them
+        console.log('🍪 Loading saved cookie preferences');
+        setPreferences(savedPreferences);
+        initializeTracking(savedPreferences);
+        setShowBanner(false);
+        setIsInitialized(true);
+      }
+    }, 300); // Increased delay to handle redirects better
+
+    return () => clearTimeout(initTimer);
+  }, [isInitialized, consentChecked, checkConsentStatus, initializeTracking]);
+
+  // Listen for storage changes (when user updates preferences in another tab)
+  useEffect(() => {
+    const handleStorageChange = (e) => {
+      if (e.key === 'cookie-consent' && isInitialized) {
+        console.log('🍪 Cookie consent changed in another tab');
+        const { hasConsent, preferences: savedPreferences } = checkConsentStatus();
+        
+        if (hasConsent && savedPreferences) {
+          setPreferences(savedPreferences);
+          initializeTracking(savedPreferences);
+          setShowBanner(false);
+          setShowSettings(false);
+        }
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
+  }, [isInitialized, checkConsentStatus, initializeTracking]);
 
   const initializeTracking = useCallback((prefs) => {
     // Clean up cookies for disabled categories first
@@ -233,9 +335,31 @@ const CookieConsent = () => {
 
   const savePreferences = useCallback((newPreferences) => {
     try {
+      console.log('🍪 Saving cookie preferences:', newPreferences);
       setPreferences(newPreferences);
       localStorage.setItem('cookie-consent', JSON.stringify(newPreferences));
       localStorage.setItem('cookie-consent-timestamp', new Date().toISOString());
+      
+      // Set multiple markers to prevent re-showing across different scenarios
+      sessionStorage.setItem('cookie-consent-just-set', 'true');
+      
+      // Also set a temporary localStorage marker for payment redirects
+      const tempMarker = {
+        timestamp: new Date().toISOString(),
+        preferences: newPreferences
+      };
+      localStorage.setItem('cookie-consent-temp-marker', JSON.stringify(tempMarker));
+      
+      // Remove temp marker after 10 minutes
+      setTimeout(() => {
+        localStorage.removeItem('cookie-consent-temp-marker');
+      }, 10 * 60 * 1000);
+      
+      // Dispatch custom event to notify other components
+      window.dispatchEvent(new CustomEvent('cookieConsentUpdated', {
+        detail: newPreferences
+      }));
+      
       initializeTracking(newPreferences);
       
       // Hide banner regardless of choices (GDPR compliant)
@@ -271,6 +395,14 @@ const CookieConsent = () => {
     savePreferences(essentialOnly);
   };
 
+  // Handle banner dismissal without setting preferences (for later decision)
+  const handleDismissBanner = () => {
+    console.log('🍪 User dismissed cookie banner without setting preferences');
+    localStorage.setItem('cookie-consent-last-hidden', new Date().toISOString());
+    setShowBanner(false);
+    setAnimateIn(false);
+  };
+
   const handlePreferenceChange = (category) => {
     if (category === 'essential') return;
     
@@ -303,6 +435,17 @@ const CookieConsent = () => {
       }`}>
         <div className="container-default max-w-6xl mx-auto">
           <div className="flex flex-col lg:flex-row items-start lg:items-center gap-4">
+            {/* Close button */}
+            <button
+              onClick={handleDismissBanner}
+              className="absolute top-3 right-3 text-gray-500 hover:text-gray-700 transition-colors p-1 rounded-full hover:bg-gray-200/50 lg:hidden"
+              aria-label="Dismiss cookie banner"
+            >
+              <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+            
             {/* Content */}
             <div className="flex-1">
               <div className="flex items-center gap-3 mb-2">
@@ -331,10 +474,26 @@ const CookieConsent = () => {
                 Customize Settings
               </button>
               <button
+                onClick={handleRejectAll}
+                className="px-6 py-3 text-sm border-2 border-gray-400/50 text-gray-700 hover:text-gray-800 hover:border-gray-500/60 hover:bg-gray-100/50 rounded-lg transition-all duration-300 font-medium backdrop-blur-sm hidden lg:block"
+              >
+                Essential Only
+              </button>
+              <button
                 onClick={handleAcceptAll}
                 className="px-8 py-3 text-sm bg-gradient-to-r from-gold to-gold/90 text-gray-800 font-semibold hover:from-gold/90 hover:to-gold/80 rounded-lg transition-all duration-300 shadow-lg pulse-glow"
               >
                 Accept All Cookies
+              </button>
+              {/* Dismiss button for desktop */}
+              <button
+                onClick={handleDismissBanner}
+                className="text-gray-500 hover:text-gray-700 transition-colors p-2 rounded-full hover:bg-gray-200/50 hidden lg:block"
+                aria-label="Dismiss cookie banner"
+              >
+                <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
               </button>
             </div>
           </div>

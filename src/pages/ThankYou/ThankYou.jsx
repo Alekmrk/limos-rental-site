@@ -87,6 +87,9 @@ const ThankYou = ({ scrollUp }) => {
   useEffect(() => {
     // Only clear if we have valid reservation data (to avoid clearing on direct access)
     if (reservationInfo.email && (reservationInfo.paymentDetails || reservationInfo.isSpecialRequest)) {
+      // Clear any payment flow cookie suppression since we're done
+      sessionStorage.removeItem('cookie-consent-suppressed');
+      
       const timer = setTimeout(() => {
         console.log('✅ Booking completed successfully - clearing reservation data');
         clearReservation();
