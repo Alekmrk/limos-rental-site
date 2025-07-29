@@ -13,23 +13,34 @@ const PaymentSuccess = () => {
   useEffect(() => {
     const verifySession = async () => {
       try {
+        console.log('🔄 PaymentSuccess: Starting session verification...');
+        console.log('🌐 Current URL:', window.location.href);
+        console.log('📖 Referrer:', document.referrer);
+        
         const urlParams = new URLSearchParams(window.location.search);
         const sessionId = urlParams.get('session_id');
         
         if (!sessionId) {
-          console.error('No session ID found');
+          console.error('❌ No session ID found in URL parameters');
+          console.log('🔍 Available URL params:', Array.from(urlParams.entries()));
           navigate('/payment');
           return;
         }
 
+        console.log('✅ Session ID found:', sessionId);
+        
         const response = await fetch(`${API_BASE_URL}/api/stripe/verify-session/${sessionId}`);
         const data = await response.json();
 
+        console.log('📥 Stripe verification response:', data);
+
         if (!data.success) {
-          console.error('Session verification failed:', data.error);
+          console.error('❌ Session verification failed:', data.error);
           navigate('/payment');
           return;
         }
+
+        console.log('✅ Session verification successful');
 
         // Update the entire reservation info with the data from backend
         // IMPORTANT: Temporarily pause localStorage operations to prevent cookie consent conflicts
@@ -64,15 +75,35 @@ const PaymentSuccess = () => {
 
         const { reservationInfo } = data;
         console.log('🔄 Updating reservation context after payment success');
+        console.log('📦 Reservation data from Stripe:', reservationInfo);
         
+        // Set session flags to prevent validation redirects during context updates
+        sessionStorage.setItem('payment-redirect-active', 'true');
+        sessionStorage.setItem('skip-validation-redirects', 'true');
+        
+        // Store backup data for recovery
+        sessionStorage.setItem('payment-success-backup', JSON.stringify({
+          ...reservationInfo,
+          sessionId: sessionId,
+          timestamp: Date.now()
+        }));
+        
+        // Update reservation data in context one by one
+        const updatePromises = [];
         for (const key in reservationInfo) {
-          await handleInput({
+          const updatePromise = handleInput({
             target: {
               name: key,
               value: reservationInfo[key]
             }
           });
+          updatePromises.push(updatePromise);
         }
+        
+        // Wait for all context updates to complete
+        console.log('⏳ Waiting for all context updates to complete...');
+        await Promise.all(updatePromises);
+        console.log('✅ All context updates completed');
         
         // Restore localStorage operations and process pending cookie operations
         setTimeout(() => {
@@ -89,16 +120,39 @@ const PaymentSuccess = () => {
           });
           
           console.log('✅ Payment redirect localStorage protection disabled, cookie operations restored');
-        }, 500); // Small delay to ensure context updates complete
-
-        // Navigate to thank you page
-        navigate('/thankyou', { replace: true });
+          
+          // Navigate immediately using window.location for better reliability
+          console.log('🎯 Navigating to thank you page using window.location...');
+          console.log('📍 Current location before navigation:', window.location.pathname);
+          
+          // Set markers for ThankYou page
+          sessionStorage.setItem('from-payment-success', 'true');
+          sessionStorage.setItem('thankyou-direct-access', 'true');
+          
+          // Use window.location for direct navigation (more reliable than React Router during context updates)
+          try {
+            window.location.href = '/thankyou';
+          } catch (navError) {
+            console.error('❌ Navigation error:', navError);
+            // Ultimate fallback
+            window.location.replace('/thankyou');
+          }
+          
+          // Clean up protection flags after navigation
+          setTimeout(() => {
+            sessionStorage.removeItem('payment-redirect-active');
+            sessionStorage.removeItem('skip-validation-redirects');
+            console.log('🧹 Cleaned up payment redirect protection flags');
+          }, 2000);
+        }, 300); // Reduced delay since we're using window.location
       } catch (error) {
-        console.error('Error verifying payment:', error);
+        console.error('❌ Error verifying payment:', error);
+        console.log('🔄 Redirecting to payment page due to error');
         navigate('/payment');
       }
     };
 
+    console.log('🚀 PaymentSuccess component mounted, starting verification...');
     verifySession();
   }, [navigate, handleInput]);
 

@@ -7,7 +7,7 @@ import { DateTime } from 'luxon';
 
 const ThankYou = ({ scrollUp }) => {
   const navigate = useNavigate();
-  const { reservationInfo, clearReservation } = useContext(ReservationContext);
+  const { reservationInfo, clearReservation, handleInput } = useContext(ReservationContext);
   const [emailStatus, setEmailStatus] = useState({
     sent: false,
     error: null
@@ -24,15 +24,68 @@ const ThankYou = ({ scrollUp }) => {
     if (!displayData && reservationInfo.email) {
       console.log('📸 Capturing reservation data for display');
       setDisplayData({ ...reservationInfo }); // Create frozen copy
+    } else if (!displayData || !displayData.email) {
+      // Try to recover from payment success backup if no display data
+      const backup = sessionStorage.getItem('payment-success-backup');
+      if (backup) {
+        try {
+          const backupData = JSON.parse(backup);
+          console.log('🔄 Recovering reservation data from payment backup');
+          setDisplayData(backupData);
+          
+          // Also update context with backup data if it's empty
+          if (!reservationInfo.email && backupData.email) {
+            console.log('📝 Restoring context from backup data');
+            Object.keys(backupData).forEach(key => {
+              if (key !== 'sessionId' && key !== 'timestamp') {
+                handleInput({
+                  target: {
+                    name: key,
+                    value: backupData[key]
+                  }
+                });
+              }
+            });
+          }
+        } catch (error) {
+          console.error('❌ Error parsing payment backup:', error);
+        }
+      }
     }
   }, [reservationInfo, displayData]);
   
   // Log reservation info for debugging
   useEffect(() => {
-    console.log('ThankYou component loaded');
-    console.log('reservationInfo:', reservationInfo);
-    console.log('displayData:', displayData);
-    console.log('Has payment details?', !!reservationInfo.paymentDetails);
+    console.log('🎉 ThankYou component loaded');
+    console.log('📦 reservationInfo:', reservationInfo);
+    console.log('📸 displayData:', displayData);
+    console.log('💳 Has payment details?', !!reservationInfo.paymentDetails);
+    console.log('📧 Has email?', !!reservationInfo.email);
+    console.log('🌐 Current URL:', window.location.href);
+    console.log('📖 Referrer:', document.referrer);
+    
+    // Check if user came from payment success
+    const fromPaymentSuccess = document.referrer.includes('payment-success') || 
+                               sessionStorage.getItem('from-payment-success') === 'true' ||
+                               sessionStorage.getItem('thankyou-direct-access') === 'true';
+    
+    if (fromPaymentSuccess) {
+      console.log('✅ User came from payment success page');
+      // Clean up payment success markers
+      sessionStorage.removeItem('from-payment-success');
+      sessionStorage.removeItem('thankyou-direct-access'); 
+      sessionStorage.removeItem('payment-redirect-active');
+      sessionStorage.removeItem('skip-validation-redirects');
+      console.log('🧹 Cleaned up payment success navigation markers');
+    }
+    
+    // Warn if no valid data
+    if (!reservationInfo.email && !displayData?.email) {
+      console.warn('⚠️ ThankYou page loaded without valid reservation data');
+      console.warn('💡 This could indicate a navigation issue or direct access');
+    } else {
+      console.log('✅ ThankYou page loaded with valid reservation data');
+    }
   }, [reservationInfo, displayData]);
   
   // Send email confirmations when the component mounts

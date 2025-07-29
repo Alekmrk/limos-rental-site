@@ -35,6 +35,15 @@ const VehicleSelection = ({ scrollUp }) => {
 
   // Check if we have the required data from the previous step
   useEffect(() => {
+    // Skip validation if coming from payment success to prevent redirect loops
+    const skipValidation = sessionStorage.getItem('skip-validation-redirects') === 'true' ||
+                          sessionStorage.getItem('payment-redirect-active') === 'true';
+    
+    if (skipValidation) {
+      console.log('🛡️ VehicleSelection: Skipping validation due to payment redirect protection');
+      return;
+    }
+    
     // For special requests, skip vehicle selection
     if (reservationInfo.isSpecialRequest) {
       navigate('/customer-details');

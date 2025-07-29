@@ -35,6 +35,15 @@ const PaymentPage = ({ scrollUp }) => {
       return;
     }
 
+    // Skip validation if coming from payment success to prevent redirect loops
+    const skipValidation = sessionStorage.getItem('skip-validation-redirects') === 'true' ||
+                          sessionStorage.getItem('payment-redirect-active') === 'true';
+    
+    if (skipValidation) {
+      console.log('🛡️ PaymentPage: Skipping validation due to payment redirect protection');
+      return;
+    }
+
     if (!reservationInfo.email ||
         !reservationInfo.pickup ||
         (!reservationInfo.isHourly && !reservationInfo.dropoff) ||

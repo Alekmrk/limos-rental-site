@@ -16,6 +16,15 @@ const CustomerDetails = ({ scrollUp }) => {
 
   // Check if we have the required data from previous steps
   useEffect(() => {
+    // Skip validation if coming from payment success to prevent redirect loops
+    const skipValidation = sessionStorage.getItem('skip-validation-redirects') === 'true' ||
+                          sessionStorage.getItem('payment-redirect-active') === 'true';
+    
+    if (skipValidation) {
+      console.log('🛡️ CustomerDetails: Skipping validation due to payment redirect protection');
+      return;
+    }
+    
     if (reservationInfo.isSpecialRequest) {
       // For special requests, no pre-requirements needed - date and time will be entered here
       return;

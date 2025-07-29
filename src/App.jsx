@@ -18,6 +18,7 @@ import AirportTransfer from "./pages/AirportTransfer/AirportTransfer";
 import DistanceTransfer from "./pages/DistanceTransfer/DistanceTransfer";
 import HourlyTransfer from "./pages/HourlyTransfer/HourlyTransfer";
 import SpecialRequest from "./pages/SpecialRequest/SpecialRequest";
+import DebugOverlay from "./components/DebugOverlay";
 import DavosForum from "./pages/DavosForum/DavosForum";
 import BookingPage from "./pages/BookingPage/BookingPage";
 import BackToTopButton from "./components/BackToTopButton";
@@ -123,6 +124,10 @@ function App() {
       <ContactChannels />
       <CookieConsent />
       <DebugConsole />
+      <DebugOverlay 
+        title="Mobile Debug Console" 
+        enabled={true} 
+      />
     </>
   );
 }
