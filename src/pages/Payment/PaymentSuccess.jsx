@@ -32,7 +32,39 @@ const PaymentSuccess = () => {
         }
 
         // Update the entire reservation info with the data from backend
+        // IMPORTANT: Temporarily pause localStorage operations to prevent cookie consent conflicts
+        const originalSetItem = localStorage.setItem;
+        const originalGetItem = localStorage.getItem;
+        let reservationUpdateInProgress = true;
+        
+        // Create a queue for non-reservation localStorage operations during update
+        const pendingOperations = [];
+        
+        localStorage.setItem = function(key, value) {
+          if (reservationUpdateInProgress && (key.includes('cookie') || key.includes('app-version'))) {
+            // Queue cookie-related operations to prevent conflicts
+            pendingOperations.push({ operation: 'set', key, value });
+            console.log('🍪 Queued localStorage operation during payment redirect:', key);
+            return;
+          }
+          return originalSetItem.call(this, key, value);
+        };
+        
+        localStorage.getItem = function(key) {
+          if (reservationUpdateInProgress && (key.includes('cookie') || key.includes('app-version'))) {
+            // Check pending operations first
+            const pending = pendingOperations.find(op => op.key === key && op.operation === 'set');
+            if (pending) {
+              console.log('🍪 Retrieved queued localStorage value during payment redirect:', key);
+              return pending.value;
+            }
+          }
+          return originalGetItem.call(this, key);
+        };
+
         const { reservationInfo } = data;
+        console.log('🔄 Updating reservation context after payment success');
+        
         for (const key in reservationInfo) {
           await handleInput({
             target: {
@@ -41,6 +73,23 @@ const PaymentSuccess = () => {
             }
           });
         }
+        
+        // Restore localStorage operations and process pending cookie operations
+        setTimeout(() => {
+          reservationUpdateInProgress = false;
+          localStorage.setItem = originalSetItem;
+          localStorage.getItem = originalGetItem;
+          
+          // Process any pending cookie operations
+          pendingOperations.forEach(op => {
+            if (op.operation === 'set') {
+              originalSetItem.call(localStorage, op.key, op.value);
+              console.log('🍪 Processed queued localStorage operation:', op.key);
+            }
+          });
+          
+          console.log('✅ Payment redirect localStorage protection disabled, cookie operations restored');
+        }, 500); // Small delay to ensure context updates complete
 
         // Navigate to thank you page
         navigate('/thankyou', { replace: true });

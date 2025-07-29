@@ -152,7 +152,7 @@ const CookieConsent = () => {
         isAndroid,
         cacheRisks,
         // Suggest more aggressive retry strategy for high-risk devices
-        needsAggressiveRetry: cacheRisks.iosSafari || cacheRisks.androidMemoryOptimization || cacheRisks.lowMemoryDevice || cacheRisks.versionMismatch || cacheRisks.criticalVersionMismatch
+        needsAggressiveRetry: cacheRisks.iosSafari || cacheRisks.androidMemoryOptimization || cacheRisks.lowMemoryDevice || cacheRisks.versionMismatch || cacheRisks.criticalVersionMismatch || cacheRisks.paymentRedirect
       };
     } catch (error) {
       console.error('Error in mobile/cache detection:', error);
@@ -311,18 +311,26 @@ const CookieConsent = () => {
     // Special diagnostic for mobile cache issues
     if (isMobile) {
       const isFromStripeRedirect = document.referrer.includes('stripe') || window.location.search.includes('payment_success');
+      const isPaymentSuccessPage = window.location.pathname === '/payment-success';
       const runtimeMarker = localStorage.getItem('cookie-runtime-marker');
       
       console.log('🍪 Mobile diagnostic:', {
         isFromStripeRedirect,
+        isPaymentSuccessPage,
         runtimeMarker,
         hasOldMarker: runtimeMarker && runtimeMarker !== 'enhanced-mobile-v1',
         referrer: document.referrer,
-        searchParams: window.location.search
+        searchParams: window.location.search,
+        currentPath: window.location.pathname
       });
       
       if (isFromStripeRedirect && !runtimeMarker) {
         console.warn('🍪 Mobile user returning from Stripe with no runtime marker - likely cached JS');
+      }
+      
+      if (isPaymentSuccessPage) {
+        console.log('🍪 Payment success page detected - adding extra delay for localStorage protection');
+        cacheRisks.paymentRedirect = true;
       }
     }
 
@@ -416,6 +424,10 @@ const CookieConsent = () => {
               retryDelay = Math.max(retryDelay, 2500 * retryCount); // Much longer delay for critical mismatches
             }
             
+            if (cacheRisks.paymentRedirect) {
+              retryDelay = Math.max(retryDelay, 1500 * retryCount); // Extra delay for payment redirects
+            }
+            
             console.log(`🍪 Scheduling retry ${retryCount + 1} in ${retryDelay}ms (cache risks:`, Object.keys(cacheRisks).filter(k => cacheRisks[k]).join(', '), ')');
             setTimeout(retryCheck, retryDelay);
           }
@@ -447,10 +459,16 @@ const CookieConsent = () => {
       if (cacheRisks.criticalVersionMismatch) {
         initDelay = Math.max(initDelay, 2500); // Critical mismatch needs much more time
       }
+      
+      if (cacheRisks.paymentRedirect) {
+        initDelay = Math.max(initDelay, 2000); // Payment redirects need extra time for localStorage protection
+      }
     } else if (cacheRisks.versionMismatch) {
       initDelay = 800; // Even desktop needs more time for version mismatches
     } else if (cacheRisks.criticalVersionMismatch) {
       initDelay = 1500; // Desktop critical mismatch
+    } else if (cacheRisks.paymentRedirect) {
+      initDelay = 1000; // Desktop payment redirect
     }
     
     console.log(`🍪 Starting initialization with ${initDelay}ms delay for device type:`, deviceInfo);

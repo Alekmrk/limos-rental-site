@@ -66,8 +66,20 @@ const loadReservationFromStorage = () => {
 // Save reservation data to localStorage
 const saveReservationToStorage = (reservationInfo) => {
   try {
-    localStorage.setItem('eliteway-reservation', JSON.stringify(reservationInfo));
-    console.log('💾 Saved reservation to localStorage');
+    // Check if we're in a payment redirect scenario that could conflict with cookie consent
+    const isPaymentSuccessPage = window.location.pathname === '/payment-success';
+    const isFromStripeRedirect = document.referrer.includes('stripe');
+    
+    if (isPaymentSuccessPage || isFromStripeRedirect) {
+      // Add a small delay to avoid localStorage conflicts during payment redirects
+      setTimeout(() => {
+        localStorage.setItem('eliteway-reservation', JSON.stringify(reservationInfo));
+        console.log('💾 Saved reservation to localStorage (delayed for payment redirect)');
+      }, 100);
+    } else {
+      localStorage.setItem('eliteway-reservation', JSON.stringify(reservationInfo));
+      console.log('💾 Saved reservation to localStorage');
+    }
   } catch (error) {
     console.error('Error saving reservation to localStorage:', error);
   }
