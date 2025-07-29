@@ -22,6 +22,7 @@ import DavosForum from "./pages/DavosForum/DavosForum";
 import BookingPage from "./pages/BookingPage/BookingPage";
 import BackToTopButton from "./components/BackToTopButton";
 import CookieConsent from "./components/CookieConsent";
+import DebugConsole from "./components/DebugConsole";
 import ContactChannels from "./components/ContactChannels";
 import { useState } from "react";
 import cars from "./data/cars";
@@ -121,6 +122,7 @@ function App() {
       <BackToTopButton scrollUp={scrollUp} />
       <ContactChannels />
       <CookieConsent />
+      <DebugConsole />
     </>
   );
 }

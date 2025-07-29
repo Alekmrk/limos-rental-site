@@ -222,10 +222,12 @@ const CookieConsent = () => {
 
   // Check consent status and expiration
   const checkConsentStatus = () => {
+    console.log('🔍 DEBUG: Starting checkConsentStatus function');
     try {
       // Enhanced localStorage availability check for mobile browsers
       if (typeof localStorage === 'undefined' || !localStorage) {
         console.warn('🍪 localStorage not available');
+        console.error('🔍 CRITICAL: localStorage is not available - this will cause cookie banner to always show');
         return { hasConsent: false, expired: false };
       }
 
@@ -236,12 +238,16 @@ const CookieConsent = () => {
         const testValue = localStorage.getItem(testKey);
         localStorage.removeItem(testKey);
         
+        console.log('🔍 DEBUG: localStorage read/write test:', { testValue, expected: 'test', passed: testValue === 'test' });
+        
         if (testValue !== 'test') {
           console.warn('🍪 localStorage not functioning properly');
+          console.error('🔍 CRITICAL: localStorage read/write test failed - this will cause issues');
           return { hasConsent: false, expired: false };
         }
       } catch (storageError) {
         console.warn('🍪 localStorage access denied:', storageError);
+        console.error('🔍 CRITICAL: localStorage access denied:', storageError);
         return { hasConsent: false, expired: false };
       }
 
@@ -249,9 +255,16 @@ const CookieConsent = () => {
       const timestamp = localStorage.getItem('cookie-consent-timestamp');
       
       console.log('🍪 Raw localStorage values:', { consent, timestamp });
+      console.log('🔍 DEBUG: Detailed localStorage state:', {
+        hasConsent: !!consent,
+        hasTimestamp: !!timestamp,
+        consentLength: consent?.length || 0,
+        timestampValid: timestamp ? !isNaN(new Date(timestamp).getTime()) : false
+      });
       
       if (!consent || !timestamp) {
         console.log('🍪 No consent or timestamp found in localStorage');
+        console.log('🔍 DEBUG: Missing data will trigger banner display');
         return { hasConsent: false, expired: false };
       }
 
@@ -262,6 +275,13 @@ const CookieConsent = () => {
       const minutesOld = (now.getTime() - consentDate.getTime()) / (1000 * 60);
       
       console.log('🍪 Consent age in minutes:', minutesOld);
+      console.log('🔍 DEBUG: Time calculations:', {
+        consentTimestamp: timestamp,
+        consentDate: consentDate.toISOString(),
+        currentTime: now.toISOString(),
+        ageInMinutes: minutesOld,
+        isRecent: minutesOld < 5
+      });
 
       // Check if consent is older than 12 months (GDPR requirement)
       const monthsOld = (now.getTime() - consentDate.getTime()) / (1000 * 60 * 60 * 24 * 30);
@@ -271,6 +291,7 @@ const CookieConsent = () => {
       if (monthsOld > 12) {
         // Consent expired, clear old data
         console.log('🍪 Consent expired, clearing data');
+        console.log('🔍 DEBUG: Consent expired due to age, clearing localStorage');
         localStorage.removeItem('cookie-consent');
         localStorage.removeItem('cookie-consent-timestamp');
         return { hasConsent: false, expired: true };
@@ -278,24 +299,31 @@ const CookieConsent = () => {
 
       const savedPreferences = JSON.parse(consent);
       console.log('🍪 Valid consent found:', savedPreferences);
+      console.log('🔍 DEBUG: Parsed consent preferences:', savedPreferences);
       
       // If consent was given very recently, it's likely from a redirect scenario
       const isRecentConsent = minutesOld < 5;
       
-      return { 
+      const result = { 
         hasConsent: true, 
         expired: false, 
         preferences: savedPreferences,
         isRecentConsent 
       };
+      
+      console.log('🔍 DEBUG: checkConsentStatus returning:', result);
+      return result;
     } catch (error) {
       console.error('Error checking consent status:', error);
+      console.error('🔍 CRITICAL: Exception in checkConsentStatus:', error);
       // Clear corrupted data
       try {
         localStorage.removeItem('cookie-consent');
         localStorage.removeItem('cookie-consent-timestamp');
+        console.log('🔍 DEBUG: Cleared corrupted localStorage data');
       } catch (clearError) {
         console.error('Error clearing corrupted localStorage:', clearError);
+        console.error('🔍 CRITICAL: Could not clear corrupted localStorage:', clearError);
       }
       return { hasConsent: false, expired: false };
     }
@@ -326,10 +354,38 @@ const CookieConsent = () => {
       
       if (isFromStripeRedirect && !runtimeMarker) {
         console.warn('🍪 Mobile user returning from Stripe with no runtime marker - likely cached JS');
+        console.warn('🔍 DEBUG: This is a known issue where mobile browsers serve cached JavaScript after Stripe redirects');
       }
       
       if (isPaymentSuccessPage) {
         console.log('🍪 Payment success page detected - adding extra delay for localStorage protection');
+        console.log('🔍 DEBUG: PaymentSuccess page often conflicts with cookie consent localStorage operations');
+        cacheRisks.paymentRedirect = true;
+      }
+
+      // Additional Stripe redirect diagnostics
+      if (isFromStripeRedirect) {
+        console.log('🔍 STRIPE REDIRECT DETECTED:', {
+          userAgent: navigator.userAgent.substring(0, 50),
+          isMobile: detectedAsMobile,
+          hasRuntimeMarker: !!runtimeMarker,
+          localStorageWorks: typeof localStorage !== 'undefined',
+          currentTimestamp: new Date().toISOString(),
+          referrer: document.referrer,
+          currentUrl: window.location.href
+        });
+        
+        // Test localStorage immediately on Stripe redirect
+        try {
+          const testKey = '__stripe_redirect_test__';
+          localStorage.setItem(testKey, 'test');
+          const testValue = localStorage.getItem(testKey);
+          localStorage.removeItem(testKey);
+          console.log('🔍 STRIPE DEBUG: localStorage test after redirect:', testValue === 'test' ? 'PASS' : 'FAIL');
+        } catch (e) {
+          console.error('🔍 STRIPE DEBUG: localStorage test FAILED:', e);
+        }
+        
         cacheRisks.paymentRedirect = true;
       }
     }
@@ -347,9 +403,16 @@ const CookieConsent = () => {
         if (!hasConsent || expired) {
           // Show banner after a short delay, but only if we really don't have consent
           console.log('🍪 No valid consent found, showing banner');
+          console.log('🔍 DECISION: Will show cookie banner because:', {
+            hasConsent,
+            expired,
+            reason: !hasConsent ? 'no consent found' : 'consent expired'
+          });
           // Use longer delays for mobile devices and cache-risky browsers
           const showDelay = isMobile ? (cacheRisks.iosSafari ? 3000 : 2000) : 1000;
+          console.log('🔍 DEBUG: Banner will appear after', showDelay, 'ms delay');
           const timer = setTimeout(() => {
+            console.log('🔍 DEBUG: Executing banner display now');
             setShowBanner(true);
             setTimeout(() => setAnimateIn(true), 50);
           }, showDelay);
@@ -358,6 +421,12 @@ const CookieConsent = () => {
         } else {
           // Load saved preferences and apply them
           console.log('🍪 Valid consent found, hiding banner');
+          console.log('🔍 DECISION: Will NOT show cookie banner because valid consent exists:', {
+            hasConsent,
+            expired,
+            preferences: savedPreferences,
+            isRecentConsent
+          });
           setPreferences(savedPreferences);
           initializeTracking(savedPreferences);
           setShowBanner(false);
@@ -366,6 +435,7 @@ const CookieConsent = () => {
           // If consent is very recent, it's likely from a redirect - don't show banner
           if (isRecentConsent) {
             console.log('🍪 Recent consent detected - likely from redirect, ensuring banner stays hidden');
+            console.log('🔍 DEBUG: Recent consent (< 5 min) suggests this is a payment redirect scenario');
           }
         }
       } catch (error) {
