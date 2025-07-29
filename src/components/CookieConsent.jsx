@@ -118,6 +118,70 @@ const CookieConsent = () => {
     document.head.appendChild(style);
   }, []);
 
+  const initializeTracking = useCallback((prefs) => {
+    // Clean up cookies for disabled categories first
+    Object.keys(prefs).forEach(category => {
+      if (category !== 'essential' && !prefs[category]) {
+        CookieManager.deleteByCategory(category);
+      }
+    });
+
+    // Initialize Google Analytics if analytics cookies are accepted
+    if (prefs.analytics) {
+      // Initialize Google Analytics 4
+      if (typeof gtag !== 'undefined') {
+        gtag('consent', 'update', {
+          'analytics_storage': 'granted'
+        });
+      }
+      
+      // Set analytics cookies
+      CookieManager.set('analytics_consent', 'granted', 365);
+      console.log('Analytics tracking enabled');
+    } else {
+      CookieManager.delete('analytics_consent');
+      if (typeof gtag !== 'undefined') {
+        gtag('consent', 'update', {
+          'analytics_storage': 'denied'
+        });
+      }
+    }
+
+    // Initialize marketing pixels if marketing cookies are accepted
+    if (prefs.marketing) {
+      if (typeof gtag !== 'undefined') {
+        gtag('consent', 'update', {
+          'ad_storage': 'granted',
+          'ad_user_data': 'granted',
+          'ad_personalization': 'granted'
+        });
+      }
+      
+      CookieManager.set('marketing_consent', 'granted', 365);
+      console.log('Marketing tracking enabled');
+    } else {
+      CookieManager.delete('marketing_consent');
+      if (typeof gtag !== 'undefined') {
+        gtag('consent', 'update', {
+          'ad_storage': 'denied',
+          'ad_user_data': 'denied',
+          'ad_personalization': 'denied'
+        });
+      }
+    }
+
+    // Initialize functional cookies if accepted
+    if (prefs.functional) {
+      CookieManager.set('functional_consent', 'granted', 365);
+      console.log('Functional cookies enabled');
+    } else {
+      CookieManager.delete('functional_consent');
+    }
+
+    // Always set essential cookies
+    CookieManager.set('essential_consent', 'granted', 365);
+  }, []);
+
   // Enhanced consent status checking with better persistence
   const checkConsentStatus = useCallback(() => {
     try {
@@ -268,70 +332,6 @@ const CookieConsent = () => {
     window.addEventListener('storage', handleStorageChange);
     return () => window.removeEventListener('storage', handleStorageChange);
   }, [isInitialized, checkConsentStatus, initializeTracking]);
-
-  const initializeTracking = useCallback((prefs) => {
-    // Clean up cookies for disabled categories first
-    Object.keys(prefs).forEach(category => {
-      if (category !== 'essential' && !prefs[category]) {
-        CookieManager.deleteByCategory(category);
-      }
-    });
-
-    // Initialize Google Analytics if analytics cookies are accepted
-    if (prefs.analytics) {
-      // Initialize Google Analytics 4
-      if (typeof gtag !== 'undefined') {
-        gtag('consent', 'update', {
-          'analytics_storage': 'granted'
-        });
-      }
-      
-      // Set analytics cookies
-      CookieManager.set('analytics_consent', 'granted', 365);
-      console.log('Analytics tracking enabled');
-    } else {
-      CookieManager.delete('analytics_consent');
-      if (typeof gtag !== 'undefined') {
-        gtag('consent', 'update', {
-          'analytics_storage': 'denied'
-        });
-      }
-    }
-
-    // Initialize marketing pixels if marketing cookies are accepted
-    if (prefs.marketing) {
-      if (typeof gtag !== 'undefined') {
-        gtag('consent', 'update', {
-          'ad_storage': 'granted',
-          'ad_user_data': 'granted',
-          'ad_personalization': 'granted'
-        });
-      }
-      
-      CookieManager.set('marketing_consent', 'granted', 365);
-      console.log('Marketing tracking enabled');
-    } else {
-      CookieManager.delete('marketing_consent');
-      if (typeof gtag !== 'undefined') {
-        gtag('consent', 'update', {
-          'ad_storage': 'denied',
-          'ad_user_data': 'denied',
-          'ad_personalization': 'denied'
-        });
-      }
-    }
-
-    // Initialize functional cookies if accepted
-    if (prefs.functional) {
-      CookieManager.set('functional_consent', 'granted', 365);
-      console.log('Functional cookies enabled');
-    } else {
-      CookieManager.delete('functional_consent');
-    }
-
-    // Always set essential cookies
-    CookieManager.set('essential_consent', 'granted', 365);
-  }, []);
 
   const savePreferences = useCallback((newPreferences) => {
     try {
