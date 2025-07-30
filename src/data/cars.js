@@ -1,7 +1,7 @@
-import imgBenzSClass from "../assets/cars/sclass3.png";
-import imgEClass from "../assets/cars/model1.png";
-import imgVClass2 from "../assets/cars/v-class4.png";
-import imgVClass1 from "../assets/cars/firstClassV4.png";
+import imgBenzSClass from "../assets/cars/sclass3(u).png";
+import imgEClass from "../assets/cars/model1(u).png";
+import imgVClass2 from "../assets/cars/v-class4(u).png";
+import imgVClass1 from "../assets/cars/firstClassV4(u).png";
 import imgInterior1 from "../assets/cars/firstclassinter1.jpg";
 import imgInterior2 from "../assets/cars/firstclassinter2.jpg";
 
