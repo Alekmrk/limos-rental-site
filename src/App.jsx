@@ -39,6 +39,8 @@ import PrototypeSidebar from "./pages/PrototypeSidebar/PrototypeSidebar";
 import PrototypeSidebarFullImage from "./pages/PrototypeSidebarFullImage/PrototypeSidebarFullImage";
 import PrototypeSplitVertical from "./pages/PrototypeSplitVertical/PrototypeSplitVertical";
 import useUTMTracking from "./hooks/useUTMTracking";
+import GoogleTagManager from "./components/GoogleTagManager";
+import useAnalytics from "./hooks/useAnalytics";
 
 function App() {
   const { isLoaded, loadError } = useGoogleMapsApi();
@@ -48,6 +50,12 @@ function App() {
     autoCapture: true,
     debug: import.meta.env.DEV, // Enable debug in development
     storeInContext: true
+  });
+
+  // Initialize analytics tracking
+  const analytics = useAnalytics({
+    autoTrackPageViews: true,
+    debug: import.meta.env.DEV
   });
   
   // Scroll to top on next tick to ensure content is rendered before scrolling
@@ -72,65 +80,75 @@ function App() {
 
   return (
     <>
-      <Header />
       <ReservationContextProvider>
-        <Routes>
-          <Route path="/" element={<Home scrollUp={scrollUp} setSelectedVehicle={setSelectedVehicle} />} />
-          <Route path="/booking" element={<BookingPage scrollUp={scrollUp} />} />
-          <Route path="/contact" element={<Contact scrollUp={scrollUp} />} />
-          <Route path="/airport-transfer" element={<AirportTransfer scrollUp={scrollUp} />} />
-          <Route path="/distance-transfer" element={<DistanceTransfer scrollUp={scrollUp} />} />
-          <Route path="/hourly-transfer" element={<HourlyTransfer scrollUp={scrollUp} />} />
-          <Route path="/special-request" element={<SpecialRequest scrollUp={scrollUp} />} />
-          <Route path="/davos-forum" element={<DavosForum scrollUp={scrollUp} />} />
-          <Route
-            path="/vehicles"
-            element={
-              <Vehicles
-                scrollUp={scrollUp}
-                selectedVehicle={selectedVehicle}
-                setSelectedVehicle={setSelectedVehicle}
+        {/* Google Tag Manager - Load early */}
+        <GoogleTagManager 
+          containerId="GTM-M54BVJHK" 
+          initializeOnMount={true}
+        />
+        
+        <div className="main-content">
+          <Header selectedVehicle={selectedVehicle} />
+          <main>
+            <Routes>
+              <Route path="/" element={<Home scrollUp={scrollUp} setSelectedVehicle={setSelectedVehicle} />} />
+              <Route path="/booking" element={<BookingPage scrollUp={scrollUp} />} />
+              <Route path="/contact" element={<Contact scrollUp={scrollUp} />} />
+              <Route path="/airport-transfer" element={<AirportTransfer scrollUp={scrollUp} />} />
+              <Route path="/distance-transfer" element={<DistanceTransfer scrollUp={scrollUp} />} />
+              <Route path="/hourly-transfer" element={<HourlyTransfer scrollUp={scrollUp} />} />
+              <Route path="/special-request" element={<SpecialRequest scrollUp={scrollUp} />} />
+              <Route path="/davos-forum" element={<DavosForum scrollUp={scrollUp} />} />
+              <Route
+                path="/vehicles"
+                element={
+                  <Vehicles
+                    scrollUp={scrollUp}
+                    selectedVehicle={selectedVehicle}
+                    setSelectedVehicle={setSelectedVehicle}
+                  />
+                }
               />
-            }
-          />
-          <Route
-            path="/vehicle-selection"
-            element={<VehicleSelection scrollUp={scrollUp} isMapReady={isLoaded} />}
-          />
-          <Route
-            path="/customer-details"
-            element={<CustomerDetails scrollUp={scrollUp} />}
-          />
-          <Route
-            path="/payment"
-            element={<PaymentPage scrollUp={scrollUp} />}
-          />
-          <Route 
-            path="/payment-success" 
-            element={<PaymentSuccess />} 
-          />
-          <Route 
-            path="/payment-cancel" 
-            element={<PaymentCancel />} 
-          />
-          <Route path="/thankyou" element={<ThankYou scrollUp={scrollUp} />} />
-          <Route path="/privacy-policy" element={<PrivacyPolicy scrollUp={scrollUp} />} />
-          <Route path="/terms-of-service" element={<TermsOfService scrollUp={scrollUp} />} />
-          <Route path="/legal-notice" element={<LegalNotice scrollUp={scrollUp} />} />
-          
-          {/* Prototype Routes */}
-          <Route path="/prototypes" element={<PrototypeNavigation />} />
-          <Route path="/prototype-horizontal" element={<PrototypeHorizontal scrollUp={scrollUp} />} />
-          <Route path="/prototype-centered" element={<PrototypeCentered scrollUp={scrollUp} />} />
-          <Route path="/prototype-split" element={<PrototypeSplit scrollUp={scrollUp} />} />
-          <Route path="/prototype-hybrid" element={<PrototypeHybrid scrollUp={scrollUp} />} />
-          <Route path="/prototype-floating" element={<PrototypeFloating scrollUp={scrollUp} />} />
-          <Route path="/prototype-sidebar" element={<PrototypeSidebar scrollUp={scrollUp} />} />
-          <Route path="/prototype-sidebar-full" element={<PrototypeSidebarFullImage scrollUp={scrollUp} />} />
-          <Route path="/prototype-split-vertical" element={<PrototypeSplitVertical scrollUp={scrollUp} />} />
-          
-          <Route path="*" element={<NotFound scrollUp={scrollUp} />} />
-        </Routes>
+              <Route
+                path="/vehicle-selection"
+                element={<VehicleSelection scrollUp={scrollUp} isMapReady={isLoaded} />}
+              />
+              <Route
+                path="/customer-details"
+                element={<CustomerDetails scrollUp={scrollUp} />}
+              />
+              <Route
+                path="/payment"
+                element={<PaymentPage scrollUp={scrollUp} />}
+              />
+              <Route 
+                path="/payment-success" 
+                element={<PaymentSuccess />} 
+              />
+              <Route 
+                path="/payment-cancel" 
+                element={<PaymentCancel />} 
+              />
+              <Route path="/thankyou" element={<ThankYou scrollUp={scrollUp} />} />
+              <Route path="/privacy-policy" element={<PrivacyPolicy scrollUp={scrollUp} />} />
+              <Route path="/terms-of-service" element={<TermsOfService scrollUp={scrollUp} />} />
+              <Route path="/legal-notice" element={<LegalNotice scrollUp={scrollUp} />} />
+              
+              {/* Prototype Routes */}
+              <Route path="/prototypes" element={<PrototypeNavigation />} />
+              <Route path="/prototype-horizontal" element={<PrototypeHorizontal scrollUp={scrollUp} />} />
+              <Route path="/prototype-centered" element={<PrototypeCentered scrollUp={scrollUp} />} />
+              <Route path="/prototype-split" element={<PrototypeSplit scrollUp={scrollUp} />} />
+              <Route path="/prototype-hybrid" element={<PrototypeHybrid scrollUp={scrollUp} />} />
+              <Route path="/prototype-floating" element={<PrototypeFloating scrollUp={scrollUp} />} />
+              <Route path="/prototype-sidebar" element={<PrototypeSidebar scrollUp={scrollUp} />} />
+              <Route path="/prototype-sidebar-full" element={<PrototypeSidebarFullImage scrollUp={scrollUp} />} />
+              <Route path="/prototype-split-vertical" element={<PrototypeSplitVertical scrollUp={scrollUp} />} />
+              
+              <Route path="*" element={<NotFound scrollUp={scrollUp} />} />
+            </Routes>
+          </main>
+        </div>
       </ReservationContextProvider>
       <Footer />
       <BackToTopButton scrollUp={scrollUp} />

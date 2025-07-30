@@ -8,6 +8,7 @@ import NumberDropdown from "../../components/NumberDropdown";
 import cars, { getMaxPassengers, getMaxBags } from "../../data/cars";
 import MapPreview from "../../components/MapPreview";
 import { calculatePrice, calculatePriceByDistance, addSurcharges, formatPrice } from "../../services/PriceCalculationService";
+import useAnalytics from "../../hooks/useAnalytics";
 
 const VehicleSelection = ({ scrollUp }) => {
   const navigate = useNavigate();
@@ -23,6 +24,9 @@ const VehicleSelection = ({ scrollUp }) => {
   const [hasAttemptedSubmit, setHasAttemptedSubmit] = useState(false);
   const latestStopsRef = useRef(reservationInfo.extraStops);
   const [prices, setPrices] = useState({});
+
+  // Initialize analytics
+  const { trackVehicle, trackQuote } = useAnalytics();
 
   // Scroll to top immediately when component mounts - run this first
   useEffect(() => {
@@ -186,6 +190,16 @@ const VehicleSelection = ({ scrollUp }) => {
 
   const handleVehicleSelect = (vehicle) => {
     setSelectedVehicle(vehicle);
+    
+    // Track vehicle selection in analytics
+    trackVehicle({
+      id: vehicle.id,
+      name: vehicle.name,
+      category: vehicle.category || 'luxury_vehicle',
+      type: vehicle.type || 'standard',
+      basePrice: prices[vehicle.id] || 0
+    });
+    
     if (hasAttemptedSubmit) {
       const newErrors = validateFormErrors();
       // Clear vehicle error when vehicle is selected

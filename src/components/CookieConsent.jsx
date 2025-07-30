@@ -126,18 +126,28 @@ const CookieConsent = () => {
       }
     });
 
-    // Initialize Google Analytics if analytics cookies are accepted
+    // Initialize Google Tag Manager and Analytics if analytics cookies are accepted
     if (prefs.analytics) {
-      // Initialize Google Analytics 4
+      // Initialize GTM/GA4 consent
       if (typeof gtag !== 'undefined') {
         gtag('consent', 'update', {
-          'analytics_storage': 'granted'
+          'analytics_storage': 'granted',
+          'functionality_storage': 'granted'
         });
       }
       
+      // Dispatch consent update event for GTM component
+      window.dispatchEvent(new CustomEvent('cookieConsentUpdated', {
+        detail: { 
+          analytics: true,
+          functional: true,
+          marketing: prefs.marketing || false
+        }
+      }));
+      
       // Set analytics cookies
       CookieManager.set('analytics_consent', 'granted', 365);
-      console.log('Analytics tracking enabled');
+      console.log('✅ Analytics tracking enabled');
     } else {
       CookieManager.delete('analytics_consent');
       if (typeof gtag !== 'undefined') {
@@ -145,6 +155,15 @@ const CookieConsent = () => {
           'analytics_storage': 'denied'
         });
       }
+      
+      // Dispatch consent denial
+      window.dispatchEvent(new CustomEvent('cookieConsentUpdated', {
+        detail: { 
+          analytics: false,
+          functional: true,
+          marketing: false
+        }
+      }));
     }
 
     // Initialize marketing pixels if marketing cookies are accepted

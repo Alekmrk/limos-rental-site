@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import ReservationContext from "../../contexts/ReservationContext";
 import usePaymentFlowCookieSuppression from "../../hooks/usePaymentFlowCookieSuppression";
 import useUTMTracking from "../../hooks/useUTMTracking";
+import useAnalytics from "../../hooks/useAnalytics";
 
 const API_BASE_URL = import.meta.env.PROD 
   ? 'https://api.elitewaylimo.ch'
@@ -17,6 +18,11 @@ const PaymentSuccess = () => {
     autoCapture: false, // We'll manually restore UTMs
     debug: true,
     storeInContext: true
+  });
+
+  // Initialize analytics for conversion tracking
+  const { trackBookingConversion, trackPaymentError } = useAnalytics({
+    autoTrackPageViews: false // We'll track manually after data is loaded
   });
   
   // Suppress cookie consent during payment success flow
@@ -92,6 +98,25 @@ const PaymentSuccess = () => {
           });
         }
 
+        // Track successful conversion with UTM attribution
+        console.log('🎉 [PaymentSuccess] Tracking conversion...'); 
+        try {
+          // Get the current UTM data (either restored or from URL)
+          const currentUTMs = restoredUTMs?.hasUTMs ? restoredUTMs : 
+                             (hasUTMs ? utmData : null);
+          
+          // Track the conversion with GA4 and GTM
+          trackBookingConversion(reservationInfo);
+          
+          console.log('✅ [PaymentSuccess] Conversion tracked successfully', {
+            transactionId: reservationInfo.paymentDetails?.reference,
+            amount: reservationInfo.paymentDetails?.amount,
+            utms: currentUTMs
+          });
+        } catch (conversionError) {
+          console.error('❌ [PaymentSuccess] Conversion tracking failed:', conversionError);
+        }
+
         // Navigate to thank you page (suppression will be cleared by the hook timeout)
         navigate('/thankyou', { replace: true });
       } catch (error) {
@@ -102,7 +127,7 @@ const PaymentSuccess = () => {
     };
 
     verifySession();
-  }, [navigate, handleInput, clearSuppression, restoreUTMs]);
+  }, [navigate, handleInput, clearSuppression, restoreUTMs, trackBookingConversion]);
 
   return (
     <div className="container-default mt-28 text-center">
