@@ -15,6 +15,7 @@ const ContactChannels = ({ className = "", position = "fixed" }) => {
 
   // Hide floating badges during reservation flow
   const isReservationFlow = [
+    '/booking',
     '/vehicle-selection', 
     '/customer-details', 
     '/payment', 
