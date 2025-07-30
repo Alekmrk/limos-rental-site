@@ -2,15 +2,53 @@ const express = require('express');
 const router = express.Router();
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
+/**
+ * Build URL with UTM parameters
+ * @param {string} baseUrl - The base URL
+ * @param {string} sessionParam - Session ID parameter
+ * @param {object} utmData - UTM parameters from request
+ * @returns {string} Complete URL with UTM parameters
+ */
+function buildStripeRedirectURL(baseUrl, sessionParam, utmData = {}) {
+  const url = new URL(baseUrl);
+  
+  // Add session ID parameter
+  url.searchParams.set('session_id', sessionParam);
+  
+  // Add UTM parameters if they exist
+  const utmParams = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content'];
+  
+  utmParams.forEach(param => {
+    if (utmData[param]) {
+      url.searchParams.set(param, utmData[param]);
+    }
+  });
+  
+  return url.toString();
+}
+
 // Create a checkout session
 router.post('/create-checkout-session', express.json(), async (req, res) => {
   try {
-    const { amount, currency = 'chf', metadata = {} } = req.body;
+    const { amount, currency = 'chf', metadata = {}, utmData = {} } = req.body;
     
     // Validate required fields early
     if (!amount || amount <= 0) {
       return res.status(400).json({ error: 'Invalid amount' });
     }
+
+    // Build URLs with UTM parameters preserved
+    const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
+    const successUrl = buildStripeRedirectURL(
+      `${frontendUrl}/payment-success`,
+      '{CHECKOUT_SESSION_ID}',
+      utmData
+    );
+    const cancelUrl = buildStripeRedirectURL(
+      `${frontendUrl}/payment-cancel`,
+      '{CHECKOUT_SESSION_ID}',
+      utmData
+    );
 
     // Start preparing session config immediately
     const sessionConfig = {
@@ -31,9 +69,17 @@ router.post('/create-checkout-session', express.json(), async (req, res) => {
         },
       ],
       mode: 'payment',
-      success_url: `${process.env.FRONTEND_URL || 'http://localhost:5173'}/payment-success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${process.env.FRONTEND_URL || 'http://localhost:5173'}/payment-cancel?session_id={CHECKOUT_SESSION_ID}`,
-      metadata: metadata,
+      success_url: successUrl,
+      cancel_url: cancelUrl,
+      metadata: {
+        ...metadata,
+        // Store UTM data in session metadata for analytics
+        utm_source: utmData.utm_source || '',
+        utm_medium: utmData.utm_medium || '',
+        utm_campaign: utmData.utm_campaign || '',
+        utm_term: utmData.utm_term || '',
+        utm_content: utmData.utm_content || ''
+      },
       // Add faster processing options
       payment_intent_data: {
         capture_method: 'automatic',

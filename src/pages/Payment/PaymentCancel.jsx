@@ -3,6 +3,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import Button from "../../components/Button";
 import ReservationContext from "../../contexts/ReservationContext";
 import usePaymentFlowCookieSuppression from "../../hooks/usePaymentFlowCookieSuppression";
+import useUTMTracking from "../../hooks/useUTMTracking";
 
 const API_BASE_URL = import.meta.env.PROD 
   ? 'https://api.elitewaylimo.ch'
@@ -15,6 +16,13 @@ const PaymentCancel = () => {
   const hasSetRetryFlag = useRef(false);
   const hasRestoredSession = useRef(false);
   const hasSentCancelEmail = useRef(false);
+  
+  // Restore UTM tracking after payment redirect
+  const { restoreUTMs, hasUTMs, utmData } = useUTMTracking({
+    autoCapture: false, // We'll manually restore UTMs
+    debug: true,
+    storeInContext: true
+  });
   
   // Suppress cookie consent during payment cancel flow
   const { clearSuppression } = usePaymentFlowCookieSuppression(true, 30000); // 30 seconds
@@ -69,6 +77,42 @@ const PaymentCancel = () => {
       }
 
       try {
+        // First restore UTMs - critical for tracking cancelled conversions
+        console.log('🔄 [PaymentCancel] Restoring UTMs after payment cancellation...');
+        const restoredUTMs = restoreUTMs();
+        
+        if (restoredUTMs?.hasUTMs) {
+          console.log('✅ [PaymentCancel] UTMs restored successfully:', restoredUTMs);
+        } else {
+          // Check URL for UTM parameters as backup
+          const urlParams = new URLSearchParams(window.location.search);
+          const utmFromURL = {
+            utm_source: urlParams.get('utm_source'),
+            utm_medium: urlParams.get('utm_medium'),
+            utm_campaign: urlParams.get('utm_campaign'),
+            utm_term: urlParams.get('utm_term'),
+            utm_content: urlParams.get('utm_content')
+          };
+          
+          if (Object.values(utmFromURL).some(v => v)) {
+            console.log('📥 [PaymentCancel] Using UTMs from URL as backup:', utmFromURL);
+            await handleInput({
+              target: {
+                name: 'utmData',
+                value: {
+                  source: utmFromURL.utm_source,
+                  medium: utmFromURL.utm_medium,
+                  campaign: utmFromURL.utm_campaign,
+                  term: utmFromURL.utm_term,
+                  content: utmFromURL.utm_content,
+                  hasUTMs: Object.values(utmFromURL).some(v => v),
+                  timestamp: new Date().toISOString()
+                }
+              }
+            });
+          }
+        }
+
         console.log('🔄 Retrieving canceled session data from Stripe:', sessionId);
         
         const response = await fetch(`${API_BASE_URL}/api/stripe/canceled-session/${sessionId}`);

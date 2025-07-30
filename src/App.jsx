@@ -38,9 +38,17 @@ import PrototypeFloating from "./pages/PrototypeFloating/PrototypeFloating";
 import PrototypeSidebar from "./pages/PrototypeSidebar/PrototypeSidebar";
 import PrototypeSidebarFullImage from "./pages/PrototypeSidebarFullImage/PrototypeSidebarFullImage";
 import PrototypeSplitVertical from "./pages/PrototypeSplitVertical/PrototypeSplitVertical";
+import useUTMTracking from "./hooks/useUTMTracking";
 
 function App() {
   const { isLoaded, loadError } = useGoogleMapsApi();
+  
+  // Initialize UTM tracking for the entire application
+  const { hasUTMs, utmData } = useUTMTracking({
+    autoCapture: true,
+    debug: import.meta.env.DEV, // Enable debug in development
+    storeInContext: true
+  });
   
   // Scroll to top on next tick to ensure content is rendered before scrolling
   const scrollUp = () => {
@@ -54,6 +62,13 @@ function App() {
   if (loadError) {
     console.error('Error loading Google Maps:', loadError);
   }
+
+  // Log UTM tracking status in development
+  useEffect(() => {
+    if (import.meta.env.DEV && hasUTMs) {
+      console.log('🎯 [App] UTM tracking active:', utmData);
+    }
+  }, [hasUTMs, utmData]);
 
   return (
     <>

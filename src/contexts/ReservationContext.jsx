@@ -60,6 +60,13 @@ const loadReservationFromStorage = () => {
     optimizedWaypoints: null,
     totalDistance: 0,
     totalDuration: 0,
+    // UTM tracking data
+    utmData: null,
+    utmSource: null,
+    utmMedium: null,
+    utmCampaign: null,
+    utmTerm: null,
+    utmContent: null,
   };
 };
 

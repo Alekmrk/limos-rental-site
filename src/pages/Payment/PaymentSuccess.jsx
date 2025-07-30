@@ -2,6 +2,7 @@ import React, { useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import ReservationContext from "../../contexts/ReservationContext";
 import usePaymentFlowCookieSuppression from "../../hooks/usePaymentFlowCookieSuppression";
+import useUTMTracking from "../../hooks/useUTMTracking";
 
 const API_BASE_URL = import.meta.env.PROD 
   ? 'https://api.elitewaylimo.ch'
@@ -10,6 +11,13 @@ const API_BASE_URL = import.meta.env.PROD
 const PaymentSuccess = () => {
   const navigate = useNavigate();
   const { handleInput } = useContext(ReservationContext);
+  
+  // Restore UTM tracking after payment redirect
+  const { restoreUTMs, hasUTMs, utmData } = useUTMTracking({
+    autoCapture: false, // We'll manually restore UTMs
+    debug: true,
+    storeInContext: true
+  });
   
   // Suppress cookie consent during payment success flow
   const { clearSuppression } = usePaymentFlowCookieSuppression(true, 45000); // 45 seconds
@@ -25,6 +33,42 @@ const PaymentSuccess = () => {
           clearSuppression();
           navigate('/payment');
           return;
+        }
+
+        // Restore UTMs first - they might be in URL or storage
+        console.log('🔄 [PaymentSuccess] Restoring UTMs after payment...');
+        const restoredUTMs = restoreUTMs();
+        
+        if (restoredUTMs?.hasUTMs) {
+          console.log('✅ [PaymentSuccess] UTMs restored successfully:', restoredUTMs);
+          
+          // Also check URL for UTM parameters (backup)
+          const utmFromURL = {
+            utm_source: urlParams.get('utm_source'),
+            utm_medium: urlParams.get('utm_medium'),
+            utm_campaign: urlParams.get('utm_campaign'),
+            utm_term: urlParams.get('utm_term'),
+            utm_content: urlParams.get('utm_content')
+          };
+          
+          // If URL has UTMs and storage doesn't, use URL UTMs
+          if (!restoredUTMs.hasUTMs && Object.values(utmFromURL).some(v => v)) {
+            console.log('📥 [PaymentSuccess] Using UTMs from URL as backup:', utmFromURL);
+            await handleInput({
+              target: {
+                name: 'utmData',
+                value: {
+                  source: utmFromURL.utm_source,
+                  medium: utmFromURL.utm_medium,
+                  campaign: utmFromURL.utm_campaign,
+                  term: utmFromURL.utm_term,
+                  content: utmFromURL.utm_content,
+                  hasUTMs: Object.values(utmFromURL).some(v => v),
+                  timestamp: new Date().toISOString()
+                }
+              }
+            });
+          }
         }
 
         const response = await fetch(`${API_BASE_URL}/api/stripe/verify-session/${sessionId}`);
@@ -58,7 +102,7 @@ const PaymentSuccess = () => {
     };
 
     verifySession();
-  }, [navigate, handleInput, clearSuppression]);
+  }, [navigate, handleInput, clearSuppression, restoreUTMs]);
 
   return (
     <div className="container-default mt-28 text-center">

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import Button from './Button';
+import { retrieveUTMData } from '../utils/utmTracking';
 
 // API base URL - dynamically set based on environment
 const API_BASE_URL = import.meta.env.PROD 
@@ -18,12 +19,30 @@ const StripePayment = ({ amount, onSuccess, onError, reservationInfo }) => {
       const distance = reservationInfo.routeInfo?.distance || '';
       const duration = reservationInfo.routeInfo?.duration || '';
       
+      // Get UTM data for tracking
+      const utmData = retrieveUTMData() || {};
+      
+      // Also check reservation context for UTM data
+      const contextUTMData = reservationInfo.utmData || {};
+      
+      // Merge UTM data with priority: context > storage > empty
+      const finalUTMData = {
+        utm_source: contextUTMData.source || utmData.source || '',
+        utm_medium: contextUTMData.medium || utmData.medium || '',
+        utm_campaign: contextUTMData.campaign || utmData.campaign || '',
+        utm_term: contextUTMData.term || utmData.term || '',
+        utm_content: contextUTMData.content || utmData.content || ''
+      };
+
+      console.log('💳 [StripePayment] Including UTM data in checkout session:', finalUTMData);
+      
       const response = await fetch(`${API_BASE_URL}/api/stripe/create-checkout-session`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
           amount,
           currency: 'chf',
+          utmData: finalUTMData, // Include UTM data for URL building
           metadata: {
             // Customer Details
             email: reservationInfo.email || '',
