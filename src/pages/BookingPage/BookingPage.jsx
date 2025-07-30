@@ -453,7 +453,7 @@ const BookingPage = ({ scrollUp }) => {
             </p>
             
             {/* Key Features */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+            <div className="hidden md:grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
               <div className="bg-warm-white/80 backdrop-blur-sm rounded-2xl p-6 border border-royal-blue/10 shadow-lg">
                 <div className="w-12 h-12 bg-royal-blue/10 rounded-full flex items-center justify-center mx-auto mb-4">
                   <svg className="w-6 h-6 text-royal-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
