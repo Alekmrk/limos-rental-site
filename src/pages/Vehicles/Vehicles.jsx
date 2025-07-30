@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import cars from "../../data/cars";
 import SliderCard from "../../components/SliderCard";
 import VehicleImageSlider from "../../components/VehicleImageSlider";
@@ -9,18 +9,21 @@ import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
 
 const Vehicles = ({ scrollUp, selectedVehicle, setSelectedVehicle }) => {
   const imageRef = useRef(null);
+  const [resetTrigger, setResetTrigger] = useState(0);
 
   useEffect(() => {
     scrollUp();
   }, []);
 
-  // Scroll to image when selected vehicle changes
+  // Scroll to image when selected vehicle changes and reset image index
   useEffect(() => {
     if (imageRef.current) {
       imageRef.current.scrollIntoView({ 
         behavior: 'smooth', 
         block: 'center' 
       });
+      // Trigger image reset after scroll starts
+      setResetTrigger(prev => prev + 1);
     }
   }, [selectedVehicle]);
 
@@ -32,6 +35,8 @@ const Vehicles = ({ scrollUp, selectedVehicle, setSelectedVehicle }) => {
         behavior: 'smooth', 
         block: 'center' 
       });
+      // Trigger image reset when manually scrolling
+      setResetTrigger(prev => prev + 1);
     }
   };
 
@@ -50,6 +55,7 @@ const Vehicles = ({ scrollUp, selectedVehicle, setSelectedVehicle }) => {
           <VehicleImageSlider 
             images={selectedVehicle.images || [selectedVehicle.image]} 
             vehicleName={selectedVehicle.name}
+            resetTrigger={resetTrigger}
           />
         </div>
         <div className="mt-4">

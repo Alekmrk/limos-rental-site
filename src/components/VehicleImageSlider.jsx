@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 
-const VehicleImageSlider = ({ images, vehicleName }) => {
+const VehicleImageSlider = ({ images, vehicleName, resetTrigger }) => {
   const [currentIndex, setCurrentIndex] = useState(1); // Start at index 1 (first real image)
   const [isTransitioning, setIsTransitioning] = useState(false);
   const touchStartX = useRef(null);
@@ -27,6 +27,12 @@ const VehicleImageSlider = ({ images, vehicleName }) => {
     setIsTransitioning(true);
     setCurrentIndex(index + 1); // +1 because we have the duplicate at start
   };
+
+  // Reset to first image when vehicle changes or reset is triggered
+  useEffect(() => {
+    setCurrentIndex(1); // Reset to first real image (index 1 due to infinite loop setup)
+    setIsTransitioning(false); // Reset transition state
+  }, [images, resetTrigger]);
 
   // Handle infinite loop transitions
   useEffect(() => {
