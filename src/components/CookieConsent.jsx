@@ -435,16 +435,6 @@ const CookieConsent = () => {
       }`}>
         <div className="container-default max-w-6xl mx-auto">
           <div className="flex flex-col lg:flex-row items-start lg:items-center gap-4">
-            {/* Close button */}
-            <button
-              onClick={handleDismissBanner}
-              className="absolute top-3 right-3 text-gray-500 hover:text-gray-700 transition-colors p-1 rounded-full hover:bg-gray-200/50 lg:hidden"
-              aria-label="Dismiss cookie banner"
-            >
-              <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
             
             {/* Content */}
             <div className="flex-1">
@@ -474,26 +464,10 @@ const CookieConsent = () => {
                 Customize Settings
               </button>
               <button
-                onClick={handleRejectAll}
-                className="px-6 py-3 text-sm border-2 border-gray-400/50 text-gray-700 hover:text-gray-800 hover:border-gray-500/60 hover:bg-gray-100/50 rounded-lg transition-all duration-300 font-medium backdrop-blur-sm hidden lg:block"
-              >
-                Essential Only
-              </button>
-              <button
                 onClick={handleAcceptAll}
                 className="px-8 py-3 text-sm bg-gradient-to-r from-gold to-gold/90 text-gray-800 font-semibold hover:from-gold/90 hover:to-gold/80 rounded-lg transition-all duration-300 shadow-lg pulse-glow"
               >
                 Accept All Cookies
-              </button>
-              {/* Dismiss button for desktop */}
-              <button
-                onClick={handleDismissBanner}
-                className="text-gray-500 hover:text-gray-700 transition-colors p-2 rounded-full hover:bg-gray-200/50 hidden lg:block"
-                aria-label="Dismiss cookie banner"
-              >
-                <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
-                </svg>
               </button>
             </div>
           </div>
