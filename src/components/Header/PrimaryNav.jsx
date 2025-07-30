@@ -56,7 +56,7 @@ const PrimaryNav = ({ navHidden, screenSize, setNavHidden }) => {
 
   return (
     <nav
-      className={`absolute z-10 rounded-[1rem] shadow-xl md:shadow-none top-20 left-[5%] md:h-full right-[5%] w-[90%] md:w-auto py-8 text-center md:py-0 bg-warm-white/95 backdrop-blur-md border border-royal-blue/20 md:bg-transparent md:border-0 md:static md:left-auto md:right-auto ${
+      className={`absolute z-10 rounded-[1rem] shadow-xl md:shadow-none top-20 left-[5%] md:h-full right-[5%] w-[90%] md:w-auto py-8 text-center md:py-0 bg-warm-white/95 backdrop-blur-md border border-royal-blue/20 md:bg-transparent md:border-0 md:static md:left-auto md:right-auto max-h-[calc(100vh-6rem)] md:max-h-none overflow-y-auto md:overflow-visible ${
         navHidden && "hidden"
       }`}
     >
