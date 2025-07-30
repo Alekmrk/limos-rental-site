@@ -14,7 +14,7 @@ import {
   faStar,
   faUsers
 } from "@fortawesome/free-solid-svg-icons";
-import distanceTransferImage from "../../assets/businesswoman-sitting-backseat-taxi.jpg";
+import distanceTransferImage from "../../assets/background/distance(u169_2k).jpg";
 
 const DistanceTransfer = ({ scrollUp }) => {
   const { clearReservation } = useContext(ReservationContext);

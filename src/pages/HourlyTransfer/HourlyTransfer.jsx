@@ -15,7 +15,7 @@ import {
   faGlobe,
   faStar
 } from "@fortawesome/free-solid-svg-icons";
-import hourlyTransferImage from "../../assets/hourly(u169).jpg";
+import hourlyTransferImage from "../../assets/background/hourly(u169_2k).jpg";
 
 const HourlyTransfer = ({ scrollUp }) => {
   const { clearReservation, setIsHourly } = useContext(ReservationContext);

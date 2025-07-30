@@ -24,7 +24,7 @@ import {
   faPlaneDeparture,
   faSkiing
 } from "@fortawesome/free-solid-svg-icons";
-import bannerImage from "../../assets/special.jpg";
+import bannerImage from "../../assets/background/special(u169_2k).jpg";
 
 const SpecialRequest = ({ scrollUp }) => {
   const { clearReservation, setIsSpecialRequest } = useContext(ReservationContext);

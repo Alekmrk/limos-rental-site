@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import Button from "../../../components/Button";
 import ReservationCard from "./ReservationCard";
 import Image from "../../../components/Image";
-import bannerImage from "../../../assets/background3(u169).jpg";
+import bannerImage from "../../../assets/background/home(u169_2k).jpg";
 import { FaStar, FaShieldAlt, FaClock, FaPhone } from "react-icons/fa";
 import { useEffect } from "react";
 

@@ -78,6 +78,44 @@ Merc S first class        5.5 chf po 1 km
 Min cena 130 chf max 2 Persons max 2 baggages
 
 
+Recommended Image Pixel Sizes
+Background Images (Hero/Banner Sections):
+Desktop: 1920x1080px (Full HD) or 2560x1440px (2K)
+Mobile: 1080x1920px (Portrait orientation)
+Format: JPG for photos, optimized at 80-85% quality
+Usage: Full viewport coverage with object-cover
+Vehicle Images (Main Product Photos):
+Desktop Display: 800x600px (4:3 ratio)
+Mobile Display: 600x450px (4:3 ratio)
+Container Size: 320px height on mobile (h-80), 384px on desktop (md:h-96)
+Format: JPG at 85-90% quality or WebP for better compression
+Usage: object-contain to show full vehicle without cropping
+Vehicle Thumbnails:
+Size: 128x96px (4:3 ratio)
+Container: 64x48px (w-16 h-12)
+Format: WebP preferred, JPG fallback
+Usage: Small navigation thumbnails in image slider
+Fleet Grid Cards:
+Size: 600x400px (3:2 ratio)
+Container: 290px height (h-[290px])
+Format: JPG or WebP optimized
+Usage: object-contain for consistent vehicle presentation
+Service Icons/Feature Images:
+Size: 256x256px or 512x512px
+Format: PNG for icons with transparency, SVG preferred
+Usage: Feature illustrations and service icons
+Mobile Optimization:
+Create responsive versions with (u169) suffix for 16:9 aspect ratio
+Use smaller file sizes for mobile (reduce dimensions by 30-50%)
+General Guidelines:
+Always provide 2x versions for high-DPI displays (Retina)
+Use WebP format when possible with JPG fallbacks
+Optimize file sizes - aim for under 200KB for most images
+Background images can be larger (300-500KB) due to their importance
+Consider lazy loading for images below the fold
+Your current naming convention with (u169) for 16:9 optimized versions is good practice and should be continued.
+
+
 google cloud api: https://console.cloud.google.com/apis/dashboard?authuser=0&inv=1&invt=Ab3StQ&project=limos-rental-site&pageState=(%22duration%22:(%22groupValue%22:%22PT12H%22,%22customValue%22:null))
 
 glavne:
@@ -138,7 +176,7 @@ Prioritet:
 # da se posalje neka teemetrija kad korisnik dodje do poslenjeg koraka. pa posle i da li je stisnuo na pay ili nije itd
 # proveriti koliko dugo treba sajtu da se inicijalno ucita. da li je predugo.
 # proveriti jel se auta ucitavaju brzo bez da blokiraju ostale stvari
-# da se izravna ovo sto je na macu lose
++ da se izravna ovo sto je na macu lose
 # da se proveri Publishable Key
 # da se vidi koji domen koristimo
 # da se vidi health check sta proveravamo koji domen (https://limos-rental-api.azurewebsites.net/health   and    https://limos-rental-api.azurewebsites.net/ )

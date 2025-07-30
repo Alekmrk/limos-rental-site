@@ -5,7 +5,7 @@ import Button from "../../components/Button";
 import Image from "../../components/Image";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlane, faClock, faShieldAlt, faUserTie, faWifi, faCoffee } from "@fortawesome/free-solid-svg-icons";
-import airportTransferImage from "../../assets/airport(u169).jpg";
+import airportTransferImage from "../../assets/background/airport(u169_2k).jpg";
 import { Link } from "react-router-dom";
 
 const AirportTransfer = ({ scrollUp }) => {
