@@ -21,16 +21,6 @@ const Home = ({ scrollUp, setSelectedVehicle }) => {
 
   return (
     <>
-      {/* Development Notice - Remove in production */}
-      <div className="fixed top-20 right-4 z-50">
-        <Link 
-          to="/prototypes" 
-          className="bg-royal-blue text-white px-4 py-2 rounded-lg shadow-lg hover:bg-royal-blue-dark transition-colors text-sm font-medium"
-        >
-          View Prototypes
-        </Link>
-      </div>
-      
       <BannerSection />
       <ServicesSection />
       <FeaturesSection />

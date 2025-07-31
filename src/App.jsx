@@ -29,15 +29,6 @@ import { ReservationContextProvider } from "./contexts/ReservationContext";
 import { useGoogleMapsApi } from "./hooks/useGoogleMapsApi";
 import TermsOfService from "./pages/TermsOfService/TermsOfService";
 import LegalNotice from "./pages/LegalNotice/LegalNotice";
-import PrototypeHorizontal from "./pages/PrototypeHorizontal/PrototypeHorizontal";
-import PrototypeCentered from "./pages/PrototypeCentered/PrototypeCentered";
-import PrototypeSplit from "./pages/PrototypeSplit/PrototypeSplit";
-import PrototypeNavigation from "./pages/PrototypeNavigation/PrototypeNavigation";
-import PrototypeHybrid from "./pages/PrototypeHybrid/PrototypeHybrid";
-import PrototypeFloating from "./pages/PrototypeFloating/PrototypeFloating";
-import PrototypeSidebar from "./pages/PrototypeSidebar/PrototypeSidebar";
-import PrototypeSidebarFullImage from "./pages/PrototypeSidebarFullImage/PrototypeSidebarFullImage";
-import PrototypeSplitVertical from "./pages/PrototypeSplitVertical/PrototypeSplitVertical";
 
 function App() {
   const { isLoaded, loadError } = useGoogleMapsApi();
@@ -102,17 +93,6 @@ function App() {
           <Route path="/privacy-policy" element={<PrivacyPolicy scrollUp={scrollUp} />} />
           <Route path="/terms-of-service" element={<TermsOfService scrollUp={scrollUp} />} />
           <Route path="/legal-notice" element={<LegalNotice scrollUp={scrollUp} />} />
-          
-          {/* Prototype Routes */}
-          <Route path="/prototypes" element={<PrototypeNavigation />} />
-          <Route path="/prototype-horizontal" element={<PrototypeHorizontal scrollUp={scrollUp} />} />
-          <Route path="/prototype-centered" element={<PrototypeCentered scrollUp={scrollUp} />} />
-          <Route path="/prototype-split" element={<PrototypeSplit scrollUp={scrollUp} />} />
-          <Route path="/prototype-hybrid" element={<PrototypeHybrid scrollUp={scrollUp} />} />
-          <Route path="/prototype-floating" element={<PrototypeFloating scrollUp={scrollUp} />} />
-          <Route path="/prototype-sidebar" element={<PrototypeSidebar scrollUp={scrollUp} />} />
-          <Route path="/prototype-sidebar-full" element={<PrototypeSidebarFullImage scrollUp={scrollUp} />} />
-          <Route path="/prototype-split-vertical" element={<PrototypeSplitVertical scrollUp={scrollUp} />} />
           
           <Route path="*" element={<NotFound scrollUp={scrollUp} />} />
         </Routes>
