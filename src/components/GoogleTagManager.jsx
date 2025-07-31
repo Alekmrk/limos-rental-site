@@ -91,22 +91,22 @@ export const updateGTMConsent = (consentSettings) => {
  * Send custom event to GTM
  */
 export const sendGTMEvent = (eventName, eventData = {}) => {
-  if (typeof window === 'undefined' || !window[GTM_CONFIG.dataLayerName]) {
-    console.warn('GTM dataLayer not available, event not sent:', eventName);
+  if (typeof window.gtag === 'undefined') {
+    console.warn('GTM not initialized, event not sent:', eventName);
     return;
   }
 
-  // Push to dataLayer (this is what GTM variables can read)
-  window[GTM_CONFIG.dataLayerName].push({
-    event: eventName,
+  window.gtag('event', eventName, {
     event_category: eventData.category || 'general',
     event_label: eventData.label || '',
     value: eventData.value || 0,
+    custom_parameter_1: eventData.custom1 || '',
+    custom_parameter_2: eventData.custom2 || '',
     ...eventData
   });
 
   if (GTM_CONFIG.debug) {
-    console.log('📊 GTM Event sent to dataLayer:', eventName, eventData);
+    console.log('📊 GTM Event sent:', eventName, eventData);
   }
 };
 

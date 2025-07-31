@@ -321,13 +321,5 @@ export const trackCustomEvent = (eventName, eventData = {}, utmData = null) => {
 };
 
 export {
-  GA4_CONFIG,
-  initializeGA4,
-  sendGA4PageView,
-  trackBookingStep,
-  trackQuoteGenerated,
-  trackVehicleSelected,
-  trackConversion,
-  trackPaymentFailure,
-  trackCustomEvent
+  GA4_CONFIG
 };
