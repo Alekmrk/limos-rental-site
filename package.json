@@ -8,8 +8,7 @@
     "build": "vite build --mode production",
     "preview": "vite preview",
     "lint": "eslint src --ext js,jsx --report-unused-disable-directives --max-warnings 0",
-    "optimize-images": "node scripts/optimize-images.js",
-    "prebuild": "npm run optimize-images"
+    "optimize-images": "node scripts/optimize-images.js"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.4.0",
