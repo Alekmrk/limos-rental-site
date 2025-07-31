@@ -91,22 +91,27 @@ export const updateGTMConsent = (consentSettings) => {
  * Send custom event to GTM
  */
 export const sendGTMEvent = (eventName, eventData = {}) => {
-  if (typeof window.gtag === 'undefined') {
-    console.warn('GTM not initialized, event not sent:', eventName);
-    return;
-  }
+  try {
+    if (typeof window.gtag === 'undefined') {
+      console.warn('GTM not initialized, event not sent:', eventName);
+      return;
+    }
 
-  window.gtag('event', eventName, {
-    event_category: eventData.category || 'general',
-    event_label: eventData.label || '',
-    value: eventData.value || 0,
-    custom_parameter_1: eventData.custom1 || '',
-    custom_parameter_2: eventData.custom2 || '',
-    ...eventData
-  });
+    window.gtag('event', eventName, {
+      event_category: eventData.category || 'general',
+      event_label: eventData.label || '',
+      value: eventData.value || 0,
+      custom_parameter_1: eventData.custom1 || '',
+      custom_parameter_2: eventData.custom2 || '',
+      ...eventData
+    });
 
-  if (GTM_CONFIG.debug) {
-    console.log('📊 GTM Event sent:', eventName, eventData);
+    if (GTM_CONFIG.debug) {
+      console.log('📊 GTM Event sent:', eventName, eventData);
+    }
+  } catch (error) {
+    console.error('❌ GTM Event failed:', error);
+    // Don't throw error, just log it to prevent breaking payment flow
   }
 };
 
