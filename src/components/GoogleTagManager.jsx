@@ -91,22 +91,22 @@ export const updateGTMConsent = (consentSettings) => {
  * Send custom event to GTM
  */
 export const sendGTMEvent = (eventName, eventData = {}) => {
-  if (typeof window.gtag === 'undefined') {
-    console.warn('GTM not initialized, event not sent:', eventName);
+  if (typeof window === 'undefined' || !window[GTM_CONFIG.dataLayerName]) {
+    console.warn('GTM dataLayer not available, event not sent:', eventName);
     return;
   }
 
-  window.gtag('event', eventName, {
+  // Push to dataLayer (this is what GTM variables can read)
+  window[GTM_CONFIG.dataLayerName].push({
+    event: eventName,
     event_category: eventData.category || 'general',
     event_label: eventData.label || '',
     value: eventData.value || 0,
-    custom_parameter_1: eventData.custom1 || '',
-    custom_parameter_2: eventData.custom2 || '',
     ...eventData
   });
 
   if (GTM_CONFIG.debug) {
-    console.log('📊 GTM Event sent:', eventName, eventData);
+    console.log('📊 GTM Event sent to dataLayer:', eventName, eventData);
   }
 };
 
@@ -117,13 +117,13 @@ export const sendUTMToGTM = (utmData) => {
   if (!utmData || !utmData.hasUTMs) return;
 
   sendGTMEvent('utm_data_captured', {
-    category: 'acquisition',
+    category: 'limo_acquisition',
     label: 'utm_tracking',
-    campaign_source: utmData.source,
-    campaign_medium: utmData.medium,
-    campaign_name: utmData.campaign,
-    campaign_term: utmData.term,
-    campaign_content: utmData.content,
+    utm_source: utmData.source,
+    utm_medium: utmData.medium,
+    utm_campaign: utmData.campaign,
+    utm_term: utmData.term,
+    utm_content: utmData.content,
     utm_timestamp: utmData.timestamp
   });
 };
@@ -138,28 +138,28 @@ export const sendBookingEvent = (milestone, data = {}) => {
       category: 'engagement'
     },
     'quote_started': {
-      event_name: 'begin_checkout',
-      category: 'ecommerce'
+      event_name: 'start_booking',
+      category: 'limo_booking'
     },
     'vehicle_selected': {
-      event_name: 'add_to_cart',
-      category: 'ecommerce'
+      event_name: 'select_vehicle',
+      category: 'limo_booking'
     },
     'details_entered': {
-      event_name: 'add_payment_info',
-      category: 'ecommerce'
+      event_name: 'enter_customer_details',
+      category: 'limo_booking'
     },
     'payment_initiated': {
-      event_name: 'purchase_intent',
-      category: 'ecommerce'
+      event_name: 'initiate_payment',
+      category: 'limo_booking'
     },
     'payment_completed': {
-      event_name: 'purchase',
-      category: 'ecommerce'
+      event_name: 'booking_completed',
+      category: 'limo_conversion'
     },
     'payment_failed': {
       event_name: 'payment_failed',
-      category: 'ecommerce'
+      category: 'limo_booking'
     }
   };
 
@@ -192,18 +192,18 @@ export const sendConversionEvent = (reservationData, utmData = null) => {
 
   // Add UTM data if available
   if (utmData && utmData.hasUTMs) {
-    conversionData.campaign_source = utmData.source;
-    conversionData.campaign_medium = utmData.medium;
-    conversionData.campaign_name = utmData.campaign;
-    conversionData.campaign_term = utmData.term;
-    conversionData.campaign_content = utmData.content;
+    conversionData.utm_source = utmData.source;
+    conversionData.utm_medium = utmData.medium;
+    conversionData.utm_campaign = utmData.campaign;
+    conversionData.utm_term = utmData.term;
+    conversionData.utm_content = utmData.content;
   }
 
-  sendGTMEvent('purchase', conversionData);
+  sendGTMEvent('booking_completed', conversionData);
   
   // Also send a custom conversion event for better tracking
   sendGTMEvent('limo_booking_completed', {
-    category: 'conversion',
+    category: 'limo_conversion',
     label: 'successful_booking',
     value: conversionData.value,
     booking_type: reservationData.isHourly ? 'hourly' : 'transfer',

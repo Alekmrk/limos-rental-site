@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analytics Test Page</title>
+    
+    <!-- Google Tag Manager -->
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-M54BVJHK');</script>
+    <!-- End Google Tag Manager -->
+</head>
+<body>
+    <!-- Google Tag Manager (noscript) -->
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-M54BVJHK"
+    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    <!-- End Google Tag Manager (noscript) -->
+
+    <h1>🧪 Analytics Test Page</h1>
+    
+    <div style="max-width: 600px; margin: 50px auto; padding: 20px; font-family: Arial;">
+        <h2>Test Your Analytics Setup</h2>
+        
+        <p><strong>Your IDs:</strong></p>
+        <ul>
+            <li>GA4: G-8W9JK6BFHC ✅</li>
+            <li>GTM: GTM-M54BVJHK ✅</li>
+        </ul>
+        
+        <h3>🎯 Test UTM Tracking</h3>
+        <p>Add UTM parameters to this URL:</p>
+        <code>?utm_source=test&utm_medium=manual&utm_campaign=analytics_test&utm_term=luxury+limo&utm_content=test_ad</code>
+        
+        <h3>🛒 Test Booking Events</h3>
+        <button onclick="testQuoteStarted()" style="margin: 5px; padding: 10px;">
+            Test: Start Booking
+        </button>
+        <button onclick="testVehicleSelected()" style="margin: 5px; padding: 10px;">
+            Test: Select Vehicle
+        </button>
+        <button onclick="testPaymentInfo()" style="margin: 5px; padding: 10px;">
+            Test: Enter Details
+        </button>
+        <button onclick="testPurchase()" style="margin: 5px; padding: 10px;">
+            Test: Complete Booking
+        </button>
+        
+        <h3>📊 Check Results</h3>
+        <ol>
+            <li><strong>GA4 Realtime</strong>: <a href="https://analytics.google.com/" target="_blank">analytics.google.com</a> → Realtime</li>
+            <li><strong>GTM Preview</strong>: Enable Preview mode in GTM</li>
+            <li><strong>Browser Console</strong>: Check for debug messages</li>
+        </ol>
+        
+        <div id="results" style="margin-top: 20px; padding: 15px; background: #f0f0f0; border-radius: 5px;">
+            <strong>Test Results:</strong>
+            <div id="output"></div>
+        </div>
+    </div>
+
+    <script>
+        // Test UTM capture
+        function captureUTMs() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const utmData = {
+                source: urlParams.get('utm_source'),
+                medium: urlParams.get('utm_medium'),
+                campaign: urlParams.get('utm_campaign'),
+                term: urlParams.get('utm_term'),
+                content: urlParams.get('utm_content')
+            };
+            
+            if (utmData.source) {
+                dataLayer.push({
+                    'event': 'utm_data_captured',
+                    'utm_source': utmData.source,
+                    'utm_medium': utmData.medium,
+                    'utm_campaign': utmData.campaign,
+                    'utm_term': utmData.term,
+                    'utm_content': utmData.content
+                });
+                
+                log(`✅ UTM data captured: ${JSON.stringify(utmData)}`);
+            } else {
+                log('ℹ️ No UTM parameters found. Add ?utm_source=test&utm_medium=manual&utm_campaign=analytics_test to URL');
+            }
+        }
+        
+        // Test booking events
+        function testQuoteStarted() {
+            dataLayer.push({
+                'event': 'start_booking',
+                'value': 250,
+                'currency': 'CHF'
+            });
+            log('🎯 Event sent: start_booking');
+        }
+        
+        function testVehicleSelected() {
+            dataLayer.push({
+                'event': 'select_vehicle',
+                'vehicle_name': 'Mercedes S-Class',
+                'vehicle_category': 'luxury_sedan',
+                'value': 250,
+                'currency': 'CHF'
+            });
+            log('🎯 Event sent: select_vehicle');
+        }
+        
+        function testPaymentInfo() {
+            dataLayer.push({
+                'event': 'enter_customer_details',
+                'value': 250,
+                'currency': 'CHF'
+            });
+            log('🎯 Event sent: enter_customer_details');
+        }
+        
+        function testPurchase() {
+            dataLayer.push({
+                'event': 'booking_completed',
+                'transaction_id': 'test_' + Date.now(),
+                'value': 250,
+                'currency': 'CHF',
+                'vehicle_name': 'Mercedes S-Class',
+                'vehicle_category': 'luxury_sedan'
+            });
+            log('🎯 Event sent: booking_completed');
+        }
+        
+        // Logging function
+        function log(message) {
+            const output = document.getElementById('output');
+            const time = new Date().toLocaleTimeString();
+            output.innerHTML += `<div>[${time}] ${message}</div>`;
+            console.log(message);
+        }
+        
+        // Initialize on page load
+        window.addEventListener('load', function() {
+            log('📱 Test page loaded');
+            captureUTMs();
+            
+            // Check if GTM is loaded
+            if (typeof dataLayer !== 'undefined') {
+                log('✅ GTM dataLayer detected');
+            } else {
+                log('❌ GTM dataLayer not found');
+            }
+        });
+    </script>
+</body>
+</html>
