@@ -3,7 +3,7 @@
  * Handles GA4 tracking with UTM data and booking events
  */
 
-import { sendGTMEvent, sendBookingEvent, sendConversionEvent } from './GoogleTagManager';
+import { sendGTMEvent, sendBookingEvent, sendConversionEvent } from './../components/GoogleTagManager';
 
 // GA4 Configuration
 const GA4_CONFIG = {
