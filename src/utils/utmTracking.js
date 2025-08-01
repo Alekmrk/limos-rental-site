@@ -350,3 +350,79 @@ export const trackConversion = (utmData, conversionType = 'purchase') => {
     return null;
   }
 };
+
+/**
+ * Preserve UTMs in the current URL
+ */
+export const preserveUTMsInURL = () => {
+  try {
+    // Get stored UTMs
+    const storedUTMs = getStoredUTMParameters();
+    if (!storedUTMs || Object.keys(storedUTMs).length === 0) return;
+    
+    // Get current URL
+    const currentURL = new URL(window.location.href);
+    
+    // Check if UTMs already in URL (prevent infinite loops)
+    const hasUTMs = UTM_PARAMS.some(param => currentURL.searchParams.has(param));
+    if (hasUTMs) {
+      console.log('🔗 UTMs already in URL, skipping preservation');
+      return;
+    }
+    
+    // Don't add UTMs to certain pages where they don't make sense
+    const excludePaths = ['/privacy-policy', '/terms-of-service', '/legal-notice'];
+    if (excludePaths.includes(currentURL.pathname)) {
+      console.log('🔗 Skipping UTM preservation on legal page');
+      return;
+    }
+    
+    // Add UTMs to URL
+    let added = false;
+    Object.entries(storedUTMs).forEach(([key, value]) => {
+      if (value && UTM_PARAMS.includes(key)) {
+        currentURL.searchParams.set(key, value);
+        added = true;
+      }
+    });
+    
+    if (added) {
+      // Update URL without reload
+      window.history.replaceState({}, '', currentURL.toString());
+      console.log('🔗 UTMs preserved in URL:', currentURL.toString());
+    }
+  } catch (error) {
+    console.error('❌ Error preserving UTMs in URL:', error);
+  }
+};
+
+/**
+ * Initialize UTM tracking with URL preservation
+ */
+export const initUTMTrackingWithURLPreservation = () => {
+  // First do normal init
+  initUTMTracking();
+  
+  // Then preserve UTMs in URL
+  preserveUTMsInURL();
+};
+
+/**
+ * Preserve UTMs on navigation (for React Router)
+ */
+export const preserveUTMsOnNavigation = () => {
+  // Small delay to ensure the route has changed and DOM is updated
+  setTimeout(() => {
+    // Only preserve if we have stored UTMs and current URL doesn't have them
+    const storedUTMs = getStoredUTMParameters();
+    if (storedUTMs && Object.keys(storedUTMs).length > 0) {
+      const hasUTMsInURL = UTM_PARAMS.some(param => 
+        new URLSearchParams(window.location.search).has(param)
+      );
+      
+      if (!hasUTMsInURL) {
+        preserveUTMsInURL();
+      }
+    }
+  }, 100);
+};

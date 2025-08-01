@@ -1,5 +1,5 @@
 // Test deployment - Frontend workflow update - May 2, 2025 - v2
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, useLocation } from "react-router-dom";
 import { useEffect } from "react";
 import Footer from "./components/Footer/Footer";
 import Header from "./components/Header/Header";
@@ -29,10 +29,11 @@ import { ReservationContextProvider } from "./contexts/ReservationContext";
 import { useGoogleMapsApi } from "./hooks/useGoogleMapsApi";
 import TermsOfService from "./pages/TermsOfService/TermsOfService";
 import LegalNotice from "./pages/LegalNotice/LegalNotice";
-import { captureUTMParameters, debugUTMState, getStoredUTMParameters, extractAndStoreUTMFromURL, initUTMTracking, trackConversion, enableCrossTabSync, captureUTMWithConsent, validateUTM, getUTMDebugInfo } from "./utils/utmTracking";
+import { captureUTMParameters, debugUTMState, getStoredUTMParameters, extractAndStoreUTMFromURL, initUTMTracking, trackConversion, enableCrossTabSync, captureUTMWithConsent, validateUTM, getUTMDebugInfo, initUTMTrackingWithURLPreservation, preserveUTMsOnNavigation, preserveUTMsInURL } from "./utils/utmTracking";
 
 function App() {
   const { isLoaded, loadError } = useGoogleMapsApi();
+  const location = useLocation(); // Hook to detect route changes
   
   // Scroll to top on next tick to ensure content is rendered before scrolling
   const scrollUp = () => {
@@ -44,8 +45,8 @@ function App() {
   const [selectedVehicle, setSelectedVehicle] = useState(cars[0]);
 
   useEffect(() => {
-    // Initialize UTM tracking with cross-tab support
-    initUTMTracking();
+    // Initialize UTM tracking with URL preservation
+    initUTMTrackingWithURLPreservation();
     
     // Make UTM utilities available globally for testing
     if (import.meta.env.DEV || window.location.search.includes('utm_debug=true')) {
@@ -59,6 +60,7 @@ function App() {
       window.captureUTMWithConsent = captureUTMWithConsent;
       window.validateUTM = validateUTM;
       window.getUTMDebugInfo = getUTMDebugInfo;
+      window.preserveUTMsInURL = preserveUTMsInURL;
       
       // Load UTM test console for development
       import('./utils/utmTestConsole.js').then(() => {
@@ -68,6 +70,11 @@ function App() {
       });
     }
   }, []);
+
+  // Preserve UTMs in URL on route changes
+  useEffect(() => {
+    preserveUTMsOnNavigation();
+  }, [location.pathname, location.search]);
 
   if (loadError) {
     console.error('Error loading Google Maps:', loadError);
