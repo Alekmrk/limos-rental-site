@@ -182,132 +182,165 @@ const CookieConsent = () => {
     CookieManager.set('essential_consent', 'granted', 365);
   }, []);
 
-  // Enhanced consent status checking with better persistence
+  // Simplified consent status checking with atomic storage and migration
   const checkConsentStatus = useCallback(() => {
     try {
-      const consent = localStorage.getItem('cookie-consent');
-      const timestamp = localStorage.getItem('cookie-consent-timestamp');
+      // First check for new format
+      const consentData = localStorage.getItem('cookie-consent-data');
       const lastHidden = localStorage.getItem('cookie-consent-last-hidden');
       
-      if (!consent || !timestamp) {
+      if (!consentData) {
+        // Try migration from legacy format
+        const migrated = migrateLegacyData();
+        if (migrated) {
+          return { ...migrated, lastHidden: lastHidden };
+        }
+        return { hasConsent: false, expired: false, lastHidden: lastHidden };
+      }
+
+      const data = JSON.parse(consentData);
+      
+      // Validate data structure
+      if (!data.preferences || !data.timestamp || !data.version) {
+        console.warn('🍪 Invalid consent data structure, clearing...');
+        localStorage.removeItem('cookie-consent-data');
         return { hasConsent: false, expired: false, lastHidden: lastHidden };
       }
 
       // Check if consent is older than 12 months (GDPR requirement)
-      const consentDate = new Date(timestamp);
+      const consentDate = new Date(data.timestamp);
       const now = new Date();
       const monthsOld = (now.getTime() - consentDate.getTime()) / (1000 * 60 * 60 * 24 * 30);
       
       if (monthsOld > 12) {
-        // Consent expired, clear old data but keep last hidden timestamp
-        localStorage.removeItem('cookie-consent');
-        localStorage.removeItem('cookie-consent-timestamp');
+        console.log('🍪 Consent expired (12+ months), clearing data...');
+        localStorage.removeItem('cookie-consent-data');
         return { hasConsent: false, expired: true, lastHidden: lastHidden };
       }
 
-      const savedPreferences = JSON.parse(consent);
-      return { hasConsent: true, expired: false, preferences: savedPreferences, lastHidden: lastHidden };
+      return { 
+        hasConsent: true, 
+        expired: false, 
+        preferences: data.preferences, 
+        lastHidden: lastHidden,
+        timestamp: data.timestamp 
+      };
     } catch (error) {
-      console.error('Error checking consent status:', error);
+      console.error('🍪 Error checking consent status:', error);
       // Clear corrupted data but preserve last hidden timestamp
       const lastHidden = localStorage.getItem('cookie-consent-last-hidden');
-      localStorage.removeItem('cookie-consent');
-      localStorage.removeItem('cookie-consent-timestamp');
+      localStorage.removeItem('cookie-consent-data');
       return { hasConsent: false, expired: false, lastHidden: lastHidden };
     }
-  }, []); // Empty dependency array to prevent recreation
+  }, [migrateLegacyData]);
 
-  // Enhanced initialization with better persistence and redirect handling
+  // Migration function for legacy cookie data
+  const migrateLegacyData = useCallback(() => {
+    try {
+      const legacyConsent = localStorage.getItem('cookie-consent');
+      const legacyTimestamp = localStorage.getItem('cookie-consent-timestamp');
+      
+      if (legacyConsent && legacyTimestamp) {
+        console.log('🔄 Migrating legacy cookie data to v2.0...');
+        
+        const preferences = JSON.parse(legacyConsent);
+        const consentData = {
+          preferences: preferences,
+          timestamp: legacyTimestamp,
+          version: '2.0',
+          source: 'migrated_from_v1',
+          userAgent: navigator.userAgent.substring(0, 100)
+        };
+        
+        // Save new format
+        localStorage.setItem('cookie-consent-data', JSON.stringify(consentData));
+        
+        // Clean up legacy data
+        localStorage.removeItem('cookie-consent');
+        localStorage.removeItem('cookie-consent-timestamp');
+        localStorage.removeItem('cookie-consent-temp-marker'); // Also remove temp marker
+        
+        console.log('✅ Migration completed successfully');
+        return { hasConsent: true, preferences: preferences, timestamp: legacyTimestamp };
+      }
+      
+      return null;
+    } catch (error) {
+      console.error('❌ Migration failed:', error);
+      // Clean up corrupted legacy data
+      localStorage.removeItem('cookie-consent');
+      localStorage.removeItem('cookie-consent-timestamp');
+      localStorage.removeItem('cookie-consent-temp-marker');
+      return null;
+    }
+  }, []);
+
+  // ...existing code...
+
+  // Simplified initialization with atomic checks
   useEffect(() => {
     // Prevent multiple initialization runs
     if (isInitialized || consentChecked) return;
     
     // Add a small delay to ensure localStorage is available and navigation is complete
     const initTimer = setTimeout(() => {
-      // Multiple checks for consent suppression/recent setting
-      const justSet = sessionStorage.getItem('cookie-consent-just-set');
-      const tempMarker = localStorage.getItem('cookie-consent-temp-marker');
-      const suppressedThisSession = sessionStorage.getItem('cookie-consent-suppressed');
-      const lastSetTimestamp = localStorage.getItem('cookie-consent-timestamp');
       const currentTime = new Date().getTime();
       
-      // Check if consent was set within the last 5 minutes (more robust)
-      const recentlySet = lastSetTimestamp && 
-        (currentTime - new Date(lastSetTimestamp).getTime()) < (5 * 60 * 1000);
+      // Single atomic check for all consent data
+      const { hasConsent, preferences: savedPreferences, timestamp } = checkConsentStatus();
       
-      // Check temp marker for payment flow returns
-      let tempMarkerRecent = false;
-      if (tempMarker) {
-        try {
-          const marker = JSON.parse(tempMarker);
-          const markerTime = new Date(marker.timestamp).getTime();
-          tempMarkerRecent = (currentTime - markerTime) < (10 * 60 * 1000); // 10 minutes
-        } catch (e) {
-          localStorage.removeItem('cookie-consent-temp-marker');
-        }
-      }
+      // Check for recent consent setting (within 5 minutes)
+      const recentlySet = timestamp && 
+        (currentTime - new Date(timestamp).getTime()) < (5 * 60 * 1000);
       
-      if (justSet || recentlySet || tempMarkerRecent) {
-        console.log('🍪 Cookie consent was recently set, skipping banner', {
-          sessionMarker: !!justSet,
-          recentlySet: recentlySet,
-          tempMarkerRecent: tempMarkerRecent,
-          timeSinceSet: lastSetTimestamp ? Math.round((currentTime - new Date(lastSetTimestamp).getTime()) / 60000) + ' minutes' : 'N/A'
-        });
-        setConsentChecked(true);
-        setIsInitialized(true);
-        return;
-      }
+      // Check for session markers
+      const justSet = sessionStorage.getItem('cookie-consent-just-set');
+      const suppressedThisSession = sessionStorage.getItem('cookie-consent-suppressed');
       
-      // Enhanced suppression checks with cross-tab fallbacks
-      if (suppressedThisSession) {
-        console.log('🍪 Cookie consent suppressed for this session (payment flow)');
-        setConsentChecked(true);
-        setIsInitialized(true);
-        return;
-      }
-      
-      // Additional check: Look for recent Stripe redirects via referrer
-      const isFromStripe = document.referrer.includes('stripe') || 
-                          document.referrer.includes('checkout.stripe.com');
-      
-      if (isFromStripe && tempMarkerRecent) {
-        console.log('🍪 Returning from Stripe with recent temp marker - skipping banner');
-        setConsentChecked(true);
-        setIsInitialized(true);
-        return;
-      }
-      
-      // Cross-tab sync check: Look for payment session indicators
+      // Payment flow detection
       const urlParams = new URLSearchParams(window.location.search);
       const sessionId = urlParams.get('session_id');
       const isPaymentPage = window.location.pathname.includes('/payment');
+      const isFromStripe = document.referrer.includes('stripe') || 
+                          document.referrer.includes('checkout.stripe.com');
       
-      if ((sessionId || isPaymentPage) && (recentlySet || tempMarkerRecent)) {
-        console.log('🍪 Payment context detected with recent consent - skipping banner', {
-          sessionId: !!sessionId,
-          isPaymentPage,
+      // Simplified suppression logic
+      const shouldSuppress = justSet || recentlySet || suppressedThisSession || 
+                            (isFromStripe && hasConsent) || 
+                            ((sessionId || isPaymentPage) && hasConsent);
+      
+      if (shouldSuppress) {
+        console.log('🍪 Cookie consent suppressed', {
+          justSet: !!justSet,
           recentlySet,
-          tempMarkerRecent
+          suppressedThisSession: !!suppressedThisSession,
+          paymentContext: !!(sessionId || isPaymentPage),
+          fromStripe: isFromStripe && hasConsent,
+          timeSinceSet: timestamp ? Math.round((currentTime - new Date(timestamp).getTime()) / 60000) + ' minutes' : 'N/A'
         });
         setConsentChecked(true);
         setIsInitialized(true);
         return;
       }
       
-      const { hasConsent, expired, preferences: savedPreferences, lastHidden } = checkConsentStatus();
-      
       console.log('🍪 Cookie consent check:', { 
         hasConsent, 
-        expired, 
         savedPreferences,
-        lastHidden: lastHidden ? new Date(lastHidden).toLocaleString() : 'Never'
+        timestamp: timestamp ? new Date(timestamp).toLocaleString() : 'Never'
       });
       
       setConsentChecked(true);
       
-      if (!hasConsent) {
+      if (hasConsent && savedPreferences) {
+        // Load saved preferences and apply them
+        console.log('🍪 Loading saved cookie preferences');
+        setPreferences(savedPreferences);
+        initializeTracking(savedPreferences);
+        setShowBanner(false);
+        setIsInitialized(true);
+      } else {
         // Check if user recently dismissed banner (within last hour) to prevent spam
+        const lastHidden = localStorage.getItem('cookie-consent-last-hidden');
         if (lastHidden) {
           const timeSinceHidden = currentTime - new Date(lastHidden).getTime();
           const oneHour = 60 * 60 * 1000;
@@ -324,108 +357,68 @@ const CookieConsent = () => {
           console.log('🍪 Showing cookie banner');
           setShowBanner(true);
           setTimeout(() => setAnimateIn(true), 50);
-        }, 1000); // Increased delay for external redirects and slow networks
+        }, 800); // Reduced delay since logic is simpler
         
         setIsInitialized(true);
         return () => clearTimeout(bannerTimer);
-      } else {
-        // Load saved preferences and apply them
-        console.log('🍪 Loading saved cookie preferences');
-        setPreferences(savedPreferences);
-        initializeTracking(savedPreferences);
-        setShowBanner(false);
-        setIsInitialized(true);
       }
-    }, 300); // Increased delay to handle redirects better
+    }, 200); // Reduced delay since we're more efficient
 
     return () => clearTimeout(initTimer);
   }, [isInitialized, consentChecked, checkConsentStatus, initializeTracking]);
 
-  // Enhanced cross-tab synchronization for all cookie consent states
+  // Simplified cross-tab synchronization with debouncing
   useEffect(() => {
+    let eventProcessing = false;
+    
     const handleStorageChange = (e) => {
-      if (!isInitialized) return;
+      if (!isInitialized || eventProcessing) return;
       
-      // Track any cookie consent related storage changes
-      const isConsentRelated = e.key && (
-        e.key === 'cookie-consent' ||
-        e.key === 'cookie-consent-temp-marker' ||
-        e.key === 'cookie-consent-timestamp' ||
-        e.key === 'cookie-consent-last-hidden'
-      );
+      // Only process our main consent data key
+      if (e.key !== 'cookie-consent-data' && e.key !== 'cookie-consent-last-hidden') return;
       
-      if (!isConsentRelated) return;
+      eventProcessing = true;
       
-      console.log(`🍪 Cookie storage change detected: ${e.key}`, { 
-        newValue: e.newValue ? 'present' : 'null',
+      console.log(`🍪 Storage change detected: ${e.key}`, { 
+        hasNewValue: !!e.newValue,
         source: 'cross-tab-sync'
       });
       
-      // Always check current consent status after any change
-      const { hasConsent, preferences: savedPreferences } = checkConsentStatus();
-      
-      // Handle consent acceptance (cookie-consent or timestamp changes)
-      if ((e.key === 'cookie-consent' || e.key === 'cookie-consent-timestamp') && hasConsent && savedPreferences) {
-        console.log('🍪 Valid consent detected from another tab - applying preferences');
-        setPreferences(savedPreferences);
-        initializeTracking(savedPreferences);
-        setShowBanner(false);
-        setShowSettings(false);
-        return;
-      }
-      
-      // Handle temp marker (payment flow protection)
-      if (e.key === 'cookie-consent-temp-marker' && e.newValue) {
-        console.log('🔒 Temp marker detected from another tab - hiding banner');
-        setShowBanner(false);
-        setAnimateIn(false);
-        return;
-      }
-      
-      // Handle banner dismissal
-      if (e.key === 'cookie-consent-last-hidden' && e.newValue) {
-        const timeSinceHidden = new Date().getTime() - new Date(e.newValue).getTime();
-        const oneHour = 60 * 60 * 1000;
+      // Debounce to prevent event storms
+      setTimeout(() => {
+        const { hasConsent, preferences: savedPreferences } = checkConsentStatus();
         
-        if (timeSinceHidden < oneHour) {
-          console.log('🍪 Recent dismissal detected - hiding banner in this tab too');
-          setShowBanner(false);
-          setAnimateIn(false);
+        // Handle consent data changes
+        if (e.key === 'cookie-consent-data') {
+          if (hasConsent && savedPreferences) {
+            console.log('🍪 Valid consent detected from another tab - applying preferences');
+            setPreferences(savedPreferences);
+            initializeTracking(savedPreferences);
+            setShowBanner(false);
+            setShowSettings(false);
+          }
         }
-        return;
-      }
+        
+        // Handle banner dismissal
+        if (e.key === 'cookie-consent-last-hidden' && e.newValue) {
+          const timeSinceHidden = new Date().getTime() - new Date(e.newValue).getTime();
+          const oneHour = 60 * 60 * 1000;
+          
+          if (timeSinceHidden < oneHour) {
+            console.log('🍪 Recent dismissal detected - hiding banner in this tab too');
+            setShowBanner(false);
+            setAnimateIn(false);
+          }
+        }
+        
+        eventProcessing = false;
+      }, 100); // 100ms debounce
     };
 
     window.addEventListener('storage', handleStorageChange);
     
-    // Enhanced: Listen for custom cross-tab communication
-    const handleCrossTabUpdate = (e) => {
-      if (e.key === 'cookie-consent-cross-tab-update' && e.newValue) {
-        try {
-          const update = JSON.parse(e.newValue);
-          console.log('🍪 Cross-tab update received:', update);
-          
-          if (update.type === 'consent_updated') {
-            setPreferences(update.preferences);
-            setShowBanner(false);
-            setAnimateIn(false);
-            
-            // Clean up the communication message
-            setTimeout(() => {
-              localStorage.removeItem('cookie-consent-cross-tab-update');
-            }, 1000);
-          }
-        } catch (error) {
-          console.warn('Failed to parse cross-tab update:', error);
-        }
-      }
-    };
-    
-    window.addEventListener('storage', handleCrossTabUpdate);
-    
     return () => {
       window.removeEventListener('storage', handleStorageChange);
-      window.removeEventListener('storage', handleCrossTabUpdate);
     };
   }, [isInitialized, checkConsentStatus, initializeTracking]);
 
@@ -434,48 +427,33 @@ const CookieConsent = () => {
       console.log('🍪 Saving cookie preferences:', newPreferences);
       const timestamp = new Date().toISOString();
       
-      // Always save all core data together for consistency
-      setPreferences(newPreferences);
-      localStorage.setItem('cookie-consent', JSON.stringify(newPreferences));
-      localStorage.setItem('cookie-consent-timestamp', timestamp);
+      // Atomic storage - save everything in one operation
+      const consentData = {
+        preferences: newPreferences,
+        timestamp: timestamp,
+        version: '2.0', // Version for future migrations
+        source: 'user_choice',
+        userAgent: navigator.userAgent.substring(0, 100) // Truncated for privacy
+      };
       
-      // Set session markers to prevent re-showing across scenarios
+      // Single localStorage write to prevent race conditions
+      localStorage.setItem('cookie-consent-data', JSON.stringify(consentData));
+      
+      // Set session marker for immediate protection
       sessionStorage.setItem('cookie-consent-just-set', 'true');
       
-      // Always set temp marker for payment redirects and cross-tab sync
-      const tempMarker = {
-        timestamp: timestamp,
-        preferences: newPreferences,
-        source: 'user_choice'
-      };
-      localStorage.setItem('cookie-consent-temp-marker', JSON.stringify(tempMarker));
+      // Update component state
+      setPreferences(newPreferences);
       
-      // Clean up temp marker after reasonable time
-      setTimeout(() => {
-        localStorage.removeItem('cookie-consent-temp-marker');
-      }, 10 * 60 * 1000); // 10 minutes
-      
-      // Notify all components and tabs immediately
+      // Notify components via custom event
       window.dispatchEvent(new CustomEvent('cookieConsentUpdated', {
         detail: newPreferences
-      }));
-      
-      // Enhanced cross-tab communication - trigger storage events
-      window.dispatchEvent(new StorageEvent('storage', {
-        key: 'cookie-consent-cross-tab-update',
-        newValue: JSON.stringify({
-          type: 'consent_updated',
-          preferences: newPreferences,
-          timestamp: timestamp,
-          source: 'cookie_banner'
-        }),
-        url: window.location.href
       }));
       
       // Apply tracking settings
       initializeTracking(newPreferences);
       
-      // Hide banner regardless of choices (GDPR compliant)
+      // Hide banner and settings
       setShowBanner(false);
       setShowSettings(false);
       setAnimateIn(false);
@@ -483,6 +461,8 @@ const CookieConsent = () => {
       console.log('✅ Cookie preferences saved successfully with timestamp:', timestamp);
     } catch (error) {
       console.error('❌ Error saving cookie preferences:', error);
+      // Show user-friendly error message
+      alert('Sorry, there was an issue saving your cookie preferences. Please try again.');
     }
   }, [initializeTracking]);
 
