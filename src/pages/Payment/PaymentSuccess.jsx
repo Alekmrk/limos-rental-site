@@ -83,7 +83,7 @@ const PaymentSuccess = () => {
         if (!sessionId) {
           console.error('No session ID found');
           clearSuppression();
-            navigate('/payment');
+          navigate('/payment');
           return;
         }
 
@@ -93,7 +93,7 @@ const PaymentSuccess = () => {
         if (!data.success) {
           console.error('Session verification failed:', data.error);
           clearSuppression();
-            navigate('/payment');
+          navigate('/payment');
           return;
         }
 
@@ -130,13 +130,9 @@ const PaymentSuccess = () => {
       } catch (error) {
         console.error('Error verifying payment:', error);
         clearSuppression();
-          navigate('/payment');
-        }
+        navigate('/payment');
       }
     };
-
-    // Extract UTM parameters from URL and store them
-    extractAndStoreUTMFromURL();
 
     verifySession();
   }, [navigate, handleInput, clearSuppression]);
