@@ -295,6 +295,24 @@ const CookieConsent = () => {
       const justSet = sessionStorage.getItem('cookie-consent-just-set');
       const suppressedThisSession = sessionStorage.getItem('cookie-consent-suppressed');
       
+      // Check for temporary protection (survives redirects)
+      let tempProtection = false;
+      const tempProtectionData = localStorage.getItem('cookie-consent-temp-protection');
+      if (tempProtectionData) {
+        try {
+          const protection = JSON.parse(tempProtectionData);
+          const notExpired = new Date(protection.expires) > new Date();
+          tempProtection = notExpired;
+          
+          if (!notExpired) {
+            localStorage.removeItem('cookie-consent-temp-protection');
+            console.log('🧹 Expired temp protection cleaned up');
+          }
+        } catch (e) {
+          localStorage.removeItem('cookie-consent-temp-protection');
+        }
+      }
+      
       // Payment flow detection
       const urlParams = new URLSearchParams(window.location.search);
       const sessionId = urlParams.get('session_id');
@@ -302,18 +320,20 @@ const CookieConsent = () => {
       const isFromStripe = document.referrer.includes('stripe') || 
                           document.referrer.includes('checkout.stripe.com');
       
-      // Simplified suppression logic
+      // Enhanced suppression logic with temp protection
       const shouldSuppress = justSet || recentlySet || suppressedThisSession || 
-                            (isFromStripe && hasConsent) || 
-                            ((sessionId || isPaymentPage) && hasConsent);
+                            tempProtection ||
+                            (isFromStripe && (hasConsent || tempProtection)) || 
+                            ((sessionId || isPaymentPage) && (hasConsent || tempProtection));
       
       if (shouldSuppress) {
         console.log('🍪 Cookie consent suppressed', {
           justSet: !!justSet,
           recentlySet,
           suppressedThisSession: !!suppressedThisSession,
+          tempProtection,
           paymentContext: !!(sessionId || isPaymentPage),
-          fromStripe: isFromStripe && hasConsent,
+          fromStripe: isFromStripe && (hasConsent || tempProtection),
           timeSinceSet: timestamp ? Math.round((currentTime - new Date(timestamp).getTime()) / 60000) + ' minutes' : 'N/A'
         });
         setConsentChecked(true);
@@ -372,8 +392,10 @@ const CookieConsent = () => {
     const handleStorageChange = (e) => {
       if (!isInitialized || eventProcessing) return;
       
-      // Only process our main consent data key
-      if (e.key !== 'cookie-consent-data' && e.key !== 'cookie-consent-last-hidden') return;
+      // Process main consent data and temp protection
+      if (e.key !== 'cookie-consent-data' && 
+          e.key !== 'cookie-consent-last-hidden' && 
+          e.key !== 'cookie-consent-temp-protection') return;
       
       eventProcessing = true;
       
@@ -395,6 +417,13 @@ const CookieConsent = () => {
             setShowBanner(false);
             setShowSettings(false);
           }
+        }
+        
+        // Handle temp protection changes
+        if (e.key === 'cookie-consent-temp-protection' && e.newValue) {
+          console.log('🔒 Temp protection detected from another tab - hiding banner');
+          setShowBanner(false);
+          setAnimateIn(false);
         }
         
         // Handle banner dismissal
@@ -439,6 +468,31 @@ const CookieConsent = () => {
       
       // Set session marker for immediate protection
       sessionStorage.setItem('cookie-consent-just-set', 'true');
+      
+      // Add temporary protection marker for payment flows (survives redirects)
+      const tempProtection = {
+        timestamp: timestamp,
+        expires: new Date(Date.now() + 15 * 60 * 1000).toISOString(), // 15 minutes
+        preferences: newPreferences,
+        reason: 'payment_protection'
+      };
+      localStorage.setItem('cookie-consent-temp-protection', JSON.stringify(tempProtection));
+      
+      // Auto-cleanup temp protection after expiry
+      setTimeout(() => {
+        try {
+          const stored = localStorage.getItem('cookie-consent-temp-protection');
+          if (stored) {
+            const data = JSON.parse(stored);
+            if (new Date(data.expires) <= new Date()) {
+              localStorage.removeItem('cookie-consent-temp-protection');
+              console.log('🧹 Temp protection expired and cleaned up');
+            }
+          }
+        } catch (e) {
+          localStorage.removeItem('cookie-consent-temp-protection');
+        }
+      }, 15 * 60 * 1000); // 15 minutes
       
       // Update component state
       setPreferences(newPreferences);

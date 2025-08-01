@@ -22,6 +22,7 @@ window.CookieConsentDebug = {
     const state = {
       localStorage: {
         consentData: localStorage.getItem('cookie-consent-data'),
+        tempProtection: localStorage.getItem('cookie-consent-temp-protection'),
         lastHidden: localStorage.getItem('cookie-consent-last-hidden'),
         // Legacy keys (should not exist in v2.0)
         legacyConsent: localStorage.getItem('cookie-consent'),
@@ -35,6 +36,8 @@ window.CookieConsentDebug = {
       parsed: {},
       computed: {
         hasConsent: false,
+        hasTempProtection: false,
+        tempProtectionExpired: false,
         isRecentlySet: false,
         isExpired: false,
         timeSinceSet: null,
@@ -64,6 +67,19 @@ window.CookieConsentDebug = {
       }
     }
 
+    // Parse temp protection
+    if (state.localStorage.tempProtection) {
+      try {
+        const protection = JSON.parse(state.localStorage.tempProtection);
+        const notExpired = new Date(protection.expires) > new Date();
+        state.computed.hasTempProtection = notExpired;
+        state.computed.tempProtectionExpired = !notExpired;
+        state.parsed.tempProtection = protection;
+      } catch (e) {
+        console.error('Failed to parse temp protection:', e);
+      }
+    }
+
     // Parse last hidden
     const lastHidden = localStorage.getItem('cookie-consent-last-hidden');
     if (lastHidden) {
@@ -90,6 +106,7 @@ window.CookieConsentDebug = {
   reset() {
     // Clear v2.0 data
     localStorage.removeItem('cookie-consent-data');
+    localStorage.removeItem('cookie-consent-temp-protection');
     localStorage.removeItem('cookie-consent-last-hidden');
     
     // Clear legacy data (if any)
@@ -129,18 +146,29 @@ window.CookieConsentDebug = {
       functional: true
     };
     
+    const timestamp = new Date().toISOString();
+    
     const consentData = {
       preferences: preferences,
-      timestamp: new Date().toISOString(),
+      timestamp: timestamp,
       version: '2.0',
       source: 'debug_simulation',
       userAgent: navigator.userAgent.substring(0, 100)
     };
     
+    // Add temp protection for payment flows
+    const tempProtection = {
+      timestamp: timestamp,
+      expires: new Date(Date.now() + 15 * 60 * 1000).toISOString(), // 15 minutes
+      preferences: preferences,
+      reason: 'debug_simulation'
+    };
+    
     localStorage.setItem('cookie-consent-data', JSON.stringify(consentData));
+    localStorage.setItem('cookie-consent-temp-protection', JSON.stringify(tempProtection));
     sessionStorage.setItem('cookie-consent-just-set', 'true');
     
-    console.log('✅ Simulated cookie acceptance (v2.0)');
+    console.log('✅ Simulated cookie acceptance (v2.0 with temp protection)');
     
     // Dispatch event to notify components
     window.dispatchEvent(new CustomEvent('cookieConsentUpdated', {
@@ -255,13 +283,13 @@ window.CookieConsentDebug = {
         }
       }, 1000);
     },
-    // Test Stripe redirect scenario (updated for v2.0)
+    // Test Stripe redirect scenario (updated for v2.0 with temp protection)
     stripeRedirectTest() {
-      console.log('🧪 Testing Stripe redirect with atomic consent data (v2.0)...');
+      console.log('🧪 Testing Stripe redirect with temp protection (v2.0)...');
       
       // Step 1: User accepts cookies
       CookieConsentDebug.simulateAcceptance();
-      console.log('1. ✅ User accepted cookies (v2.0)');
+      console.log('1. ✅ User accepted cookies (v2.0 with temp protection)');
       
       // Step 2: Simulate Stripe payment flow
       setTimeout(() => {
@@ -274,29 +302,39 @@ window.CookieConsentDebug = {
           sessionStorage.removeItem('cookie-consent-suppressed');
           console.log('3. 🧹 SessionStorage cleared (Stripe redirect effect)');
           
-          // Test if atomic data protection still works
+          // Test if temp protection still works
           setTimeout(() => {
             console.log('4. 🔍 Checking protection after Stripe redirect:');
             CookieConsentDebug.getState();
             
             const consentData = localStorage.getItem('cookie-consent-data');
+            const tempProtection = localStorage.getItem('cookie-consent-temp-protection');
             
-            if (consentData) {
+            if (consentData && tempProtection) {
               try {
-                const parsed = JSON.parse(consentData);
+                const consent = JSON.parse(consentData);
+                const protection = JSON.parse(tempProtection);
+                const notExpired = new Date(protection.expires) > new Date();
+                
                 console.log('Protection status:', {
                   hasConsentData: true,
-                  hasPreferences: !!parsed.preferences,
-                  hasTimestamp: !!parsed.timestamp,
-                  version: parsed.version,
+                  hasTempProtection: true,
+                  tempProtectionExpired: !notExpired,
+                  hasPreferences: !!consent.preferences,
+                  version: consent.version,
                   shouldShowBanner: false
                 });
-                console.log('✅ Atomic protection working - banner should NOT show');
+                
+                if (notExpired) {
+                  console.log('✅ Temp protection working - banner should NOT show');
+                } else {
+                  console.log('⚠️ Temp protection expired - might need longer duration');
+                }
               } catch (e) {
-                console.log('❌ Corrupted consent data');
+                console.log('❌ Corrupted protection data');
               }
             } else {
-              console.log('❌ Protection failed - no consent data found');
+              console.log('❌ Protection failed - missing data');
             }
           }, 500);
         }, 2000);
