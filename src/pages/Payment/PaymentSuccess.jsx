@@ -122,10 +122,10 @@ const PaymentSuccess = () => {
           
           const thankyouURL = `/thankyou?${utmParams.toString()}`;
           console.log('🔗 Navigating to thankyou with UTMs:', thankyouURL);
-          navigate(thankyouURL, { replace: true });
+          navigate(thankyouURL);
         } else {
           console.log('🔗 Navigating to thankyou without UTMs');
-          navigate('/thankyou', { replace: true });
+          navigate('/thankyou');
         }
       } catch (error) {
         console.error('Error verifying payment:', error);
