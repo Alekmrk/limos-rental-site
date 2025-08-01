@@ -29,7 +29,7 @@ import { ReservationContextProvider } from "./contexts/ReservationContext";
 import { useGoogleMapsApi } from "./hooks/useGoogleMapsApi";
 import TermsOfService from "./pages/TermsOfService/TermsOfService";
 import LegalNotice from "./pages/LegalNotice/LegalNotice";
-import { captureUTMParameters, debugUTMState, getStoredUTMParameters, extractAndStoreUTMFromURL } from "./utils/utmTracking";
+import { captureUTMParameters, debugUTMState, getStoredUTMParameters, extractAndStoreUTMFromURL, initUTMTracking, trackConversion, enableCrossTabSync, captureUTMWithConsent, validateUTM, getUTMDebugInfo } from "./utils/utmTracking";
 
 function App() {
   const { isLoaded, loadError } = useGoogleMapsApi();
@@ -44,8 +44,8 @@ function App() {
   const [selectedVehicle, setSelectedVehicle] = useState(cars[0]);
 
   useEffect(() => {
-    // Capture UTM parameters on initial load
-    captureUTMParameters();
+    // Initialize UTM tracking with cross-tab support
+    initUTMTracking();
     
     // Make UTM utilities available globally for testing
     if (import.meta.env.DEV || window.location.search.includes('utm_debug=true')) {
@@ -53,6 +53,12 @@ function App() {
       window.debugUTMState = debugUTMState;
       window.getStoredUTMParameters = getStoredUTMParameters;
       window.extractAndStoreUTMFromURL = extractAndStoreUTMFromURL;
+      window.initUTMTracking = initUTMTracking;
+      window.trackConversion = trackConversion;
+      window.enableCrossTabSync = enableCrossTabSync;
+      window.captureUTMWithConsent = captureUTMWithConsent;
+      window.validateUTM = validateUTM;
+      window.getUTMDebugInfo = getUTMDebugInfo;
       
       // Load UTM test console for development
       import('./utils/utmTestConsole.js').then(() => {

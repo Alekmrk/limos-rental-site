@@ -472,7 +472,7 @@ const CookieConsent = () => {
       // Add temporary protection marker for payment flows (survives redirects)
       const tempProtection = {
         timestamp: timestamp,
-        expires: new Date(Date.now() + 15 * 60 * 1000).toISOString(), // 15 minutes
+        expires: new Date(Date.now() + 60 * 60 * 1000).toISOString(), // 60 minutes
         preferences: newPreferences,
         reason: 'payment_protection'
       };
@@ -492,7 +492,7 @@ const CookieConsent = () => {
         } catch (e) {
           localStorage.removeItem('cookie-consent-temp-protection');
         }
-      }, 15 * 60 * 1000); // 15 minutes
+      }, 60 * 60 * 1000); // 60 minutes
       
       // Update component state
       setPreferences(newPreferences);

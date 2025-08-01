@@ -32,18 +32,21 @@ export const captureUTMParameters = () => {
     });
 
     if (hasUTM) {
+      // Validate UTM data before storing
+      const validatedData = validateUTM(utmData);
+      
       // Store in sessionStorage (survives redirects but not new tabs)
-      sessionStorage.setItem(UTM_STORAGE_KEY, JSON.stringify(utmData));
+      sessionStorage.setItem(UTM_STORAGE_KEY, JSON.stringify(validatedData));
       
       // Backup in localStorage with timestamp (survives browser restarts)
       localStorage.setItem(UTM_BACKUP_KEY, JSON.stringify({
-        ...utmData,
+        ...validatedData,
         timestamp: new Date().toISOString(),
         expires: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString() // 24 hours
       }));
 
-      console.log('🎯 UTM parameters captured:', utmData);
-      return utmData;
+      console.log('🎯 UTM parameters captured and validated:', validatedData);
+      return validatedData;
     }
 
     return null;
@@ -136,9 +139,12 @@ export const extractAndStoreUTMFromURL = (url = window.location.href) => {
     });
 
     if (hasUTM) {
-      sessionStorage.setItem(UTM_STORAGE_KEY, JSON.stringify(utmData));
-      console.log('🎯 UTM extracted and stored from URL:', utmData);
-      return utmData;
+      // Validate UTM data before storing
+      const validatedData = validateUTM(utmData);
+      
+      sessionStorage.setItem(UTM_STORAGE_KEY, JSON.stringify(validatedData));
+      console.log('🎯 UTM extracted, validated and stored from URL:', validatedData);
+      return validatedData;
     }
 
     return null;
@@ -199,4 +205,148 @@ export const debugUTMState = () => {
     session: session ? JSON.parse(session) : null,
     backup: backup ? JSON.parse(backup) : null
   };
+};
+
+/**
+ * Enable cross-tab UTM synchronization
+ */
+export const enableCrossTabSync = () => {
+  try {
+    // Always check localStorage backup first for cross-tab support
+    const backup = localStorage.getItem(UTM_BACKUP_KEY);
+    if (backup && !sessionStorage.getItem(UTM_STORAGE_KEY)) {
+      const data = JSON.parse(backup);
+      if (new Date(data.expires) > new Date()) {
+        const { timestamp, expires, ...utmData } = data;
+        sessionStorage.setItem(UTM_STORAGE_KEY, JSON.stringify(utmData));
+        console.log('🔄 UTM data synced from localStorage to sessionStorage for cross-tab support');
+        return utmData;
+      }
+    }
+    return null;
+  } catch (error) {
+    console.error('❌ Error enabling cross-tab UTM sync:', error);
+    return null;
+  }
+};
+
+/**
+ * Initialize UTM tracking with cross-tab support
+ */
+export const initUTMTracking = () => {
+  // Check localStorage backup first for cross-tab support
+  const backup = localStorage.getItem(UTM_BACKUP_KEY);
+  if (backup && !sessionStorage.getItem(UTM_STORAGE_KEY)) {
+    const data = JSON.parse(backup);
+    if (new Date(data.expires) > new Date()) {
+      const { timestamp, expires, ...utmData } = data;
+      sessionStorage.setItem(UTM_STORAGE_KEY, JSON.stringify(utmData));
+      console.log('🔄 UTM restored from backup on init');
+    }
+  }
+  
+  // Then capture new UTMs if present
+  captureUTMParameters();
+};
+
+/**
+ * Consent-aware UTM capture - only captures if analytics consent is given
+ */
+export const captureUTMWithConsent = () => {
+  try {
+    const consentData = localStorage.getItem('cookie-consent-data');
+    if (consentData) {
+      const consent = JSON.parse(consentData);
+      if (consent.preferences?.analytics) {
+        return captureUTMParameters();
+      } else {
+        console.log('🚫 UTM capture skipped - analytics consent not given');
+        return null;
+      }
+    }
+    
+    // If no consent data exists, allow capture (user hasn't seen banner yet)
+    return captureUTMParameters();
+  } catch (error) {
+    console.error('❌ Error in consent-aware UTM capture:', error);
+    // Fallback to regular capture on error
+    return captureUTMParameters();
+  }
+};
+
+/**
+ * Validate UTM parameters to prevent invalid data
+ */
+export const validateUTM = (utmData) => {
+  const validSources = ['google', 'facebook', 'email', 'direct', 'bing', 'linkedin', 'twitter', 'instagram', 'youtube', 'referral'];
+  const validMediums = ['cpc', 'organic', 'email', 'social', 'referral', 'display', 'video', 'affiliate', 'sms'];
+  
+  return {
+    ...utmData,
+    utm_source: validSources.includes(utmData.utm_source?.toLowerCase()) ? utmData.utm_source.toLowerCase() : (utmData.utm_source || 'direct'),
+    utm_medium: validMediums.includes(utmData.utm_medium?.toLowerCase()) ? utmData.utm_medium.toLowerCase() : (utmData.utm_medium || 'none'),
+    utm_campaign: utmData.utm_campaign || 'none',
+    utm_term: utmData.utm_term || '',
+    utm_content: utmData.utm_content || ''
+  };
+};
+
+/**
+ * Get UTM debug information
+ */
+export const getUTMDebugInfo = () => {
+  return {
+    sessionStorage: !!sessionStorage.getItem(UTM_STORAGE_KEY),
+    localStorage: !!localStorage.getItem(UTM_BACKUP_KEY),
+    currentUTMs: getStoredUTMParameters(),
+    timestamp: new Date().toISOString(),
+    urlHasUTMs: UTM_PARAMS.some(param => new URLSearchParams(window.location.search).has(param))
+  };
+};
+
+/**
+ * Track conversion with UTM attribution
+ */
+export const trackConversion = (utmData, conversionType = 'purchase') => {
+  try {
+    const attribution = {
+      ...utmData,
+      conversionType,
+      timestamp: new Date().toISOString(),
+      url: window.location.href
+    };
+
+    // Store conversion data for analytics
+    const existingConversions = JSON.parse(localStorage.getItem('eliteway_conversions') || '[]');
+    existingConversions.push(attribution);
+    
+    // Keep only last 10 conversions
+    if (existingConversions.length > 10) {
+      existingConversions.splice(0, existingConversions.length - 10);
+    }
+    
+    localStorage.setItem('eliteway_conversions', JSON.stringify(existingConversions));
+    
+    console.log('🎯 Conversion tracked with UTM attribution:', attribution);
+    
+    // Trigger analytics events if available
+    if (typeof gtag !== 'undefined') {
+      gtag('event', 'conversion', {
+        'send_to': 'AW-CONVERSION_ID', // Replace with actual conversion ID
+        'value': 1.0,
+        'currency': 'CHF',
+        'transaction_id': Date.now().toString(),
+        'custom_parameters': {
+          'utm_source': utmData.utm_source || 'direct',
+          'utm_medium': utmData.utm_medium || 'none',
+          'utm_campaign': utmData.utm_campaign || 'none'
+        }
+      });
+    }
+    
+    return attribution;
+  } catch (error) {
+    console.error('❌ Error tracking conversion:', error);
+    return null;
+  }
 };

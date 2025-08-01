@@ -159,7 +159,7 @@ window.CookieConsentDebug = {
     // Add temp protection for payment flows
     const tempProtection = {
       timestamp: timestamp,
-      expires: new Date(Date.now() + 15 * 60 * 1000).toISOString(), // 15 minutes
+      expires: new Date(Date.now() + 60 * 60 * 1000).toISOString(), // 60 minutes
       preferences: preferences,
       reason: 'debug_simulation'
     };

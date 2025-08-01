@@ -2,7 +2,7 @@ import React, { useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import ReservationContext from "../../contexts/ReservationContext";
 import usePaymentFlowCookieSuppression from "../../hooks/usePaymentFlowCookieSuppression";
-import { extractAndStoreUTMFromURL } from "../../utils/utmTracking";
+import { extractAndStoreUTMFromURL, trackConversion } from "../../utils/utmTracking";
 
 const API_BASE_URL = import.meta.env.PROD 
   ? 'https://api.elitewaylimo.ch'
@@ -16,6 +16,22 @@ const PaymentSuccess = () => {
   const { clearSuppression } = usePaymentFlowCookieSuppression(true, 45000); // 45 seconds
 
   useEffect(() => {
+    // First check URL params (primary source)
+    const urlParams = new URLSearchParams(window.location.search);
+    const urlUTMs = Object.fromEntries(urlParams);
+    
+    // Then check localStorage backup
+    const backupUTMs = JSON.parse(localStorage.getItem('eliteway_utm_backup') || '{}');
+    
+    // Merge with preference to URL params
+    const finalUTMs = { ...backupUTMs, ...urlUTMs };
+    
+    // Store for attribution
+    if (Object.keys(finalUTMs).length > 0) {
+      console.log('🎯 Final UTMs for success page:', finalUTMs);
+      sessionStorage.setItem('eliteway_utm_data', JSON.stringify(finalUTMs));
+    }
+
     // Extract and store UTM parameters from the success URL
     extractAndStoreUTMFromURL();
     
