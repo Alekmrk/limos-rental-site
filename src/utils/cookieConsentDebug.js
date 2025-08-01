@@ -192,15 +192,79 @@ window.CookieConsentDebug = {
       }
     },
 
-    // Test cross-tab synchronization
+    // Test simplified cross-tab synchronization
     crossTab() {
-      console.log('🧪 Testing cross-tab synchronization...');
-      console.log('1. Accept cookies in this tab');
+      console.log('🧪 Testing simplified cross-tab synchronization...');
+      console.log('1. ✅ Accepting cookies in this tab');
       CookieConsentDebug.simulateAcceptance();
       
-      console.log('2. Open new tab to test synchronization:');
-      console.log('   window.open(window.location.href)');
-      window.open(window.location.href);
+      console.log('2. 🌐 Opening new tab to test synchronization...');
+      const newTab = window.open(window.location.href);
+      
+      console.log('3. 🔄 Testing cross-tab data consistency...');
+      setTimeout(() => {
+        const consent = localStorage.getItem('cookie-consent');
+        const timestamp = localStorage.getItem('cookie-consent-timestamp');
+        const tempMarker = localStorage.getItem('cookie-consent-temp-marker');
+        
+        console.log('📊 Current storage state:', {
+          hasConsent: !!consent,
+          hasTimestamp: !!timestamp,
+          hasTempMarker: !!tempMarker,
+          timestampAge: timestamp ? `${Math.round((new Date() - new Date(timestamp)) / 1000)}s ago` : 'N/A'
+        });
+        
+        if (consent && timestamp && tempMarker) {
+          console.log('✅ All data saved consistently - new tab should sync immediately');
+        } else {
+          console.log('❌ Inconsistent data - check savePreferences function');
+        }
+      }, 1000);
+    },
+    
+    // Test Stripe redirect scenario with enhanced protection
+    stripeRedirectTest() {
+      console.log('🧪 Testing Stripe redirect with enhanced cross-tab protection...');
+      
+      // Step 1: User accepts cookies
+      CookieConsentDebug.simulateAcceptance();
+      console.log('1. ✅ User accepted cookies');
+      
+      // Step 2: Simulate opening Stripe in new tab (common user behavior)
+      setTimeout(() => {
+        console.log('2. 🌐 Simulating Stripe payment in new tab...');
+        
+        // Simulate what happens when user returns from Stripe
+        setTimeout(() => {
+          // Clear sessionStorage (as Stripe redirect might do)
+          sessionStorage.removeItem('cookie-consent-just-set');
+          sessionStorage.removeItem('cookie-consent-suppressed');
+          console.log('3. 🧹 SessionStorage cleared (Stripe redirect effect)');
+          
+          // Test if temp marker protection still works
+          setTimeout(() => {
+            console.log('4. 🔍 Checking protection after Stripe redirect:');
+            CookieConsentDebug.getState();
+            
+            const tempMarker = localStorage.getItem('cookie-consent-temp-marker');
+            const consent = localStorage.getItem('cookie-consent');
+            const timestamp = localStorage.getItem('cookie-consent-timestamp');
+            
+            console.log('Protection status:', {
+              hasTempMarker: !!tempMarker,
+              hasConsent: !!consent,
+              hasTimestamp: !!timestamp,
+              shouldShowBanner: !tempMarker && !consent
+            });
+            
+            if (tempMarker || consent) {
+              console.log('✅ Enhanced protection working - banner should NOT show');
+            } else {
+              console.log('❌ Protection failed - banner might show');
+            }
+          }, 500);
+        }, 2000);
+      }, 1000);
     }
   },
 

@@ -259,9 +259,37 @@ const CookieConsent = () => {
         return;
       }
       
-      // Check for suppression in current session (for payment flows)
+      // Enhanced suppression checks with cross-tab fallbacks
       if (suppressedThisSession) {
         console.log('🍪 Cookie consent suppressed for this session (payment flow)');
+        setConsentChecked(true);
+        setIsInitialized(true);
+        return;
+      }
+      
+      // Additional check: Look for recent Stripe redirects via referrer
+      const isFromStripe = document.referrer.includes('stripe') || 
+                          document.referrer.includes('checkout.stripe.com');
+      
+      if (isFromStripe && tempMarkerRecent) {
+        console.log('🍪 Returning from Stripe with recent temp marker - skipping banner');
+        setConsentChecked(true);
+        setIsInitialized(true);
+        return;
+      }
+      
+      // Cross-tab sync check: Look for payment session indicators
+      const urlParams = new URLSearchParams(window.location.search);
+      const sessionId = urlParams.get('session_id');
+      const isPaymentPage = window.location.pathname.includes('/payment');
+      
+      if ((sessionId || isPaymentPage) && (recentlySet || tempMarkerRecent)) {
+        console.log('🍪 Payment context detected with recent consent - skipping banner', {
+          sessionId: !!sessionId,
+          isPaymentPage,
+          recentlySet,
+          tempMarkerRecent
+        });
         setConsentChecked(true);
         setIsInitialized(true);
         return;
@@ -313,61 +341,148 @@ const CookieConsent = () => {
     return () => clearTimeout(initTimer);
   }, [isInitialized, consentChecked, checkConsentStatus, initializeTracking]);
 
-  // Listen for storage changes (when user updates preferences in another tab)
+  // Enhanced cross-tab synchronization for all cookie consent states
   useEffect(() => {
     const handleStorageChange = (e) => {
-      if (e.key === 'cookie-consent' && isInitialized) {
-        console.log('🍪 Cookie consent changed in another tab');
-        const { hasConsent, preferences: savedPreferences } = checkConsentStatus();
+      if (!isInitialized) return;
+      
+      // Track any cookie consent related storage changes
+      const isConsentRelated = e.key && (
+        e.key === 'cookie-consent' ||
+        e.key === 'cookie-consent-temp-marker' ||
+        e.key === 'cookie-consent-timestamp' ||
+        e.key === 'cookie-consent-last-hidden'
+      );
+      
+      if (!isConsentRelated) return;
+      
+      console.log(`🍪 Cookie storage change detected: ${e.key}`, { 
+        newValue: e.newValue ? 'present' : 'null',
+        source: 'cross-tab-sync'
+      });
+      
+      // Always check current consent status after any change
+      const { hasConsent, preferences: savedPreferences } = checkConsentStatus();
+      
+      // Handle consent acceptance (cookie-consent or timestamp changes)
+      if ((e.key === 'cookie-consent' || e.key === 'cookie-consent-timestamp') && hasConsent && savedPreferences) {
+        console.log('🍪 Valid consent detected from another tab - applying preferences');
+        setPreferences(savedPreferences);
+        initializeTracking(savedPreferences);
+        setShowBanner(false);
+        setShowSettings(false);
+        return;
+      }
+      
+      // Handle temp marker (payment flow protection)
+      if (e.key === 'cookie-consent-temp-marker' && e.newValue) {
+        console.log('🔒 Temp marker detected from another tab - hiding banner');
+        setShowBanner(false);
+        setAnimateIn(false);
+        return;
+      }
+      
+      // Handle banner dismissal
+      if (e.key === 'cookie-consent-last-hidden' && e.newValue) {
+        const timeSinceHidden = new Date().getTime() - new Date(e.newValue).getTime();
+        const oneHour = 60 * 60 * 1000;
         
-        if (hasConsent && savedPreferences) {
-          setPreferences(savedPreferences);
-          initializeTracking(savedPreferences);
+        if (timeSinceHidden < oneHour) {
+          console.log('🍪 Recent dismissal detected - hiding banner in this tab too');
           setShowBanner(false);
-          setShowSettings(false);
+          setAnimateIn(false);
         }
+        return;
       }
     };
 
     window.addEventListener('storage', handleStorageChange);
-    return () => window.removeEventListener('storage', handleStorageChange);
+    
+    // Enhanced: Listen for custom cross-tab communication
+    const handleCrossTabUpdate = (e) => {
+      if (e.key === 'cookie-consent-cross-tab-update' && e.newValue) {
+        try {
+          const update = JSON.parse(e.newValue);
+          console.log('🍪 Cross-tab update received:', update);
+          
+          if (update.type === 'consent_updated') {
+            setPreferences(update.preferences);
+            setShowBanner(false);
+            setAnimateIn(false);
+            
+            // Clean up the communication message
+            setTimeout(() => {
+              localStorage.removeItem('cookie-consent-cross-tab-update');
+            }, 1000);
+          }
+        } catch (error) {
+          console.warn('Failed to parse cross-tab update:', error);
+        }
+      }
+    };
+    
+    window.addEventListener('storage', handleCrossTabUpdate);
+    
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener('storage', handleCrossTabUpdate);
+    };
   }, [isInitialized, checkConsentStatus, initializeTracking]);
 
   const savePreferences = useCallback((newPreferences) => {
     try {
       console.log('🍪 Saving cookie preferences:', newPreferences);
+      const timestamp = new Date().toISOString();
+      
+      // Always save all core data together for consistency
       setPreferences(newPreferences);
       localStorage.setItem('cookie-consent', JSON.stringify(newPreferences));
-      localStorage.setItem('cookie-consent-timestamp', new Date().toISOString());
+      localStorage.setItem('cookie-consent-timestamp', timestamp);
       
-      // Set multiple markers to prevent re-showing across different scenarios
+      // Set session markers to prevent re-showing across scenarios
       sessionStorage.setItem('cookie-consent-just-set', 'true');
       
-      // Also set a temporary localStorage marker for payment redirects
+      // Always set temp marker for payment redirects and cross-tab sync
       const tempMarker = {
-        timestamp: new Date().toISOString(),
-        preferences: newPreferences
+        timestamp: timestamp,
+        preferences: newPreferences,
+        source: 'user_choice'
       };
       localStorage.setItem('cookie-consent-temp-marker', JSON.stringify(tempMarker));
       
-      // Remove temp marker after 10 minutes
+      // Clean up temp marker after reasonable time
       setTimeout(() => {
         localStorage.removeItem('cookie-consent-temp-marker');
-      }, 10 * 60 * 1000);
+      }, 10 * 60 * 1000); // 10 minutes
       
-      // Dispatch custom event to notify other components
+      // Notify all components and tabs immediately
       window.dispatchEvent(new CustomEvent('cookieConsentUpdated', {
         detail: newPreferences
       }));
       
+      // Enhanced cross-tab communication - trigger storage events
+      window.dispatchEvent(new StorageEvent('storage', {
+        key: 'cookie-consent-cross-tab-update',
+        newValue: JSON.stringify({
+          type: 'consent_updated',
+          preferences: newPreferences,
+          timestamp: timestamp,
+          source: 'cookie_banner'
+        }),
+        url: window.location.href
+      }));
+      
+      // Apply tracking settings
       initializeTracking(newPreferences);
       
       // Hide banner regardless of choices (GDPR compliant)
       setShowBanner(false);
       setShowSettings(false);
       setAnimateIn(false);
+      
+      console.log('✅ Cookie preferences saved successfully with timestamp:', timestamp);
     } catch (error) {
-      console.error('Error saving cookie preferences:', error);
+      console.error('❌ Error saving cookie preferences:', error);
     }
   }, [initializeTracking]);
 
