@@ -22,21 +22,22 @@ const StripePayment = ({ amount, onSuccess, onError, reservationInfo }) => {
       // Get UTM parameters from storage
       const utmParameters = getStoredUTMParameters();
       
-      const response = await fetch(`${API_BASE_URL}/api/stripe/create-checkout-session`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-          amount,
-          currency: 'chf',
-          // Include UTM parameters for tracking
-          ...(utmParameters && {
-            utm_source: utmParameters.utm_source,
-            utm_medium: utmParameters.utm_medium,
-            utm_campaign: utmParameters.utm_campaign,
-            utm_term: utmParameters.utm_term,
-            utm_content: utmParameters.utm_content
-          }),
-          metadata: {
+      // Debug log the UTM parameters
+      console.log('🎯 Sending payment request with UTMs:', utmParameters);
+      
+      // Build request payload
+      const requestPayload = { 
+        amount,
+        currency: 'chf',
+        // Include UTM parameters for tracking (only if they exist)
+        ...(utmParameters && {
+          utm_source: utmParameters.utm_source,
+          utm_medium: utmParameters.utm_medium,
+          utm_campaign: utmParameters.utm_campaign,
+          utm_term: utmParameters.utm_term,
+          utm_content: utmParameters.utm_content
+        }),
+        metadata: {
             // Customer Details
             email: reservationInfo.email || '',
             firstName: reservationInfo.firstName || '',
@@ -80,29 +81,56 @@ const StripePayment = ({ amount, onSuccess, onError, reservationInfo }) => {
             // Booking Metadata
             bookingTimestamp: new Date().toISOString(),
             bookingSource: 'website',
-            locale: 'en-CH',
-            
-            // UTM Parameters
-            utmSource: utmParameters.utm_source || '',
-            utmMedium: utmParameters.utm_medium || '',
-            utmCampaign: utmParameters.utm_campaign || '',
-            utmTerm: utmParameters.utm_term || '',
-            utmContent: utmParameters.utm_content || ''
+            locale: 'en-CH'
           }
-        })
+        };
+      
+      console.log('🔄 Request payload:', requestPayload);
+      
+      const response = await fetch(`${API_BASE_URL}/api/stripe/create-checkout-session`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(requestPayload)
       });
 
       const data = await response.json();
 
       if (data.error) {
+        console.error('❌ Stripe API error:', data.error);
         throw new Error(data.error);
       }
 
+      if (!data.url) {
+        console.error('❌ No checkout URL received:', data);
+        throw new Error('No checkout URL received from payment service');
+      }
+
+      console.log('✅ Payment session created, redirecting to Stripe...');
       // Redirect to Stripe checkout - session_id will be automatically added to cancel_url
       window.location.href = data.url;
       
     } catch (err) {
-      onError({ message: err.message, userMessage: 'Unable to start payment process. Please try again or contact support.' });
+      console.error('❌ Payment initialization error:', err);
+      
+      // Check if it's a network error
+      if (!navigator.onLine) {
+        onError({ 
+          message: 'No internet connection', 
+          userMessage: 'Please check your internet connection and try again.' 
+        });
+      } else if (err.name === 'TypeError' && err.message.includes('fetch')) {
+        onError({ 
+          message: 'Network error', 
+          userMessage: 'Unable to connect to payment service. Please try again.' 
+        });
+      } else {
+        onError({ 
+          message: err.message, 
+          userMessage: err.message.includes('payment') 
+            ? err.message 
+            : 'Unable to start payment process. Please try again or contact support.' 
+        });
+      }
     } finally {
       setIsProcessing(false);
     }
