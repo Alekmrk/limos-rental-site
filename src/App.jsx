@@ -48,7 +48,7 @@ function App() {
     captureUTMParameters();
     
     // Make UTM utilities available globally for testing
-    if (import.meta.env.DEV) {
+    if (import.meta.env.DEV || window.location.search.includes('utm_debug=true')) {
       window.captureUTMParameters = captureUTMParameters;
       window.debugUTMState = debugUTMState;
       window.getStoredUTMParameters = getStoredUTMParameters;
