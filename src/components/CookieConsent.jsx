@@ -182,6 +182,47 @@ const CookieConsent = () => {
     CookieManager.set('essential_consent', 'granted', 365);
   }, []);
 
+  // Migration function for legacy cookie data (must be defined before checkConsentStatus)
+  const migrateLegacyData = useCallback(() => {
+    try {
+      const legacyConsent = localStorage.getItem('cookie-consent');
+      const legacyTimestamp = localStorage.getItem('cookie-consent-timestamp');
+      
+      if (legacyConsent && legacyTimestamp) {
+        console.log('🔄 Migrating legacy cookie data to v2.0...');
+        
+        const preferences = JSON.parse(legacyConsent);
+        const consentData = {
+          preferences: preferences,
+          timestamp: legacyTimestamp,
+          version: '2.0',
+          source: 'migrated_from_v1',
+          userAgent: navigator.userAgent.substring(0, 100)
+        };
+        
+        // Save new format
+        localStorage.setItem('cookie-consent-data', JSON.stringify(consentData));
+        
+        // Clean up legacy data
+        localStorage.removeItem('cookie-consent');
+        localStorage.removeItem('cookie-consent-timestamp');
+        localStorage.removeItem('cookie-consent-temp-marker'); // Also remove temp marker
+        
+        console.log('✅ Migration completed successfully');
+        return { hasConsent: true, preferences: preferences, timestamp: legacyTimestamp };
+      }
+      
+      return null;
+    } catch (error) {
+      console.error('❌ Migration failed:', error);
+      // Clean up corrupted legacy data
+      localStorage.removeItem('cookie-consent');
+      localStorage.removeItem('cookie-consent-timestamp');
+      localStorage.removeItem('cookie-consent-temp-marker');
+      return null;
+    }
+  }, []);
+
   // Simplified consent status checking with atomic storage and migration
   const checkConsentStatus = useCallback(() => {
     try {
@@ -233,49 +274,6 @@ const CookieConsent = () => {
       return { hasConsent: false, expired: false, lastHidden: lastHidden };
     }
   }, [migrateLegacyData]);
-
-  // Migration function for legacy cookie data
-  const migrateLegacyData = useCallback(() => {
-    try {
-      const legacyConsent = localStorage.getItem('cookie-consent');
-      const legacyTimestamp = localStorage.getItem('cookie-consent-timestamp');
-      
-      if (legacyConsent && legacyTimestamp) {
-        console.log('🔄 Migrating legacy cookie data to v2.0...');
-        
-        const preferences = JSON.parse(legacyConsent);
-        const consentData = {
-          preferences: preferences,
-          timestamp: legacyTimestamp,
-          version: '2.0',
-          source: 'migrated_from_v1',
-          userAgent: navigator.userAgent.substring(0, 100)
-        };
-        
-        // Save new format
-        localStorage.setItem('cookie-consent-data', JSON.stringify(consentData));
-        
-        // Clean up legacy data
-        localStorage.removeItem('cookie-consent');
-        localStorage.removeItem('cookie-consent-timestamp');
-        localStorage.removeItem('cookie-consent-temp-marker'); // Also remove temp marker
-        
-        console.log('✅ Migration completed successfully');
-        return { hasConsent: true, preferences: preferences, timestamp: legacyTimestamp };
-      }
-      
-      return null;
-    } catch (error) {
-      console.error('❌ Migration failed:', error);
-      // Clean up corrupted legacy data
-      localStorage.removeItem('cookie-consent');
-      localStorage.removeItem('cookie-consent-timestamp');
-      localStorage.removeItem('cookie-consent-temp-marker');
-      return null;
-    }
-  }, []);
-
-  // ...existing code...
 
   // Simplified initialization with atomic checks
   useEffect(() => {
