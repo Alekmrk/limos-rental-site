@@ -3,6 +3,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import Button from "../../components/Button";
 import ReservationContext from "../../contexts/ReservationContext";
 import usePaymentFlowCookieSuppression from "../../hooks/usePaymentFlowCookieSuppression";
+import { extractAndStoreUTMFromURL } from "../../utils/utmTracking";
 
 const API_BASE_URL = import.meta.env.PROD 
   ? 'https://api.elitewaylimo.ch'
@@ -51,6 +52,9 @@ const PaymentCancel = () => {
 
   // Restore booking data from Stripe session when coming from payment cancel
   useEffect(() => {
+    // Extract and store UTM parameters from the cancel URL
+    extractAndStoreUTMFromURL();
+    
     if (hasRestoredSession.current) return;
     hasRestoredSession.current = true;
 
@@ -130,6 +134,11 @@ const PaymentCancel = () => {
       });
     }
   }, [searchParams, handleInput, reservationInfo, clearSuppression]);
+
+  // Extract UTM parameters from URL
+  useEffect(() => {
+    extractAndStoreUTMFromURL();
+  }, []);
 
   const handleRetry = () => {
     // Clear any previous payment details and errors

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import Button from './Button';
+import { getStoredUTMParameters } from '../utils/utmTracking';
 
 // API base URL - dynamically set based on environment
 const API_BASE_URL = import.meta.env.PROD 
@@ -18,12 +19,23 @@ const StripePayment = ({ amount, onSuccess, onError, reservationInfo }) => {
       const distance = reservationInfo.routeInfo?.distance || '';
       const duration = reservationInfo.routeInfo?.duration || '';
       
+      // Get UTM parameters from storage
+      const utmParameters = getStoredUTMParameters();
+      
       const response = await fetch(`${API_BASE_URL}/api/stripe/create-checkout-session`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
           amount,
           currency: 'chf',
+          // Include UTM parameters for tracking
+          ...(utmParameters && {
+            utm_source: utmParameters.utm_source,
+            utm_medium: utmParameters.utm_medium,
+            utm_campaign: utmParameters.utm_campaign,
+            utm_term: utmParameters.utm_term,
+            utm_content: utmParameters.utm_content
+          }),
           metadata: {
             // Customer Details
             email: reservationInfo.email || '',
@@ -68,7 +80,14 @@ const StripePayment = ({ amount, onSuccess, onError, reservationInfo }) => {
             // Booking Metadata
             bookingTimestamp: new Date().toISOString(),
             bookingSource: 'website',
-            locale: 'en-CH'
+            locale: 'en-CH',
+            
+            // UTM Parameters
+            utmSource: utmParameters.utm_source || '',
+            utmMedium: utmParameters.utm_medium || '',
+            utmCampaign: utmParameters.utm_campaign || '',
+            utmTerm: utmParameters.utm_term || '',
+            utmContent: utmParameters.utm_content || ''
           }
         })
       });

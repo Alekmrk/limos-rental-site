@@ -5,7 +5,16 @@ const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 // Create a checkout session
 router.post('/create-checkout-session', express.json(), async (req, res) => {
   try {
-    const { amount, currency = 'chf', metadata = {} } = req.body;
+    const { 
+      amount, 
+      currency = 'chf', 
+      metadata = {},
+      utm_source,
+      utm_medium,
+      utm_campaign, 
+      utm_term,
+      utm_content 
+    } = req.body;
     
     // Validate required fields early
     if (!amount || amount <= 0) {
@@ -13,6 +22,31 @@ router.post('/create-checkout-session', express.json(), async (req, res) => {
     }
 
     // Start preparing session config immediately
+    const baseSuccessUrl = `${process.env.FRONTEND_URL || 'http://localhost:5173'}/payment-success?session_id={CHECKOUT_SESSION_ID}`;
+    const baseCancelUrl = `${process.env.FRONTEND_URL || 'http://localhost:5173'}/payment-cancel?session_id={CHECKOUT_SESSION_ID}`;
+    
+    // Build UTM-preserved URLs
+    let successUrl = baseSuccessUrl;
+    let cancelUrl = baseCancelUrl;
+    
+    if (utm_source || utm_medium || utm_campaign || utm_term || utm_content) {
+      const utmParams = new URLSearchParams();
+      if (utm_source) utmParams.set('utm_source', utm_source);
+      if (utm_medium) utmParams.set('utm_medium', utm_medium);
+      if (utm_campaign) utmParams.set('utm_campaign', utm_campaign);
+      if (utm_term) utmParams.set('utm_term', utm_term);
+      if (utm_content) utmParams.set('utm_content', utm_content);
+      
+      const utmString = utmParams.toString();
+      if (utmString) {
+        successUrl = `${baseSuccessUrl}&${utmString}`;
+        cancelUrl = `${baseCancelUrl}&${utmString}`;
+        console.log('🎯 UTM parameters preserved in Stripe URLs:', {
+          utm_source, utm_medium, utm_campaign, utm_term, utm_content
+        });
+      }
+    }
+
     const sessionConfig = {
       payment_method_types: ['card'],
       line_items: [
@@ -31,9 +65,17 @@ router.post('/create-checkout-session', express.json(), async (req, res) => {
         },
       ],
       mode: 'payment',
-      success_url: `${process.env.FRONTEND_URL || 'http://localhost:5173'}/payment-success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${process.env.FRONTEND_URL || 'http://localhost:5173'}/payment-cancel?session_id={CHECKOUT_SESSION_ID}`,
-      metadata: metadata,
+      success_url: successUrl,
+      cancel_url: cancelUrl,
+      metadata: {
+        ...metadata,
+        // Store UTM parameters in session metadata for preservation
+        ...(utm_source && { utm_source }),
+        ...(utm_medium && { utm_medium }),
+        ...(utm_campaign && { utm_campaign }),
+        ...(utm_term && { utm_term }),
+        ...(utm_content && { utm_content })
+      },
       // Add faster processing options
       payment_intent_data: {
         capture_method: 'automatic',

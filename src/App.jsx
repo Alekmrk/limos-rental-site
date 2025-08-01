@@ -29,6 +29,7 @@ import { ReservationContextProvider } from "./contexts/ReservationContext";
 import { useGoogleMapsApi } from "./hooks/useGoogleMapsApi";
 import TermsOfService from "./pages/TermsOfService/TermsOfService";
 import LegalNotice from "./pages/LegalNotice/LegalNotice";
+import { captureUTMParameters, debugUTMState, getStoredUTMParameters, extractAndStoreUTMFromURL } from "./utils/utmTracking";
 
 function App() {
   const { isLoaded, loadError } = useGoogleMapsApi();
@@ -41,6 +42,26 @@ function App() {
   };
 
   const [selectedVehicle, setSelectedVehicle] = useState(cars[0]);
+
+  useEffect(() => {
+    // Capture UTM parameters on initial load
+    captureUTMParameters();
+    
+    // Make UTM utilities available globally for testing
+    if (import.meta.env.DEV) {
+      window.captureUTMParameters = captureUTMParameters;
+      window.debugUTMState = debugUTMState;
+      window.getStoredUTMParameters = getStoredUTMParameters;
+      window.extractAndStoreUTMFromURL = extractAndStoreUTMFromURL;
+      
+      // Load UTM test console for development
+      import('./utils/utmTestConsole.js').then(() => {
+        console.log('🎯 UTM utilities and test console loaded! Try: utmTest.testComplete()');
+      }).catch(err => {
+        console.warn('Could not load UTM test console:', err);
+      });
+    }
+  }, []);
 
   if (loadError) {
     console.error('Error loading Google Maps:', loadError);

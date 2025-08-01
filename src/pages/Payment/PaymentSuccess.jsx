@@ -2,6 +2,7 @@ import React, { useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import ReservationContext from "../../contexts/ReservationContext";
 import usePaymentFlowCookieSuppression from "../../hooks/usePaymentFlowCookieSuppression";
+import { extractAndStoreUTMFromURL } from "../../utils/utmTracking";
 
 const API_BASE_URL = import.meta.env.PROD 
   ? 'https://api.elitewaylimo.ch'
@@ -15,6 +16,9 @@ const PaymentSuccess = () => {
   const { clearSuppression } = usePaymentFlowCookieSuppression(true, 45000); // 45 seconds
 
   useEffect(() => {
+    // Extract and store UTM parameters from the success URL
+    extractAndStoreUTMFromURL();
+    
     const verifySession = async () => {
       try {
         const urlParams = new URLSearchParams(window.location.search);
@@ -56,6 +60,9 @@ const PaymentSuccess = () => {
         navigate('/payment');
       }
     };
+
+    // Extract UTM parameters from URL and store them
+    extractAndStoreUTMFromURL();
 
     verifySession();
   }, [navigate, handleInput, clearSuppression]);
