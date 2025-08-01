@@ -182,3 +182,7 @@ Prioritet:
 # da se vidi health check sta proveravamo koji domen (https://limos-rental-api.azurewebsites.net/health   and    https://limos-rental-api.azurewebsites.net/ )
 
 resi ovo:         'send_to': 'AW-CONVERSION_ID', // Replace with actual conversion ID
+#add pending utms feature
+
+# cancel page is not good collor
+#footer si dark on phone version on reservation flow.
