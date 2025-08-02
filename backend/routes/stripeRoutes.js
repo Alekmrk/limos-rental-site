@@ -21,9 +21,9 @@ router.post('/create-checkout-session', express.json(), async (req, res) => {
       return res.status(400).json({ error: 'Invalid amount' });
     }
 
-    // Start preparing session config immediately
-    const baseSuccessUrl = `${process.env.FRONTEND_URL || 'http://localhost:5173'}/payment-success?session_id={CHECKOUT_SESSION_ID}`;
-    const baseCancelUrl = `${process.env.FRONTEND_URL || 'http://localhost:5173'}/payment-cancel?session_id={CHECKOUT_SESSION_ID}`;
+    // Start preparing session config immediately - FORCE HTTPS to prevent storage clearing
+    const baseSuccessUrl = `${process.env.FRONTEND_URL || 'https://www.elitewaylimo.ch'}/payment-success?session_id={CHECKOUT_SESSION_ID}`;
+    const baseCancelUrl = `${process.env.FRONTEND_URL || 'https://www.elitewaylimo.ch'}/payment-cancel?session_id={CHECKOUT_SESSION_ID}`;
     
     // Build UTM-preserved URLs
     let successUrl = baseSuccessUrl;
