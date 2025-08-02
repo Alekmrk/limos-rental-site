@@ -185,9 +185,10 @@ resi ovo:         'send_to': 'AW-CONVERSION_ID', // Replace with actual conversi
 
 #add pending utms feature
 # cancel page is not good collor
-#footer si dark on phone version on reservation flow.
+#footer is dark on phone version on reservation flow.
 # uselect vehicle
 
 # obrisi ona dva za debugging. ona dva commita
 #kad treba da se obrisu UTM-ovi iz storage-a jer se restoruju
 # popup za cookies da je veci
+# fix cookies not being preserved on redirexts from Stripe (debug it)
