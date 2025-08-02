@@ -99,10 +99,6 @@ const PaymentSuccess = () => {
           });
         }
 
-        // Track conversion with UTM attribution
-        if (currentUTMs) {
-          trackConversion(currentUTMs, 'purchase');
-        }
 
         // Navigate to thank you page with UTMs preserved
         navigateWithUTMs('/thankyou', { replace: true });

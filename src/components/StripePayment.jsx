@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import Button from './Button';
-import { getStoredUTMParameters } from '../utils/utmTracking';
+import { getStoredUTMParameters, captureUTMParameters } from '../utils/utmTracking';
 
 // API base URL - dynamically set based on environment
 const API_BASE_URL = import.meta.env.PROD 
@@ -19,9 +19,24 @@ const StripePayment = ({ amount, onSuccess, onError, reservationInfo }) => {
       const distance = reservationInfo.routeInfo?.distance || '';
       const duration = reservationInfo.routeInfo?.duration || '';
       
-      // Get UTM parameters from storage
-      const utmParameters = getStoredUTMParameters();
+      // Get UTM parameters from storage or current URL
+      let utmParameters = getStoredUTMParameters();
       
+      // Fallback: Extract from current URL if storage is disabled
+      if (!utmParameters) {
+        const urlParams = new URLSearchParams(window.location.search);
+        const urlUTMs = {};
+        ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content'].forEach(param => {
+          const value = urlParams.get(param);
+          if (value) urlUTMs[param] = value;
+        });
+        if (Object.keys(urlUTMs).length > 0) {
+          utmParameters = urlUTMs;
+        }
+      }
+      
+      console.log('UTM Parameters for payment:', utmParameters);
+
       // Debug log the UTM parameters
       console.log('🎯 Sending payment request with UTMs:', utmParameters);
       
