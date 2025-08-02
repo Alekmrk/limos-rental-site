@@ -192,3 +192,9 @@ resi ovo:         'send_to': 'AW-CONVERSION_ID', // Replace with actual conversi
 #kad treba da se obrisu UTM-ovi iz storage-a jer se restoruju
 # popup za cookies da je veci
 # fix cookies not being preserved on redirexts from Stripe (debug it)
+
+# da je cookie banner veci
+# da se proveri kak da radimo kad nema accepted cookies
+# da se ne lepe UTMovi na URL iz storage
+# da se injectuje glavniGTM tag
+# da se vidi kako izvlacimo UTM iz stripe-a
