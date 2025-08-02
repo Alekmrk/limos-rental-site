@@ -190,3 +190,4 @@ resi ovo:         'send_to': 'AW-CONVERSION_ID', // Replace with actual conversi
 
 # obrisi ona dva za debugging. ona dva commita
 #kad treba da se obrisu UTM-ovi iz storage-a jer se restoruju
+# popup za cookies da je veci
