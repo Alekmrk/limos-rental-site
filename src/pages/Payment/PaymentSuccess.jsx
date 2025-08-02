@@ -115,7 +115,7 @@ const PaymentSuccess = () => {
     };
 
     verifySession();
-  }, [navigate, handleInput, clearSuppression, currentUTMs, navigateWithUTMs]);
+  }, [ handleInput, clearSuppression, currentUTMs, navigateWithUTMs]);
 
   return (
     <div className="container-default mt-28 text-center">

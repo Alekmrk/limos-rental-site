@@ -31,7 +31,7 @@ const CustomerDetails = ({ scrollUp }) => {
         navigateWithUTMs('/vehicle-selection');
       }
     }
-  }, [reservationInfo, navigate]);
+  }, [reservationInfo, navigateWithUTMs]);
 
   // Add handler to clear errors when user types
   const handleInputChange = (e) => {
