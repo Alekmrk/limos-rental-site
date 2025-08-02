@@ -3,7 +3,7 @@ import ReservationContext from "../../contexts/ReservationContext";
 import ReservationCard from "../../pages/Home/BannerSection/ReservationCard";
 import Button from "../../components/Button";
 import Image from "../../components/Image";
-import { Link } from "react-router-dom";
+import { UTMLink } from "../../components/UTMLink";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { 
   faStar, 
@@ -540,13 +540,13 @@ const SpecialRequest = ({ scrollUp }) => {
                 we're here to exceed your expectations with our custom transportation solutions.
               </p>
               <div className="flex justify-center">
-                <Link to="/booking">
+                <UTMLink to="/booking">
                   <Button 
                     variant="secondary"
                   >
                     Submit Special Request
                   </Button>
-                </Link>
+                </UTMLink>
               </div>
             </div>
           </div>

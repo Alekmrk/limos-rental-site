@@ -4,11 +4,14 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faWhatsapp } from "@fortawesome/free-brands-svg-icons";
 import { faTelegram } from "@fortawesome/free-brands-svg-icons";
 import { faEnvelope } from "@fortawesome/free-solid-svg-icons";
-import { useLocation, Link } from "react-router-dom";
+import { useLocation } from "react-router-dom";
+import { UTMLink } from "../UTMLink";
+import { useUTMPreservation } from "../../hooks/useUTMPreservation";
 import { useState, useEffect } from "react";
 
 const Footer = () => {
   const location = useLocation();
+  const { navigateWithUTMs } = useUTMPreservation();
   const currentYear = new Date().getFullYear();
   const [isMobile, setIsMobile] = useState(false);
 
@@ -131,12 +134,12 @@ const Footer = () => {
             <ul className="space-y-2">
               {serviceLinks.map((service, index) => (
                 <li key={index}>
-                  <a
-                    href={service.path}
-                    className="text-gray-600 hover:text-royal-blue transition-colors text-sm"
+                  <button
+                    onClick={() => navigateWithUTMs(service.path)}
+                    className="text-gray-600 hover:text-royal-blue transition-colors text-sm text-left"
                   >
                     {service.name}
-                  </a>
+                  </button>
                 </li>
               ))}
             </ul>
@@ -148,12 +151,12 @@ const Footer = () => {
             <ul className="space-y-2">
               {legalLinks.map((link, index) => (
                 <li key={index}>
-                  <a
-                    href={link.path}
-                    className="text-gray-600 hover:text-royal-blue transition-colors text-sm"
+                  <button
+                    onClick={() => navigateWithUTMs(link.path)}
+                    className="text-gray-600 hover:text-royal-blue transition-colors text-sm text-left"
                   >
                     {link.name}
-                  </a>
+                  </button>
                 </li>
               ))}
             </ul>
@@ -164,12 +167,12 @@ const Footer = () => {
             <h3 className="text-lg font-medium text-royal-blue-dark mb-4">Connect</h3>
             <ul className="space-y-2 mb-4">
               <li>
-                <Link
+                <UTMLink
                   to="/contact"
                   className="text-gray-600 hover:text-royal-blue transition-colors text-sm"
                 >
                   Contact Us
-                </Link>
+                </UTMLink>
               </li>
             </ul>
             <div className="flex gap-3 justify-center md:justify-start">
@@ -183,7 +186,7 @@ const Footer = () => {
                   className="text-lg group-hover:scale-110 transition-transform text-gray-700 group-hover:text-white"
                 />
               </button>
-              <Link
+              <UTMLink
                 to="/contact"
                 className="w-10 h-10 bg-warm-gray hover:bg-royal-blue rounded-lg flex items-center justify-center transition-colors group border border-royal-blue/20"
                 aria-label="Contact"
@@ -192,7 +195,7 @@ const Footer = () => {
                   icon={faEnvelope}
                   className="text-lg group-hover:scale-110 transition-transform text-gray-700 group-hover:text-white"
                 />
-              </Link>
+              </UTMLink>
               <button
                 onClick={() => handleSocialClick("telegram")}
                 className="w-10 h-10 bg-warm-gray hover:bg-blue-500 rounded-lg flex items-center justify-center transition-colors group border border-royal-blue/20"

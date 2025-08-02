@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { UTMLink } from "../../../components/UTMLink";
 import Button from "../../../components/Button";
 import ReservationCard from "./ReservationCard";
 import Image from "../../../components/Image";
@@ -80,11 +80,11 @@ const BannerSection = () => {
               </div>
 
               <div className="flex justify-center mb-12 md:mb-16">
-                <Link to={"/vehicles"}>
+                <UTMLink to={"/vehicles"}>
                   <Button variant="secondary" className="transform hover:scale-105 transition-all duration-300">
                     Explore Our Fleet
                   </Button>
-                </Link>
+                </UTMLink>
               </div>
             </div>
 
@@ -136,11 +136,11 @@ const BannerSection = () => {
             </div>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center mt-8">
-              <Link to={"/vehicles"}>
+              <UTMLink to={"/vehicles"}>
                 <Button variant="secondary" className="transform hover:scale-105 transition-all duration-300 w-full sm:w-auto">
                   Explore Our Fleet
                 </Button>
-              </Link>
+              </UTMLink>
             </div>
           </div>
         </div>

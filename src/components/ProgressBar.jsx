@@ -1,10 +1,11 @@
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { useContext, useEffect } from "react";
 import ReservationContext from "../contexts/ReservationContext";
+import { useUTMPreservation } from "../hooks/useUTMPreservation";
 
 const ProgressBar = ({ reservationData }) => {
   const location = useLocation();
-  const navigate = useNavigate();
+  const { navigateWithUTMs } = useUTMPreservation();
   const { reservationInfo } = useContext(ReservationContext);
 
   // Use passed reservationData if available, otherwise fall back to context
@@ -38,7 +39,7 @@ const ProgressBar = ({ reservationData }) => {
 
   const handleStepClick = (index) => {
     if (index < currentStepIndex) {
-      navigate(steps[index].path);
+      navigateWithUTMs(steps[index].path);
     }
   };
 

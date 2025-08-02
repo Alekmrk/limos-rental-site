@@ -3,7 +3,7 @@ import cars from "../../data/cars";
 import SliderCard from "../../components/SliderCard";
 import VehicleImageSlider from "../../components/VehicleImageSlider";
 import Button from "../../components/Button";
-import { Link } from "react-router-dom";
+import { UTMLink } from "../../components/UTMLink";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
 
@@ -77,7 +77,7 @@ const Vehicles = ({ scrollUp, selectedVehicle, setSelectedVehicle }) => {
               {selectedVehicle.seats}
             </span>
           </p>
-          <Link to={"/booking"}>
+          <UTMLink to={"/booking"}>
             <Button variant="secondary">
               Book Now
               <FontAwesomeIcon
@@ -85,7 +85,7 @@ const Vehicles = ({ scrollUp, selectedVehicle, setSelectedVehicle }) => {
                 className="text-white ml-4"
               />
             </Button>
-          </Link>
+          </UTMLink>
         </div>
       </div>
       <h2 className="text-4xl font-semibold mb-6 text-royal-blue">Our Fleet</h2>

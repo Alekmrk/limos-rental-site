@@ -1,21 +1,44 @@
 import LanguageSelector from "./LanguageSelector";
-import { NavLink } from "react-router-dom";
+import { useUTMPreservation } from "../../hooks/useUTMPreservation";
 import { useState, useEffect, useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronDown } from "@fortawesome/free-solid-svg-icons";
 
 const PrimaryNav = ({ navHidden, screenSize, setNavHidden }) => {
+  const { navigateWithUTMs, buildURLWithUTMs } = useUTMPreservation();
   const [servicesDropdownOpen, setServicesDropdownOpen] = useState(false);
   const [eventsDropdownOpen, setEventsDropdownOpen] = useState(false);
   const servicesDropdownRef = useRef(null);
   const eventsDropdownRef = useRef(null);
 
-  const handleNavClick = () => {
+  const handleNavClick = (path) => {
     if (screenSize < 800) {
       setNavHidden(true);
     }
     setServicesDropdownOpen(false);
     setEventsDropdownOpen(false);
+    
+    if (path) {
+      navigateWithUTMs(path);
+    }
+  };
+
+  // Custom UTM-aware NavLink component
+  const UTMNavLink = ({ to, className, children, onClick }) => {
+    const isActive = window.location.pathname === to;
+    const activeClassName = isActive ? 'text-royal-blue' : '';
+    
+    return (
+      <button
+        className={`${className} ${activeClassName}`}
+        onClick={() => {
+          handleNavClick(to);
+          onClick && onClick();
+        }}
+      >
+        {children}
+      </button>
+    );
   };
 
   const toggleServicesDropdown = () => {
@@ -62,31 +85,28 @@ const PrimaryNav = ({ navHidden, screenSize, setNavHidden }) => {
     >
       <ul className="flex flex-col md:flex-row gap-12 md:gap-8 lg:gap-12 mb-8 md:mb-0 justify-center items-center">
         <li>
-          <NavLink
+          <UTMNavLink
             className="block text-gray-700 hover:text-royal-blue font-medium text-lg md:text-xl font-sans transition-all duration-200 hover:bg-royal-blue/10 px-4 py-3 rounded-lg md:bg-transparent md:hover:bg-transparent md:px-2 md:py-1"
             to="/"
-            onClick={handleNavClick}
           >
             Home
-          </NavLink>
+          </UTMNavLink>
         </li>
         <li>
-          <NavLink
+          <UTMNavLink
             className="block text-gray-700 hover:text-royal-blue font-medium text-lg md:text-xl font-sans transition-all duration-200 hover:bg-royal-blue/10 px-4 py-3 rounded-lg md:bg-transparent md:hover:bg-transparent md:px-2 md:py-1"
             to="/booking"
-            onClick={handleNavClick}
           >
             Book Now
-          </NavLink>
+          </UTMNavLink>
         </li>
         <li>
-          <NavLink
+          <UTMNavLink
             className="block text-gray-700 hover:text-royal-blue font-medium text-lg md:text-xl font-sans transition-all duration-200 hover:bg-royal-blue/10 px-4 py-3 rounded-lg md:bg-transparent md:hover:bg-transparent md:px-2 md:py-1"
             to="/vehicles"
-            onClick={handleNavClick}
           >
             Vehicles
-          </NavLink>
+          </UTMNavLink>
         </li>
 
         {/* Services Dropdown - CENTER ITEM */}
@@ -109,34 +129,30 @@ const PrimaryNav = ({ navHidden, screenSize, setNavHidden }) => {
               servicesDropdownOpen ? "block" : "hidden"
             } absolute top-full left-1/2 transform -translate-x-1/2 mt-2 w-72 bg-warm-white border border-royal-blue/30 rounded-lg shadow-xl py-2 z-20`}
           >
-            <NavLink
+            <UTMNavLink
               to="/airport-transfer"
-              className="block px-5 py-4 text-base text-gray-700 hover:text-royal-blue hover:bg-royal-blue/10 font-sans transition-all duration-200"
-              onClick={handleNavClick}
+              className="block px-5 py-4 text-base text-gray-700 hover:text-royal-blue hover:bg-royal-blue/10 font-sans transition-all duration-200 w-full"
             >
               Airport Transfer
-            </NavLink>
-            <NavLink
+            </UTMNavLink>
+            <UTMNavLink
               to="/distance-transfer"
-              className="block px-5 py-4 text-base text-gray-700 hover:text-royal-blue hover:bg-royal-blue/10 font-sans transition-all duration-200"
-              onClick={handleNavClick}
+              className="block px-5 py-4 text-base text-gray-700 hover:text-royal-blue hover:bg-royal-blue/10 font-sans transition-all duration-200 w-full"
             >
               Distance Transfer
-            </NavLink>
-            <NavLink
+            </UTMNavLink>
+            <UTMNavLink
               to="/hourly-transfer"
-              className="block px-5 py-4 text-base text-gray-700 hover:text-royal-blue hover:bg-royal-blue/10 font-sans transition-all duration-200"
-              onClick={handleNavClick}
+              className="block px-5 py-4 text-base text-gray-700 hover:text-royal-blue hover:bg-royal-blue/10 font-sans transition-all duration-200 w-full"
             >
               Hourly Service
-            </NavLink>
-            <NavLink
+            </UTMNavLink>
+            <UTMNavLink
               to="/special-request"
-              className="block px-5 py-4 text-base text-gray-700 hover:text-royal-blue hover:bg-royal-blue/10 font-sans transition-all duration-200"
-              onClick={handleNavClick}
+              className="block px-5 py-4 text-base text-gray-700 hover:text-royal-blue hover:bg-royal-blue/10 font-sans transition-all duration-200 w-full"
             >
               Special/Personalized Transfer
-            </NavLink>
+            </UTMNavLink>
           </div>
         </li>
 
@@ -163,24 +179,22 @@ const PrimaryNav = ({ navHidden, screenSize, setNavHidden }) => {
             <div className="px-5 py-3 text-sm text-royal-blue uppercase tracking-wide font-medium font-sans">
               Premium Events
             </div>
-            <NavLink
+            <UTMNavLink
               to="/davos-forum"
-              className="block px-5 py-4 text-base text-gray-700 hover:text-royal-blue hover:bg-royal-blue/10 font-sans transition-all duration-200"
-              onClick={handleNavClick}
+              className="block px-5 py-4 text-base text-gray-700 hover:text-royal-blue hover:bg-royal-blue/10 font-sans transition-all duration-200 w-full"
             >
               Davos Forum
-            </NavLink>
+            </UTMNavLink>
           </div>
         </li>
 
         <li>
-          <NavLink
+          <UTMNavLink
             className="block text-gray-700 hover:text-royal-blue font-medium text-lg md:text-xl font-sans transition-all duration-200 hover:bg-royal-blue/10 px-4 py-3 rounded-lg md:bg-transparent md:hover:bg-transparent md:px-2 md:py-1"
             to="/contact"
-            onClick={handleNavClick}
           >
             Contact
-          </NavLink>
+          </UTMNavLink>
         </li>
       </ul>
 

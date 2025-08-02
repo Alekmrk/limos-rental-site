@@ -1,6 +1,6 @@
 import { useContext, useState, useEffect, useRef, useMemo, useCallback } from "react";
-import { useNavigate } from "react-router-dom";
 import ReservationContext from "../../contexts/ReservationContext";
+import { useUTMPreservation } from "../../hooks/useUTMPreservation";
 import Button from "../../components/Button";
 import ProgressBar from "../../components/ProgressBar";
 import AddressInput from "../../components/AddressInput";
@@ -10,7 +10,7 @@ import MapPreview from "../../components/MapPreview";
 import { calculatePrice, calculatePriceByDistance, addSurcharges, formatPrice } from "../../services/PriceCalculationService";
 
 const VehicleSelection = ({ scrollUp }) => {
-  const navigate = useNavigate();
+  const { navigateWithUTMs } = useUTMPreservation();
   const { 
     reservationInfo, 
     handleInput, 
@@ -37,7 +37,7 @@ const VehicleSelection = ({ scrollUp }) => {
   useEffect(() => {
     // For special requests, skip vehicle selection
     if (reservationInfo.isSpecialRequest) {
-      navigate('/customer-details');
+      navigateWithUTMs('/customer-details');
       return;
     }
 
@@ -48,9 +48,9 @@ const VehicleSelection = ({ scrollUp }) => {
         !reservationInfo.time ||
         (reservationInfo.isHourly && (!reservationInfo.hours || reservationInfo.hours < 3 || reservationInfo.hours > 24))
     ) {
-      navigate('/');
+      navigateWithUTMs('/');
     }
-  }, [reservationInfo, navigate]);
+  }, [reservationInfo, navigateWithUTMs]);
 
   const hasEmptyStops = useMemo(() => {
     return reservationInfo.extraStops.some(stop => !stop.trim());
@@ -150,7 +150,7 @@ const VehicleSelection = ({ scrollUp }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (validateForm()) {
-      navigate('/customer-details');
+      navigateWithUTMs('/customer-details');
     }
   };
 
@@ -158,9 +158,9 @@ const VehicleSelection = ({ scrollUp }) => {
     // Check if user came from booking page
     const hasBookingHistory = window.history.length > 1;
     if (hasBookingHistory) {
-      navigate(-1); // Go back to previous page
+      navigateWithUTMs(-1); // Go back to previous page
     } else {
-      navigate('/'); // Default to homepage
+      navigateWithUTMs('/'); // Default to homepage
     }
   };
 

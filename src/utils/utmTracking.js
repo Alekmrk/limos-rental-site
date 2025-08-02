@@ -3,6 +3,19 @@
  * Preserves marketing attribution through Stripe payment redirects
  */
 
+/**
+ * Feature flag to control UTM restoration from storage
+ * Set to false to only preserve UTMs in URL
+ * 
+ * To re-enable storage restoration in the future:
+ * 1. Change ENABLE_UTM_STORAGE_RESTORATION to true
+ * 2. Update getAvailableUTMs() in PaymentSuccess.jsx to use storage again
+ */
+const ENABLE_UTM_STORAGE_RESTORATION = false;
+
+// Export the feature flag for easy access
+export { ENABLE_UTM_STORAGE_RESTORATION };
+
 const UTM_PARAMS = [
   'utm_source',     // Traffic source (google, facebook, direct)
   'utm_medium',     // Marketing medium (cpc, email, organic)
@@ -61,6 +74,12 @@ export const captureUTMParameters = () => {
  */
 export const getStoredUTMParameters = () => {
   try {
+    // Check if storage restoration is disabled
+    if (!ENABLE_UTM_STORAGE_RESTORATION) {
+      console.log('🚫 UTM storage restoration is disabled');
+      return null;
+    }
+
     // First try sessionStorage (most recent)
     const sessionData = sessionStorage.getItem(UTM_STORAGE_KEY);
     if (sessionData) {
@@ -212,6 +231,12 @@ export const debugUTMState = () => {
  */
 export const enableCrossTabSync = () => {
   try {
+    // Check if storage restoration is disabled
+    if (!ENABLE_UTM_STORAGE_RESTORATION) {
+      console.log('🚫 Cross-tab sync disabled - storage restoration is off');
+      return null;
+    }
+
     // Always check localStorage backup first for cross-tab support
     const backup = localStorage.getItem(UTM_BACKUP_KEY);
     if (backup && !sessionStorage.getItem(UTM_STORAGE_KEY)) {
@@ -234,6 +259,14 @@ export const enableCrossTabSync = () => {
  * Initialize UTM tracking with cross-tab support
  */
 export const initUTMTracking = () => {
+  // Skip storage restoration if disabled
+  if (!ENABLE_UTM_STORAGE_RESTORATION) {
+    console.log('🚫 UTM storage restoration is disabled, only capturing from URL');
+    // Only capture new UTMs if present in URL
+    captureUTMParameters();
+    return;
+  }
+
   // Check localStorage backup first for cross-tab support
   const backup = localStorage.getItem(UTM_BACKUP_KEY);
   if (backup && !sessionStorage.getItem(UTM_STORAGE_KEY)) {

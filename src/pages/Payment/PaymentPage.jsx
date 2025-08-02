@@ -1,5 +1,5 @@
 import { useState, useContext, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useUTMPreservation } from "../../hooks/useUTMPreservation";
 import { DateTime } from 'luxon';
 import ReservationContext from "../../contexts/ReservationContext";
 import Button from "../../components/Button";
@@ -10,7 +10,7 @@ import StripePayment from '../../components/StripePayment';
 import usePaymentFlowCookieSuppression from '../../hooks/usePaymentFlowCookieSuppression';
 
 const PaymentPage = ({ scrollUp }) => {
-  const navigate = useNavigate();
+  const { navigateWithUTMs } = useUTMPreservation();
   const { reservationInfo, handleInput } = useContext(ReservationContext);
   
   const [paymentMethod, setPaymentMethod] = useState(null);
@@ -48,9 +48,9 @@ const PaymentPage = ({ scrollUp }) => {
         (reservationInfo.isHourly && (!reservationInfo.hours || reservationInfo.hours < 3 || reservationInfo.hours > 24)) ||
         (reservationInfo.isHourly && !reservationInfo.plannedActivities?.trim())
     ) {
-      navigate('/customer-details');
+      navigateWithUTMs('/customer-details');
     }
-  }, [reservationInfo, navigate, handleInput]);
+  }, [reservationInfo, navigateWithUTMs, handleInput]);
 
   // Remove the separate useEffect for cookie suppression since we're using the hook now
 
@@ -99,7 +99,7 @@ const PaymentPage = ({ scrollUp }) => {
 
   const handleBack = () => {
     if (!isProcessing) {
-      navigate('/customer-details');
+      navigateWithUTMs('/customer-details');
     }
   };
 
@@ -131,10 +131,10 @@ const PaymentPage = ({ scrollUp }) => {
           value: paymentDetails
         }
       });
-      navigate('/thankyou');
+      navigateWithUTMs('/thankyou');
     } catch (error) {
       console.error("Error processing successful payment:", error);
-      navigate('/thankyou');
+      navigateWithUTMs('/thankyou');
     }
   };
 
@@ -199,7 +199,7 @@ const PaymentPage = ({ scrollUp }) => {
         // Don't block the flow for email errors
       }
 
-      navigate('/thankyou');
+      navigateWithUTMs('/thankyou');
     } catch (error) {
       console.error("Error processing crypto payment:", error);
       setErrorMessage("There was a problem processing your payment. Please try again or contact support.");

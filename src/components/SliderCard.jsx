@@ -1,12 +1,12 @@
 import { faBriefcase, faPerson } from "@fortawesome/free-solid-svg-icons";
 import CapacityItem from "../pages/Home/FleetSection/CapacityItem";
 import Image from "./Image";
-import { Link } from "react-router-dom";
+import { UTMLink } from "./UTMLink";
 
 const SliderCard = ({ index, image, name, seats, luggage, chooseVehicle }) => {
   try {
     return (
-    <Link to={"/vehicles"} state={name}>
+    <UTMLink to={"/vehicles"} state={name}>
       <div
         onClick={() => chooseVehicle(name)}
         className={`slider-card mx-2 pb-8 cursor-pointer ${index === 0 && ""}`}
@@ -34,7 +34,7 @@ const SliderCard = ({ index, image, name, seats, luggage, chooseVehicle }) => {
           </div>
         </div>
       </div>
-    </Link>
+    </UTMLink>
   );
   } catch (error) {
     console.error('Error in SliderCard:', error);

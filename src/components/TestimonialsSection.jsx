@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { FaStar, FaQuoteLeft, FaUser, FaChevronLeft, FaChevronRight } from 'react-icons/fa';
-import { Link } from 'react-router-dom';
+import { UTMLink } from './UTMLink';
 
 const TestimonialsSection = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -265,12 +265,12 @@ const TestimonialsSection = () => {
         {/* Call to Action - Harmonious Theme */}
         <div className="text-center mt-12">
           <p className="text-gray-600 mb-4">Ready to join our satisfied clients?</p>
-          <Link 
+          <UTMLink 
             to="/booking"
             className="bg-gradient-to-r from-royal-blue to-royal-blue-light hover:from-royal-blue-light hover:to-royal-blue text-white px-8 py-3 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
           >
             Book Your Experience
-          </Link>
+          </UTMLink>
         </div>
       </div>
     </section>

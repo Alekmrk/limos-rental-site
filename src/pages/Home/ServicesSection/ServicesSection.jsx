@@ -2,7 +2,7 @@ import SectionHeading from "../../../components/SectionHeading";
 import ServiceCard from "./ServiceCard";
 import services from "../../../data/services";
 import { FaQuoteLeft, FaAward, FaUsers, FaGlobeEurope, FaStar, FaChevronLeft, FaChevronRight } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { UTMLink } from "../../../components/UTMLink";
 import { useState, useEffect } from "react";
 
 const ServicesSection = () => {
@@ -234,12 +234,12 @@ const ServicesSection = () => {
               Join thousands of satisfied clients who trust Elite Way Limo for their
               transportation needs. Book your premium experience today.
             </p>
-            <Link 
+            <UTMLink 
               to="/booking"
               className="bg-gradient-to-r from-royal-blue-dark to-royal-blue text-white hover:from-royal-blue hover:to-royal-blue-light px-10 py-4 rounded-xl font-semibold transition-all duration-300 shadow-md hover:shadow-lg transform hover:scale-105 text-lg"
             >
               Get Started Now
-            </Link>
+            </UTMLink>
           </div>
         </div>
       </div>

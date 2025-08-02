@@ -4,9 +4,11 @@ import { faBars, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { useEffect, useState } from "react";
 import PrimaryNav from "./PrimaryNav";
 import LanguageSelector from "./LanguageSelector";
+import { useUTMPreservation } from "../../hooks/useUTMPreservation";
 import logo from "../../assets/elitewaylogo.png";
 
 const Header = () => {
+  const { navigateWithUTMs } = useUTMPreservation();
   const screenMd = 800;
 
   // shodow for header only when the page is a bit scrolled down
@@ -59,7 +61,7 @@ const Header = () => {
       }`}
     >
       <div className="container-big flex items-center">
-        <a href="/" className="flex-shrink-0">
+        <button onClick={() => navigateWithUTMs('/')} className="flex-shrink-0">
           <Image
             src={logo}
             alt="Elite Way Limo"
@@ -68,7 +70,7 @@ const Header = () => {
             priority={true}
             sizes="144px"
           />
-        </a>
+        </button>
 
         <div className="flex-1 flex justify-center">
           <PrimaryNav

@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useRef } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useUTMPreservation } from "../../hooks/useUTMPreservation";
+import { useSearchParams } from "react-router-dom";
 import Button from "../../components/Button";
 import ReservationContext from "../../contexts/ReservationContext";
 import usePaymentFlowCookieSuppression from "../../hooks/usePaymentFlowCookieSuppression";
@@ -10,7 +11,7 @@ const API_BASE_URL = import.meta.env.PROD
   : 'http://localhost:3001';
 
 const PaymentCancel = () => {
-  const navigate = useNavigate();
+  const { navigateWithUTMs } = useUTMPreservation();
   const [searchParams] = useSearchParams();
   const { reservationInfo, handleInput } = useContext(ReservationContext);
   const hasSetRetryFlag = useRef(false);
@@ -148,7 +149,7 @@ const PaymentCancel = () => {
         value: null
       }
     });
-    navigate('/payment');
+    navigateWithUTMs('/payment');
   };
 
   const handleContact = () => {
@@ -178,7 +179,7 @@ const PaymentCancel = () => {
             </Button>
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-              <Button variant="secondary" onClick={() => navigate('/')}>
+              <Button variant="secondary" onClick={() => navigateWithUTMs('/')}>
                 Return to Home
               </Button>
               <Button variant="secondary" onClick={handleContact}>

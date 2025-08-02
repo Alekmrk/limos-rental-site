@@ -1,8 +1,8 @@
 import React, { useEffect, useContext } from "react";
-import { useNavigate } from "react-router-dom";
 import ReservationContext from "../../contexts/ReservationContext";
 import usePaymentFlowCookieSuppression from "../../hooks/usePaymentFlowCookieSuppression";
-import { extractAndStoreUTMFromURL, trackConversion, getStoredUTMParameters } from "../../utils/utmTracking";
+import { useUTMPreservation } from "../../hooks/useUTMPreservation";
+import { extractAndStoreUTMFromURL, trackConversion } from "../../utils/utmTracking";
 
 const API_BASE_URL = import.meta.env.PROD 
   ? 'https://api.elitewaylimo.ch'
@@ -49,32 +49,21 @@ const getAvailableUTMs = () => {
 };
 
 const PaymentSuccess = () => {
-  const navigate = useNavigate();
   const { handleInput } = useContext(ReservationContext);
+  const { currentUTMs, navigateWithUTMs } = useUTMPreservation();
   
   // Suppress cookie consent during payment success flow
   const { clearSuppression } = usePaymentFlowCookieSuppression(true, 45000); // 45 seconds
 
   useEffect(() => {
-    // First check URL params (primary source)
-    const urlParams = new URLSearchParams(window.location.search);
-    const urlUTMs = Object.fromEntries(urlParams);
-    
-    // Then check localStorage backup
-    const backupUTMs = JSON.parse(localStorage.getItem('eliteway_utm_backup') || '{}');
-    
-    // Merge with preference to URL params
-    const finalUTMs = { ...backupUTMs, ...urlUTMs };
-    
-    // Store for attribution
-    if (Object.keys(finalUTMs).length > 0) {
-      console.log('🎯 Final UTMs for success page:', finalUTMs);
-      sessionStorage.setItem('eliteway_utm_data', JSON.stringify(finalUTMs));
+    // Extract UTMs from current URL (they come from Stripe redirect)
+    // Use the hook's currentUTMs which reads from URL
+    if (currentUTMs) {
+      console.log('🎯 UTMs found on payment success:', currentUTMs);
+      // You can still capture them for GTM even with storage disabled
+      extractAndStoreUTMFromURL();
     }
 
-    // Extract and store UTM parameters from the success URL
-    extractAndStoreUTMFromURL();
-    
     const verifySession = async () => {
       try {
         const urlParams = new URLSearchParams(window.location.search);
@@ -83,7 +72,8 @@ const PaymentSuccess = () => {
         if (!sessionId) {
           console.error('No session ID found');
           clearSuppression();
-          navigate('/payment');
+          // Preserve UTMs even on error redirect
+          navigateWithUTMs('/payment');
           return;
         }
 
@@ -93,7 +83,8 @@ const PaymentSuccess = () => {
         if (!data.success) {
           console.error('Session verification failed:', data.error);
           clearSuppression();
-          navigate('/payment');
+          // Preserve UTMs on error redirect
+          navigateWithUTMs('/payment');
           return;
         }
 
@@ -108,34 +99,23 @@ const PaymentSuccess = () => {
           });
         }
 
-        // Get available UTMs from URL and/or storage
-        const availableUTMs = getAvailableUTMs();
-        
-        // Navigate to thank you page with UTMs preserved in URL
-        if (availableUTMs) {
-          const utmParams = new URLSearchParams();
-          Object.entries(availableUTMs).forEach(([key, value]) => {
-            if (value && UTM_PARAMS.includes(key)) {
-              utmParams.set(key, value);
-            }
-          });
-          
-          const thankyouURL = `/thankyou?${utmParams.toString()}`;
-          console.log('🔗 Navigating to thankyou with UTMs:', thankyouURL);
-          navigate(thankyouURL, { replace: true });
-        } else {
-          console.log('🔗 Navigating to thankyou without UTMs');
-          navigate('/thankyou', { replace: true });
+        // Track conversion with UTM attribution
+        if (currentUTMs) {
+          trackConversion(currentUTMs, 'purchase');
         }
+
+        // Navigate to thank you page with UTMs preserved
+        navigateWithUTMs('/thankyou', { replace: true });
+        
       } catch (error) {
         console.error('Error verifying payment:', error);
         clearSuppression();
-        navigate('/payment');
+        navigateWithUTMs('/payment');
       }
     };
 
     verifySession();
-  }, [navigate, handleInput, clearSuppression]);
+  }, [navigate, handleInput, clearSuppression, currentUTMs, navigateWithUTMs]);
 
   return (
     <div className="container-default mt-28 text-center">

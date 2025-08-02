@@ -3,7 +3,7 @@ import ReservationContext from "../../contexts/ReservationContext";
 import ReservationCard from "../../pages/Home/BannerSection/ReservationCard";
 import Button from "../../components/Button";
 import Image from "../../components/Image";
-import { Link } from "react-router-dom";
+import { UTMLink } from "../../components/UTMLink";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { 
   faRoute, 
@@ -409,13 +409,13 @@ const DistanceTransfer = ({ scrollUp }) => {
                 across Switzerland's most beautiful routes.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Link to="/booking">
+                <UTMLink to="/booking">
                   <Button 
                     variant="secondary"
                   >
                     Book Distance Transfer
                   </Button>
-                </Link>
+                </UTMLink>
                 <Button 
                   variant="primary"
                   onClick={() => window.location.href = '/contact'}

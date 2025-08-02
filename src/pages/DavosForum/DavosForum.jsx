@@ -5,7 +5,7 @@ import Image from "../../components/Image";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMountain, faUsers, faShieldAlt, faCalendarAlt, faSnowflake, faCrown } from "@fortawesome/free-solid-svg-icons";
 import davosForumImage from "../../assets/background/davos(u169_2k).jpg";
-import { Link } from "react-router-dom";
+import { UTMLink } from "../../components/UTMLink";
 
 const DavosForum = ({ scrollUp }) => {
   useEffect(() => {
@@ -413,13 +413,13 @@ const DavosForum = ({ scrollUp }) => {
                 Book now for guaranteed availability during the event season.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Link to="/booking">
+                <UTMLink to="/booking">
                   <Button 
                     variant="secondary"
                   >
                     Book Davos Transfer
                   </Button>
-                </Link>
+                </UTMLink>
                 <Button 
                   variant="outline"
                   onClick={() => window.location.href = '/contact'}

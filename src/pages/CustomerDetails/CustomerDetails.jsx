@@ -1,5 +1,5 @@
 import { useContext, useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useUTMPreservation } from "../../hooks/useUTMPreservation";
 import { DateTime } from 'luxon';
 import ReservationContext from "../../contexts/ReservationContext";
 import Button from "../../components/Button";
@@ -9,7 +9,7 @@ import DateInput from "../../components/DateInput";
 import TimeInput from "../../components/TimeInput";
 
 const CustomerDetails = ({ scrollUp }) => {
-  const navigate = useNavigate();
+  const { navigateWithUTMs } = useUTMPreservation();
   const { reservationInfo, handleInput } = useContext(ReservationContext);
   const [errors, setErrors] = useState({});
   const [showAdditionalDetails, setShowAdditionalDetails] = useState(false); // Start closed
@@ -26,9 +26,9 @@ const CustomerDetails = ({ scrollUp }) => {
           !reservationInfo.time || 
           (reservationInfo.isHourly && (!reservationInfo.hours || reservationInfo.hours < 3 || reservationInfo.hours > 24))
       ) {
-        navigate('/');
+        navigateWithUTMs('/');
       } else if (!reservationInfo.selectedVehicle || !reservationInfo.passengers || reservationInfo.passengers < 1) {
-        navigate('/vehicle-selection');
+        navigateWithUTMs('/vehicle-selection');
       }
     }
   }, [reservationInfo, navigate]);
@@ -126,18 +126,18 @@ const CustomerDetails = ({ scrollUp }) => {
     if (validateForm()) {
       // For special requests, skip payment and go straight to thank you
       if (reservationInfo.isSpecialRequest) {
-        navigate('/thankyou');
+        navigateWithUTMs('/thankyou');
       } else {
-        navigate('/payment');
+        navigateWithUTMs('/payment');
       }
     }
   };
 
   const handleBack = () => {
     if (reservationInfo.isSpecialRequest) {
-      navigate('/');
+      navigateWithUTMs('/');
     } else {
-      navigate('/vehicle-selection');
+      navigateWithUTMs('/vehicle-selection');
     }
   };
 

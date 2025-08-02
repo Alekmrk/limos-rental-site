@@ -1,12 +1,12 @@
 import { useEffect, useState, useContext } from "react";
-import { useNavigate } from "react-router-dom";
+import { useUTMPreservation } from "../../hooks/useUTMPreservation";
 import ProgressBar from "../../components/ProgressBar";
 import ReservationContext from "../../contexts/ReservationContext";
 import { sendTransferConfirmationToAdmin } from "../../services/EmailService";
 import { DateTime } from 'luxon';
 
 const ThankYou = ({ scrollUp }) => {
-  const navigate = useNavigate();
+  const { navigateWithUTMs } = useUTMPreservation();
   const { reservationInfo, clearReservation } = useContext(ReservationContext);
   const [emailStatus, setEmailStatus] = useState({
     sent: false,

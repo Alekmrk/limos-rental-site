@@ -1,5 +1,5 @@
 import { useState, useContext, useRef, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useUTMPreservation } from "../../hooks/useUTMPreservation";
 import Button from "../../components/Button";
 import ReservationContext from "../../contexts/ReservationContext";
 import TimeInput from "../../components/TimeInput";
@@ -10,7 +10,7 @@ import { validateAddresses } from "../../services/GoogleMapsService";
 import { DateTime } from 'luxon';
 
 const BookingPage = ({ scrollUp }) => {
-  const navigate = useNavigate();
+  const { navigateWithUTMs } = useUTMPreservation();
   const { 
     reservationInfo, 
     handleInput: originalHandleInput, 
@@ -413,10 +413,10 @@ const BookingPage = ({ scrollUp }) => {
       console.log('✅ Form valid - navigating...');
       if (reservationInfo.isSpecialRequest) {
         console.log('🎯 Navigating to customer-details (special request)');
-        navigate('/customer-details');
+        navigateWithUTMs('/customer-details');
       } else {
         console.log('🎯 Navigating to vehicle-selection');
-        navigate('/vehicle-selection');
+        navigateWithUTMs('/vehicle-selection');
       }
     } else {
       console.log('❌ Form invalid - staying on page');

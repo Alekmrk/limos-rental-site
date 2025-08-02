@@ -1,7 +1,7 @@
 import React from 'react';
 import { FaCalendarAlt, FaStar, FaUsers, FaMapMarkerAlt } from 'react-icons/fa';
 import { eventDestinations } from '../data/services';
-import { Link } from 'react-router-dom';
+import { UTMLink } from './UTMLink';
 
 const EventsSection = () => {
   const upcomingEvents = [
@@ -124,12 +124,12 @@ const EventsSection = () => {
           <p className="text-gray-600 mb-6">
             Secure your premium transportation for upcoming events. Early booking recommended.
           </p>
-          <Link 
+          <UTMLink 
             to="/booking"
             className="inline-flex items-center gap-2 bg-gradient-to-r from-royal-blue to-royal-blue-light hover:from-royal-blue-light hover:to-royal-blue text-white px-8 py-3 rounded-lg font-medium transition-all duration-300 transform hover:scale-105 shadow-lg"
           >
             Reserve Now
-          </Link>
+          </UTMLink>
         </div>
       </div>
     </section>
