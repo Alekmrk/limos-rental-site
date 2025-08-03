@@ -37,6 +37,7 @@ const Footer = () => {
     "/payment-success",
     "/payment-cancel",
     "/thankyou",
+    "/thankyouspecial"
   ];
 
   const isReservationFlow = reservationFlowPages.includes(location.pathname);
@@ -76,7 +77,7 @@ const Footer = () => {
   // Basic footer for reservation flow pages - only on mobile
   if (isReservationFlow && isMobile) {
     return (
-      <footer className="container-big bg-neutral-800 text-white rounded-[1.5rem] mt-20 mb-[2.5vw] py-8 px-8">
+      <footer className="container-big bg-neutral-800 text-white rounded-[1.5rem] mt-8 mb-[2.5vw] py-8 px-8">
         <div className="max-w-6xl mx-auto">
           <div className="text-center">
             <Image
@@ -100,7 +101,7 @@ const Footer = () => {
 
   // Regular footer for desktop reservation pages and all other pages
   return (
-    <footer className="container-big bg-gradient-to-br from-cream-light to-darker-cream rounded-[1.5rem] mt-20 mb-[2.5vw] py-12 px-8 md:px-20 border border-royal-blue/20 shadow-lg">
+    <footer className={`container-big bg-gradient-to-br from-cream-light to-darker-cream rounded-[1.5rem] ${isReservationFlow ? 'mt-8' : 'mt-20'} mb-[2.5vw] py-12 px-8 md:px-20 border border-royal-blue/20 shadow-lg`}>
       <div className="max-w-6xl mx-auto">
         {/* Main Footer Content */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8 text-center md:text-left">

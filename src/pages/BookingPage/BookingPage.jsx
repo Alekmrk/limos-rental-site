@@ -442,7 +442,7 @@ const BookingPage = ({ scrollUp }) => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-warm-gray/5 via-cream/3 to-soft-gray/5 relative overflow-hidden">
+    <div className="bg-gradient-to-br from-warm-gray/5 via-cream/3 to-soft-gray/5 relative overflow-hidden">
       {/* Animated Background Elements */}
       <div className="fixed inset-0 z-0" style={{ pointerEvents: 'none' }}>
         <div className="absolute top-20 left-10 w-32 h-32 bg-royal-blue/5 rounded-full animate-pulse"></div>

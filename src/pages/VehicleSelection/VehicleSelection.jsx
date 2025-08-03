@@ -349,7 +349,7 @@ const VehicleSelection = ({ scrollUp }) => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-warm-gray/5 via-cream/3 to-soft-gray/5">
+    <div className="bg-gradient-to-br from-warm-gray/5 via-cream/3 to-soft-gray/5">
       {/* Softer Animated Background Elements */}
       <div className="fixed inset-0 z-0" style={{ pointerEvents: 'none' }}>
         <div className="absolute top-20 left-10 w-20 h-20 bg-royal-blue/10 rounded-full animate-pulse"></div>
