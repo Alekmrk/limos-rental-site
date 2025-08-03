@@ -164,10 +164,25 @@ const ReservationCard = ({ idPrefix = '' }) => {
     }
     
     if (reservationInfo.isHourly) {
-      const hours = parseInt(reservationInfo.hours) || 0;
-      if (hours < 3 || hours > 24) {
-        newErrors.hours = "Hours must be between 3 and 24";
-        console.log('❌ Hours validation failed:', hours);
+      const hoursValue = reservationInfo.hours;
+      
+      // Check if hours field is empty
+      if (!hoursValue || hoursValue.toString().trim() === '') {
+        newErrors.hours = "Duration is required";
+        console.log('❌ Hours validation failed: Hours is required');
+      } 
+      // Check if hours contains non-numeric characters
+      else if (!/^\d+$/.test(hoursValue.toString())) {
+        newErrors.hours = "Please enter numbers only";
+        console.log('❌ Hours validation failed: Non-numeric input');
+      } 
+      // Check if hours is within valid range
+      else {
+        const hours = parseInt(hoursValue);
+        if (hours < 3 || hours > 24) {
+          newErrors.hours = "Hours must be between 3 and 24";
+          console.log('❌ Hours validation failed:', hours);
+        }
       }
     }
 
@@ -488,16 +503,36 @@ const ReservationCard = ({ idPrefix = '' }) => {
                   </label>
                   <div className="relative">
                     <input
-                      type="number"
-                      onInvalid={(e) => e.preventDefault()}
+                      type="text"
+                      inputMode="numeric"
+                      pattern="[0-9]*"
                       name="hours"
                       id={`${idPrefix}hours`}
                       value={reservationInfo.hours}
                       onChange={(e) => {
-                        const value = parseInt(e.target.value);
-                        // Only clear the error, validation will happen on form submit
-                        setErrors(prev => ({ ...prev, hours: undefined }));
+                        const inputValue = e.target.value;
+                        
+                        // Always update the input value first
                         handleInput(e);
+                        
+                        // Check if input contains non-numeric characters and show error
+                        if (inputValue && !/^\d*$/.test(inputValue)) {
+                          setErrors(prev => ({ ...prev, hours: "Please enter numbers only" }));
+                        } else {
+                          // Clear errors if input is valid
+                          setErrors(prev => ({ ...prev, hours: undefined }));
+                        }
+                      }}
+                      onPaste={(e) => {
+                        // Allow paste to happen, then validate the result
+                        setTimeout(() => {
+                          const inputValue = e.target.value;
+                          if (inputValue && !/^\d*$/.test(inputValue)) {
+                            setErrors(prev => ({ ...prev, hours: "Please enter numbers only" }));
+                          } else {
+                            setErrors(prev => ({ ...prev, hours: undefined }));
+                          }
+                        }, 0);
                       }}
                       onFocus={(e) => e.target.select()}
                       className={`bg-warm-white/80 rounded-xl py-3 px-4 w-full border text-gray-700 transition-all duration-200 hover:border-royal-blue/30 focus:border-royal-blue/50 focus:shadow-[0_0_15px_rgba(65,105,225,0.2)] ${
