@@ -4,12 +4,22 @@
  */
 
 /**
- * Feature flag to control UTM restoration from storage
- * Set to false to only preserve UTMs in URL
+ * Feature flag to control ALL UTM storage operations
+ * Set to false to only preserve UTMs in URL (no storage at all)
  * 
- * To re-enable storage restoration in the future:
+ * When disabled, the system will:
+ * - Still capture UTMs from URLs
+ * - Still validate UTM data
+ * - NOT store UTMs in sessionStorage or localStorage
+ * - NOT store conversion data in localStorage  
+ * - NOT restore UTMs from storage
+ * - NOT preserve UTMs in URLs from storage
+ * - Only rely on URL-based UTM preservation
+ * 
+ * To re-enable storage in the future:
  * 1. Change ENABLE_UTM_STORAGE_RESTORATION to true
- * 2. Update getAvailableUTMs() in PaymentSuccess.jsx to use storage again
+ * 2. All storage functionality will work again
+ * 3. No other changes needed
  */
 const ENABLE_UTM_STORAGE_RESTORATION = false;
 
@@ -48,17 +58,23 @@ export const captureUTMParameters = () => {
       // Validate UTM data before storing
       const validatedData = validateUTM(utmData);
       
-      // Store in sessionStorage (survives redirects but not new tabs)
-      sessionStorage.setItem(UTM_STORAGE_KEY, JSON.stringify(validatedData));
+      // Only store if storage is enabled
+      if (ENABLE_UTM_STORAGE_RESTORATION) {
+        // Store in sessionStorage (survives redirects but not new tabs)
+        sessionStorage.setItem(UTM_STORAGE_KEY, JSON.stringify(validatedData));
+        
+        // Backup in localStorage with timestamp (survives browser restarts)
+        localStorage.setItem(UTM_BACKUP_KEY, JSON.stringify({
+          ...validatedData,
+          timestamp: new Date().toISOString(),
+          expires: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString() // 24 hours
+        }));
+        
+        console.log('🎯 UTM parameters captured, validated and stored:', validatedData);
+      } else {
+        console.log('🎯 UTM parameters captured and validated (storage disabled):', validatedData);
+      }
       
-      // Backup in localStorage with timestamp (survives browser restarts)
-      localStorage.setItem(UTM_BACKUP_KEY, JSON.stringify({
-        ...validatedData,
-        timestamp: new Date().toISOString(),
-        expires: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString() // 24 hours
-      }));
-
-      console.log('🎯 UTM parameters captured and validated:', validatedData);
       return validatedData;
     }
 
@@ -161,8 +177,14 @@ export const extractAndStoreUTMFromURL = (url = window.location.href) => {
       // Validate UTM data before storing
       const validatedData = validateUTM(utmData);
       
-      sessionStorage.setItem(UTM_STORAGE_KEY, JSON.stringify(validatedData));
-      console.log('🎯 UTM extracted, validated and stored from URL:', validatedData);
+      // Only store if storage is enabled
+      if (ENABLE_UTM_STORAGE_RESTORATION) {
+        sessionStorage.setItem(UTM_STORAGE_KEY, JSON.stringify(validatedData));
+        console.log('🎯 UTM extracted, validated and stored from URL:', validatedData);
+      } else {
+        console.log('🎯 UTM extracted and validated from URL (storage disabled):', validatedData);
+      }
+      
       return validatedData;
     }
 
@@ -178,9 +200,13 @@ export const extractAndStoreUTMFromURL = (url = window.location.href) => {
  */
 export const clearUTMData = () => {
   try {
-    sessionStorage.removeItem(UTM_STORAGE_KEY);
-    localStorage.removeItem(UTM_BACKUP_KEY);
-    console.log('🧹 UTM data cleared');
+    if (ENABLE_UTM_STORAGE_RESTORATION) {
+      sessionStorage.removeItem(UTM_STORAGE_KEY);
+      localStorage.removeItem(UTM_BACKUP_KEY);
+      console.log('🧹 UTM data cleared');
+    } else {
+      console.log('🚫 UTM data clearing skipped (storage disabled)');
+    }
   } catch (error) {
     console.error('❌ Error clearing UTM data:', error);
   }
@@ -349,20 +375,23 @@ export const trackConversion = (utmData, conversionType = 'purchase') => {
       url: window.location.href
     };
 
-    // Store conversion data for analytics
-    const existingConversions = JSON.parse(localStorage.getItem('eliteway_conversions') || '[]');
-    existingConversions.push(attribution);
-    
-    // Keep only last 10 conversions
-    if (existingConversions.length > 10) {
-      existingConversions.splice(0, existingConversions.length - 10);
+    // Only store conversion data if storage is enabled
+    if (ENABLE_UTM_STORAGE_RESTORATION) {
+      const existingConversions = JSON.parse(localStorage.getItem('eliteway_conversions') || '[]');
+      existingConversions.push(attribution);
+      
+      // Keep only last 10 conversions
+      if (existingConversions.length > 10) {
+        existingConversions.splice(0, existingConversions.length - 10);
+      }
+      
+      localStorage.setItem('eliteway_conversions', JSON.stringify(existingConversions));
+      console.log('🎯 Conversion tracked with UTM attribution and stored:', attribution);
+    } else {
+      console.log('🎯 Conversion tracked with UTM attribution (storage disabled):', attribution);
     }
     
-    localStorage.setItem('eliteway_conversions', JSON.stringify(existingConversions));
-    
-    console.log('🎯 Conversion tracked with UTM attribution:', attribution);
-    
-    // Trigger analytics events if available
+    // Trigger analytics events if available (this should still work regardless of storage)
     if (typeof gtag !== 'undefined') {
       gtag('event', 'conversion', {
         'send_to': 'AW-CONVERSION_ID', // Replace with actual conversion ID
@@ -389,6 +418,12 @@ export const trackConversion = (utmData, conversionType = 'purchase') => {
  */
 export const preserveUTMsInURL = () => {
   try {
+    // Skip if storage is disabled
+    if (!ENABLE_UTM_STORAGE_RESTORATION) {
+      console.log('🚫 UTM URL preservation skipped (storage disabled)');
+      return;
+    }
+
     // Get stored UTMs
     const storedUTMs = getStoredUTMParameters();
     if (!storedUTMs || Object.keys(storedUTMs).length === 0) return;
@@ -444,6 +479,12 @@ export const initUTMTrackingWithURLPreservation = () => {
  * Preserve UTMs on navigation (for React Router)
  */
 export const preserveUTMsOnNavigation = () => {
+  // Skip if storage is disabled
+  if (!ENABLE_UTM_STORAGE_RESTORATION) {
+    console.log('🚫 UTM navigation preservation skipped (storage disabled)');
+    return;
+  }
+
   // Small delay to ensure the route has changed and DOM is updated
   setTimeout(() => {
     // Only preserve if we have stored UTMs and current URL doesn't have them
