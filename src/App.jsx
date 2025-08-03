@@ -9,6 +9,7 @@ import Vehicles from "./pages/Vehicles/Vehicles";
 import VehicleSelection from "./pages/VehicleSelection/VehicleSelection";
 import CustomerDetails from "./pages/CustomerDetails/CustomerDetails";
 import ThankYou from "./pages/ThankYou/ThankYou";
+import ThankYouSpecial from "./pages/ThankYou/ThankYouSpecial";
 import PaymentPage from "./pages/Payment/PaymentPage";
 import PaymentSuccess from "./pages/Payment/PaymentSuccess";
 import PaymentCancel from "./pages/Payment/PaymentCancel";
@@ -124,6 +125,7 @@ function App() {
             element={<PaymentCancel />} 
           />
           <Route path="/thankyou" element={<ThankYou scrollUp={scrollUp} />} />
+          <Route path="/thankyouspecial" element={<ThankYouSpecial scrollUp={scrollUp} />} />
           <Route path="/privacy-policy" element={<PrivacyPolicy scrollUp={scrollUp} />} />
           <Route path="/terms-of-service" element={<TermsOfService scrollUp={scrollUp} />} />
           <Route path="/legal-notice" element={<LegalNotice scrollUp={scrollUp} />} />
