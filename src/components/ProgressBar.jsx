@@ -30,16 +30,16 @@ const ProgressBar = ({ reservationData }) => {
 
   const specialSteps = [
     { path: "/customer-details", label: "Contact Details" },
-    { path: "/thankyouspecial", label: "Confirmation" }
+    { path: "/thank-you-special", label: "Confirmation" }
   ];
 
   const steps = dataToUse.isSpecialRequest ? specialSteps : regularSteps;
 
-  // For special requests, also check if we're on the thankyouspecial page
+  // For special requests, also check if we're on the thank-you-special page
   let currentStepIndex = steps.findIndex(step => step.path === location.pathname);
   
-  // Handle the case where we're on /thankyouspecial for special requests
-  if (dataToUse.isSpecialRequest && location.pathname === "/thankyouspecial") {
+  // Handle the case where we're on /thank-you-special for special requests
+  if (dataToUse.isSpecialRequest && location.pathname === "/thank-you-special") {
     currentStepIndex = specialSteps.length - 1; // Last step (Confirmation)
   }
 

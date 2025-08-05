@@ -37,7 +37,7 @@ const Footer = () => {
     "/payment-success",
     "/payment-cancel",
     "/thankyou",
-    "/thankyouspecial"
+    "/thank-you-special"
   ];
 
   const isReservationFlow = reservationFlowPages.includes(location.pathname);

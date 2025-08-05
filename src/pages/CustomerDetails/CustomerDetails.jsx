@@ -126,7 +126,7 @@ const CustomerDetails = ({ scrollUp }) => {
     if (validateForm()) {
       // For special requests, skip payment and go straight to thank you special page
       if (reservationInfo.isSpecialRequest) {
-        navigateWithUTMs('/thankyouspecial');
+        navigateWithUTMs('/thank-you-special');
       } else {
         navigateWithUTMs('/payment');
       }

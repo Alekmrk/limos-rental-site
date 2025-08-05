@@ -125,7 +125,7 @@ function App() {
             element={<PaymentCancel />} 
           />
           <Route path="/thankyou" element={<ThankYou scrollUp={scrollUp} />} />
-          <Route path="/thankyouspecial" element={<ThankYouSpecial scrollUp={scrollUp} />} />
+          <Route path="/thank-you-special" element={<ThankYouSpecial scrollUp={scrollUp} />} />
           <Route path="/privacy-policy" element={<PrivacyPolicy scrollUp={scrollUp} />} />
           <Route path="/terms-of-service" element={<TermsOfService scrollUp={scrollUp} />} />
           <Route path="/legal-notice" element={<LegalNotice scrollUp={scrollUp} />} />
