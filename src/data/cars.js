@@ -8,10 +8,10 @@ import imgSClassInterior1 from "../assets/cars/sclass(i11).png";
 import imgSClassInterior2 from "../assets/cars/sclass(i22).png";
 import imgEClassInterior1 from "../assets/cars/eclass(i11).png";
 import imgEClassInterior2 from "../assets/cars/eclass(i22).png";
-import imgBusinessVanInterior1 from "../assets/cars/businessVan(i11).png";
-import imgBusinessVanInterior2 from "../assets/cars/businessVan(i22).png";
-import imgFirstClassVanInterior1 from "../assets/cars/firstclassinter(i1).png";
-import imgFirstClassVanInterior2 from "../assets/cars/firstclassinter(i2).png";
+import imgBusinessVanInterior1 from "../assets/cars/businessVan(i1).png";
+import imgBusinessVanInterior2 from "../assets/cars/businessVan(i2).png";
+import imgFirstClassVanInterior1 from "../assets/cars/businessVan(i2).png";
+import imgFirstClassVanInterior2 from "../assets/cars/businessVan(i2).png";
 
 
 let cars = [
@@ -66,7 +66,7 @@ let cars = [
       "The Mercedes-Benz V-Class impresses with its modern design and high-class appeal – both inside and out. Strong character lines and high-quality materials as well as the attractive operating and display concept make it a highly desirable vehicle for professional transportation.",
     image: imgVClass2,
     images: [imgVClass2, imgBusinessVanInterior1, imgBusinessVanInterior2],
-    seats: 6,
+    seats: 7,
     luggage: 6,
     type: ["crossover"],
     class: "Business Van",
