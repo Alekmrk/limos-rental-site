@@ -11,7 +11,7 @@ import imgEClassInterior2 from "../assets/cars/eclass(i22).png";
 import imgBusinessVanInterior1 from "../assets/cars/businessVan(i1).png";
 import imgBusinessVanInterior2 from "../assets/cars/businessVan(i2).png";
 import imgFirstClassVanInterior1 from "../assets/cars/firstclassVan(i111).jpg";
-import imgFirstClassVanInterior2 from "../assets/cars/firstclassVan(i222).jpg";
+import imgFirstClassVanInterior2 from "../assets/cars/firstClassVan(i222).jpg";
 
 
 let cars = [
