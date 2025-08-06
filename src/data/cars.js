@@ -2,8 +2,16 @@ import imgBenzSClass from "../assets/cars/sclass3(u).png";
 import imgEClass from "../assets/cars/model1(u).png";
 import imgVClass2 from "../assets/cars/v-class4(u).png";
 import imgVClass1 from "../assets/cars/firstClassV4(u).png";
-import imgInterior1 from "../assets/cars/firstclassinter1.jpg";
-import imgInterior2 from "../assets/cars/firstclassinter2.jpg";
+
+// Interior images for each car class
+import imgSClassInterior1 from "../assets/cars/sclass(i11).png";
+import imgSClassInterior2 from "../assets/cars/sclass(i22).png";
+import imgEClassInterior1 from "../assets/cars/eclass(i11).png";
+import imgEClassInterior2 from "../assets/cars/eclass(i22).png";
+import imgBusinessVanInterior1 from "../assets/cars/businessVan(i11).png";
+import imgBusinessVanInterior2 from "../assets/cars/businessVan(i22).png";
+import imgFirstClassVanInterior1 from "../assets/cars/firstclassinter(i1).png";
+import imgFirstClassVanInterior2 from "../assets/cars/firstclassinter(i2).png";
 
 
 let cars = [
@@ -13,7 +21,7 @@ let cars = [
     detail:
       'Experience the pinnacle of luxury with the Mercedes-Benz S-Class. This flagship model represents the ultimate in automotive sophistication, featuring cutting-edge technology, unparalleled comfort, and Mercedes-Benz legendary craftsmanship for the most discerning passengers.',
     image: imgBenzSClass,
-    images: [imgBenzSClass, imgInterior1, imgInterior2],
+    images: [imgBenzSClass, imgSClassInterior1, imgSClassInterior2],
     seats: 2,
     luggage: 2,
     type: ["luxury"],
@@ -35,7 +43,7 @@ let cars = [
     detail:
       "Experience luxury redefined with the Mercedes-Benz First Class Van. This premium van combines sophisticated design with exceptional comfort, featuring spacious interiors, advanced technology, and Mercedes-Benz signature refinement for exclusive group transportation.",
     image: imgVClass1,
-    images: [imgVClass1, imgInterior1, imgInterior2],
+    images: [imgVClass1, imgFirstClassVanInterior1, imgFirstClassVanInterior2],
     seats: 5,
     luggage: 6,
     type: ["luxury", "business", "crossover"],
@@ -57,7 +65,7 @@ let cars = [
     detail:
       "The Mercedes-Benz V-Class impresses with its modern design and high-class appeal – both inside and out. Strong character lines and high-quality materials as well as the attractive operating and display concept make it a highly desirable vehicle for professional transportation.",
     image: imgVClass2,
-    images: [imgVClass2, imgInterior1, imgInterior2],
+    images: [imgVClass2, imgBusinessVanInterior1, imgBusinessVanInterior2],
     seats: 6,
     luggage: 6,
     type: ["crossover"],
@@ -80,7 +88,7 @@ let cars = [
     detail:
       "Experience professional excellence with the Mercedes-Benz E-Class. This prestigious sedan combines innovative technology with superior comfort, featuring advanced safety systems, refined interior design, and Mercedes-Benz renowned reliability for the discerning business traveler.",
     image: imgEClass,
-    images: [imgEClass, imgInterior1, imgInterior2],
+    images: [imgEClass, imgEClassInterior1, imgEClassInterior2],
     seats: 2,
     luggage: 2,
     type: ["business"],
