@@ -5,6 +5,7 @@ import Button from "../../components/Button";
 import ProgressBar from "../../components/ProgressBar";
 import AddressInput from "../../components/AddressInput";
 import NumberDropdown from "../../components/NumberDropdown";
+import VehicleImage from "../../components/VehicleImage";
 import cars, { getMaxPassengers, getMaxBags } from "../../data/cars";
 import MapPreview from "../../components/MapPreview";
 import { calculatePrice, calculatePriceByDistance, addSurcharges, formatPrice } from "../../services/PriceCalculationService";
@@ -624,27 +625,27 @@ const VehicleSelection = ({ scrollUp }) => {
                           : "bg-warm-white/80 backdrop-blur-sm border border-royal-blue/20 hover:border-gold/50 hover:shadow-lg hover:transform hover:scale-102"
                       }`}
                     >
-                      <img
+                      <VehicleImage
                         src={vehicle.image}
                         alt={vehicle.name}
-                        className="w-full h-48 object-contain mb-4"
+                        containerClassName="h-48 mb-4"
                       />
                       <h3 className="text-xl font-medium mb-2 text-gray-700">{vehicle.name}</h3>
-                      <div className="text-sm text-gray-600 mb-4">
-                        <p>Seats: {vehicle.seats}</p>
-                        <p>Luggage: {vehicle.luggage}</p>
-                      </div>
-                      <div className="mt-4 pt-4 border-t border-royal-blue/20">
-                        <div className="text-sm text-royal-blue font-medium">
-                          {reservationInfo.isHourly ? (
-                            <p>{formatPrice(prices[vehicle.id] || 0)} for {reservationInfo.hours || 3} hours</p>
-                          ) : (
-                            <p>{formatPrice(prices[vehicle.id] || 0)}</p>
-                          )}
+                        <div className="text-sm text-gray-600 mb-4">
+                          <p>Seats: {vehicle.seats}</p>
+                          <p>Luggage: {vehicle.luggage}</p>
+                        </div>
+                        <div className="mt-4 pt-4 border-t border-royal-blue/20">
+                          <div className="text-sm text-royal-blue font-medium">
+                            {reservationInfo.isHourly ? (
+                              <p>{formatPrice(prices[vehicle.id] || 0)} for {reservationInfo.hours || 3} hours</p>
+                            ) : (
+                              <p>{formatPrice(prices[vehicle.id] || 0)}</p>
+                            )}
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  ))}
+                    ))}
                 </div>
               )}
             </div>

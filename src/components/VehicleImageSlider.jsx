@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
+import { getVehicleImageClasses } from "../utils/imageUtils";
 
 const VehicleImageSlider = ({ images, vehicleName, resetTrigger }) => {
   const [currentIndex, setCurrentIndex] = useState(1); // Start at index 1 (first real image)
@@ -99,7 +100,7 @@ const VehicleImageSlider = ({ images, vehicleName, resetTrigger }) => {
             {infiniteImages.map((image, index) => (
               <div key={index} className="w-full h-80 md:h-96 flex-shrink-0 flex items-center justify-center">
                 <img 
-                  className="w-full h-full object-contain" 
+                  className={getVehicleImageClasses(image)}
                   src={image} 
                   alt={`${vehicleName} - ${index === 0 || index === infiniteImages.length - 1 ? 'Exterior' : 'Interior'} view`}
                 />
