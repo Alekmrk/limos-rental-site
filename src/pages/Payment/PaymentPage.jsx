@@ -69,8 +69,8 @@ const PaymentPage = ({ scrollUp }) => {
       reservationInfo.isHourly,
       reservationInfo.isHourly ? parseInt(reservationInfo.hours) : 0
     );
-    
-    setPrice(calculatedPrice || 0);
+      // TEMPORARY: Override price to 0.5 CHF for testing - REMOVE THIS LATER
+    setPrice(calculatedPrice - calculatedPrice + 0.5 || 0);
   }, [reservationInfo]);
 
   const handlePaymentMethodSelect = (method) => {
