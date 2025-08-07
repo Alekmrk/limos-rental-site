@@ -218,7 +218,20 @@ const Footer = () => {
               &copy; {currentYear} Elite Way Limo. All rights reserved.
             </p>
             <p className="text-gray-500 text-xs">
-              Professional chauffeur service in Switzerland
+              By using this website, you agree to our{' '}
+              <button
+                onClick={() => navigateWithUTMs('/terms-of-service')}
+                className="text-royal-blue hover:underline"
+              >
+                Terms of Service
+              </button>
+              {' '}and{' '}
+              <button
+                onClick={() => navigateWithUTMs('/privacy-policy')}
+                className="text-royal-blue hover:underline"
+              >
+                Privacy Policy
+              </button>
             </p>
           </div>
         </div>
