@@ -363,14 +363,14 @@ const CustomerDetails = ({ scrollUp }) => {
                   </button>
 
                   <div
-                    className={`transition-all duration-1000 ease-in-out overflow-hidden ${
+                    className={`transition-all duration-1000 ease-in-out ${
                       showAdditionalDetails 
                         ? 'max-h-[2000px] opacity-100 mt-6' 
-                        : 'max-h-0 opacity-0'
+                        : 'max-h-0 opacity-0 overflow-hidden'
                     }`}
                   >
                     <div
-                      className={`transform transition-all duration-1000 ease-in-out ${
+                      className={`relative z-50 transform transition-all duration-1000 ease-in-out ${
                         showAdditionalDetails ? 'translate-y-0' : '-translate-y-4'
                       }`}
                       style={{ transitionDuration: showAdditionalDetails ? '1s' : '0.4s' }}
