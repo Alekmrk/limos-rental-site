@@ -102,7 +102,7 @@ const NumberDropdown = ({
       {showPicker && (
         <div className="absolute z-[9999] top-full mt-1 bg-warm-white/95 backdrop-blur-md rounded-lg shadow-xl border border-royal-blue/30 left-0 min-w-full w-max touch-manipulation">
           <div className="p-3">
-            <div ref={numbersRef} className="h-[200px] overflow-y-auto scrollbar-thin scrollbar-thumb-royal-blue/60 scrollbar-track-transparent">
+            <div ref={numbersRef} className="h-[200px] overflow-y-auto scrollbar-thin scrollbar-thumb-royal-blue/60 scrollbar-track-transparent" style={{ WebkitOverflowScrolling: 'touch', overscrollBehavior: 'contain' }}>
               <div className="text-center text-sm text-royal-blue font-medium pb-2 border-b border-royal-blue/20 mb-2">{label || 'Select'}</div>
               <div className="grid grid-cols-1 gap-1">
                 {numbers.map((number) => (
@@ -111,24 +111,9 @@ const NumberDropdown = ({
                     type="button"
                     data-number={number}
                     onClick={() => handleNumberSelect(number)}
-                    onTouchStart={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      // Add a slight delay to ensure the touch is registered
-                      setTimeout(() => handleNumberSelect(number), 10);
-                    }}
-                    onTouchEnd={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                    }}
                     className={`text-center px-4 py-2 hover:bg-royal-blue/10 active:bg-royal-blue/20 rounded-lg transition-all duration-200 whitespace-nowrap select-none touch-manipulation ${
                       value === number ? 'bg-gradient-to-r from-royal-blue to-royal-blue-light text-white shadow-md' : 'text-gray-700 hover:text-royal-blue'
                     }`}
-                    style={{
-                      WebkitUserSelect: 'none',
-                      userSelect: 'none',
-                      WebkitTouchCallout: 'none'
-                    }}
                   >
                     {number}
                   </button>
