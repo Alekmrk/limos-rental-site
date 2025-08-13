@@ -4,7 +4,7 @@ import { FaCar, FaStar, FaShieldAlt } from "react-icons/fa";
 
 const FleetSection = ({ setSelectedVehicle }) => {
   return (
-    <div className="mt-32 overflow-x-hidden">
+    <div className="mt-2 overflow-x-hidden">
       {/* Harmonious Background with Soft Gradient and a Large Blurred Gold Accent */}
       <div className="relative bg-gradient-to-br from-warm-gray via-cream to-cream-light py-24">
         {/* Decorative Gold Accent Blob */}
