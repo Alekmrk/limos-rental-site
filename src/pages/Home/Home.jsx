@@ -22,9 +22,9 @@ const Home = ({ scrollUp, setSelectedVehicle }) => {
   return (
     <>
       <BannerSection />
+      <FleetSection setSelectedVehicle={setSelectedVehicle} />
       <ServicesSection />
       <FeaturesSection />
-      <FleetSection setSelectedVehicle={setSelectedVehicle} />
       <TestimonialStatsSection />
       <PricingTransparency />
       <EventsSection />
