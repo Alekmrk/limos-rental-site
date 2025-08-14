@@ -88,6 +88,7 @@ const StripePayment = ({ amount, onSuccess, onError, reservationInfo }) => {
             specialRequestDetails: reservationInfo.specialRequestDetails?.substring(0, 450) || '',
             additionalRequests: reservationInfo.additionalRequests?.substring(0, 450) || '',
             referenceNumber: reservationInfo.referenceNumber?.substring(0, 450) || '',
+            receiveReceipt: String(!!reservationInfo.receiveReceipt),
             
             // Route Information
             routeDistance: distance,

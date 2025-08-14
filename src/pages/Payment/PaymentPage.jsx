@@ -328,10 +328,17 @@ const PaymentPage = ({ scrollUp }) => {
                     <p className="text-sm bg-royal-blue/5 p-3 rounded-lg break-words text-gray-700">{reservationInfo.additionalRequests}</p>
                   </div>
                 )}
-                {reservationInfo.referenceNumber && (
+                {(reservationInfo.referenceNumber || reservationInfo.receiveReceipt) && (
                   <div className="mt-6">
-                    <p className="text-gray-600 text-sm mb-2">Reference Number or Cost Center</p>
-                    <p className="text-sm bg-royal-blue/5 p-3 rounded-lg break-words text-gray-700">{reservationInfo.referenceNumber}</p>
+                    <p className="text-gray-600 text-sm mb-2">Receipt & Reference</p>
+                    <div className="text-sm bg-royal-blue/5 p-3 rounded-lg text-gray-700 space-y-2">
+                      {reservationInfo.referenceNumber && (
+                        <p><span className="font-medium">Reference:</span> {reservationInfo.referenceNumber}</p>
+                      )}
+                      {reservationInfo.receiveReceipt && (
+                        <p><span className="font-medium">Receipt PDF:</span> Will be attached to confirmation email</p>
+                      )}
+                    </div>
                   </div>
                 )}
               </div>

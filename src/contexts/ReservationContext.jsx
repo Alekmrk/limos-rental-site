@@ -45,6 +45,7 @@ const loadReservationFromStorage = () => {
     skiEquipment: 0,
     additionalRequests: "",
     referenceNumber: "",
+    receiveReceipt: false,
     email: "",
     phone: "",
     selectedVehicle: null,

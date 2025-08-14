@@ -260,10 +260,17 @@ const ThankYouSpecial = ({ scrollUp }) => {
                       <p className="text-sm break-words">{dataToShow.additionalRequests}</p>
                     </>
                   )}
-                  {dataToShow.referenceNumber && (
+                  {(dataToShow.referenceNumber || dataToShow.receiveReceipt) && (
                     <>
-                      <p className="mt-4 text-sm text-gray-600">Reference Number or Cost Center:</p>
-                      <p className="text-sm break-words">{dataToShow.referenceNumber}</p>
+                      <p className="mt-4 text-sm text-gray-600">Receipt & Reference:</p>
+                      <div className="text-sm break-words space-y-1">
+                        {dataToShow.referenceNumber && (
+                          <p><span className="font-medium">Reference:</span> {dataToShow.referenceNumber}</p>
+                        )}
+                        {dataToShow.receiveReceipt && (
+                          <p><span className="font-medium">Receipt PDF:</span> Will be attached to confirmation email</p>
+                        )}
+                      </div>
                     </>
                   )}
                 </div>

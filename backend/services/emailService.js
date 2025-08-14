@@ -256,6 +256,13 @@ const sendToCustomer = async (reservationInfo) => {
     : 'Your Luxury Transfer Confirmation - Elite Way Limo';
   
   const content = generateEmailContent(reservationInfo, 'customer');
+  
+  // TODO: Add PDF receipt attachment functionality
+  // If reservationInfo.receiveReceipt is true, generate and attach PDF receipt:
+  // 1. Generate PDF receipt with booking details and payment information
+  // 2. Add PDF as attachment to email using Azure Communication Services
+  // 3. Include PDF in attachments array: attachments: [{ name: 'receipt.pdf', contentInBase64: pdfBase64, contentType: 'application/pdf' }]
+  
   return await sendEmail(reservationInfo.email, subject, content, 'contact');
 };
 
@@ -299,6 +306,12 @@ const sendPaymentReceiptToCustomer = async (reservationInfo) => {
 
     const subject = '💳 Payment Receipt - Elite Way Limo Transfer';
     const content = generateEmailContent(reservationInfo, 'customer');
+    
+    // TODO: Add PDF receipt attachment functionality
+    // If reservationInfo.receiveReceipt is true, generate and attach PDF receipt:
+    // 1. Generate PDF receipt with booking details and payment information
+    // 2. Add PDF as attachment to email using Azure Communication Services
+    // 3. Include PDF in attachments array: attachments: [{ name: 'receipt.pdf', contentInBase64: pdfBase64, contentType: 'application/pdf' }]
     
     console.log('Sending payment receipt to customer:', {
       email: reservationInfo.email,
@@ -744,10 +757,11 @@ const generateEmailContent = (reservationInfo, type = 'customer') => {
         <p>${reservationInfo.additionalRequests}</p>
       </div>
     ` : ''}
-    ${reservationInfo.referenceNumber ? `
+    ${(reservationInfo.referenceNumber || reservationInfo.receiveReceipt) ? `
       <div class="subsection">
-        <p class="subsection-title">Reference Number or Cost Center:</p>
-        <p>${reservationInfo.referenceNumber}</p>
+        <p class="subsection-title">Receipt & Reference Information:</p>
+        ${reservationInfo.referenceNumber ? `<p>Reference: ${reservationInfo.referenceNumber}</p>` : ''}
+        ${reservationInfo.receiveReceipt ? `<p>Receipt PDF: ${type === 'customer' ? 'Attached to this email' : 'Customer requested PDF attachment'}</p>` : ''}
       </div>
     ` : ''}
   `;
@@ -836,7 +850,7 @@ Phone: ${reservationInfo.phone}
 ${reservationInfo.flightNumber ? `Flight Number: ${reservationInfo.flightNumber}` : ''}
 ${reservationInfo.meetingBoard ? `Meet & Greet Sign: ${reservationInfo.meetingBoard}` : ''}
 ${reservationInfo.additionalRequests ? `${isSpecialRequest ? 'Special Request Details' : 'Additional Requests'}: ${reservationInfo.additionalRequests}` : ''}
-${reservationInfo.referenceNumber ? `Reference Number or Cost Center: ${reservationInfo.referenceNumber}` : ''}
+${(reservationInfo.referenceNumber || reservationInfo.receiveReceipt) ? `Receipt & Reference Information:${reservationInfo.referenceNumber ? ` Reference: ${reservationInfo.referenceNumber}` : ''}${reservationInfo.receiveReceipt ? ` Receipt PDF: ${type === 'customer' ? 'Attached to this email' : 'Customer requested PDF attachment'}` : ''}` : ''}
 
 ${type === 'customer' && !isSpecialRequest ? getDriverInfoNotice(reservationInfo, type).text : ''}
 
@@ -954,7 +968,7 @@ Phone: ${reservationInfo.phone}
 ${reservationInfo.flightNumber ? `Flight Number: ${reservationInfo.flightNumber}` : ''}
 ${reservationInfo.meetingBoard ? `Meet & Greet Sign: ${reservationInfo.meetingBoard}` : ''}
 ${reservationInfo.additionalRequests ? `${reservationInfo.isSpecialRequest ? 'Special Request Details' : 'Additional Requests'}: ${reservationInfo.additionalRequests}` : ''}
-${reservationInfo.referenceNumber ? `Reference Number or Cost Center: ${reservationInfo.referenceNumber}` : ''}
+${(reservationInfo.referenceNumber || reservationInfo.receiveReceipt) ? `Receipt & Reference Information:${reservationInfo.referenceNumber ? ` Reference: ${reservationInfo.referenceNumber}` : ''}${reservationInfo.receiveReceipt ? ` Receipt PDF: ${type === 'customer' ? 'Attached to this email' : 'Customer requested PDF attachment'}` : ''}` : ''}
 
 ${getEmailOutro(reservationInfo, type)}
 
