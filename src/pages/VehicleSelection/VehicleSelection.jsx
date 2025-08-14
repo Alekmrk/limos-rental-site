@@ -639,7 +639,13 @@ const VehicleSelection = ({ scrollUp }) => {
                                 <svg className="w-8 h-8 text-gray-600 mx-auto mb-2" fill="currentColor" viewBox="0 0 20 20">
                                   <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
                                 </svg>
-                                <p className="text-xs font-medium text-gray-700">Not Available</p>
+                                <p className="text-xs font-medium text-red-600">
+                                  {vehicle.insufficientSeats && vehicle.insufficientLuggage
+                                    ? "Too many passengers and bags"
+                                    : vehicle.insufficientSeats
+                                    ? "Too many passengers selected"
+                                    : "Too many bags selected"}
+                                </p>
                               </div>
                             </div>
                           )}
@@ -654,7 +660,7 @@ const VehicleSelection = ({ scrollUp }) => {
                             Seats: {vehicle.seats}
                             {vehicle.insufficientSeats && (
                               <span className="text-red-500 text-xs">
-                                (need {reservationInfo.passengers})
+                                (you selected {reservationInfo.passengers})
                               </span>
                             )}
                           </p>
@@ -662,7 +668,7 @@ const VehicleSelection = ({ scrollUp }) => {
                             Luggage: {vehicle.luggage}
                             {vehicle.insufficientLuggage && (
                               <span className="text-red-500 text-xs">
-                                (need {reservationInfo.bags})
+                                (you selected {reservationInfo.bags})
                               </span>
                             )}
                           </p>
