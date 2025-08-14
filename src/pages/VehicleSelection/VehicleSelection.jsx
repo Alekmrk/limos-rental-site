@@ -68,9 +68,7 @@ const VehicleSelection = ({ scrollUp }) => {
     if (reservationInfo.bags === '') {
       newErrors.bags = "Please select number of bags";
     }
-    if (hasNoAvailableVehicles) {
-      newErrors.noVehicles = "No vehicles available for this passenger/bag combination. Please adjust your selection.";
-    } else if (!reservationInfo.selectedVehicle && shouldShowVehicles) {
+    if (!reservationInfo.selectedVehicle && shouldShowVehicles) {
       newErrors.vehicle = "Please select a vehicle";
     }
     
@@ -186,6 +184,17 @@ const VehicleSelection = ({ scrollUp }) => {
   }, [reservationInfo.extraStops, hasAttemptedSubmit, updateExtraStop, validateFormErrors]);
 
   const handleVehicleSelect = (vehicle) => {
+    // Only allow selection if vehicle is available
+    if (!vehicle.isAvailable) {
+      return;
+    }
+    
+    // If the vehicle is already selected, unselect it
+    if (reservationInfo.selectedVehicle?.id === vehicle.id) {
+      setSelectedVehicle(null);
+      return;
+    }
+    
     setSelectedVehicle(vehicle);
     if (hasAttemptedSubmit) {
       const newErrors = validateFormErrors();
@@ -203,41 +212,44 @@ const VehicleSelection = ({ scrollUp }) => {
     }
   }, [addExtraStop, hasAttemptedSubmit, reservationInfo.extraStops, validateFormErrors]);
 
-  // Memoize available vehicles to prevent recalculation on every render
-  const availableVehicles = useMemo(() => {
+  // Memoize vehicle availability to prevent recalculation on every render
+  const vehicleAvailability = useMemo(() => {
     const passengerCount = reservationInfo.passengers === '' ? 0 : parseInt(reservationInfo.passengers);
     const bagCount = reservationInfo.bags === '' ? 0 : parseInt(reservationInfo.bags);
-    return cars.filter(car => 
-      car.seats >= passengerCount && 
-      car.luggage >= bagCount
-    );
+    
+    return cars.map(car => ({
+      ...car,
+      isAvailable: car.seats >= passengerCount && car.luggage >= bagCount,
+      insufficientSeats: car.seats < passengerCount,
+      insufficientLuggage: car.luggage < bagCount
+    }));
   }, [reservationInfo.passengers, reservationInfo.bags]);
+
+  // Keep the original availableVehicles for backward compatibility with pricing logic
+  const availableVehicles = useMemo(() => {
+    return vehicleAvailability.filter(vehicle => vehicle.isAvailable);
+  }, [vehicleAvailability]);
 
   // Check if we should show vehicles (both passengers and bags must be selected)
   const shouldShowVehicles = useMemo(() => {
     return reservationInfo.passengers !== '' && reservationInfo.bags !== '';
   }, [reservationInfo.passengers, reservationInfo.bags]);
 
-  // Check if no vehicles are available for the selected combination
-  const hasNoAvailableVehicles = useMemo(() => {
-    return shouldShowVehicles && availableVehicles.length === 0;
-  }, [shouldShowVehicles, availableVehicles.length]);
-
   // Effect to handle vehicle unselection when it becomes unavailable
   useEffect(() => {
     if (reservationInfo.selectedVehicle) {
-      const isCurrentVehicleAvailable = availableVehicles.some(car => 
+      const currentVehicle = vehicleAvailability.find(car => 
         car.id === reservationInfo.selectedVehicle.id
       );
       
-      if (!isCurrentVehicleAvailable) {
+      if (currentVehicle && !currentVehicle.isAvailable) {
         setSelectedVehicle(null);
         if (hasAttemptedSubmit) {
           updateErrors(validateFormErrors());
         }
       }
     }
-  }, [availableVehicles, reservationInfo.selectedVehicle]);
+  }, [vehicleAvailability, reservationInfo.selectedVehicle]);
 
   useEffect(() => {
     if (reservationInfo.routeInfo) {
@@ -284,7 +296,7 @@ const VehicleSelection = ({ scrollUp }) => {
   // Calculate prices for all vehicles
   useEffect(() => {
     const newPrices = {};
-    availableVehicles.forEach(vehicle => {
+    vehicleAvailability.forEach(vehicle => {
       if (reservationInfo.isHourly) {
         // Calculate hourly price
         newPrices[vehicle.id] = calculatePrice(
@@ -320,7 +332,7 @@ const VehicleSelection = ({ scrollUp }) => {
       }
     });
     setPrices(newPrices);
-  }, [reservationInfo, availableVehicles]);
+  }, [reservationInfo, vehicleAvailability]);
 
   // Add handler to clear errors when dropdown values change
   const handleDropdownChange = (e) => {
@@ -341,7 +353,6 @@ const VehicleSelection = ({ scrollUp }) => {
       
       // Clear vehicle-related errors when selections change
       if ((name === 'passengers' || name === 'bags') && e.target.value !== '') {
-        delete newErrors.noVehicles;
         delete newErrors.vehicle;
       }
       
@@ -570,7 +581,7 @@ const VehicleSelection = ({ scrollUp }) => {
             </div>
 
             <div className="mb-8">
-              <h2 className="text-2xl font-medium mb-4 text-gray-700">Available Vehicles</h2>
+              <h2 className="text-2xl font-medium mb-4 text-gray-700">Our Vehicle Fleet</h2>
               
               {/* Vehicle Selection Error - positioned below Available Vehicles heading */}
               {hasAttemptedSubmit && errors.vehicle && (
@@ -593,50 +604,72 @@ const VehicleSelection = ({ scrollUp }) => {
                     <div>
                       <p className="text-lg font-medium text-gray-700 mb-2">Select Passenger and Bag Count</p>
                       <p className="text-sm text-gray-600">
-                        Please choose the number of passengers and bags above to see available vehicles.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              ) : hasNoAvailableVehicles ? (
-                <div className="bg-red-500/20 border border-red-500/50 rounded-lg p-8 text-center shadow-lg">
-                  <div className="flex flex-col items-center gap-4">
-                    <svg className="w-12 h-12 text-red-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
-                    </svg>
-                    <div>
-                      <p className="text-lg font-medium text-red-600 mb-2">No Vehicles Available</p>
-                      <p className="text-sm text-red-700">
-                        Sorry, we don't have vehicles that can accommodate {reservationInfo.passengers} passengers and {reservationInfo.bags} bags.
-                        <br />Please adjust your passenger or bag count to see available options.
+                        Please choose the number of passengers and bags above to see our vehicle fleet.
                       </p>
                     </div>
                   </div>
                 </div>
               ) : (
                 <div className="grid md:grid-cols-3 gap-6">
-                  {availableVehicles.map((vehicle) => (
-                    <div
-                      key={vehicle.id}
-                      onClick={() => handleVehicleSelect(vehicle)}
-                      className={`p-6 rounded-lg cursor-pointer transition-all duration-300 ${
-                        reservationInfo.selectedVehicle?.id === vehicle.id
-                          ? "bg-gradient-to-br from-gold/20 to-royal-blue/10 border-2 border-gold shadow-lg transform scale-105"
-                          : "bg-warm-white/80 backdrop-blur-sm border border-royal-blue/20 hover:border-gold/50 hover:shadow-lg hover:transform hover:scale-102"
-                      }`}
-                    >
-                      <VehicleImage
-                        src={vehicle.image}
-                        alt={vehicle.name}
-                        containerClassName="h-48 mb-4"
-                      />
-                      <h3 className="text-xl font-medium mb-2 text-gray-700">{vehicle.name}</h3>
-                        <div className="text-sm text-gray-600 mb-4">
-                          <p>Seats: {vehicle.seats}</p>
-                          <p>Luggage: {vehicle.luggage}</p>
+                  {vehicleAvailability.map((vehicle) => {
+                    const isSelected = reservationInfo.selectedVehicle?.id === vehicle.id;
+                    const isLocked = !vehicle.isAvailable;
+                    
+                    return (
+                      <div
+                        key={vehicle.id}
+                        onClick={() => handleVehicleSelect(vehicle)}
+                        className={`p-6 rounded-lg transition-all duration-300 ${
+                          isLocked
+                            ? "bg-gray-100/80 border border-gray-300/50 cursor-not-allowed opacity-60"
+                            : isSelected
+                            ? "bg-gradient-to-br from-gold/20 to-royal-blue/10 border-2 border-gold shadow-lg transform scale-105 cursor-pointer"
+                            : "bg-warm-white/80 backdrop-blur-sm border border-royal-blue/20 hover:border-gold/50 hover:shadow-lg hover:transform hover:scale-102 cursor-pointer"
+                        }`}
+                      >
+                        <div className="relative">
+                          <VehicleImage
+                            src={vehicle.image}
+                            alt={vehicle.name}
+                            containerClassName="h-48 mb-4"
+                          />
+                          {isLocked && (
+                            <div className="absolute inset-0 flex items-center justify-center bg-black/40 rounded-lg">
+                              <div className="bg-white/90 backdrop-blur-sm rounded-lg p-3 text-center">
+                                <svg className="w-8 h-8 text-gray-600 mx-auto mb-2" fill="currentColor" viewBox="0 0 20 20">
+                                  <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
+                                </svg>
+                                <p className="text-xs font-medium text-gray-700">Not Available</p>
+                              </div>
+                            </div>
+                          )}
                         </div>
+                        
+                        <h3 className={`text-xl font-medium mb-2 ${isLocked ? 'text-gray-500' : 'text-gray-700'}`}>
+                          {vehicle.name}
+                        </h3>
+                        
+                        <div className={`text-sm mb-4 ${isLocked ? 'text-gray-400' : 'text-gray-600'}`}>
+                          <p className="flex items-center gap-1">
+                            Seats: {vehicle.seats}
+                            {vehicle.insufficientSeats && (
+                              <span className="text-red-500 text-xs">
+                                (need {reservationInfo.passengers})
+                              </span>
+                            )}
+                          </p>
+                          <p className="flex items-center gap-1">
+                            Luggage: {vehicle.luggage}
+                            {vehicle.insufficientLuggage && (
+                              <span className="text-red-500 text-xs">
+                                (need {reservationInfo.bags})
+                              </span>
+                            )}
+                          </p>
+                        </div>
+                        
                         <div className="mt-4 pt-4 border-t border-royal-blue/20">
-                          <div className="text-sm text-royal-blue font-medium">
+                          <div className={`text-sm font-medium ${isLocked ? 'text-gray-400' : 'text-royal-blue'}`}>
                             {reservationInfo.isHourly ? (
                               <p>{formatPrice(prices[vehicle.id] || 0)} for {reservationInfo.hours || 3} hours</p>
                             ) : (
@@ -645,7 +678,8 @@ const VehicleSelection = ({ scrollUp }) => {
                           </div>
                         </div>
                       </div>
-                    ))}
+                    );
+                  })}
                 </div>
               )}
             </div>
