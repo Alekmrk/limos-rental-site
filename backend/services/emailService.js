@@ -1,5 +1,18 @@
+/**
+ * Elite Way Limo Email Service
+ * 
+ * Features:
+ * - Send booking confirmation emails to customers and admin
+ * - Send payment receipts with optional PDF attachments
+ * - Generate professional PDF receipts with booking and payment details
+ * - Support for special requests and regular transfers
+ * - Azure Communication Services integration
+ * - Automatic retry logic and comprehensive logging
+ */
+
 const { EmailClient } = require('@azure/communication-email');
 const { DateTime } = require('luxon');
+const { jsPDF } = require('jspdf');
 require('dotenv').config();
 
 // Email sender addresses configuration
@@ -64,6 +77,384 @@ const formatPaymentDateTime = (timestamp) => {
   return dt.toFormat('d LLLL yyyy, HH:mm:ss');
 };
 
+/**
+ * Generate PDF receipt for booking
+ * @param {Object} reservationInfo - Reservation details with payment info
+ * @returns {string} - Base64 encoded PDF content
+ */
+const generatePDFReceipt = (reservationInfo) => {
+  // Create A4 PDF document (210mm x 297mm)
+  const doc = new jsPDF({
+    orientation: 'portrait',
+    unit: 'mm',
+    format: 'a4'
+  });
+  
+  const pageWidth = doc.internal.pageSize.getWidth();  // 210mm
+  const pageHeight = doc.internal.pageSize.getHeight(); // 297mm
+  const margin = 15; // 15mm margins
+  const contentWidth = pageWidth - (margin * 2);
+  const bottomMargin = 20; // Reserve space at bottom for footer
+  let yPosition = margin;
+
+  // Helper function to check if we need a new page
+  const checkPageBreak = (neededSpace = 15) => {
+    if (yPosition + neededSpace > pageHeight - bottomMargin) {
+      doc.addPage();
+      yPosition = margin;
+      return true;
+    }
+    return false;
+  };
+
+  // Helper function to add text with automatic wrapping and page breaks
+  const addText = (text, x, y, options = {}) => {
+    const fontSize = options.fontSize || 10;
+    const maxWidth = options.maxWidth || contentWidth;
+    const align = options.align || 'left';
+    const lineHeight = fontSize * 0.35; // mm line height
+    
+    doc.setFontSize(fontSize);
+    if (options.style) {
+      doc.setFont(undefined, options.style);
+    } else {
+      doc.setFont(undefined, 'normal');
+    }
+    
+    const lines = doc.splitTextToSize(text, maxWidth);
+    const totalHeight = lines.length * lineHeight;
+    
+    // Check if we need a new page for this text block
+    checkPageBreak(totalHeight + (options.marginBottom || 5));
+    
+    lines.forEach((line, index) => {
+      let xPos = x;
+      if (align === 'center') {
+        xPos = (pageWidth - doc.getTextWidth(line)) / 2;
+      } else if (align === 'right') {
+        xPos = pageWidth - margin - doc.getTextWidth(line);
+      }
+      
+      const currentY = yPosition + (index * lineHeight);
+      
+      // Check if this line would go beyond page boundary
+      if (currentY > pageHeight - bottomMargin) {
+        doc.addPage();
+        yPosition = margin;
+        doc.text(line, align === 'center' ? (pageWidth - doc.getTextWidth(line)) / 2 : (align === 'right' ? pageWidth - margin - doc.getTextWidth(line) : x), yPosition);
+        yPosition += lineHeight;
+      } else {
+        doc.text(line, xPos, currentY);
+        if (index === lines.length - 1) {
+          yPosition = currentY + lineHeight + (options.marginBottom || 5);
+        }
+      }
+    });
+    
+    return yPosition;
+  };
+
+  // Helper function to add a divider line
+  const addDivider = (y) => {
+    checkPageBreak(8);
+    doc.setDrawColor(65, 105, 225); // Royal blue
+    doc.setLineWidth(0.5);
+    doc.line(margin, yPosition, pageWidth - margin, yPosition);
+    yPosition += 8;
+    return yPosition;
+  };
+
+  // Header - Company Logo and Title
+  yPosition = addText('ELITE WAY LIMO', margin, yPosition, {
+    fontSize: 24,
+    style: 'bold',
+    align: 'center',
+    marginBottom: 3
+  });
+
+  yPosition = addText('Premium Transportation Services', margin, yPosition, {
+    fontSize: 12,
+    align: 'center',
+    marginBottom: 8
+  });
+
+  yPosition = addDivider(yPosition);
+
+  // Receipt Header
+  yPosition = addText('RECEIPT / INVOICE', margin, yPosition, {
+    fontSize: 18,
+    style: 'bold',
+    align: 'center',
+    marginBottom: 12
+  });
+
+  // Receipt Details
+  const receiptNumber = `EWL-${Date.now().toString().slice(-8)}`;
+  const currentDate = DateTime.now().setZone('Europe/Zurich').toFormat('dd-MM-yyyy');
+  const currentTime = DateTime.now().setZone('Europe/Zurich').toFormat('HH:mm:ss');
+
+  yPosition = addText(`Receipt #: ${receiptNumber}`, margin, yPosition, {
+    fontSize: 10,
+    style: 'bold',
+    marginBottom: 3
+  });
+
+  yPosition = addText(`Date Issued: ${currentDate} ${currentTime} (Swiss Time)`, margin, yPosition, {
+    fontSize: 10,
+    marginBottom: 8
+  });
+
+  yPosition = addDivider(yPosition);
+
+  // Customer Information
+  checkPageBreak(25); // Ensure space for customer section
+  yPosition = addText('CUSTOMER INFORMATION', margin, yPosition, {
+    fontSize: 14,
+    style: 'bold',
+    marginBottom: 8
+  });
+
+  if (reservationInfo.firstName) {
+    yPosition = addText(`Name: ${reservationInfo.firstName}`, margin + 5, yPosition, {
+      marginBottom: 3
+    });
+  }
+
+  yPosition = addText(`Email: ${reservationInfo.email}`, margin + 5, yPosition, {
+    marginBottom: 3
+  });
+
+  yPosition = addText(`Phone: ${reservationInfo.phone}`, margin + 5, yPosition, {
+    marginBottom: 8
+  });
+
+  yPosition = addDivider(yPosition);
+
+  // Service Information
+  checkPageBreak(30); // Ensure space for service section
+  yPosition = addText('SERVICE DETAILS', margin, yPosition, {
+    fontSize: 14,
+    style: 'bold',
+    marginBottom: 8
+  });
+
+  if (reservationInfo.isSpecialRequest) {
+    yPosition = addText(`Service Type: Special Request`, margin + 5, yPosition, {
+      marginBottom: 3
+    });
+    
+    yPosition = addText(`Date: ${formatDate(reservationInfo.date)}`, margin + 5, yPosition, {
+      marginBottom: 3
+    });
+    
+    yPosition = addText(`Preferred Time: ${reservationInfo.time} (Swiss Time)`, margin + 5, yPosition, {
+      marginBottom: 3
+    });
+    
+    if (reservationInfo.specialRequestDetails) {
+      yPosition = addText(`Request: ${reservationInfo.specialRequestDetails}`, margin + 5, yPosition, {
+        marginBottom: 3,
+        maxWidth: contentWidth - 10
+      });
+    }
+  } else {
+    yPosition = addText(`Service Type: ${reservationInfo.isHourly ? 'Hourly Service' : 'Point-to-Point Transfer'}`, margin + 5, yPosition, {
+      marginBottom: 3
+    });
+    
+    yPosition = addText(`Date: ${formatDate(reservationInfo.date)}`, margin + 5, yPosition, {
+      marginBottom: 3
+    });
+    
+    yPosition = addText(`Time: ${reservationInfo.time} (Swiss Time)`, margin + 5, yPosition, {
+      marginBottom: 3
+    });
+
+    if (reservationInfo.isHourly) {
+      yPosition = addText(`Duration: ${reservationInfo.hours || '2'} hours`, margin + 5, yPosition, {
+        marginBottom: 3
+      });
+      
+      if (reservationInfo.plannedActivities) {
+        yPosition = addText(`Activities: ${reservationInfo.plannedActivities}`, margin + 5, yPosition, {
+          marginBottom: 3,
+          maxWidth: contentWidth - 10
+        });
+      }
+    } else {
+      yPosition = addText(`From: ${reservationInfo.pickup}`, margin + 5, yPosition, {
+        marginBottom: 3,
+        maxWidth: contentWidth - 10
+      });
+      
+      // Add extra stops if any
+      if (reservationInfo.extraStops && reservationInfo.extraStops.length > 0) {
+        reservationInfo.extraStops.forEach((stop, index) => {
+          if (stop) {
+            yPosition = addText(`Stop ${index + 1}: ${stop}`, margin + 5, yPosition, {
+              marginBottom: 3,
+              maxWidth: contentWidth - 10
+            });
+          }
+        });
+      }
+      
+      yPosition = addText(`To: ${reservationInfo.dropoff}`, margin + 5, yPosition, {
+        marginBottom: 3,
+        maxWidth: contentWidth - 10
+      });
+
+      if (reservationInfo.routeInfo) {
+        yPosition = addText(`Distance: ${reservationInfo.routeInfo.distance}`, margin + 5, yPosition, {
+          marginBottom: 3
+        });
+        yPosition = addText(`Estimated Duration: ${reservationInfo.routeInfo.duration}`, margin + 5, yPosition, {
+          marginBottom: 3
+        });
+      }
+    }
+
+    // Vehicle and passenger details
+    if (reservationInfo.selectedVehicle?.name) {
+      yPosition = addText(`Vehicle: ${reservationInfo.selectedVehicle.name}`, margin + 5, yPosition, {
+        marginBottom: 3
+      });
+    }
+
+    yPosition = addText(`Passengers: ${reservationInfo.passengers || '0'}`, margin + 5, yPosition, {
+      marginBottom: 3
+    });
+
+    if (reservationInfo.bags > 0) {
+      yPosition = addText(`Bags: ${reservationInfo.bags}`, margin + 5, yPosition, {
+        marginBottom: 3
+      });
+    }
+
+    if (Number(reservationInfo.boosterSeats) > 0) {
+      yPosition = addText(`Booster Seats (Ages 4-7): ${reservationInfo.boosterSeats}`, margin + 5, yPosition, {
+        marginBottom: 3
+      });
+    }
+
+    if (Number(reservationInfo.childSeats) > 0) {
+      yPosition = addText(`Child Seats (Ages 0-3): ${reservationInfo.childSeats}`, margin + 5, yPosition, {
+        marginBottom: 3
+      });
+    }
+
+    if (Number(reservationInfo.skiEquipment) > 0) {
+      yPosition = addText(`Ski Equipment: ${reservationInfo.skiEquipment}`, margin + 5, yPosition, {
+        marginBottom: 3
+      });
+    }
+  }
+
+  // Additional services/requests
+  if (reservationInfo.flightNumber) {
+    yPosition = addText(`Flight Number: ${reservationInfo.flightNumber}`, margin + 5, yPosition, {
+      marginBottom: 3
+    });
+  }
+
+  if (reservationInfo.meetingBoard) {
+    yPosition = addText(`Meet & Greet Sign: ${reservationInfo.meetingBoard}`, margin + 5, yPosition, {
+      marginBottom: 3
+    });
+  }
+
+  if (reservationInfo.additionalRequests) {
+    yPosition = addText(`Additional Requests: ${reservationInfo.additionalRequests}`, margin + 5, yPosition, {
+      marginBottom: 3,
+      maxWidth: contentWidth - 10
+    });
+  }
+
+  yPosition += 8;
+  yPosition = addDivider(yPosition);
+
+  // Payment Information
+  if (reservationInfo.paymentDetails) {
+    checkPageBreak(25); // Ensure space for payment section
+    yPosition = addText('PAYMENT INFORMATION', margin, yPosition, {
+      fontSize: 14,
+      style: 'bold',
+      marginBottom: 8
+    });
+
+    yPosition = addText(`Amount: ${reservationInfo.paymentDetails.currency} ${reservationInfo.paymentDetails.amount}`, margin + 5, yPosition, {
+      fontSize: 12,
+      style: 'bold',
+      marginBottom: 3
+    });
+
+    yPosition = addText(`Payment Method: ${reservationInfo.paymentDetails.method}`, margin + 5, yPosition, {
+      marginBottom: 3
+    });
+
+    if (reservationInfo.paymentDetails.reference) {
+      yPosition = addText(`Payment Reference: ${reservationInfo.paymentDetails.reference}`, margin + 5, yPosition, {
+        marginBottom: 3
+      });
+    }
+
+    if (reservationInfo.paymentDetails.timestamp) {
+      yPosition = addText(`Payment Date: ${formatPaymentDateTime(reservationInfo.paymentDetails.timestamp)}`, margin + 5, yPosition, {
+        marginBottom: 8
+      });
+    }
+  }
+
+  // Reference Information
+  if (reservationInfo.referenceNumber) {
+    checkPageBreak(20);
+    yPosition = addDivider(yPosition);
+    yPosition = addText('REFERENCE INFORMATION', margin, yPosition, {
+      fontSize: 14,
+      style: 'bold',
+      marginBottom: 8
+    });
+
+    yPosition = addText(reservationInfo.referenceNumber, margin + 5, yPosition, {
+      marginBottom: 8,
+      maxWidth: contentWidth - 10
+    });
+  }
+
+  yPosition = addDivider(yPosition);
+
+  // Footer
+  checkPageBreak(25); // Ensure space for footer
+  yPosition = addText('Thank you for choosing Elite Way Limo!', margin, yPosition, {
+    fontSize: 12,
+    style: 'bold',
+    align: 'center',
+    marginBottom: 6
+  });
+
+  yPosition = addText('For questions or support, contact us at:', margin, yPosition, {
+    fontSize: 10,
+    align: 'center',
+    marginBottom: 3
+  });
+
+  yPosition = addText('info@elitewaylimo.ch', margin, yPosition, {
+    fontSize: 10,
+    align: 'center',
+    marginBottom: 12
+  });
+
+  // Add generation timestamp at bottom
+  const generationTime = DateTime.now().setZone('Europe/Zurich').toFormat('dd-MM-yyyy HH:mm:ss');
+  addText(`Generated: ${generationTime} (Swiss Time)`, margin, pageHeight - 15, {
+    fontSize: 8,
+    align: 'center'
+  });
+
+  // Convert PDF to base64
+  return doc.output('datauristring').split(',')[1];
+};
+
 const formatDate = (dateString) => {
   try {
     if (!dateString) {
@@ -79,6 +470,11 @@ const formatDate = (dateString) => {
 
 // Send email using Azure Communication Services
 const sendEmail = async (to, subject, content, from = 'noreply', attempt = 1) => {
+  return await sendEmailWithAttachments(to, subject, content, from, [], attempt);
+};
+
+// Send email with attachments using Azure Communication Services
+const sendEmailWithAttachments = async (to, subject, content, from = 'noreply', attachments = [], attempt = 1) => {
   const maxRetries = 3;
   const retryDelay = attempt * 2000; // Exponential backoff: 2s, 4s, 6s
   const emailId = `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
@@ -88,6 +484,7 @@ const sendEmail = async (to, subject, content, from = 'noreply', attempt = 1) =>
       to,
       subject,
       from,
+      attachments: attachments.length,
       isAdminEmail: to === process.env.ADMIN_EMAIL,
       adminEmailEnv: process.env.ADMIN_EMAIL,
       timestamp: new Date().toISOString(),
@@ -107,6 +504,17 @@ const sendEmail = async (to, subject, content, from = 'noreply', attempt = 1) =>
       }
     };
 
+    // Add attachments if any
+    if (attachments && attachments.length > 0) {
+      message.attachments = attachments.map(attachment => ({
+        name: attachment.name,
+        contentType: attachment.contentType,
+        contentInBase64: attachment.contentInBase64
+      }));
+      console.log(`[EMAIL-${emailId}] Adding ${attachments.length} attachments:`, 
+        attachments.map(a => ({ name: a.name, type: a.contentType })));
+    }
+
     // Add admin email as BCC for customer emails (when recipient is not the admin)
     if (to !== process.env.ADMIN_EMAIL && process.env.ADMIN_EMAIL) {
       message.recipients.bcc = [{ address: process.env.ADMIN_EMAIL }];
@@ -123,6 +531,7 @@ const sendEmail = async (to, subject, content, from = 'noreply', attempt = 1) =>
       to,
       subject,
       from,
+      attachments: attachments.length,
       bcc: message.recipients.bcc ? message.recipients.bcc.map(b => b.address) : 'none',
       messageId: response.messageId,
       operationId: response.id,
@@ -152,6 +561,7 @@ const sendEmail = async (to, subject, content, from = 'noreply', attempt = 1) =>
       to,
       subject,
       from,
+      attachments: attachments.length,
       isAdminEmail: to === process.env.ADMIN_EMAIL,
       error: error.message,
       code: error.code,
@@ -178,7 +588,7 @@ const sendEmail = async (to, subject, content, from = 'noreply', attempt = 1) =>
     if (attempt < maxRetries) {
       console.log(`[EMAIL-${emailId}] Retrying in ${retryDelay}ms...`);
       await new Promise(resolve => setTimeout(resolve, retryDelay));
-      return sendEmail(to, subject, content, from, attempt + 1);
+      return sendEmailWithAttachments(to, subject, content, from, attachments, attempt + 1);
     }
 
     // Final failure logging
@@ -186,6 +596,7 @@ const sendEmail = async (to, subject, content, from = 'noreply', attempt = 1) =>
       to,
       isAdminEmail: to === process.env.ADMIN_EMAIL,
       subject,
+      attachments: attachments.length,
       error: error.message,
       timestamp: new Date().toISOString()
     });
@@ -257,13 +668,27 @@ const sendToCustomer = async (reservationInfo) => {
   
   const content = generateEmailContent(reservationInfo, 'customer');
   
-  // TODO: Add PDF receipt attachment functionality
-  // If reservationInfo.receiveReceipt is true, generate and attach PDF receipt:
-  // 1. Generate PDF receipt with booking details and payment information
-  // 2. Add PDF as attachment to email using Azure Communication Services
-  // 3. Include PDF in attachments array: attachments: [{ name: 'receipt.pdf', contentInBase64: pdfBase64, contentType: 'application/pdf' }]
+  // Generate and attach PDF receipt if requested
+  let attachments = [];
+  if (reservationInfo.receiveReceipt) {
+    try {
+      console.log('Generating PDF receipt for customer:', reservationInfo.email);
+      const pdfBase64 = generatePDFReceipt(reservationInfo);
+      
+      attachments.push({
+        name: `EliteWayLimo_Receipt_${formatDate(reservationInfo.date).replace(/-/g, '')}.pdf`,
+        contentInBase64: pdfBase64,
+        contentType: 'application/pdf'
+      });
+      
+      console.log('PDF receipt generated successfully');
+    } catch (error) {
+      console.error('Failed to generate PDF receipt:', error);
+      // Continue sending email without PDF attachment
+    }
+  }
   
-  return await sendEmail(reservationInfo.email, subject, content, 'contact');
+  return await sendEmailWithAttachments(reservationInfo.email, subject, content, 'contact', attachments);
 };
 
 /**
@@ -307,19 +732,34 @@ const sendPaymentReceiptToCustomer = async (reservationInfo) => {
     const subject = '💳 Payment Receipt - Elite Way Limo Transfer';
     const content = generateEmailContent(reservationInfo, 'customer');
     
-    // TODO: Add PDF receipt attachment functionality
-    // If reservationInfo.receiveReceipt is true, generate and attach PDF receipt:
-    // 1. Generate PDF receipt with booking details and payment information
-    // 2. Add PDF as attachment to email using Azure Communication Services
-    // 3. Include PDF in attachments array: attachments: [{ name: 'receipt.pdf', contentInBase64: pdfBase64, contentType: 'application/pdf' }]
+    // Generate and attach PDF receipt if requested
+    let attachments = [];
+    if (reservationInfo.receiveReceipt) {
+      try {
+        console.log('Generating PDF receipt for payment confirmation:', reservationInfo.email);
+        const pdfBase64 = generatePDFReceipt(reservationInfo);
+        
+        attachments.push({
+          name: `EliteWayLimo_PaymentReceipt_${formatDate(reservationInfo.date).replace(/-/g, '')}.pdf`,
+          contentInBase64: pdfBase64,
+          contentType: 'application/pdf'
+        });
+        
+        console.log('PDF payment receipt generated successfully');
+      } catch (error) {
+        console.error('Failed to generate PDF payment receipt:', error);
+        // Continue sending email without PDF attachment
+      }
+    }
     
     console.log('Sending payment receipt to customer:', {
       email: reservationInfo.email,
       subject,
+      attachments: attachments.length,
       timestamp: new Date().toISOString()
     });
 
-    return await sendEmail(reservationInfo.email, subject, content, 'contact');
+    return await sendEmailWithAttachments(reservationInfo.email, subject, content, 'contact', attachments);
   } catch (error) {
     console.error('Failed to send customer payment receipt:', error);
     throw error;
@@ -761,7 +1201,7 @@ const generateEmailContent = (reservationInfo, type = 'customer') => {
       <div class="subsection">
         <p class="subsection-title">Receipt & Reference Information:</p>
         ${reservationInfo.referenceNumber ? `<p>Reference: ${reservationInfo.referenceNumber}</p>` : ''}
-        ${reservationInfo.receiveReceipt ? `<p>Receipt PDF: ${type === 'customer' ? 'Attached to this email' : 'Customer requested PDF attachment'}</p>` : ''}
+        ${reservationInfo.receiveReceipt ? `<p>Receipt PDF: ${type === 'customer' ? '📄 Attached to this email as PDF' : '✅ Customer requested PDF attachment (included in customer email)'}</p>` : ''}
       </div>
     ` : ''}
   `;
@@ -850,7 +1290,7 @@ Phone: ${reservationInfo.phone}
 ${reservationInfo.flightNumber ? `Flight Number: ${reservationInfo.flightNumber}` : ''}
 ${reservationInfo.meetingBoard ? `Meet & Greet Sign: ${reservationInfo.meetingBoard}` : ''}
 ${reservationInfo.additionalRequests ? `${isSpecialRequest ? 'Special Request Details' : 'Additional Requests'}: ${reservationInfo.additionalRequests}` : ''}
-${(reservationInfo.referenceNumber || reservationInfo.receiveReceipt) ? `Receipt & Reference Information:${reservationInfo.referenceNumber ? ` Reference: ${reservationInfo.referenceNumber}` : ''}${reservationInfo.receiveReceipt ? ` Receipt PDF: ${type === 'customer' ? 'Attached to this email' : 'Customer requested PDF attachment'}` : ''}` : ''}
+${(reservationInfo.referenceNumber || reservationInfo.receiveReceipt) ? `Receipt & Reference Information:${reservationInfo.referenceNumber ? ` Reference: ${reservationInfo.referenceNumber}` : ''}${reservationInfo.receiveReceipt ? ` Receipt PDF: ${type === 'customer' ? '📄 Attached to this email as PDF' : '✅ Customer requested PDF attachment (included in customer email)'}` : ''}` : ''}
 
 ${type === 'customer' && !isSpecialRequest ? getDriverInfoNotice(reservationInfo, type).text : ''}
 
@@ -968,7 +1408,7 @@ Phone: ${reservationInfo.phone}
 ${reservationInfo.flightNumber ? `Flight Number: ${reservationInfo.flightNumber}` : ''}
 ${reservationInfo.meetingBoard ? `Meet & Greet Sign: ${reservationInfo.meetingBoard}` : ''}
 ${reservationInfo.additionalRequests ? `${reservationInfo.isSpecialRequest ? 'Special Request Details' : 'Additional Requests'}: ${reservationInfo.additionalRequests}` : ''}
-${(reservationInfo.referenceNumber || reservationInfo.receiveReceipt) ? `Receipt & Reference Information:${reservationInfo.referenceNumber ? ` Reference: ${reservationInfo.referenceNumber}` : ''}${reservationInfo.receiveReceipt ? ` Receipt PDF: ${type === 'customer' ? 'Attached to this email' : 'Customer requested PDF attachment'}` : ''}` : ''}
+${(reservationInfo.referenceNumber || reservationInfo.receiveReceipt) ? `Receipt & Reference Information:${reservationInfo.referenceNumber ? ` Reference: ${reservationInfo.referenceNumber}` : ''}${reservationInfo.receiveReceipt ? ` Receipt PDF: ${type === 'customer' ? '📄 Attached to this email as PDF' : '✅ Customer requested PDF attachment (included in customer email)'}` : ''}` : ''}
 
 ${getEmailOutro(reservationInfo, type)}
 
@@ -984,5 +1424,7 @@ module.exports = {
   sendPaymentReceiptToCustomer,
   sendRouteErrorToAdmin,
   generateEmailContent,
-  sendEmail
+  sendEmail,
+  sendEmailWithAttachments,
+  generatePDFReceipt
 };
