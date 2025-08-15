@@ -2,7 +2,7 @@ import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
 import cars from "../../../data/cars";
 import SliderCard from "../../../components/SliderCard";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import Aos from "aos";
 import "aos/dist/aos.css";
 
@@ -45,10 +45,31 @@ const CarSlider = ({ setSelectedVehicle }) => {
     Aos.init({ duration: 1000 });
   }, []);
 
+  // Sort cars for consistent display across all components
+  const sortedCars = useMemo(() => {
+    return [...cars].sort((a, b) => {
+      const classOrder = {
+        'First Class': 1,
+        'First Class Van': 2, 
+        'Business Class': 3,
+        'Business Van': 4
+      };
+      
+      const aClassPriority = classOrder[a.class] || 999;
+      const bClassPriority = classOrder[b.class] || 999;
+      
+      if (aClassPriority !== bClassPriority) {
+        return aClassPriority - bClassPriority;
+      }
+      
+      return (a.hourlyRate || 0) - (b.hourlyRate || 0);
+    });
+  }, []);
+
   // Preload critical car images for even faster loading
   useEffect(() => {
-    // Use the first 3 available cars for preloading
-    const preloadPromises = cars.slice(0, 3).map(car => {
+    // Use the first 3 sorted cars for preloading
+    const preloadPromises = sortedCars.slice(0, 3).map(car => {
       return new Promise((resolve, reject) => {
         const link = document.createElement('link');
         link.rel = 'preload';
@@ -68,14 +89,14 @@ const CarSlider = ({ setSelectedVehicle }) => {
       // Cleanup preload links when component unmounts
       const preloadLinks = document.querySelectorAll('link[rel="preload"][as="image"]');
       preloadLinks.forEach(link => {
-        if (cars.some(car => car.image === link.href)) {
+        if (sortedCars.some(car => car.image === link.href)) {
           if (document.head.contains(link)) {
             document.head.removeChild(link);
           }
         }
       });
     };
-  }, []);
+  }, [sortedCars]);
 
   const responsive = {
     superLargeDesktop: {

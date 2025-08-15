@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useMemo } from "react";
 import cars from "../../data/cars";
 import SliderCard from "../../components/SliderCard";
 import VehicleImageSlider from "../../components/VehicleImageSlider";
@@ -10,6 +10,27 @@ import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
 const Vehicles = ({ scrollUp, selectedVehicle, setSelectedVehicle }) => {
   const imageRef = useRef(null);
   const [resetTrigger, setResetTrigger] = useState(0);
+
+  // Sort cars for display - same logic as VehicleSelection for consistency
+  const sortedCars = useMemo(() => {
+    return [...cars].sort((a, b) => {
+      const classOrder = {
+        'First Class': 1,
+        'First Class Van': 2, 
+        'Business Class': 3,
+        'Business Van': 4
+      };
+      
+      const aClassPriority = classOrder[a.class] || 999;
+      const bClassPriority = classOrder[b.class] || 999;
+      
+      if (aClassPriority !== bClassPriority) {
+        return aClassPriority - bClassPriority;
+      }
+      
+      return (a.hourlyRate || 0) - (b.hourlyRate || 0);
+    });
+  }, []);
 
   useEffect(() => {
     scrollUp();
@@ -28,7 +49,7 @@ const Vehicles = ({ scrollUp, selectedVehicle, setSelectedVehicle }) => {
   }, [selectedVehicle]);
 
   const chooseVehicle = (name) => {
-    setSelectedVehicle(cars.find((car) => car.name === name));
+    setSelectedVehicle(sortedCars.find((car) => car.name === name));
     // Always scroll to image when a car is selected, even if it's the same one
     if (imageRef.current) {
       imageRef.current.scrollIntoView({ 
@@ -90,7 +111,7 @@ const Vehicles = ({ scrollUp, selectedVehicle, setSelectedVehicle }) => {
       </div>
       <h2 className="text-4xl font-semibold mb-6 text-royal-blue">Our Fleet</h2>
       <div className="grid sm:grid-cols-2 md:grid-cols-3">
-        {cars.map((car, i) => (
+        {sortedCars.map((car, i) => (
           <SliderCard {...car} key={i} chooseVehicle={chooseVehicle} />
         ))}
       </div>
