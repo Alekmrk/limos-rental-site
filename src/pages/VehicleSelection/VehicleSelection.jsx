@@ -230,6 +230,34 @@ const VehicleSelection = ({ scrollUp }) => {
     return vehicleAvailability.filter(vehicle => vehicle.isAvailable);
   }, [vehicleAvailability]);
 
+  // Sorted vehicles for display - prioritize available vehicles and sort by quality/price
+  const sortedVehiclesForDisplay = useMemo(() => {
+    return [...vehicleAvailability].sort((a, b) => {
+      // First, prioritize available vehicles
+      if (a.isAvailable !== b.isAvailable) {
+        return b.isAvailable - a.isAvailable; // Available vehicles first
+      }
+      
+      // For vehicles with the same availability status, sort by class priority
+      const classOrder = {
+        'First Class': 1,
+        'First Class Van': 2, 
+        'Business Class': 3,
+        'Business Van': 4
+      };
+      
+      const aClassPriority = classOrder[a.class] || 999;
+      const bClassPriority = classOrder[b.class] || 999;
+      
+      if (aClassPriority !== bClassPriority) {
+        return aClassPriority - bClassPriority; // Lower number = higher priority
+      }
+      
+      // If same class priority, sort by hourly rate (lower rate first for same class)
+      return (a.hourlyRate || 0) - (b.hourlyRate || 0);
+    });
+  }, [vehicleAvailability]);
+
   // Check if we should show vehicles (both passengers and bags must be selected)
   const shouldShowVehicles = useMemo(() => {
     return reservationInfo.passengers !== '' && reservationInfo.bags !== '';
@@ -611,7 +639,7 @@ const VehicleSelection = ({ scrollUp }) => {
                 </div>
               ) : (
                 <div className="grid md:grid-cols-3 gap-6">
-                  {vehicleAvailability.map((vehicle) => {
+                  {sortedVehiclesForDisplay.map((vehicle) => {
                     const isSelected = reservationInfo.selectedVehicle?.id === vehicle.id;
                     const isLocked = !vehicle.isAvailable;
                     
