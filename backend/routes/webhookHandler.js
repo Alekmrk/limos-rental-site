@@ -97,6 +97,12 @@ module.exports = async (req, res) => {
             metadata: sessions.data[0]?.metadata
           });
           
+          console.log('🔍 RECEIPT DEBUG - Stripe metadata:', {
+            receiveReceipt: sessions.data[0]?.metadata?.receiveReceipt,
+            referenceNumber: sessions.data[0]?.metadata?.referenceNumber,
+            email: sessions.data[0]?.metadata?.email
+          });
+          
           // Use metadata from session if available, otherwise use current date/time
           const metadata = sessions.data.length > 0 ? sessions.data[0].metadata : {
             date: new Date().toISOString().split('T')[0],
@@ -147,6 +153,7 @@ module.exports = async (req, res) => {
             specialRequestDetails: metadata.specialRequestDetails,
             additionalRequests: metadata.additionalRequests,
             referenceNumber: metadata.referenceNumber,
+            receiveReceipt: metadata.receiveReceipt === 'true',
 
             // Route Information
             routeInfo: metadata.routeDistance && metadata.routeDuration ? {
@@ -166,6 +173,13 @@ module.exports = async (req, res) => {
               locale: metadata.locale || 'en-CH'
             }
           };
+
+          console.log('🔍 RECEIPT DEBUG - Built reservationInfo:', {
+            receiveReceipt: reservationInfo.receiveReceipt,
+            referenceNumber: reservationInfo.referenceNumber,
+            email: reservationInfo.email,
+            hasPaymentDetails: !!reservationInfo.paymentDetails
+          });
 
           console.log('[EMAIL] [EMAIL-START] Initiating payment success email notifications:', {
             paymentIntentId: paymentIntent.id,
@@ -351,6 +365,7 @@ module.exports = async (req, res) => {
             specialRequestDetails: metadata.specialRequestDetails,
             additionalRequests: metadata.additionalRequests,
             referenceNumber: metadata.referenceNumber,
+            receiveReceipt: metadata.receiveReceipt === 'true',
 
             // Route Information
             routeInfo: metadata.routeDistance && metadata.routeDuration ? {
@@ -502,6 +517,7 @@ module.exports = async (req, res) => {
             specialRequestDetails: metadata.specialRequestDetails,
             additionalRequests: metadata.additionalRequests,
             referenceNumber: metadata.referenceNumber,
+            receiveReceipt: metadata.receiveReceipt === 'true',
 
             // Route Information
             routeInfo: metadata.routeDistance && metadata.routeDuration ? {
@@ -714,6 +730,7 @@ module.exports = async (req, res) => {
             specialRequestDetails: metadata.specialRequestDetails,
             additionalRequests: metadata.additionalRequests,
             referenceNumber: metadata.referenceNumber,
+            receiveReceipt: metadata.receiveReceipt === 'true',
 
             // Route Information
             routeInfo: metadata.routeDistance && metadata.routeDuration ? {
@@ -905,6 +922,7 @@ module.exports = async (req, res) => {
             specialRequestDetails: metadata.specialRequestDetails,
             additionalRequests: metadata.additionalRequests,
             referenceNumber: metadata.referenceNumber,
+            receiveReceipt: metadata.receiveReceipt === 'true',
 
             // Route Information
             routeInfo: metadata.routeDistance && metadata.routeDuration ? {
@@ -1046,6 +1064,7 @@ module.exports = async (req, res) => {
             specialRequestDetails: metadata.specialRequestDetails,
             additionalRequests: metadata.additionalRequests,
             referenceNumber: metadata.referenceNumber,
+            receiveReceipt: metadata.receiveReceipt === 'true',
 
             // Route Information
             routeInfo: metadata.routeDistance && metadata.routeDuration ? {

@@ -83,6 +83,13 @@ const formatPaymentDateTime = (timestamp) => {
  * @returns {string} - Base64 encoded PDF content
  */
 const generatePDFReceipt = (reservationInfo) => {
+  console.log('🔍 PDF GENERATION DEBUG - Starting PDF generation:', {
+    email: reservationInfo.email,
+    hasPaymentDetails: !!reservationInfo.paymentDetails,
+    referenceNumber: reservationInfo.referenceNumber,
+    firstName: reservationInfo.firstName
+  });
+
   // Create A4 PDF document (210mm x 297mm)
   const doc = new jsPDF({
     orientation: 'portrait',
@@ -721,6 +728,13 @@ const sendPaymentConfirmationToAdmin = async (reservationInfo) => {
  */
 const sendPaymentReceiptToCustomer = async (reservationInfo) => {
   try {
+    console.log('🔍 EMAIL SERVICE DEBUG - Payment receipt request:', {
+      email: reservationInfo.email,
+      receiveReceipt: reservationInfo.receiveReceipt,
+      referenceNumber: reservationInfo.referenceNumber,
+      hasPaymentDetails: !!reservationInfo.paymentDetails
+    });
+
     if (!reservationInfo.email) {
       console.warn('No customer email provided for payment receipt');
       return {
