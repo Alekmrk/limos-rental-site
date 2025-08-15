@@ -198,3 +198,4 @@ resi ovo:         'send_to': 'AW-CONVERSION_ID', // Replace with actual conversi
 # da se ne lepe UTMovi na URL iz storage
 # da se injectuje glavniGTM tag
 # da se vidi kako izvlacimo UTM iz stripe-a
+Resi kako da se uradi receipt (da ima logo, koje info da prikazemo a koje ne. za special da se ne salje racun itd.)
