@@ -45,8 +45,7 @@ const PaymentPage = ({ scrollUp }) => {
         !reservationInfo.date ||
         !reservationInfo.time ||
         !reservationInfo.selectedVehicle ||
-        (reservationInfo.isHourly && (!reservationInfo.hours || reservationInfo.hours < 3 || reservationInfo.hours > 24)) ||
-        (reservationInfo.isHourly && !reservationInfo.plannedActivities?.trim())
+        (reservationInfo.isHourly && (!reservationInfo.hours || reservationInfo.hours < 3 || reservationInfo.hours > 24))
     ) {
       navigateWithUTMs('/customer-details');
     }

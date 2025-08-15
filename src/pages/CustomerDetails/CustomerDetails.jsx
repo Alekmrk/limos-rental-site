@@ -91,8 +91,6 @@ const CustomerDetails = ({ scrollUp }) => {
       if (!reservationInfo.additionalRequests?.trim()) {
         newErrors.additionalRequests = "Please provide any relevant details about your request";
       }
-    } else if (reservationInfo.isHourly && !reservationInfo.plannedActivities?.trim()) {
-      newErrors.plannedActivities = "Please describe your planned activities";
     }
     
     setErrors(newErrors);
@@ -322,7 +320,7 @@ const CustomerDetails = ({ scrollUp }) => {
                     </div>
                     
                     <label className="block text-sm font-medium mb-2 text-gray-700" htmlFor="plannedActivities">
-                      Planned Activities *
+                      Planned Activities
                     </label>
                     <textarea
                       id="plannedActivities"
@@ -334,7 +332,7 @@ const CustomerDetails = ({ scrollUp }) => {
                       className={`bg-warm-white/80 backdrop-blur-sm rounded-lg py-2 px-4 w-full border text-gray-700 whitespace-pre-wrap focus:outline-none focus:ring-1 focus:ring-royal-blue/20 transition-all duration-200 hover:border-royal-blue/30 focus:border-royal-blue/50 ${
                         errors.plannedActivities ? 'border-red-500 focus:border-red-500' : 'border-royal-blue/20'
                       }`}
-                      placeholder="Please describe your planned activities during the rental period..."
+                      placeholder="Optional: Describe your planned activities during the rental period..."
                       style={{ resize: 'vertical', minHeight: '100px' }}
                     ></textarea>
                     {errors.plannedActivities && (
