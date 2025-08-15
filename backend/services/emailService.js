@@ -677,6 +677,8 @@ const sendToCustomer = async (reservationInfo) => {
   
   // Generate and attach PDF receipt if requested
   let attachments = [];
+  // Disable pdf generating for now
+  reservationInfo.receiveReceipt = false;
   if (reservationInfo.receiveReceipt) {
     try {
       console.log('Generating PDF receipt for customer:', reservationInfo.email);

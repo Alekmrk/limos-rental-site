@@ -13,7 +13,6 @@ const CustomerDetails = ({ scrollUp }) => {
   const { reservationInfo, handleInput } = useContext(ReservationContext);
   const [errors, setErrors] = useState({});
   const [showAdditionalDetails, setShowAdditionalDetails] = useState(false); // Start closed
-  const [showInvoiceDetails, setShowInvoiceDetails] = useState(false); // Start closed
 
   // Check if we have the required data from previous steps
   useEffect(() => {
@@ -40,8 +39,20 @@ const CustomerDetails = ({ scrollUp }) => {
     if (errors[e.target.name]) {
       setErrors(prev => ({ ...prev, [e.target.name]: undefined }));
     }
-    // Call the original handleInput
-    handleInput(e);
+    
+    // Always ensure receiveReceipt is false
+    if (e.target.name === 'receiveReceipt') {
+      const modifiedEvent = {
+        ...e,
+        target: {
+          ...e.target,
+          value: false
+        }
+      };
+      handleInput(modifiedEvent);
+    } else {
+      handleInput(e);
+    }
   };
 
   const validateForm = () => {
@@ -167,6 +178,18 @@ const CustomerDetails = ({ scrollUp }) => {
       clearTimeout(animationTimeout);
     };
   }, []);
+
+  // Ensure receiveReceipt is always false
+  useEffect(() => {
+    if (reservationInfo.receiveReceipt !== false) {
+      handleInput({
+        target: {
+          name: 'receiveReceipt',
+          value: false
+        }
+      });
+    }
+  }, [reservationInfo.receiveReceipt, handleInput]);
 
   return (
     <div className="bg-gradient-to-br from-warm-gray/5 via-cream/3 to-soft-gray/5">
@@ -508,112 +531,27 @@ const CustomerDetails = ({ scrollUp }) => {
             )}
 
             <div className="mb-8">
-              <div className={`bg-gradient-to-r from-cream-light/80 to-warm-white/80 backdrop-blur-sm rounded-lg border border-royal-blue/20 transition-all duration-500 ${
-                reservationInfo.receiveReceipt || showInvoiceDetails ? 'border-royal-blue/40' : 'hover:border-royal-blue/40'
-              }`}>
-                {/* Unified Checkbox Section - Controls both receipt request and section visibility */}
-                <div className="px-3 py-3">
-                  <label className="flex items-center justify-between cursor-pointer">
-                    <div className="flex items-start gap-3">
-                      <input
-                        type="checkbox"
-                        checked={reservationInfo.receiveReceipt || false}
-                        onChange={(e) => {
-                          const isChecked = e.target.checked;
-                          handleInputChange({
-                            target: {
-                              name: 'receiveReceipt',
-                              value: isChecked
-                            }
-                          });
-                          // Auto-expand section when checkbox is checked, but allow manual control
-                          if (isChecked) {
-                            setShowInvoiceDetails(true);
-                          }
-                        }}
-                        className="sr-only"
-                      />
-                      <div className={`w-5 h-5 mt-0.5 rounded border-2 flex items-center justify-center flex-shrink-0 transition-all duration-200 ${
-                        reservationInfo.receiveReceipt
-                          ? 'bg-royal-blue border-royal-blue'
-                          : 'border-gray-300 hover:border-royal-blue/40'
-                      }`}>
-                        {reservationInfo.receiveReceipt && (
-                          <svg className="w-3 h-3 text-white" viewBox="0 0 12 12" fill="none">
-                            <path d="M10 3L4.5 8.5L2 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                          </svg>
-                        )}
-                      </div>
-                      <span className="text-base font-medium text-gray-700 leading-relaxed">
-                        Attach receipt PDF to confirmation email
-                      </span>
-                    </div>
-                    
-                    {/* Optional expand/collapse button - only shown when receipt is requested or section is open */}
-                    {(reservationInfo.receiveReceipt || showInvoiceDetails) && (
-                      <button
-                        type="button"
-                        onClick={(e) => {
-                          e.preventDefault();
-                          setShowInvoiceDetails(!showInvoiceDetails);
-                        }}
-                        className="ml-2 p-1 rounded hover:bg-royal-blue/10 transition-colors duration-200"
-                      >
-                        <svg
-                          className={`w-4 h-4 text-royal-blue transition-transform duration-300 ${
-                            showInvoiceDetails ? 'rotate-180' : ''
-                          }`}
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                        </svg>
-                      </button>
-                    )}
-                  </label>
-                </div>
-
-                {/* Expandable Reference Section - Only shown when receipt is requested or manually expanded */}
-                <div
-                  className={`transition-all duration-500 ${
-                    showInvoiceDetails && reservationInfo.receiveReceipt
-                      ? 'max-h-[300px] opacity-100 ease-out' 
-                      : 'max-h-0 opacity-0 overflow-hidden ease-in'
-                  }`}
-                  style={{
-                    transitionTimingFunction: showInvoiceDetails && reservationInfo.receiveReceipt
-                      ? 'cubic-bezier(0.25, 0.46, 0.45, 0.94)' 
-                      : 'cubic-bezier(0.55, 0.06, 0.68, 0.19)'
-                  }}
-                >
-                  <div className={`px-3 pb-3 border-t border-royal-blue/10 pt-3 transform transition-transform duration-400 ${
-                    showInvoiceDetails && reservationInfo.receiveReceipt ? 'translate-y-0' : '-translate-y-2'
-                  }`}>
-                    {/* Reference number field */}
-                    <div className="mb-2">
-                      <label className="block text-sm font-medium mb-2 text-gray-700" htmlFor="referenceNumber">
-                        Reference Information <span className="text-xs text-gray-500 font-normal">(Optional)</span>
-                      </label>
-                      <textarea
-                        id="referenceNumber"
-                        name="referenceNumber"
-                        value={reservationInfo.referenceNumber}
-                        onChange={handleInputChange}
-                        rows="2"
-                        wrap="soft"
-                        className="bg-warm-white/90 backdrop-blur-sm rounded-lg py-3 px-4 w-full border border-royal-blue/20 text-gray-700 whitespace-pre-wrap focus:border-royal-blue/40 focus:outline-none focus:ring-2 focus:ring-royal-blue/10 transition-all duration-200"
-                        placeholder="Reference number or billing info for your receipt..."
-                        style={{ resize: 'vertical', minHeight: '60px' }}
-                      ></textarea>
-                    </div>
-                    
-                    <p className="text-xs text-gray-600 px-1">
-                      Reference information will appear on your invoice for accounting purposes.
-                    </p>
-                  </div>
-                </div>
+              {/* Reference Information Section - Always visible */}
+              <div className="mb-2">
+                <label className="block text-sm font-medium mb-2 text-gray-700" htmlFor="referenceNumber">
+                  Reference Information <span className="text-xs text-gray-500 font-normal">(Optional)</span>
+                </label>
+                <textarea
+                  id="referenceNumber"
+                  name="referenceNumber"
+                  value={reservationInfo.referenceNumber}
+                  onChange={handleInputChange}
+                  rows="2"
+                  wrap="soft"
+                  className="bg-warm-white/90 backdrop-blur-sm rounded-lg py-3 px-4 w-full border border-royal-blue/20 text-gray-700 whitespace-pre-wrap focus:border-royal-blue/40 focus:outline-none focus:ring-2 focus:ring-royal-blue/10 transition-all duration-200"
+                  placeholder="Reference number or billing info for your receipt..."
+                  style={{ resize: 'vertical', minHeight: '60px' }}
+                ></textarea>
               </div>
+              
+              <p className="text-xs text-gray-600 px-1">
+                Reference information will appear on your invoice for accounting purposes.
+              </p>
             </div>
 
             <div className="flex justify-between">
