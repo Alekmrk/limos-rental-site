@@ -12,9 +12,7 @@ const SliderCard = ({ index, image, name, seats, luggage, chooseVehicle }) => {
         className={`slider-card mx-2 pb-8 cursor-pointer ${index === 0 && ""}`}
       >
         <div
-          className={`car-image w-full h-[290px] flex items-center justify-center ${
-            index === 0 ? "bg-royal-blue/20" : "bg-cream-light/90"
-          } rounded-[1.5rem] hover:shadow-lg border border-royal-blue/20 px-8 transition-all duration-300`}
+          className="car-image w-full h-[290px] flex items-center justify-center bg-cream-light/90 rounded-[1.5rem] hover:shadow-lg border border-primary-gold/20 px-8 transition-all duration-300 hover:bg-cream-light/95"
         >
           <Image
             className="car w-full transition"
@@ -26,7 +24,7 @@ const SliderCard = ({ index, image, name, seats, luggage, chooseVehicle }) => {
             loading="eager"
           />
         </div>
-        <div className="vehicle-info bg-cream-light/70 backdrop-blur-sm px-4 py-3 rounded-lg border border-royal-blue/15 shadow-sm my-4">
+        <div className="vehicle-info bg-cream-light/70 backdrop-blur-sm px-4 py-3 rounded-lg border border-primary-gold/15 shadow-sm my-4">
           <h2 className="text-lg font-medium text-gray-700 mb-2">{name}</h2>
           <div className="capacity-info flex flex-wrap gap-3">
             <CapacityItem text={seats} icon={faPerson} />
