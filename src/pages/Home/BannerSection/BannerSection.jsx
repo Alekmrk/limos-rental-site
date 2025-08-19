@@ -23,17 +23,34 @@ const BannerSection = () => {
   return (
     <div className="relative">
       <div className="banner-home relative w-full rounded-[1.5rem] mt-16 pb-24 md:pb-0 overflow-visible text-center min-h-[600px] md:min-h-[700px] lg:min-h-[800px]">
-        {/* Optimized Background Image - Full Width */}
+        {/* Background - Image on desktop, luxury pattern on mobile */}
         <div className="absolute inset-0 z-0">
-          <Image
-            src={bannerImage}
-            alt="Elite Way Limo luxury chauffeur service"
-            className="w-full h-full object-cover object-top"
-            imageType="banner"
-            priority={true}
-            sizes="100vw"
-          />
-          <div className="absolute inset-0 bg-gradient-to-br from-warm-gray/8 via-cream/5 to-soft-gray/8"></div>
+          {/* Desktop Background Image */}
+          <div className="hidden md:block w-full h-full">
+            <Image
+              src={bannerImage}
+              alt="Elite Way Limo luxury chauffeur service"
+              className="w-full h-full object-cover object-top"
+              imageType="banner"
+              priority={true}
+              sizes="100vw"
+            />
+            <div className="absolute inset-0 bg-gradient-to-br from-warm-gray/8 via-cream/5 to-soft-gray/8"></div>
+          </div>
+          
+          {/* Mobile Luxury Background */}
+          <div className="block md:hidden w-full h-full bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 relative">
+            {/* Luxury overlay pattern */}
+            <div className="absolute inset-0 bg-gradient-to-br from-primary-gold/10 via-transparent to-primary-gold/5"></div>
+            {/* Subtle geometric pattern */}
+            <div className="absolute inset-0 opacity-10" style={{
+              backgroundImage: `radial-gradient(circle at 25% 25%, #D4AF37 2px, transparent 2px),
+                               radial-gradient(circle at 75% 75%, #D4AF37 1px, transparent 1px)`,
+              backgroundSize: '50px 50px'
+            }}></div>
+            {/* Elegant top-to-bottom fade */}
+            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-gray-800/50 to-gray-900/80"></div>
+          </div>
         </div>
 
         {/* Softer Animated Background Elements with Harmonious Colors */}
