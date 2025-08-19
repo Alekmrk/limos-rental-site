@@ -379,8 +379,8 @@ const AddressInput = ({ value, onChange, name, id, placeholder, onPlaceSelected,
         onFocus={handleInputFocus}
         name={name}
         placeholder={placeholder || "Enter location"}
-        className={`mobile-input bg-warm-white/80 backdrop-blur-sm py-3 px-4 w-full border-2 text-gray-700 transition-all duration-300 hover:border-royal-blue/50 focus:border-royal-blue focus:shadow-[0_0_15px_rgba(65,105,225,0.2)] focus:outline-none focus:ring-2 focus:ring-royal-blue/20 ${
-          (error || externalError) ? 'border-error bg-error/5 ring-error/30 animate-shake' : isLocationSelected ? 'border-success/50 bg-success/5 ring-success/20' : 'border-royal-blue/20'
+        className={`mobile-input bg-warm-white/80 backdrop-blur-sm py-3 px-4 w-full border-2 text-gray-700 transition-all duration-300 hover:border-primary-gold/50 focus:border-primary-gold focus:shadow-[0_0_15px_rgba(212,175,55,0.2)] focus:outline-none focus:ring-2 focus:ring-primary-gold/20 ${
+          (error || externalError) ? 'border-error bg-error/5 ring-error/30 animate-shake' : isLocationSelected ? 'border-success/50 bg-success/5 ring-success/20' : 'border-primary-gold/20'
         } ${className || ''} ${showSuggestions ? 'rounded-t-xl rounded-b-none' : 'rounded-xl'}`}
         autoComplete="off"
         aria-label={placeholder || "Location input"}
@@ -396,7 +396,7 @@ const AddressInput = ({ value, onChange, name, id, placeholder, onPlaceSelected,
       {showSuggestions && predictions.length > 0 && (
         <div
           ref={suggestionsRef}
-          className="absolute z-[9999] w-full top-full -mt-0 bg-warm-white/95 backdrop-blur-md border border-royal-blue/30 rounded-lg shadow-xl overflow-hidden"
+          className="absolute z-[9999] w-full top-full -mt-0 bg-warm-white/95 backdrop-blur-md border border-primary-gold/30 rounded-lg shadow-xl overflow-hidden"
           role="listbox"
         >
           {predictions.map((suggestion, index) => (
@@ -405,8 +405,8 @@ const AddressInput = ({ value, onChange, name, id, placeholder, onPlaceSelected,
               id={`suggestion-${index}`}
               className={`flex items-center cursor-pointer transition-all duration-200 ${
                 index === activeSuggestionIndex 
-                  ? 'bg-royal-blue/10' 
-                  : 'hover:bg-royal-blue/5'
+                  ? 'bg-primary-gold/10' 
+                  : 'hover:bg-primary-gold/5'
               } ${index !== 0 ? 'border-t border-royal-blue/10' : ''}`}
               style={{
                 padding: '0.75rem 1rem'

@@ -399,7 +399,7 @@ const ReservationCard = ({ idPrefix = '' }) => {
           e.preventDefault();
         }
       }}
-      className="reservation reserve-card w-[95%] min-w-[280px] max-w-[420px] md:max-w-[380px] lg:max-w-[480px] pt-4 px-6 pb-10 sm:pt-6 sm:px-10 sm:pb-10 mx-auto md:mx-0 md:absolute md:bottom-12 md:right-4 lg:right-8 xl:right-16 shadow-2xl bg-cream-light/95 backdrop-blur-md border border-royal-blue/30 rounded-[2rem] text-left text-[15px] transition-all hover:shadow-[0_20px_50px_rgba(65,105,225,0.15)] hover:border-royal-blue/50 z-50"
+      className="reservation reserve-card w-[95%] min-w-[280px] max-w-[420px] md:max-w-[380px] lg:max-w-[480px] pt-4 px-6 pb-10 sm:pt-6 sm:px-10 sm:pb-10 mx-auto md:mx-0 md:absolute md:bottom-12 md:right-4 lg:right-8 xl:right-16 shadow-2xl bg-cream-light/95 backdrop-blur-md border border-primary-gold/30 rounded-[2rem] text-left text-[15px] transition-all hover:shadow-[0_20px_50px_rgba(212,175,55,0.15)] hover:border-primary-gold/50 z-50"
     >
       <div className="flex justify-center gap-1 sm:gap-3 pb-4 mb-4 relative w-full">
         <button
@@ -407,8 +407,8 @@ const ReservationCard = ({ idPrefix = '' }) => {
           onClick={() => handleModeChange('distance')}
           className={
             !reservationInfo.isHourly && !reservationInfo.isSpecialRequest
-              ? "py-2.5 px-2 sm:px-4 rounded-xl bg-royal-blue text-white shadow-lg transform transition-all duration-200 text-sm sm:text-base flex-1 max-w-[90px] sm:max-w-none"
-              : "py-2.5 px-2 sm:px-4 rounded-xl text-gray-600 hover:text-royal-blue transition-all duration-200 hover:bg-royal-blue/10 text-sm sm:text-base flex-1 max-w-[90px] sm:max-w-none"
+              ? "py-2.5 px-2 sm:px-4 rounded-xl bg-gradient-to-r from-gray-700 to-gray-800 text-primary-gold shadow-lg transform transition-all duration-200 text-sm sm:text-base flex-1 max-w-[90px] sm:max-w-none"
+              : "py-2.5 px-2 sm:px-4 rounded-xl text-gray-600 hover:text-primary-gold transition-all duration-200 hover:bg-primary-gold/10 text-sm sm:text-base flex-1 max-w-[90px] sm:max-w-none"
           }
         >
           Distance
@@ -418,8 +418,8 @@ const ReservationCard = ({ idPrefix = '' }) => {
           onClick={() => handleModeChange('hourly')}
           className={
             reservationInfo.isHourly
-              ? "py-2.5 px-2 sm:px-4 rounded-xl bg-royal-blue text-white shadow-lg transform transition-all duration-200 text-sm sm:text-base flex-1 max-w-[90px] sm:max-w-none"
-              : "py-2.5 px-2 sm:px-4 rounded-xl text-gray-600 hover:text-royal-blue transition-all duration-200 hover:bg-royal-blue/10 text-sm sm:text-base flex-1 max-w-[90px] sm:max-w-none"
+              ? "py-2.5 px-2 sm:px-4 rounded-xl bg-gradient-to-r from-gray-700 to-gray-800 text-primary-gold shadow-lg transform transition-all duration-200 text-sm sm:text-base flex-1 max-w-[90px] sm:max-w-none"
+              : "py-2.5 px-2 sm:px-4 rounded-xl text-gray-600 hover:text-primary-gold transition-all duration-200 hover:bg-primary-gold/10 text-sm sm:text-base flex-1 max-w-[90px] sm:max-w-none"
           }
         >
           Hourly
@@ -429,13 +429,13 @@ const ReservationCard = ({ idPrefix = '' }) => {
           onClick={() => handleModeChange('special')}
           className={
             reservationInfo.isSpecialRequest
-              ? "py-2.5 px-2 sm:px-4 rounded-xl bg-royal-blue text-white shadow-lg transform transition-all duration-200 text-sm sm:text-base flex-1 max-w-[90px] sm:max-w-none"
-              : "py-2.5 px-2 sm:px-4 rounded-xl text-gray-600 hover:text-royal-blue transition-all duration-200 hover:bg-royal-blue/10 text-sm sm:text-base flex-1 max-w-[90px] sm:max-w-none"
+              ? "py-2.5 px-2 sm:px-4 rounded-xl bg-gradient-to-r from-gray-700 to-gray-800 text-primary-gold shadow-lg transform transition-all duration-200 text-sm sm:text-base flex-1 max-w-[90px] sm:max-w-none"
+              : "py-2.5 px-2 sm:px-4 rounded-xl text-gray-600 hover:text-primary-gold transition-all duration-200 hover:bg-primary-gold/10 text-sm sm:text-base flex-1 max-w-[90px] sm:max-w-none"
           }
         >
           Special
         </button>
-        <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-gradient-to-r from-royal-blue/20 via-royal-blue/40 to-royal-blue/20"></div>
+        <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-gradient-to-r from-primary-gold/20 via-primary-gold/40 to-primary-gold/20"></div>
       </div>
       
       <div className="space-y-5 min-h-[250px]">
@@ -457,7 +457,7 @@ const ReservationCard = ({ idPrefix = '' }) => {
                     className={`${
                       errors.pickup && errors.pickup !== "At least one location must be in Switzerland" 
                         ? 'border-red-500 ring-1 ring-red-500/50 animate-shake' 
-                        : 'border-royal-blue/20'
+                        : 'border-primary-gold/20'
                     }`}
                   />
                   {errors.pickup && errors.pickup !== "At least one location must be in Switzerland" && (
@@ -484,7 +484,7 @@ const ReservationCard = ({ idPrefix = '' }) => {
                       className={`${
                         errors.dropoff && errors.dropoff !== "At least one location must be in Switzerland" 
                           ? 'border-red-500 ring-1 ring-red-500/50 animate-shake' 
-                          : 'border-royal-blue/20'
+                          : 'border-primary-gold/20'
                       }`}
                     />
                     {errors.dropoff && errors.dropoff !== "At least one location must be in Switzerland" && (
@@ -535,8 +535,8 @@ const ReservationCard = ({ idPrefix = '' }) => {
                         }, 0);
                       }}
                       onFocus={(e) => e.target.select()}
-                      className={`bg-warm-white/80 rounded-xl py-3 px-4 w-full border text-gray-700 transition-all duration-200 hover:border-royal-blue/30 focus:border-royal-blue/50 focus:shadow-[0_0_15px_rgba(65,105,225,0.2)] ${
-                        errors.hours ? 'border-red-500 ring-1 ring-red-500/50 animate-shake' : 'border-royal-blue/20'
+                      className={`bg-warm-white/80 rounded-xl py-3 px-4 w-full border text-gray-700 transition-all duration-200 hover:border-primary-gold/30 focus:border-primary-gold/50 focus:shadow-[0_0_15px_rgba(212,175,55,0.2)] ${
+                        errors.hours ? 'border-red-500 ring-1 ring-red-500/50 animate-shake' : 'border-primary-gold/20'
                       }`}
                       placeholder="Enter hours (3-24)"
                     />
@@ -564,8 +564,8 @@ const ReservationCard = ({ idPrefix = '' }) => {
                     }}
                     name="date"
                     id={`${idPrefix}date`}
-                    className={`bg-warm-white/80 rounded-xl py-3 px-4 w-full border text-gray-700 transition-all duration-200 hover:border-royal-blue/30 focus:border-royal-blue/50 focus:shadow-[0_0_15px_rgba(65,105,225,0.2)] ${
-                      errors.date ? 'border-red-500 ring-1 ring-red-500/50 animate-shake' : 'border-royal-blue/20'
+                    className={`bg-warm-white/80 rounded-xl py-3 px-4 w-full border text-gray-700 transition-all duration-200 hover:border-primary-gold/30 focus:border-primary-gold/50 focus:shadow-[0_0_15px_rgba(212,175,55,0.2)] ${
+                      errors.date ? 'border-red-500 ring-1 ring-red-500/50 animate-shake' : 'border-primary-gold/20'
                     }`}
                   />
                   {errors.date && (
@@ -589,8 +589,8 @@ const ReservationCard = ({ idPrefix = '' }) => {
                     }}
                     name="time"
                     id={`${idPrefix}time`}
-                    className={`bg-warm-white/80 rounded-xl py-3 px-4 w-full border text-gray-700 transition-all duration-200 hover:border-royal-blue/30 focus:border-royal-blue/50 focus:shadow-[0_0_15px_rgba(65,105,225,0.2)] ${
-                      errors.time ? 'border-red-500 ring-1 ring-red-500/50 animate-shake' : 'border-royal-blue/20'
+                    className={`bg-warm-white/80 rounded-xl py-3 px-4 w-full border text-gray-700 transition-all duration-200 hover:border-primary-gold/30 focus:border-primary-gold/50 focus:shadow-[0_0_15px_rgba(212,175,55,0.2)] ${
+                      errors.time ? 'border-red-500 ring-1 ring-red-500/50 animate-shake' : 'border-primary-gold/20'
                     }`}
                   />
                   {errors.time && (
@@ -604,10 +604,10 @@ const ReservationCard = ({ idPrefix = '' }) => {
           </>
         ) : (
           <>
-            <div className="mb-4 text-gray-600 text-sm border border-royal-blue/20 rounded-xl p-4 bg-royal-blue/5">
+            <div className="mb-4 text-gray-600 text-sm border border-primary-gold/20 rounded-xl p-4 bg-primary-gold/5">
               <p className="mb-3 text-gray-700 font-medium">Custom Transportation Request</p>
               <p className="mb-2">Tell us about your unique transportation needs and we'll create a personalized quote for you.</p>
-              <p className="mt-3 text-royal-blue font-medium">Perfect for:</p>
+              <p className="mt-3 text-primary-gold font-medium">Perfect for:</p>
               <ul className="list-disc ml-5 mt-2 space-y-1">
                 <li>Multi-city tours & sightseeing</li>
                 <li>Corporate events & VIP services</li>
@@ -615,9 +615,9 @@ const ReservationCard = ({ idPrefix = '' }) => {
                 <li>Long-distance transfers</li>
                 <li>Group transportation</li>
               </ul>
-              <div className="mt-4 pt-3 border-t border-royal-blue/20">
-                <p className="text-xs text-royal-blue">✓ Free consultation & quote</p>
-                <p className="text-xs text-royal-blue">✓ Flexible scheduling & routing</p>
+              <div className="mt-4 pt-3 border-t border-primary-gold/20">
+                <p className="text-xs text-primary-gold">✓ Free consultation & quote</p>
+                <p className="text-xs text-primary-gold">✓ Flexible scheduling & routing</p>
               </div>
             </div>
           </>

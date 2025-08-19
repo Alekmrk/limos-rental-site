@@ -392,17 +392,17 @@ const VehicleSelection = ({ scrollUp }) => {
     <div className="bg-gradient-to-br from-warm-gray/5 via-cream/3 to-soft-gray/5">
       {/* Softer Animated Background Elements */}
       <div className="fixed inset-0 z-0" style={{ pointerEvents: 'none' }}>
-        <div className="absolute top-20 left-10 w-20 h-20 bg-royal-blue/10 rounded-full animate-pulse"></div>
+        <div className="absolute top-20 left-10 w-20 h-20 bg-primary-gold/10 rounded-full animate-pulse"></div>
         <div className="absolute top-40 right-20 w-16 h-16 bg-gold/15 rounded-full animate-bounce"></div>
         <div className="absolute bottom-40 left-20 w-12 h-12 bg-warm-gray/20 rounded-full animate-ping"></div>
-        <div className="absolute bottom-20 right-10 w-24 h-24 bg-royal-blue/8 rounded-full animate-pulse"></div>
+        <div className="absolute bottom-20 right-10 w-24 h-24 bg-primary-gold/8 rounded-full animate-pulse"></div>
         <div className="absolute top-1/2 left-1/3 w-32 h-32 bg-gradient-to-br from-cream/15 to-gold/10 rounded-full blur-xl animate-float"></div>
       </div>
 
       <div className="container-default mt-28 relative z-10">
         <div className="max-w-6xl mx-auto">
           <h1 className="text-5xl md:text-7xl font-semibold mb-8 text-gray-700">
-            <span className="text-royal-blue">Select</span> Vehicle
+            <span className="text-primary-gold">Select</span> Vehicle
           </h1>
           
           <ProgressBar />
@@ -418,7 +418,7 @@ const VehicleSelection = ({ scrollUp }) => {
             )}
           </div>
           
-          <div className="bg-warm-white/90 backdrop-blur-md p-6 rounded-xl border border-royal-blue/20 shadow-lg">
+          <div className="bg-warm-white/90 backdrop-blur-md p-6 rounded-xl border border-primary-gold/20 shadow-lg">
             <div className="mb-4">
               <p className="text-sm">{formatDate(reservationInfo.date)}</p>
               <p className="text-sm">{reservationInfo.time} (Swiss Time)</p>
@@ -527,16 +527,16 @@ const VehicleSelection = ({ scrollUp }) => {
 
             {!reservationInfo.isHourly ? (
               <div className="mt-4 grid md:grid-cols-2 gap-4">
-                <div className="bg-royal-blue/10 border border-royal-blue/20 rounded-lg p-4">
+                <div className="bg-primary-gold/10 border border-primary-gold/20 rounded-lg p-4">
                   <div className="flex flex-col gap-3">
                     <div className="flex items-center gap-2">
-                      <svg className="w-5 h-5 text-royal-blue" viewBox="0 0 24 24" fill="currentColor">
+                      <svg className="w-5 h-5 text-primary-gold" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/>
                       </svg>
                       <span className="text-sm font-medium text-gray-700">Total Distance: {reservationInfo.routeInfo?.distance || '0 km'}</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <svg className="w-5 h-5 text-royal-blue" viewBox="0 0 24 24" fill="currentColor">
+                      <svg className="w-5 h-5 text-primary-gold" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/>
                       </svg>
                       <span className="text-sm font-medium text-gray-700">Total Duration: {reservationInfo.routeInfo?.duration || '0 min'}</span>
@@ -547,16 +547,16 @@ const VehicleSelection = ({ scrollUp }) => {
                   </p>
                 </div>
 
-                <div className="bg-cream-light/80 border border-royal-blue/20 rounded-lg p-4">
+                <div className="bg-cream-light/80 border border-primary-gold/20 rounded-lg p-4">
                   <p className="text-sm text-gray-700">
                     Need multiple stops? Consider:
-                    <br/>• <span className="font-medium text-royal-blue">Hourly booking</span> - Vehicle at your disposal
-                    <br/>• <span className="font-medium text-royal-blue">Special request</span> - Craft a custom plan just for you
+                    <br/>• <span className="font-medium text-primary-gold">Hourly booking</span> - Vehicle at your disposal
+                    <br/>• <span className="font-medium text-primary-gold">Special request</span> - Craft a custom plan just for you
                   </p>
                 </div>
               </div>
             ) : (
-              <div className="mt-4 bg-royal-blue/10 border border-royal-blue/20 rounded-lg p-4">
+              <div className="mt-4 bg-primary-gold/10 border border-primary-gold/20 rounded-lg p-4">
                 <div className="flex items-center gap-2">
                   <svg className="w-5 h-5 text-royal-blue" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/>
