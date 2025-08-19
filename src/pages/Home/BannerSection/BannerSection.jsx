@@ -116,7 +116,7 @@ const BannerSection = () => {
 
         {/* Mobile Layout: Reservation Card and Badges in Same Container */}
         <div className="block md:hidden relative z-20 px-4">
-          <div className="pt-20 mb-6">
+          <div className="pt-12 mb-6">
             {/* Main Title with glassy background */}
             <div className="relative mb-6 flex justify-center">
               <div className="relative">
