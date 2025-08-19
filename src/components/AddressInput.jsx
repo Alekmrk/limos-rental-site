@@ -379,9 +379,9 @@ const AddressInput = ({ value, onChange, name, id, placeholder, onPlaceSelected,
         onFocus={handleInputFocus}
         name={name}
         placeholder={placeholder || "Enter location"}
-        className={`bg-warm-white/80 backdrop-blur-sm py-3 px-4 w-full border text-gray-700 transition-all duration-200 hover:border-royal-blue/30 focus:border-royal-blue/50 focus:shadow-[0_0_15px_rgba(65,105,225,0.1)] focus:outline-none ${
-          (error || externalError) ? 'border-red-500 ring-1 ring-red-500/50 animate-shake' : isLocationSelected ? 'border-gold/50 ring-1 ring-gold/20' : 'border-royal-blue/20'
-        } ${className || ''} ${showSuggestions ? 'rounded-t-lg rounded-b-none' : 'rounded-lg'}`}
+        className={`mobile-input bg-warm-white/80 backdrop-blur-sm py-3 px-4 w-full border-2 text-gray-700 transition-all duration-300 hover:border-royal-blue/50 focus:border-royal-blue focus:shadow-[0_0_15px_rgba(65,105,225,0.2)] focus:outline-none focus:ring-2 focus:ring-royal-blue/20 ${
+          (error || externalError) ? 'border-error bg-error/5 ring-error/30 animate-shake' : isLocationSelected ? 'border-success/50 bg-success/5 ring-success/20' : 'border-royal-blue/20'
+        } ${className || ''} ${showSuggestions ? 'rounded-t-xl rounded-b-none' : 'rounded-xl'}`}
         autoComplete="off"
         aria-label={placeholder || "Location input"}
         aria-invalid={!!error}

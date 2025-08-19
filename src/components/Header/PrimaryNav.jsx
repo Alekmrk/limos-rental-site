@@ -79,14 +79,14 @@ const PrimaryNav = ({ navHidden, screenSize, setNavHidden }) => {
 
   return (
     <nav
-      className={`absolute z-10 rounded-[1rem] shadow-xl md:shadow-none top-20 left-[5%] md:h-full right-[5%] w-[90%] md:w-auto py-8 text-center md:py-0 bg-warm-white/95 backdrop-blur-md border border-royal-blue/20 md:bg-transparent md:border-0 md:static md:left-auto md:right-auto max-h-[calc(100vh-6rem)] md:max-h-none overflow-y-auto md:overflow-visible ${
-        navHidden && "hidden"
+      className={`absolute z-10 rounded-2xl shadow-xl md:shadow-none top-20 left-[5%] md:h-full right-[5%] w-[90%] md:w-auto space-lg text-center md:py-0 bg-warm-white/95 backdrop-blur-md border border-royal-blue/20 md:bg-transparent md:border-0 md:static md:left-auto md:right-auto max-h-[calc(100vh-6rem)] md:max-h-none overflow-y-auto md:overflow-visible transition-all duration-300 ${
+        navHidden ? "hidden opacity-0 transform translate-y-[-10px]" : "block opacity-100 transform translate-y-0"
       }`}
     >
-      <ul className="flex flex-col md:flex-row gap-12 md:gap-8 lg:gap-12 mb-8 md:mb-0 justify-center items-center">
+      <ul className="flex flex-col md:flex-row gap-4 md:gap-8 lg:gap-12 mb-8 md:mb-0 justify-center items-center">
         <li>
           <UTMNavLink
-            className="block text-gray-700 hover:text-royal-blue font-medium text-lg md:text-xl font-sans transition-all duration-200 hover:bg-royal-blue/10 px-4 py-3 rounded-lg md:bg-transparent md:hover:bg-transparent md:px-2 md:py-1"
+            className="mobile-nav-item block text-gray-700 hover:text-royal-blue font-medium text-lg md:text-xl font-sans transition-all duration-300 hover:bg-royal-blue/10 px-4 py-3 rounded-xl md:bg-transparent md:hover:bg-transparent md:px-2 md:py-1 focus:outline-none focus:ring-2 focus:ring-royal-blue/30"
             to="/"
           >
             Home
@@ -94,7 +94,7 @@ const PrimaryNav = ({ navHidden, screenSize, setNavHidden }) => {
         </li>
         <li>
           <UTMNavLink
-            className="block text-gray-700 hover:text-royal-blue font-medium text-lg md:text-xl font-sans transition-all duration-200 hover:bg-royal-blue/10 px-4 py-3 rounded-lg md:bg-transparent md:hover:bg-transparent md:px-2 md:py-1"
+            className="mobile-nav-item block text-gray-700 hover:text-royal-blue font-medium text-lg md:text-xl font-sans transition-all duration-300 hover:bg-royal-blue/10 px-4 py-3 rounded-xl md:bg-transparent md:hover:bg-transparent md:px-2 md:py-1 focus:outline-none focus:ring-2 focus:ring-royal-blue/30"
             to="/booking"
           >
             Book Now
@@ -102,7 +102,7 @@ const PrimaryNav = ({ navHidden, screenSize, setNavHidden }) => {
         </li>
         <li>
           <UTMNavLink
-            className="block text-gray-700 hover:text-royal-blue font-medium text-lg md:text-xl font-sans transition-all duration-200 hover:bg-royal-blue/10 px-4 py-3 rounded-lg md:bg-transparent md:hover:bg-transparent md:px-2 md:py-1"
+            className="mobile-nav-item block text-gray-700 hover:text-royal-blue font-medium text-lg md:text-xl font-sans transition-all duration-300 hover:bg-royal-blue/10 px-4 py-3 rounded-xl md:bg-transparent md:hover:bg-transparent md:px-2 md:py-1 focus:outline-none focus:ring-2 focus:ring-royal-blue/30"
             to="/vehicles"
           >
             Vehicles

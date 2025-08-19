@@ -24,6 +24,7 @@ import BookingPage from "./pages/BookingPage/BookingPage";
 import BackToTopButton from "./components/BackToTopButton";
 import CookieConsent from "./components/CookieConsent";
 import ContactChannels from "./components/ContactChannels";
+import DesignSystemShowcase from "./components/DesignSystemShowcase";
 import { useState } from "react";
 import cars from "./data/cars";
 import { ReservationContextProvider } from "./contexts/ReservationContext";
@@ -31,6 +32,29 @@ import { useGoogleMapsApi } from "./hooks/useGoogleMapsApi";
 import TermsOfService from "./pages/TermsOfService/TermsOfService";
 import LegalNotice from "./pages/LegalNotice/LegalNotice";
 import { captureUTMParameters, debugUTMState, getStoredUTMParameters, extractAndStoreUTMFromURL, initUTMTracking, trackConversion, enableCrossTabSync, captureUTMWithConsent, validateUTM, getUTMDebugInfo, initUTMTrackingWithURLPreservation, preserveUTMsOnNavigation, preserveUTMsInURL } from "./utils/utmTracking";
+
+// Protected Design System Component
+const ProtectedDesignSystem = ({ children }) => {
+  const urlParams = new URLSearchParams(window.location.search);
+  const accessToken = urlParams.get('access');
+  
+  // Simple access token check - you can change this token to whatever you prefer
+  const validToken = 'eliteway2025';
+  
+  if (accessToken !== validToken) {
+    return (
+      <div className="min-h-screen bg-cream flex items-center justify-center">
+        <div className="text-center space-lg">
+          <h1 className="text-section-title text-gray-700 mb-4">Access Required</h1>
+          <p className="text-body text-gray-600">This page requires special access.</p>
+          <p className="text-caption text-gray-500 mt-4">Please use the correct link with access token.</p>
+        </div>
+      </div>
+    );
+  }
+  
+  return children;
+};
 
 function App() {
   const { isLoaded, loadError } = useGoogleMapsApi();
@@ -129,6 +153,14 @@ function App() {
           <Route path="/privacy-policy" element={<PrivacyPolicy scrollUp={scrollUp} />} />
           <Route path="/terms-of-service" element={<TermsOfService scrollUp={scrollUp} />} />
           <Route path="/legal-notice" element={<LegalNotice scrollUp={scrollUp} />} />
+          <Route 
+            path="/design-system" 
+            element={
+              <ProtectedDesignSystem>
+                <DesignSystemShowcase />
+              </ProtectedDesignSystem>
+            } 
+          />
           
           <Route path="*" element={<NotFound scrollUp={scrollUp} />} />
         </Routes>

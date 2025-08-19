@@ -27,9 +27,10 @@ const BackToTopButton = ({ scrollUp }) => {
   return (
     <button
       onClick={scrollUp}
-      className="fixed bg-neutral-900 w-12 transition-all duration-200 h-12 text-lg rounded-full p-2 bottom-4 left-4 z-50 hover:bg-neutral-800"
+      className="fixed mobile-touch-target bg-royal-blue/90 hover:bg-royal-blue w-14 h-14 rounded-full bottom-6 right-6 z-50 transition-all duration-300 shadow-lg hover:shadow-xl backdrop-blur-sm border border-white/20 transform hover:scale-110 focus:outline-none focus:ring-2 focus:ring-royal-blue/50 focus:ring-offset-2 animate-fadeInUp"
+      aria-label="Back to top"
     >
-      <FontAwesomeIcon icon={faArrowUp} style={{ color: "#fff" }} />
+      <FontAwesomeIcon icon={faArrowUp} className="text-white text-lg" />
     </button>
   );
 };

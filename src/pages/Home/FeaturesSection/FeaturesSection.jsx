@@ -23,30 +23,30 @@ const FeaturesSection = () => {
             title="Unmatched Excellence"
           />
 
-          {/* Softer Value Proposition Cards */}
-          <div className="grid md:grid-cols-3 gap-8 mt-8">
-            <div className="p-8 bg-cream-light/95 backdrop-blur-sm rounded-2xl border border-royal-blue/15 hover:border-royal-blue/25 transform hover:-translate-y-1 transition-all duration-300 shadow-md hover:shadow-lg">
-              <div className="w-16 h-16 bg-emerald-500/15 rounded-full flex items-center justify-center mx-auto mb-4">
-                <FaCheckCircle className="text-2xl text-emerald-600" />
+          {/* Enhanced Value Proposition Cards */}
+          <div className="grid md:grid-cols-3 gap-8 mt-12">
+            <div className="card-base card-hover space-md text-center">
+              <div className="w-16 h-16 bg-success/15 rounded-full flex items-center justify-center mx-auto mb-4">
+                <FaCheckCircle className="text-2xl text-success" />
               </div>
-              <h3 className="font-semibold text-gray-700 mb-3 text-lg">Guaranteed Quality</h3>
-              <p className="text-gray-600">Every service backed by our 100% satisfaction guarantee</p>
+              <h3 className="text-card-title text-gray-700 mb-3">Swiss Precision</h3>
+              <p className="text-body text-gray-600">Every detail meticulously planned for the perfect luxury experience</p>
             </div>
             
-            <div className="p-8 bg-cream-light/95 backdrop-blur-sm rounded-2xl border border-royal-blue/15 hover:border-royal-blue/25 transform hover:-translate-y-1 transition-all duration-300 shadow-md hover:shadow-lg">
+            <div className="card-base card-hover space-md text-center">
               <div className="w-16 h-16 bg-gold/15 rounded-full flex items-center justify-center mx-auto mb-4">
                 <FaMedal className="text-2xl text-gold" />
               </div>
-              <h3 className="font-semibold text-gray-700 mb-3 text-lg">Unparallel Comfort</h3>
-              <p className="text-gray-600">Luxurious interiors and premium amenities for the ultimate travel experience</p>
+              <h3 className="text-card-title text-gray-700 mb-3">Unparalleled Comfort</h3>
+              <p className="text-body text-gray-600">Luxurious interiors and premium amenities for the ultimate travel experience</p>
             </div>
             
-            <div className="p-8 bg-cream-light/95 backdrop-blur-sm rounded-2xl border border-royal-blue/15 hover:border-royal-blue/25 transform hover:-translate-y-1 transition-all duration-300 shadow-md hover:shadow-lg">
-              <div className="w-16 h-16 bg-pink-500/15 rounded-full flex items-center justify-center mx-auto mb-4">
-                <FaHeart className="text-2xl text-pink-600" />
+            <div className="card-base card-hover space-md text-center">
+              <div className="w-16 h-16 bg-info/15 rounded-full flex items-center justify-center mx-auto mb-4">
+                <FaHeart className="text-2xl text-info" />
               </div>
-              <h3 className="font-semibold text-gray-700 mb-3 text-lg">Customer First</h3>
-              <p className="text-gray-600">Your comfort and satisfaction is our top priority</p>
+              <h3 className="text-card-title text-gray-700 mb-3">Customer First</h3>
+              <p className="text-body text-gray-600">Your comfort and satisfaction is our top priority</p>
             </div>
           </div>
         </div>

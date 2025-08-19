@@ -16,6 +16,35 @@
     @apply bg-cream text-gray-700;
   }
 
+  /* Enhanced Typography Scale */
+  .text-hero {
+    @apply text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight leading-none;
+  }
+
+  .text-section-title {
+    @apply text-3xl md:text-4xl lg:text-5xl font-semibold tracking-wide;
+  }
+
+  .text-card-title {
+    @apply text-xl md:text-2xl font-medium leading-tight;
+  }
+
+  .text-body-large {
+    @apply text-lg md:text-xl leading-relaxed;
+  }
+
+  .text-body {
+    @apply text-base md:text-lg leading-normal;
+  }
+
+  .text-caption {
+    @apply text-sm md:text-base text-gray-600 leading-normal;
+  }
+
+  .text-micro {
+    @apply text-xs md:text-sm text-gray-500;
+  }
+
   .reservation input {
     @apply block w-full py-3 px-4 mb-3 font-light placeholder:text-gray-500 rounded-xl bg-darker-cream/80 border border-royal-blue/20 text-gray-700 transition-all duration-200;
     &:focus {
@@ -180,6 +209,122 @@
 
   .luxury-text {
     color: #D4AF37;
+  }
+
+  /* Enhanced Spacing System - 8-point grid */
+  .space-xs { @apply p-2; }      /* 8px */
+  .space-sm { @apply p-4; }      /* 16px */
+  .space-md { @apply p-6; }      /* 24px */
+  .space-lg { @apply p-8; }      /* 32px */
+  .space-xl { @apply p-12; }     /* 48px */
+  .space-2xl { @apply p-16; }    /* 64px */
+  .space-3xl { @apply p-20; }    /* 80px */
+
+  /* Enhanced Component Base Classes */
+  .card-base {
+    @apply bg-cream-light/90 backdrop-blur-sm rounded-2xl border border-royal-blue/15 shadow-lg transition-all duration-300;
+  }
+
+  .card-hover {
+    @apply hover:shadow-xl hover:-translate-y-1 hover:scale-[1.02];
+  }
+
+  .glass-effect {
+    @apply bg-white/10 backdrop-blur-md border border-white/20;
+  }
+
+  .glass-effect-dark {
+    @apply bg-black/10 backdrop-blur-md border border-black/20;
+  }
+
+  /* Enhanced Button System */
+  .btn-base {
+    @apply transition-all duration-300 ease-out text-sm font-medium rounded-xl py-3 px-8 shadow-md transform;
+  }
+
+  .btn-hover {
+    @apply hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0;
+  }
+
+  .btn-primary {
+    @apply btn-base btn-hover bg-gradient-to-r from-royal-blue to-royal-blue-light hover:from-royal-blue-light hover:to-royal-blue text-white;
+  }
+
+  .btn-secondary {
+    @apply btn-base btn-hover bg-cream-light/80 border-2 border-royal-blue/30 text-royal-blue hover:bg-royal-blue/10 hover:border-royal-blue/50;
+  }
+
+  .btn-luxury {
+    @apply btn-base btn-hover bg-gradient-to-r from-royal-blue via-royal-blue-dark to-gold hover:from-gold hover:via-royal-blue-dark hover:to-royal-blue text-white;
+  }
+
+  /* Mobile Touch Targets */
+  .mobile-touch-target {
+    @apply min-h-[44px] min-w-[44px];
+  }
+
+  .mobile-input {
+    @apply h-12 px-4 text-base;
+  }
+
+  .mobile-nav-item {
+    @apply py-4 px-6 text-lg mobile-touch-target;
+  }
+
+  /* Enhanced Loading States */
+  .loading-shimmer {
+    @apply animate-pulse;
+    background: linear-gradient(90deg, #f6f7f8 0%, #edeef1 20%, #f6f7f8 40%, #f6f7f8 100%);
+    background-size: 800px 104px;
+    animation: shimmer 1.5s infinite;
+  }
+
+  @keyframes shimmer {
+    0% { background-position: -800px 0; }
+    100% { background-position: 800px 0; }
+  }
+
+  /* Enhanced Form Validation States */
+  .form-success {
+    @apply border-success bg-success/5 focus:ring-success/20 focus:border-success;
+  }
+
+  .form-error {
+    @apply border-error bg-error/5 focus:ring-error/20 focus:border-error animate-shake;
+  }
+
+  .form-warning {
+    @apply border-warning bg-warning/5 focus:ring-warning/20 focus:border-warning;
+  }
+
+  /* Enhanced feedback messages */
+  .feedback-success {
+    @apply text-success-dark bg-success/10 border border-success/30 rounded-lg px-3 py-2 text-sm flex items-center gap-2;
+  }
+
+  .feedback-error {
+    @apply text-error-dark bg-error/10 border border-error/30 rounded-lg px-3 py-2 text-sm flex items-center gap-2;
+  }
+
+  .feedback-warning {
+    @apply text-warning-dark bg-warning/10 border border-warning/30 rounded-lg px-3 py-2 text-sm flex items-center gap-2;
+  }
+
+  /* State Feedback Classes */
+  .state-success {
+    @apply bg-success/10 border-success/30 text-success-dark;
+  }
+
+  .state-warning {
+    @apply bg-warning/10 border-warning/30 text-warning-dark;
+  }
+
+  .state-error {
+    @apply bg-error/10 border-error/30 text-error-dark;
+  }
+
+  .state-info {
+    @apply bg-info/10 border-info/30 text-info-dark;
   }
 
   /* Custom Animations */

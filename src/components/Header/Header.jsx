@@ -87,11 +87,14 @@ const Header = () => {
           {screenSize < screenMd && (
             <button
               onClick={() => setNavHidden(!navHidden)}
-              className="flex items-center justify-center w-12 h-12 rounded-lg bg-royal-blue/10 hover:bg-royal-blue/20 transition-all duration-200 text-2xl border border-royal-blue/20"
+              className="mobile-touch-target flex items-center justify-center w-12 h-12 rounded-xl bg-royal-blue/10 hover:bg-royal-blue/20 transition-all duration-300 text-2xl border border-royal-blue/20 focus:outline-none focus:ring-2 focus:ring-royal-blue/30 focus:ring-offset-2"
+              aria-label={navHidden ? "Open menu" : "Close menu"}
+              aria-expanded={!navHidden}
             >
               <FontAwesomeIcon
                 icon={navHidden ? faBars : faXmark}
                 style={{ color: "#4169E1" }}
+                className="transition-transform duration-200"
               />
             </button>
           )}
