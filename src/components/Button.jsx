@@ -1,10 +1,10 @@
 const Button = ({ children, variant = "primary", onClick, type = "button", className = "", id, size = "md", loading = false, ...props }) => {
-  const baseStyles = "btn-base btn-hover inline-flex items-center justify-center gap-2 font-medium transition-all duration-300 ease-out transform focus:outline-none focus:ring-2 focus:ring-gray-800/50 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none";
+  const baseStyles = "btn-base btn-hover inline-flex items-center justify-center gap-2 font-medium transition-all duration-300 ease-out transform focus:outline-none focus:ring-2 focus:ring-gray-700/50 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none";
   
   const variants = {
-    primary: "bg-gradient-to-r from-gray-800 to-gray-900 hover:from-gray-700 hover:to-gray-800 text-primary-gold border border-primary-gold/20 hover:border-primary-gold/40 shadow-lg hover:shadow-xl",
-    secondary: "bg-gray-800 border-2 border-primary-gold/50 text-primary-gold hover:bg-gray-700 hover:border-primary-gold shadow-md hover:shadow-lg",
-    luxury: "bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 hover:from-gray-800 hover:via-gray-700 hover:to-gray-800 text-primary-gold border border-primary-gold/30 hover:border-primary-gold/60 shadow-xl hover:shadow-2xl",
+    primary: "bg-gradient-to-r from-gray-700 to-gray-800 hover:from-gray-600 hover:to-gray-700 text-primary-gold border border-primary-gold/20 hover:border-primary-gold/40 shadow-lg hover:shadow-xl",
+    secondary: "bg-gray-700 border-2 border-primary-gold/50 text-primary-gold hover:bg-gray-600 hover:border-primary-gold shadow-md hover:shadow-lg",
+    luxury: "bg-gradient-to-r from-gray-800 via-gray-700 to-gray-800 hover:from-gray-700 hover:via-gray-600 hover:to-gray-700 text-primary-gold border border-primary-gold/30 hover:border-primary-gold/60 shadow-xl hover:shadow-2xl",
     outline: "border-2 border-gray-800 text-gray-800 hover:bg-gray-800 hover:text-primary-gold bg-transparent",
     ghost: "text-gray-800 hover:bg-gray-800/10 hover:text-primary-gold border border-transparent hover:border-gray-800/20"
   };
