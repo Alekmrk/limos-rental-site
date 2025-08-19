@@ -15,20 +15,20 @@ const FleetSection = ({ setSelectedVehicle }) => {
         <div className="container-wide relative z-10">
           {/* Harmonious Header */}
           <div className="text-center mb-16">
-            <div className="inline-flex items-center gap-4 bg-royal-blue/20 backdrop-blur-sm text-royal-blue-dark px-8 py-4 rounded-2xl border border-royal-blue/30 shadow-lg mb-8">
-              <FaCar className="text-2xl" />
-              <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-royal-blue-dark">
+            <div className="inline-flex items-center gap-4 bg-primary-gold/15 backdrop-blur-sm text-gray-700 px-8 py-4 rounded-2xl border border-primary-gold/30 shadow-lg mb-8">
+              <FaCar className="text-2xl text-primary-gold" />
+              <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-700">
                 Our Luxury Fleet
               </h2>
             </div>
 
             {/* Softer Fleet Features */}
-            <div className="flex flex-col sm:flex-row justify-center items-center gap-8 mt-12 text-gray-600">
-              <div className="flex items-center gap-3 bg-cream-light/90 backdrop-blur-sm px-6 py-3 rounded-full border border-royal-blue/20 shadow-md">
-                <FaStar className="text-gold text-lg" />
+            <div className="flex flex-col sm:flex-row justify-center items-center gap-8 mt-12 text-gray-700">
+              <div className="flex items-center gap-3 bg-cream-light/90 backdrop-blur-sm px-6 py-3 rounded-full border border-primary-gold/20 shadow-md">
+                <FaStar className="text-primary-gold text-lg" />
                 <span className="font-medium">Premium Selection</span>
               </div>
-              <div className="flex items-center gap-3 bg-cream-light/90 backdrop-blur-sm px-6 py-3 rounded-full border border-royal-blue/20 shadow-md">
+              <div className="flex items-center gap-3 bg-cream-light/90 backdrop-blur-sm px-6 py-3 rounded-full border border-primary-gold/20 shadow-md">
                 <FaShieldAlt className="text-emerald-500 text-lg" />
                 <span className="font-medium">Fully Maintained</span>
               </div>

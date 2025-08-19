@@ -89,8 +89,8 @@ const ServicesSection = () => {
       <div className="container-wide relative z-10">
         {/* Harmonious Section Header */}
         <div className="text-center mb-20">
-          <div className="inline-flex items-center gap-3 bg-royal-blue/15 backdrop-blur-sm text-royal-blue-dark px-6 py-3 rounded-full text-sm font-medium mb-6 border border-royal-blue/25 shadow-md">
-            <FaAward className="text-lg" />
+          <div className="inline-flex items-center gap-3 bg-primary-gold/15 backdrop-blur-sm text-gray-700 px-6 py-3 rounded-full text-sm font-medium mb-6 border border-primary-gold/25 shadow-md">
+            <FaAward className="text-lg text-primary-gold" />
             <span className="text-base font-semibold">Premium Services</span>
           </div>
 
@@ -101,7 +101,7 @@ const ServicesSection = () => {
           {/* Enhanced Rotating Quote Section */}
           <div className="max-w-4xl mx-auto mt-12 relative">
             <div 
-              className="bg-darker-cream/90 backdrop-blur-sm rounded-2xl shadow-lg border border-royal-blue/15 p-8 relative overflow-hidden touch-pan-y"
+              className="bg-darker-cream/90 backdrop-blur-sm rounded-2xl shadow-lg border border-primary-gold/15 p-8 relative overflow-hidden touch-pan-y"
               onTouchStart={onTouchStart}
               onTouchMove={onTouchMove}
               onTouchEnd={onTouchEnd}
@@ -109,36 +109,36 @@ const ServicesSection = () => {
               {/* Desktop Navigation Arrows - Hidden on mobile */}
               <button
                 onClick={prevTestimonial}
-                className="hidden md:flex absolute left-4 top-1/2 transform -translate-y-1/2 w-10 h-10 bg-royal-blue/20 hover:bg-royal-blue/30 rounded-full items-center justify-center transition-all duration-300 hover:scale-110 z-10"
+                className="hidden md:flex absolute left-4 top-1/2 transform -translate-y-1/2 w-10 h-10 bg-primary-gold/20 hover:bg-primary-gold/30 rounded-full items-center justify-center transition-all duration-300 hover:scale-110 z-10"
                 aria-label="Previous testimonial"
               >
-                <FaChevronLeft className="text-royal-blue-dark" />
+                <FaChevronLeft className="text-gray-700" />
               </button>
               
               <button
                 onClick={nextTestimonial}
-                className="hidden md:flex absolute right-4 top-1/2 transform -translate-y-1/2 w-10 h-10 bg-royal-blue/20 hover:bg-royal-blue/30 rounded-full items-center justify-center transition-all duration-300 hover:scale-110 z-10"
+                className="hidden md:flex absolute right-4 top-1/2 transform -translate-y-1/2 w-10 h-10 bg-primary-gold/20 hover:bg-primary-gold/30 rounded-full items-center justify-center transition-all duration-300 hover:scale-110 z-10"
                 aria-label="Next testimonial"
               >
-                <FaChevronRight className="text-royal-blue-dark" />
+                <FaChevronRight className="text-gray-700" />
               </button>
 
               {/* Testimonial Content */}
               <div className="px-4 md:px-12">
                 <div className="flex items-center justify-center mb-6">
-                  <div className="w-12 h-12 bg-royal-blue/15 rounded-full flex items-center justify-center">
-                    <FaQuoteLeft className="text-xl text-royal-blue-dark" />
+                  <div className="w-12 h-12 bg-primary-gold/15 rounded-full flex items-center justify-center">
+                    <FaQuoteLeft className="text-xl text-primary-gold" />
                   </div>
                 </div>
                 
                 <div className="min-h-[120px] flex items-center justify-center">
-                  <p className="text-gray-600 italic text-xl leading-relaxed text-center transition-all duration-500">
+                  <p className="text-gray-700 italic text-xl leading-relaxed text-center transition-all duration-500">
                     "{testimonials[currentTestimonial].text}"
                   </p>
                 </div>
                 
                 <div className="text-center mt-6">
-                  <div className="text-base text-royal-blue-dark font-medium transition-all duration-500">
+                  <div className="text-base text-gray-700 font-medium transition-all duration-500">
                     {testimonials[currentTestimonial].name}
                   </div>
                   <div className="text-gray-600 text-sm transition-all duration-500">
@@ -152,10 +152,10 @@ const ServicesSection = () => {
                 {/* Mobile Previous Arrow */}
                 <button
                   onClick={prevTestimonial}
-                  className="md:hidden w-10 h-10 bg-royal-blue/20 hover:bg-royal-blue/30 rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110"
+                  className="md:hidden w-10 h-10 bg-primary-gold/20 hover:bg-primary-gold/30 rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110"
                   aria-label="Previous testimonial"
                 >
-                  <FaChevronLeft className="text-royal-blue-dark text-base" />
+                  <FaChevronLeft className="text-gray-700 text-base" />
                 </button>
 
                 {/* Indicator Dots */}
@@ -166,8 +166,8 @@ const ServicesSection = () => {
                       onClick={() => setCurrentTestimonial(index)}
                       className={`w-3 h-3 rounded-full transition-all duration-300 ${
                         index === currentTestimonial 
-                          ? 'bg-royal-blue-dark scale-110' 
-                          : 'bg-royal-blue/30 hover:bg-royal-blue/50'
+                          ? 'bg-primary-gold scale-110' 
+                          : 'bg-primary-gold/30 hover:bg-primary-gold/50'
                       }`}
                       aria-label={`Go to testimonial ${index + 1}`}
                     />
@@ -177,10 +177,10 @@ const ServicesSection = () => {
                 {/* Mobile Next Arrow */}
                 <button
                   onClick={nextTestimonial}
-                  className="md:hidden w-10 h-10 bg-royal-blue/20 hover:bg-royal-blue/30 rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110"
+                  className="md:hidden w-10 h-10 bg-primary-gold/20 hover:bg-primary-gold/30 rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110"
                   aria-label="Next testimonial"
                 >
-                  <FaChevronRight className="text-royal-blue-dark text-base" />
+                  <FaChevronRight className="text-gray-700 text-base" />
                 </button>
               </div>
             </div>
@@ -192,10 +192,10 @@ const ServicesSection = () => {
           {stats.map((stat, index) => (
             <div
               key={index}
-              className="text-center p-8 bg-cream-light/95 backdrop-blur-sm rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border border-royal-blue/15 hover:border-royal-blue/25 transform hover:-translate-y-1"
+              className="text-center p-8 bg-cream-light/95 backdrop-blur-sm rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border border-primary-gold/15 hover:border-primary-gold/25 transform hover:-translate-y-1"
             >
-              <div className="w-16 h-16 bg-royal-blue/15 rounded-full flex items-center justify-center mx-auto mb-4">
-                <stat.icon className="text-2xl text-royal-blue-dark" />
+              <div className="w-16 h-16 bg-primary-gold/15 rounded-full flex items-center justify-center mx-auto mb-4">
+                <stat.icon className="text-2xl text-primary-gold" />
               </div>
               <div className="text-4xl font-bold text-gray-700 mb-2">
                 {stat.number}
@@ -219,24 +219,24 @@ const ServicesSection = () => {
 
         {/* Harmonious Call to Action */}
         <div className="text-center mt-20">
-          <div className="bg-gradient-to-r from-cream-light/98 via-darker-cream/95 to-cream-light/98 backdrop-blur-sm p-10 rounded-3xl shadow-lg border border-royal-blue/20 max-w-4xl mx-auto">
+          <div className="bg-gradient-to-r from-cream-light/98 via-darker-cream/95 to-cream-light/98 backdrop-blur-sm p-10 rounded-3xl shadow-lg border border-primary-gold/20 max-w-4xl mx-auto">
             <div className="flex items-center justify-center gap-2 mb-4">
-              <FaStar className="text-gold text-xl" />
-              <FaStar className="text-gold text-xl" />
-              <FaStar className="text-gold text-xl" />
-              <FaStar className="text-gold text-xl" />
-              <FaStar className="text-gold text-xl" />
+              <FaStar className="text-primary-gold text-xl" />
+              <FaStar className="text-primary-gold text-xl" />
+              <FaStar className="text-primary-gold text-xl" />
+              <FaStar className="text-primary-gold text-xl" />
+              <FaStar className="text-primary-gold text-xl" />
             </div>
-            <h3 className="text-3xl lg:text-4xl font-bold mb-6 bg-gradient-to-r from-royal-blue-dark to-gold bg-clip-text text-transparent">
+            <h3 className="text-3xl lg:text-4xl font-bold mb-6 bg-gradient-to-r from-gray-700 to-primary-gold bg-clip-text text-transparent">
               Ready to Experience Luxury?
             </h3>
-            <p className="text-gray-600 mb-8 max-w-2xl mx-auto text-lg leading-relaxed">
+            <p className="text-gray-700 mb-8 max-w-2xl mx-auto text-lg leading-relaxed">
               Join thousands of satisfied clients who trust Elite Way Limo for their
               transportation needs. Book your premium experience today.
             </p>
             <UTMLink 
               to="/booking"
-              className="bg-gradient-to-r from-royal-blue-dark to-royal-blue text-white hover:from-royal-blue hover:to-royal-blue-light px-10 py-4 rounded-xl font-semibold transition-all duration-300 shadow-md hover:shadow-lg transform hover:scale-105 text-lg"
+              className="bg-gradient-to-r from-gray-700 to-gray-800 text-primary-gold hover:from-gray-600 hover:to-gray-700 px-10 py-4 rounded-xl font-semibold transition-all duration-300 shadow-md hover:shadow-lg transform hover:scale-105 text-lg border border-primary-gold/20 hover:border-primary-gold/40"
             >
               Get Started Now
             </UTMLink>

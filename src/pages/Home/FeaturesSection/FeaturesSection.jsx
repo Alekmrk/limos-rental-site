@@ -14,8 +14,8 @@ const FeaturesSection = () => {
       <div className="container-wide relative z-10">
         {/* Harmonious Header */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center gap-3 bg-royal-blue/15 backdrop-blur-sm text-royal-blue-dark px-6 py-3 rounded-full text-sm font-medium mb-6 border border-royal-blue/25 shadow-md">
-            <FaMedal className="text-lg" />
+          <div className="inline-flex items-center gap-3 bg-primary-gold/15 backdrop-blur-sm text-gray-700 px-6 py-3 rounded-full text-sm font-medium mb-6 border border-primary-gold/25 shadow-md">
+            <FaMedal className="text-lg text-primary-gold" />
             <span className="text-base font-semibold">Why Choose Elite Way</span>
           </div>
           
@@ -30,15 +30,15 @@ const FeaturesSection = () => {
                 <FaCheckCircle className="text-2xl text-success" />
               </div>
               <h3 className="text-card-title text-gray-700 mb-3">Swiss Precision</h3>
-              <p className="text-body text-gray-600">Every detail meticulously planned for the perfect luxury experience</p>
+              <p className="text-body text-gray-700">Every detail meticulously planned for the perfect luxury experience</p>
             </div>
             
             <div className="card-base card-hover space-md text-center">
-              <div className="w-16 h-16 bg-gold/15 rounded-full flex items-center justify-center mx-auto mb-4">
-                <FaMedal className="text-2xl text-gold" />
+              <div className="w-16 h-16 bg-primary-gold/15 rounded-full flex items-center justify-center mx-auto mb-4">
+                <FaMedal className="text-2xl text-primary-gold" />
               </div>
               <h3 className="text-card-title text-gray-700 mb-3">Unparalleled Comfort</h3>
-              <p className="text-body text-gray-600">Luxurious interiors and premium amenities for the ultimate travel experience</p>
+              <p className="text-body text-gray-700">Luxurious interiors and premium amenities for the ultimate travel experience</p>
             </div>
             
             <div className="card-base card-hover space-md text-center">
@@ -46,7 +46,7 @@ const FeaturesSection = () => {
                 <FaHeart className="text-2xl text-info" />
               </div>
               <h3 className="text-card-title text-gray-700 mb-3">Customer First</h3>
-              <p className="text-body text-gray-600">Your comfort and satisfaction is our top priority</p>
+              <p className="text-body text-gray-700">Your comfort and satisfaction is our top priority</p>
             </div>
           </div>
         </div>

@@ -33,10 +33,10 @@ const PricingTransparency = () => {
   ];
 
   const RouteCard = ({ route }) => (
-    <div className="bg-cream-light/90 rounded-lg shadow-lg p-6 hover:shadow-xl transition-shadow duration-300 border border-royal-blue/20">
+    <div className="bg-cream-light/90 rounded-lg shadow-lg p-6 hover:shadow-xl transition-shadow duration-300 border border-primary-gold/20">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-3">
-          <FaMapMarkerAlt className="text-royal-blue" />
+          <FaMapMarkerAlt className="text-primary-gold" />
           <span className="font-medium text-gray-700">{route.from}</span>
         </div>
         <FaArrowRight className="text-gray-500" />
@@ -46,7 +46,7 @@ const PricingTransparency = () => {
         </div>
       </div>
       
-      <div className="flex items-center justify-between mb-4 text-sm text-gray-600">
+      <div className="flex items-center justify-between mb-4 text-sm text-gray-700">
         <div className="flex items-center gap-2">
           <FaClock />
           <span>{route.duration}</span>
@@ -58,12 +58,12 @@ const PricingTransparency = () => {
       </div>
 
       <div className="grid grid-cols-2 gap-4">
-        <div className="text-center p-3 bg-warm-white/80 rounded-lg border border-royal-blue/15">
-          <div className="text-sm text-gray-600 mb-1">Business Class</div>
-          <div className="text-lg font-semibold text-royal-blue">from {route.businessClass}</div>
+        <div className="text-center p-3 bg-warm-white/80 rounded-lg border border-primary-gold/15">
+          <div className="text-sm text-gray-700 mb-1">Business Class</div>
+          <div className="text-lg font-semibold text-primary-gold">from {route.businessClass}</div>
         </div>
         <div className="text-center p-3 bg-warm-white/80 rounded-lg border border-warm-gold/30">
-          <div className="text-sm text-gray-600 mb-1">First Class</div>
+          <div className="text-sm text-gray-700 mb-1">First Class</div>
           <div className="text-lg font-semibold text-warm-gold">from {route.firstClass}</div>
         </div>
       </div>
@@ -77,7 +77,7 @@ const PricingTransparency = () => {
           <h2 className="text-3xl md:text-4xl font-bold text-gray-700 mb-4">
             Transparent Pricing
           </h2>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+          <p className="text-lg text-gray-700 max-w-2xl mx-auto">
             No hidden fees. Clear pricing for popular destinations. All prices include VAT, 
             tolls, and professional chauffeur service.
           </p>
@@ -85,13 +85,13 @@ const PricingTransparency = () => {
 
         {/* Tab Navigation - Harmonious Theme */}
         <div className="flex justify-center mb-8">
-          <div className="bg-cream-light/90 rounded-lg p-1 shadow-lg border border-royal-blue/20">
+          <div className="bg-cream-light/90 rounded-lg p-1 shadow-lg border border-primary-gold/20">
             <button
               onClick={() => setSelectedTab('popular')}
               className={`px-6 py-3 rounded-lg font-medium transition-colors duration-300 ${
                 selectedTab === 'popular'
-                  ? 'bg-royal-blue text-white'
-                  : 'text-gray-600 hover:text-royal-blue'
+                  ? 'bg-primary-gold text-white'
+                  : 'text-gray-700 hover:text-primary-gold'
               }`}
             >
               Popular Routes
@@ -100,8 +100,8 @@ const PricingTransparency = () => {
               onClick={() => setSelectedTab('international')}
               className={`px-6 py-3 rounded-lg font-medium transition-colors duration-300 ${
                 selectedTab === 'international'
-                  ? 'bg-royal-blue text-white'
-                  : 'text-gray-600 hover:text-royal-blue'
+                  ? 'bg-primary-gold text-white'
+                  : 'text-gray-700 hover:text-primary-gold'
               }`}
             >
               International
@@ -118,9 +118,9 @@ const PricingTransparency = () => {
 
         {/* Additional Info - Harmonious Theme */}
         <div className="mt-12 text-center">
-          <div className="bg-cream-light/90 rounded-lg p-6 shadow-lg max-w-4xl mx-auto border border-royal-blue/20">
-            <h3 className="text-xl font-semibold text-royal-blue mb-4">What's Included</h3>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm text-gray-600">
+          <div className="bg-cream-light/90 rounded-lg p-6 shadow-lg max-w-4xl mx-auto border border-primary-gold/20">
+            <h3 className="text-xl font-semibold text-primary-gold mb-4">What's Included</h3>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm text-gray-700">
               <div>✓ Professional chauffeur</div>
               <div>✓ Tolls & charges</div>
               <div>✓ Airport waiting time (60min)</div>
