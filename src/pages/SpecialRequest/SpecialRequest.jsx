@@ -243,13 +243,13 @@ const SpecialRequest = ({ scrollUp }) => {
 
           {/* Mobile Layout: Reservation Card */}
           <div className="block md:hidden relative z-20 px-4">
-            <div className="pt-32 mb-8">
+            <div className="pt-12 mb-6">
               {/* Main Title with glassy background */}
-              <div className="relative mb-8 flex justify-center">
+              <div className="relative mb-6 flex justify-center">
                 <div className="relative">
-                  <div className="absolute inset-0 bg-black/15 backdrop-blur-sm rounded-2xl transform translate-x-1 translate-y-1"></div>
-                  <div className="relative bg-white/20 backdrop-blur-md rounded-2xl px-6 py-4 border border-white/30 shadow-2xl">
-                    <h1 className="text-3xl sm:text-4xl font-semibold text-center drop-shadow-lg">
+                  <div className="absolute inset-0 bg-black/15 backdrop-blur-sm rounded-xl transform translate-x-1 translate-y-1"></div>
+                  <div className="relative bg-white/20 backdrop-blur-md rounded-xl px-4 py-3 border border-white/30 shadow-2xl">
+                    <h1 className="text-hero text-center drop-shadow-lg">
                       <span className="text-royal-blue drop-shadow-lg">Special</span>{" "}
                       <span className="text-gold drop-shadow-lg">Request</span>
                     </h1>
@@ -258,23 +258,23 @@ const SpecialRequest = ({ scrollUp }) => {
               </div>
             </div>
 
-            <div className="mb-8">
+            <div className="mb-6">
               <div className="relative z-50">
                 <ReservationCard idPrefix="mobile-" />
               </div>
               
               {/* Mobile Trust Indicators - After reservation card */}
-              <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center items-center text-gray-600 text-sm">
-                <div className="flex items-center gap-2 bg-cream-light/80 backdrop-blur-sm px-4 py-2 rounded-full border border-royal-blue/20 shadow-md">
-                  <FontAwesomeIcon icon={faCrown} className="text-gold" />
+              <div className="mt-6 flex flex-col sm:flex-row gap-3 justify-center items-center text-gray-600 text-xs">
+                <div className="flex items-center gap-2 bg-cream-light/80 backdrop-blur-sm px-3 py-1.5 rounded-full border border-royal-blue/20 shadow-md">
+                  <FontAwesomeIcon icon={faCrown} className="text-gold text-sm" />
                   <span className="text-gray-700 font-medium">Luxury Experience</span>
                 </div>
-                <div className="flex items-center gap-2 bg-cream-light/80 backdrop-blur-sm px-4 py-2 rounded-full border border-royal-blue/20 shadow-md">
-                  <FontAwesomeIcon icon={faHandshake} className="text-royal-blue" />
+                <div className="flex items-center gap-2 bg-cream-light/80 backdrop-blur-sm px-3 py-1.5 rounded-full border border-royal-blue/20 shadow-md">
+                  <FontAwesomeIcon icon={faHandshake} className="text-royal-blue text-sm" />
                   <span className="text-gray-700 font-medium">Custom Service</span>
                 </div>
-                <div className="flex items-center gap-2 bg-cream-light/80 backdrop-blur-sm px-4 py-2 rounded-full border border-royal-blue/20 shadow-md">
-                  <FontAwesomeIcon icon={faGem} className="text-emerald-500" />
+                <div className="flex items-center gap-2 bg-cream-light/80 backdrop-blur-sm px-3 py-1.5 rounded-full border border-royal-blue/20 shadow-md">
+                  <FontAwesomeIcon icon={faGem} className="text-emerald-500 text-sm" />
                   <span className="text-gray-700 font-medium">Exclusive</span>
                 </div>
               </div>
@@ -299,56 +299,56 @@ const SpecialRequest = ({ scrollUp }) => {
       </div>
 
       {/* Features Section with Darker Cream Background */}
-      <div className="bg-gradient-to-br from-cream to-warm-gray py-20">
+      <div className="bg-gradient-to-br from-cream to-warm-gray py-12 md:py-20">
         <div className="container-default">
           <div className="max-w-6xl mx-auto">
-            <div className="text-center mb-16">
-              <h2 className="text-4xl md:text-6xl font-semibold mb-6 text-gray-700">
+            <div className="text-center mb-8 md:mb-16">
+              <h2 className="text-section-title mb-4 md:mb-6 text-gray-700">
                 Why Choose Our <span className="text-royal-blue">Special Request</span> Service
               </h2>
-              <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+              <p className="text-body text-gray-600 max-w-2xl mx-auto">
                 When standard services aren't enough, our special request team creates 
                 extraordinary transportation experiences tailored to your unique vision and requirements.
               </p>
             </div>
 
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-20">
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8 mb-12 md:mb-20">
               {features.map((feature, index) => (
-                <div key={index} className="bg-cream-light/90 p-6 rounded-lg border border-royal-blue/15 text-center hover:border-royal-blue/30 transition-all duration-300 shadow-md hover:shadow-lg">
-                  <div className="w-16 h-16 bg-royal-blue/15 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <FontAwesomeIcon icon={feature.icon} className="text-royal-blue text-2xl" />
+                <div key={index} className="bg-cream-light/90 p-4 md:p-6 rounded-lg border border-royal-blue/15 text-center hover:border-royal-blue/30 transition-all duration-300 shadow-md hover:shadow-lg">
+                  <div className="w-12 h-12 md:w-16 md:h-16 bg-royal-blue/15 rounded-full flex items-center justify-center mx-auto mb-3 md:mb-4">
+                    <FontAwesomeIcon icon={feature.icon} className="text-royal-blue text-lg md:text-2xl" />
                   </div>
-                  <h3 className="text-xl font-semibold mb-3 text-gray-700">{feature.title}</h3>
-                  <p className="text-gray-600">{feature.description}</p>
+                  <h3 className="text-card-title mb-2 md:mb-3 text-gray-700">{feature.title}</h3>
+                  <p className="text-body text-gray-600">{feature.description}</p>
                 </div>
               ))}
             </div>
 
             {/* Special Services */}
-            <div className="mb-20">
-              <h2 className="text-4xl font-semibold mb-12 text-center text-gray-700">
+            <div className="mb-12 md:mb-20">
+              <h2 className="text-section-title mb-8 md:mb-12 text-center text-gray-700">
                 <span className="text-royal-blue">Specialized</span> Transportation Services
               </h2>
               
-              <div className="grid md:grid-cols-2 gap-8">
+              <div className="grid md:grid-cols-2 gap-4 md:gap-8">
                 {specialServices.map((service, index) => (
-                  <div key={index} className="bg-cream-light/90 p-8 rounded-lg border border-royal-blue/15 hover:border-royal-blue/30 transition-all duration-300 shadow-md hover:shadow-lg">
-                    <div className="flex items-center gap-4 mb-6">
-                      <div className="w-16 h-16 bg-royal-blue/15 rounded-full flex items-center justify-center">
-                        <FontAwesomeIcon icon={service.icon} className="text-royal-blue text-2xl" />
+                  <div key={index} className="bg-cream-light/90 p-4 md:p-8 rounded-lg border border-royal-blue/15 hover:border-royal-blue/30 transition-all duration-300 shadow-md hover:shadow-lg">
+                    <div className="flex items-center gap-3 md:gap-4 mb-4 md:mb-6">
+                      <div className="w-12 h-12 md:w-16 md:h-16 bg-royal-blue/15 rounded-full flex items-center justify-center">
+                        <FontAwesomeIcon icon={service.icon} className="text-royal-blue text-lg md:text-2xl" />
                       </div>
                       <div>
-                        <h3 className="text-xl font-semibold text-gray-700">{service.title}</h3>
-                        {service.duration && <div className="text-royal-blue text-sm font-medium">{service.duration}</div>}
+                        <h3 className="text-card-title text-gray-700">{service.title}</h3>
+                        {service.duration && <div className="text-royal-blue text-xs md:text-sm font-medium">{service.duration}</div>}
                       </div>
                     </div>
                     
-                    <p className="text-gray-600 mb-6">{service.description}</p>
+                    <p className="text-body text-gray-600 mb-4 md:mb-6">{service.description}</p>
                     
-                    <div className="space-y-2">
-                      <h4 className="text-sm font-medium text-gray-700">Service Includes:</h4>
+                    <div className="space-y-1 md:space-y-2">
+                      <h4 className="text-xs md:text-sm font-medium text-gray-700">Service Includes:</h4>
                       {service.features.map((feature, idx) => (
-                        <div key={idx} className="flex items-center gap-2 text-sm text-gray-600">
+                        <div key={idx} className="flex items-center gap-2 text-xs md:text-sm text-gray-600">
                           <div className="w-1 h-1 bg-royal-blue rounded-full"></div>
                           <span>{feature}</span>
                         </div>
@@ -360,24 +360,24 @@ const SpecialRequest = ({ scrollUp }) => {
             </div>
 
             {/* Popular Experiences */}
-            <div className="mb-20">
-              <h2 className="text-4xl font-semibold mb-12 text-center text-gray-700">
+            <div className="mb-12 md:mb-20">
+              <h2 className="text-section-title mb-8 md:mb-12 text-center text-gray-700">
                 <span className="text-royal-blue">Signature</span> Experiences
               </h2>
               
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
                 {popularExperiences.map((experience, index) => (
-                  <div key={index} className="bg-cream-light/90 p-6 rounded-lg border border-royal-blue/15 hover:border-royal-blue/30 transition-all duration-300 shadow-md hover:shadow-lg">
-                    <div className="flex items-center gap-3 mb-4">
-                      <FontAwesomeIcon icon={faMapMarkedAlt} className="text-royal-blue text-lg" />
+                  <div key={index} className="bg-cream-light/90 p-4 md:p-6 rounded-lg border border-royal-blue/15 hover:border-royal-blue/30 transition-all duration-300 shadow-md hover:shadow-lg">
+                    <div className="flex items-center gap-2 md:gap-3 mb-3 md:mb-4">
+                      <FontAwesomeIcon icon={faMapMarkedAlt} className="text-royal-blue text-base md:text-lg" />
                       <div>
-                        <h3 className="font-semibold text-gray-700">{experience.experience}</h3>
-                        <div className="text-royal-blue text-sm">{experience.duration}</div>
+                        <h3 className="text-card-title text-gray-700">{experience.experience}</h3>
+                        <div className="text-royal-blue text-xs md:text-sm">{experience.duration}</div>
                       </div>
                     </div>
                     
-                    <div className="space-y-2">
-                      <h4 className="text-sm font-medium text-gray-700">Experience Highlights:</h4>
+                    <div className="space-y-1 md:space-y-2">
+                      <h4 className="text-xs md:text-sm font-medium text-gray-700">Experience Highlights:</h4>
                       {experience.highlights.map((highlight, idx) => (
                         <div key={idx} className="flex items-center gap-2 text-xs text-gray-600">
                           <div className="w-1 h-1 bg-royal-blue rounded-full"></div>
@@ -391,12 +391,12 @@ const SpecialRequest = ({ scrollUp }) => {
             </div>
 
             {/* Service Process */}
-            <div className="mb-20">
-              <h2 className="text-4xl font-semibold mb-12 text-center text-gray-700">
+            <div className="mb-12 md:mb-20">
+              <h2 className="text-section-title mb-8 md:mb-12 text-center text-gray-700">
                 How Our <span className="text-royal-blue">Custom Service</span> Works
               </h2>
               
-              <div className="grid md:grid-cols-3 gap-8">
+              <div className="grid md:grid-cols-3 gap-4 md:gap-8">
                 {serviceProcess.map((process, index) => (
                   <div key={index} className="text-center bg-cream-light/90 p-8 rounded-lg border border-royal-blue/15">
                     <div className="w-20 h-20 bg-royal-blue/15 rounded-full flex items-center justify-center mx-auto mb-6">

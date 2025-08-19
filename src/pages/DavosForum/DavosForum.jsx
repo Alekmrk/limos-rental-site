@@ -145,13 +145,13 @@ const DavosForum = ({ scrollUp }) => {
 
           {/* Mobile Layout: Reservation Card and Badges in Same Container */}
           <div className="block md:hidden relative z-20 px-4">
-            <div className="pt-32 mb-8">
+            <div className="pt-12 mb-6">
               {/* Main Title with glassy background */}
-              <div className="relative mb-8 flex justify-center">
+              <div className="relative mb-6 flex justify-center">
                 <div className="relative">
-                  <div className="absolute inset-0 bg-black/15 backdrop-blur-sm rounded-2xl transform translate-x-1 translate-y-1"></div>
-                  <div className="relative bg-white/20 backdrop-blur-md rounded-2xl px-6 py-4 border border-white/30 shadow-2xl">
-                    <h1 className="text-3xl sm:text-4xl font-semibold text-center drop-shadow-lg">
+                  <div className="absolute inset-0 bg-black/15 backdrop-blur-sm rounded-xl transform translate-x-1 translate-y-1"></div>
+                  <div className="relative bg-white/20 backdrop-blur-md rounded-xl px-4 py-3 border border-white/30 shadow-2xl">
+                    <h1 className="text-hero text-center drop-shadow-lg">
                       <span className="text-royal-blue drop-shadow-lg">Davos</span>{" "}
                       <span className="text-gold drop-shadow-lg">Forum</span>
                     </h1>
@@ -160,23 +160,23 @@ const DavosForum = ({ scrollUp }) => {
               </div>
             </div>
 
-            <div className="mb-8">
+            <div className="mb-6">
               <div className="relative z-50">
                 <ReservationCard idPrefix="mobile-" />
               </div>
               
               {/* Mobile Trust Indicators - After reservation card */}
-              <div className="mt-8 flex flex-col sm:flex-row justify-center items-center gap-4 text-gray-600 text-sm">
-                <div className="flex items-center gap-2 bg-cream-light/80 backdrop-blur-sm px-4 py-2 rounded-full border border-royal-blue/20 shadow-md">
-                  <FontAwesomeIcon icon={faCrown} className="text-gold" />
+              <div className="mt-6 flex flex-col sm:flex-row justify-center items-center gap-3 text-gray-600 text-xs">
+                <div className="flex items-center gap-2 bg-cream-light/80 backdrop-blur-sm px-3 py-1.5 rounded-full border border-royal-blue/20 shadow-md">
+                  <FontAwesomeIcon icon={faCrown} className="text-gold text-sm" />
                   <span className="text-gray-700 font-medium">Executive Class</span>
                 </div>
-                <div className="flex items-center gap-2 bg-cream-light/80 backdrop-blur-sm px-4 py-2 rounded-full border border-royal-blue/20 shadow-md">
-                  <FontAwesomeIcon icon={faMountain} className="text-royal-blue" />
+                <div className="flex items-center gap-2 bg-cream-light/80 backdrop-blur-sm px-3 py-1.5 rounded-full border border-royal-blue/20 shadow-md">
+                  <FontAwesomeIcon icon={faMountain} className="text-royal-blue text-sm" />
                   <span className="text-gray-700 font-medium">Alpine Routes</span>
                 </div>
-                <div className="flex items-center gap-2 bg-cream-light/80 backdrop-blur-sm px-4 py-2 rounded-full border border-royal-blue/20 shadow-md">
-                  <FontAwesomeIcon icon={faCalendarAlt} className="text-royal-blue" />
+                <div className="flex items-center gap-2 bg-cream-light/80 backdrop-blur-sm px-3 py-1.5 rounded-full border border-royal-blue/20 shadow-md">
+                  <FontAwesomeIcon icon={faCalendarAlt} className="text-royal-blue text-sm" />
                   <span className="text-gray-700 font-medium">24/7 Available</span>
                 </div>
               </div>
@@ -201,34 +201,34 @@ const DavosForum = ({ scrollUp }) => {
       </div>
 
       {/* Features Section with Darker Cream Background */}
-      <div className="bg-gradient-to-br from-cream to-warm-gray py-20">
+      <div className="bg-gradient-to-br from-cream to-warm-gray py-12 md:py-20">
         <div className="container-default">
           <div className="max-w-6xl mx-auto">
-            <div className="text-center mb-16">
-              <h2 className="text-4xl md:text-6xl font-semibold mb-6 text-gray-700">
+            <div className="text-center mb-8 md:mb-16">
+              <h2 className="text-section-title mb-4 md:mb-6 text-gray-700">
                 <span className="text-royal-blue">Executive</span> Transportation
               </h2>
-              <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+              <p className="text-body text-gray-600 max-w-2xl mx-auto">
                 Providing world-class transportation services for the World Economic Forum and other 
                 prestigious events in Davos. Experience unmatched professionalism and discretion.
               </p>
             </div>
 
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-20">
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8 mb-12 md:mb-20">
               {features.map((feature, index) => (
-                <div key={index} className="bg-cream-light/90 p-6 rounded-lg border border-royal-blue/15 text-center hover:border-royal-blue/30 transition-all duration-300 shadow-md hover:shadow-lg">
-                  <div className="w-16 h-16 bg-royal-blue/15 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <FontAwesomeIcon icon={feature.icon} className="text-royal-blue text-2xl" />
+                <div key={index} className="bg-cream-light/90 p-4 md:p-6 rounded-lg border border-royal-blue/15 text-center hover:border-royal-blue/30 transition-all duration-300 shadow-md hover:shadow-lg">
+                  <div className="w-12 h-12 md:w-16 md:h-16 bg-royal-blue/15 rounded-full flex items-center justify-center mx-auto mb-3 md:mb-4">
+                    <FontAwesomeIcon icon={feature.icon} className="text-royal-blue text-lg md:text-2xl" />
                   </div>
-                  <h3 className="text-xl font-semibold mb-3 text-gray-700">{feature.title}</h3>
-                  <p className="text-gray-600">{feature.description}</p>
+                  <h3 className="text-card-title mb-2 md:mb-3 text-gray-700">{feature.title}</h3>
+                  <p className="text-body text-gray-600">{feature.description}</p>
                 </div>
               ))}
             </div>
 
             {/* Davos Venues */}
-            <div className="bg-cream-light/90 p-4 sm:p-8 rounded-lg border border-royal-blue/20 shadow-lg mb-20">
-              <h2 className="text-3xl font-semibold mb-8 text-center text-royal-blue-dark">Key Davos Locations</h2>
+            <div className="bg-cream-light/90 p-4 md:p-8 rounded-lg border border-royal-blue/20 shadow-lg mb-12 md:mb-20">
+              <h2 className="text-section-title mb-6 md:mb-8 text-center text-royal-blue-dark">Key Davos Locations</h2>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
                 {venues.map((venue, index) => (

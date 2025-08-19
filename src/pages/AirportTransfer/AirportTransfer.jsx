@@ -59,7 +59,7 @@ const AirportTransfer = ({ scrollUp }) => {
     <div className="min-h-screen">
       <div className="relative">
         {/* Hero Section with Reservation Card */}
-        <div className="banner-home relative w-full rounded-[1.5rem] text-center mt-16 pb-32 md:pb-0 overflow-visible min-h-[700px] lg:min-h-[800px]">
+        <div className="banner-home relative w-full rounded-[1.5rem] text-center mt-16 pb-24 md:pb-0 overflow-visible min-h-[600px] md:min-h-[700px] lg:min-h-[800px]">
           {/* Optimized Background Image - Full Width */}
           <div className="absolute inset-0 z-0">
             <Image
@@ -127,13 +127,13 @@ const AirportTransfer = ({ scrollUp }) => {
 
           {/* Mobile Layout: Reservation Card and Badges in Same Container */}
           <div className="block md:hidden relative z-20 px-4">
-            <div className="pt-40 mb-8">
+            <div className="pt-12 mb-6">
               {/* Main Title with glassy background */}
-              <div className="relative mb-8 flex justify-center">
+              <div className="relative mb-6 flex justify-center">
                 <div className="relative">
-                  <div className="absolute inset-0 bg-black/15 backdrop-blur-sm rounded-2xl transform translate-x-1 translate-y-1"></div>
-                  <div className="relative bg-white/20 backdrop-blur-md rounded-2xl px-6 py-4 border border-white/30 shadow-2xl">
-                    <h1 className="text-3xl sm:text-4xl font-semibold text-center drop-shadow-lg">
+                  <div className="absolute inset-0 bg-black/15 backdrop-blur-sm rounded-xl transform translate-x-1 translate-y-1"></div>
+                  <div className="relative bg-white/20 backdrop-blur-md rounded-xl px-4 py-3 border border-white/30 shadow-2xl">
+                    <h1 className="text-hero text-center drop-shadow-lg">
                       <span className="text-white drop-shadow-lg">Airport</span>{" "}
                       <span className="text-gold drop-shadow-lg">Transfer</span>
                     </h1>
@@ -142,23 +142,23 @@ const AirportTransfer = ({ scrollUp }) => {
               </div>
             </div>
 
-            <div className="mb-8">
+            <div className="mb-6">
               <div className="relative z-50">
                 <ReservationCard idPrefix="mobile-" />
               </div>
               
               {/* Mobile Trust Indicators - After reservation card */}
-              <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center items-center text-gray-600 text-sm">
-                <div className="flex items-center gap-2 bg-cream-light/80 backdrop-blur-sm px-4 py-2 rounded-full border border-royal-blue/20 shadow-md">
-                  <FontAwesomeIcon icon={faPlane} className="text-royal-blue" />
+              <div className="mt-6 flex flex-col sm:flex-row gap-3 justify-center items-center text-gray-600 text-xs">
+                <div className="flex items-center gap-2 bg-cream-light/80 backdrop-blur-sm px-3 py-1.5 rounded-full border border-royal-blue/20 shadow-md">
+                  <FontAwesomeIcon icon={faPlane} className="text-royal-blue text-sm" />
                   <span className="text-gray-700 font-medium">Flight Tracking</span>
                 </div>
-                <div className="flex items-center gap-2 bg-cream-light/80 backdrop-blur-sm px-4 py-2 rounded-full border border-royal-blue/20 shadow-md">
-                  <FontAwesomeIcon icon={faClock} className="text-royal-blue" />
+                <div className="flex items-center gap-2 bg-cream-light/80 backdrop-blur-sm px-3 py-1.5 rounded-full border border-royal-blue/20 shadow-md">
+                  <FontAwesomeIcon icon={faClock} className="text-royal-blue text-sm" />
                   <span className="text-gray-700 font-medium">60min Free Wait</span>
                 </div>
-                <div className="flex items-center gap-2 bg-cream-light/80 backdrop-blur-sm px-4 py-2 rounded-full border border-royal-blue/20 shadow-md">
-                  <FontAwesomeIcon icon={faShieldAlt} className="text-emerald-500" />
+                <div className="flex items-center gap-2 bg-cream-light/80 backdrop-blur-sm px-3 py-1.5 rounded-full border border-royal-blue/20 shadow-md">
+                  <FontAwesomeIcon icon={faShieldAlt} className="text-emerald-500 text-sm" />
                   <span className="text-gray-700 font-medium">Meet & Greet</span>
                 </div>
               </div>
