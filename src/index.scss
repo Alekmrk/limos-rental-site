@@ -16,33 +16,33 @@
     @apply bg-cream text-gray-700;
   }
 
-  /* Enhanced Typography Scale */
+  /* Enhanced Typography Scale - Mobile-First with Smaller Fonts */
   .text-hero {
-    @apply text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight leading-none;
+    @apply text-3xl md:text-7xl lg:text-8xl font-bold tracking-tight leading-tight;
   }
 
   .text-section-title {
-    @apply text-3xl md:text-4xl lg:text-5xl font-semibold tracking-wide;
+    @apply text-2xl md:text-4xl lg:text-5xl font-semibold tracking-wide leading-tight;
   }
 
   .text-card-title {
-    @apply text-xl md:text-2xl font-medium leading-tight;
+    @apply text-lg md:text-2xl font-medium leading-tight;
   }
 
   .text-body-large {
-    @apply text-lg md:text-xl leading-relaxed;
+    @apply text-base md:text-xl leading-snug;
   }
 
   .text-body {
-    @apply text-base md:text-lg leading-normal;
+    @apply text-sm md:text-lg leading-snug;
   }
 
   .text-caption {
-    @apply text-sm md:text-base text-gray-600 leading-normal;
+    @apply text-xs md:text-base text-gray-600 leading-snug;
   }
 
   .text-micro {
-    @apply text-xs md:text-sm text-gray-500;
+    @apply text-xs md:text-sm text-gray-500 leading-tight;
   }
 
   .reservation input {
@@ -89,7 +89,11 @@
 
   .banner-home {
     position: relative;
-    min-height: 700px;
+    min-height: 500px;
+    
+    @media (min-width: 768px) {
+      min-height: 700px;
+    }
     
     @media (min-width: 1024px) {
       min-height: 800px;
@@ -211,14 +215,30 @@
     color: #D4AF37;
   }
 
-  /* Enhanced Spacing System - 8-point grid */
-  .space-xs { @apply p-2; }      /* 8px */
-  .space-sm { @apply p-4; }      /* 16px */
-  .space-md { @apply p-6; }      /* 24px */
-  .space-lg { @apply p-8; }      /* 32px */
-  .space-xl { @apply p-12; }     /* 48px */
-  .space-2xl { @apply p-16; }    /* 64px */
-  .space-3xl { @apply p-20; }    /* 80px */
+  /* Enhanced Spacing System - 8-point grid with tighter mobile spacing */
+  .space-xs { @apply p-1 md:p-2; }      /* 4px mobile, 8px desktop */
+  .space-sm { @apply p-2 md:p-4; }      /* 8px mobile, 16px desktop */
+  .space-md { @apply p-3 md:p-6; }      /* 12px mobile, 24px desktop */
+  .space-lg { @apply p-4 md:p-8; }      /* 16px mobile, 32px desktop */
+  .space-xl { @apply p-6 md:p-12; }     /* 24px mobile, 48px desktop */
+  .space-2xl { @apply p-8 md:p-16; }    /* 32px mobile, 64px desktop */
+  .space-3xl { @apply p-10 md:p-20; }   /* 40px mobile, 80px desktop */
+
+  /* Mobile-first margin classes */
+  .mb-mobile-sm { @apply mb-2 md:mb-4; }     /* 8px mobile, 16px desktop */
+  .mb-mobile-md { @apply mb-3 md:mb-6; }     /* 12px mobile, 24px desktop */
+  .mb-mobile-lg { @apply mb-4 md:mb-8; }     /* 16px mobile, 32px desktop */
+  .mb-mobile-xl { @apply mb-6 md:mb-12; }    /* 24px mobile, 48px desktop */
+  
+  .mt-mobile-sm { @apply mt-2 md:mt-4; }     /* 8px mobile, 16px desktop */
+  .mt-mobile-md { @apply mt-3 md:mt-6; }     /* 12px mobile, 24px desktop */
+  .mt-mobile-lg { @apply mt-4 md:mt-8; }     /* 16px mobile, 32px desktop */
+  .mt-mobile-xl { @apply mt-6 md:mt-12; }    /* 24px mobile, 48px desktop */
+
+  .py-mobile-sm { @apply py-2 md:py-4; }     /* 8px mobile, 16px desktop */
+  .py-mobile-md { @apply py-3 md:py-6; }     /* 12px mobile, 24px desktop */
+  .py-mobile-lg { @apply py-4 md:py-8; }     /* 16px mobile, 32px desktop */
+  .py-mobile-xl { @apply py-6 md:py-12; }    /* 24px mobile, 48px desktop */
 
   /* Enhanced Component Base Classes */
   .card-base {

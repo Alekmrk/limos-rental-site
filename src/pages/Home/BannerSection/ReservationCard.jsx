@@ -399,9 +399,9 @@ const ReservationCard = ({ idPrefix = '' }) => {
           e.preventDefault();
         }
       }}
-      className="reservation reserve-card w-[95%] min-w-[280px] max-w-[420px] md:max-w-[380px] lg:max-w-[480px] pt-4 px-6 pb-10 sm:pt-6 sm:px-10 sm:pb-10 mx-auto md:mx-0 md:absolute md:bottom-12 md:right-4 lg:right-8 xl:right-16 shadow-2xl bg-cream-light/95 backdrop-blur-md border border-primary-gold/30 rounded-[2rem] text-left text-[15px] transition-all hover:shadow-[0_20px_50px_rgba(212,175,55,0.15)] hover:border-primary-gold/50 z-50"
+      className="reservation reserve-card w-[95%] min-w-[280px] max-w-[420px] md:max-w-[380px] lg:max-w-[480px] pt-3 px-4 pb-6 sm:pt-6 sm:px-10 sm:pb-10 mx-auto md:mx-0 md:absolute md:bottom-12 md:right-4 lg:right-8 xl:right-16 shadow-2xl bg-cream-light/95 backdrop-blur-md border border-primary-gold/30 rounded-[2rem] text-left text-[14px] sm:text-[15px] transition-all hover:shadow-[0_20px_50px_rgba(212,175,55,0.15)] hover:border-primary-gold/50 z-50"
     >
-      <div className="flex justify-center gap-1 sm:gap-3 pb-4 mb-4 relative w-full">
+      <div className="flex justify-center gap-1 sm:gap-3 pb-3 mb-3 sm:pb-4 sm:mb-4 relative w-full">
         <button
           type="button"
           onClick={() => handleModeChange('distance')}

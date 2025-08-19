@@ -3,7 +3,7 @@ import { FaCheckCircle, FaMedal, FaHeart, FaShieldAlt } from "react-icons/fa";
 
 const FeaturesSection = () => {
   return (
-    <div className="relative py-8 mt-0 bg-gradient-to-br from-cream to-warm-gray overflow-hidden">
+    <div className="relative py-6 md:py-8 mt-0 bg-gradient-to-br from-cream to-warm-gray overflow-hidden">
       {/* Softer Decorative Background Elements */}
       <div className="absolute inset-0 z-0">
         <div className="absolute top-0 left-0 w-96 h-96 bg-gradient-to-br from-royal-blue/10 to-royal-blue-light/10 rounded-full mix-blend-multiply filter blur-xl opacity-40 animate-blob"></div>
@@ -13,10 +13,10 @@ const FeaturesSection = () => {
 
       <div className="container-wide relative z-10">
         {/* Harmonious Header */}
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center gap-3 bg-primary-gold/15 backdrop-blur-sm text-gray-700 px-6 py-3 rounded-full text-sm font-medium mb-6 border border-primary-gold/25 shadow-md">
-            <FaMedal className="text-lg text-primary-gold" />
-            <span className="text-base font-semibold">Why Choose Elite Way</span>
+        <div className="text-center mb-6 md:mb-8">
+          <div className="inline-flex items-center gap-2 md:gap-3 bg-primary-gold/15 backdrop-blur-sm text-gray-700 px-4 py-2 md:px-6 md:py-3 rounded-full text-xs md:text-sm font-medium mb-4 md:mb-6 border border-primary-gold/25 shadow-md">
+            <FaMedal className="text-sm md:text-lg text-primary-gold" />
+            <span className="text-sm md:text-base font-semibold">Why Choose Elite Way</span>
           </div>
           
           <SectionHeading
@@ -24,28 +24,28 @@ const FeaturesSection = () => {
           />
 
           {/* Enhanced Value Proposition Cards */}
-          <div className="grid md:grid-cols-3 gap-8 mt-12">
-            <div className="card-base card-hover space-md text-center">
-              <div className="w-16 h-16 bg-success/15 rounded-full flex items-center justify-center mx-auto mb-4">
-                <FaCheckCircle className="text-2xl text-success" />
+          <div className="grid md:grid-cols-3 gap-6 md:gap-8 mt-8 md:mt-12">
+            <div className="card-base card-hover space-sm md:space-md text-center">
+              <div className="w-12 h-12 md:w-16 md:h-16 bg-success/15 rounded-full flex items-center justify-center mx-auto mb-3 md:mb-4">
+                <FaCheckCircle className="text-xl md:text-2xl text-success" />
               </div>
-              <h3 className="text-card-title text-gray-700 mb-3">Swiss Precision</h3>
+              <h3 className="text-card-title text-gray-700 mb-2 md:mb-3">Swiss Precision</h3>
               <p className="text-body text-gray-700">Every detail meticulously planned for the perfect luxury experience</p>
             </div>
             
-            <div className="card-base card-hover space-md text-center">
-              <div className="w-16 h-16 bg-primary-gold/15 rounded-full flex items-center justify-center mx-auto mb-4">
-                <FaMedal className="text-2xl text-primary-gold" />
+            <div className="card-base card-hover space-sm md:space-md text-center">
+              <div className="w-12 h-12 md:w-16 md:h-16 bg-primary-gold/15 rounded-full flex items-center justify-center mx-auto mb-3 md:mb-4">
+                <FaMedal className="text-xl md:text-2xl text-primary-gold" />
               </div>
-              <h3 className="text-card-title text-gray-700 mb-3">Unparalleled Comfort</h3>
+              <h3 className="text-card-title text-gray-700 mb-2 md:mb-3">Unparalleled Comfort</h3>
               <p className="text-body text-gray-700">Luxurious interiors and premium amenities for the ultimate travel experience</p>
             </div>
             
-            <div className="card-base card-hover space-md text-center">
-              <div className="w-16 h-16 bg-info/15 rounded-full flex items-center justify-center mx-auto mb-4">
-                <FaHeart className="text-2xl text-info" />
+            <div className="card-base card-hover space-sm md:space-md text-center">
+              <div className="w-12 h-12 md:w-16 md:h-16 bg-info/15 rounded-full flex items-center justify-center mx-auto mb-3 md:mb-4">
+                <FaHeart className="text-xl md:text-2xl text-info" />
               </div>
-              <h3 className="text-card-title text-gray-700 mb-3">Customer First</h3>
+              <h3 className="text-card-title text-gray-700 mb-2 md:mb-3">Customer First</h3>
               <p className="text-body text-gray-700">Your comfort and satisfaction is our top priority</p>
             </div>
           </div>

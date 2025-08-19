@@ -22,7 +22,7 @@ const BannerSection = () => {
 
   return (
     <div className="relative">
-      <div className="banner-home relative w-full rounded-[1.5rem] mt-16 pb-32 md:pb-0 overflow-visible text-center min-h-[700px] lg:min-h-[800px]">
+      <div className="banner-home relative w-full rounded-[1.5rem] mt-16 pb-24 md:pb-0 overflow-visible text-center min-h-[600px] md:min-h-[700px] lg:min-h-[800px]">
         {/* Optimized Background Image - Full Width */}
         <div className="absolute inset-0 z-0">
           <Image
@@ -99,12 +99,12 @@ const BannerSection = () => {
 
         {/* Mobile Layout: Reservation Card and Badges in Same Container */}
         <div className="block md:hidden relative z-20 px-4">
-          <div className="pt-32 mb-8">
+          <div className="pt-20 mb-6">
             {/* Main Title with glassy background */}
-            <div className="relative mb-8 flex justify-center">
+            <div className="relative mb-6 flex justify-center">
               <div className="relative">
-                <div className="absolute inset-0 bg-black/15 backdrop-blur-sm rounded-2xl transform translate-x-1 translate-y-1"></div>
-                <div className="relative bg-white/20 backdrop-blur-md rounded-2xl px-6 py-4 border border-white/30 shadow-2xl">
+                <div className="absolute inset-0 bg-black/15 backdrop-blur-sm rounded-xl transform translate-x-1 translate-y-1"></div>
+                <div className="relative bg-white/20 backdrop-blur-md rounded-xl px-4 py-3 border border-white/30 shadow-2xl">
                   <h1 className="text-hero text-center drop-shadow-lg">
                     <span className="text-primary-gold drop-shadow-lg">Switzerland's Elite</span>{" "}
                     <span className="text-gold drop-shadow-lg">Chauffeur Service</span>
@@ -114,30 +114,30 @@ const BannerSection = () => {
             </div>
           </div>
 
-          <div className="mb-8">
+          <div className="mb-6">
             <div className="relative z-50">
               <ReservationCard idPrefix="mobile-" />
             </div>
             
             {/* Mobile Trust Indicators - After reservation card */}
-            <div className="mt-8 flex flex-col sm:flex-row justify-center items-center gap-4 text-gray-600 text-sm">
-              <div className="flex items-center gap-3 bg-warm-white/80 backdrop-blur-sm px-4 py-2 rounded-full border border-primary-gold/20 shadow-md">
-                <FaShieldAlt className="text-emerald-500 text-lg" />
+            <div className="mt-6 flex flex-col sm:flex-row justify-center items-center gap-3 text-gray-600 text-xs">
+              <div className="flex items-center gap-2 bg-warm-white/80 backdrop-blur-sm px-3 py-1.5 rounded-full border border-primary-gold/20 shadow-md">
+                <FaShieldAlt className="text-emerald-500 text-sm" />
                 <span className="font-medium">Fully Insured</span>
               </div>
-              <div className="flex items-center gap-3 bg-warm-white/80 backdrop-blur-sm px-4 py-2 rounded-full border border-primary-gold/20 shadow-md">
-                <FaClock className="text-primary-gold text-lg" />
+              <div className="flex items-center gap-2 bg-warm-white/80 backdrop-blur-sm px-3 py-1.5 rounded-full border border-primary-gold/20 shadow-md">
+                <FaClock className="text-primary-gold text-sm" />
                 <span className="font-medium">24/7 Available</span>            
               </div>
-              <div className="flex items-center gap-3 bg-warm-white/80 backdrop-blur-sm px-4 py-2 rounded-full border border-primary-gold/20 shadow-md">
-                <FaPhone className="text-gold text-lg" />
+              <div className="flex items-center gap-2 bg-warm-white/80 backdrop-blur-sm px-3 py-1.5 rounded-full border border-primary-gold/20 shadow-md">
+                <FaPhone className="text-gold text-sm" />
                 <span className="font-medium">Instant Booking</span>
               </div>
             </div>
 
-            <div className="flex flex-col sm:flex-row gap-4 justify-center mt-8">
+            <div className="flex flex-col sm:flex-row gap-3 justify-center mt-6">
               <UTMLink to={"/vehicles"}>
-                <Button variant="secondary" className="transform hover:scale-105 transition-all duration-300 w-full sm:w-auto">
+                <Button variant="secondary" className="transform hover:scale-105 transition-all duration-300 w-full sm:w-auto text-sm py-2">
                   Explore Our Fleet
                 </Button>
               </UTMLink>

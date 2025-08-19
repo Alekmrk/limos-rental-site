@@ -75,7 +75,7 @@ const ServicesSection = () => {
   };
 
   return (
-    <div className="relative bg-gradient-to-br from-cream-dark via-cream to-warm-gray py-24 mt-0">
+    <div className="relative bg-gradient-to-br from-cream-dark via-cream to-warm-gray py-16 md:py-24 mt-0">
       {/* Softer Decorative Background Pattern */}
       <div className="absolute inset-0 opacity-10">
         <div

@@ -5,7 +5,7 @@ import { FaStar, FaShieldAlt } from "react-icons/fa";
 
 const TestimonialStatsSection = () => {
   return (
-    <div className="relative py-24 mt-0 bg-gradient-to-br from-cream to-warm-gray overflow-hidden">
+    <div className="relative py-16 md:py-24 mt-0 bg-gradient-to-br from-cream to-warm-gray overflow-hidden">
       {/* Softer Decorative Background Elements */}
       <div className="absolute inset-0 z-0">
         <div className="absolute top-0 left-0 w-96 h-96 bg-gradient-to-br from-royal-blue/10 to-royal-blue-light/10 rounded-full mix-blend-multiply filter blur-xl opacity-40 animate-blob"></div>
@@ -15,22 +15,22 @@ const TestimonialStatsSection = () => {
 
       <div className="container-wide relative z-10">
         {/* Header Section */}
-        <div className="text-center mb-20">
-          <div className="inline-flex items-center gap-3 bg-primary-gold/15 backdrop-blur-sm text-gray-700 px-6 py-3 rounded-full text-sm font-medium mb-6 border border-primary-gold/25 shadow-md">
-            <FaShieldAlt className="text-lg text-primary-gold" />
-            <span className="text-base font-semibold">Trusted Excellence</span>
+        <div className="text-center mb-12 md:mb-20">
+          <div className="inline-flex items-center gap-2 md:gap-3 bg-primary-gold/15 backdrop-blur-sm text-gray-700 px-4 py-2 md:px-6 md:py-3 rounded-full text-xs md:text-sm font-medium mb-4 md:mb-6 border border-primary-gold/25 shadow-md">
+            <FaShieldAlt className="text-sm md:text-lg text-primary-gold" />
+            <span className="text-sm md:text-base font-semibold">Trusted Excellence</span>
           </div>
           
           <SectionHeading
             title="Why Elite Way Leads"
           />
           
-          <p className="text-gray-700 text-lg max-w-2xl mx-auto mt-4">
+          <p className="text-gray-700 text-sm md:text-lg max-w-2xl mx-auto mt-3 md:mt-4 px-4">
             From seamless booking to proven results, discover what sets us apart and why thousands trust us for their luxury transportation needs.
           </p>
         </div>
         {/* Features Grid */}
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8 max-w-7xl mx-auto mb-24">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8 max-w-7xl mx-auto mb-16 md:mb-24 px-4">
           {features.map((feature, index) => (
             <div key={feature.id} className="group h-full">
               <div className="relative h-full">

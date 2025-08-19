@@ -29,20 +29,20 @@ const EventsSection = () => {
   ];
 
   return (
-    <section className="py-16 bg-gradient-to-br from-cream to-warm-gray">
+    <section className="py-12 md:py-16 bg-gradient-to-br from-cream to-warm-gray">
       <div className="container mx-auto px-4">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4 text-gray-700">
+        <div className="text-center mb-8 md:mb-12">
+          <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-3 md:mb-4 text-gray-700">
             <span className="text-primary-gold">Premium Event</span> Transportation
           </h2>
-          <p className="text-lg text-gray-700 max-w-2xl mx-auto">
+          <p className="text-sm md:text-lg text-gray-700 max-w-2xl mx-auto px-4">
             Exclusive transportation services for Switzerland's most prestigious events. 
             Experience seamless transfers to world-class venues and gatherings.
           </p>
         </div>
 
         {/* Event Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 mb-8 md:mb-12 px-4">
           {upcomingEvents.map((event, index) => (
             <div key={index} className="bg-cream-light/80 backdrop-blur-sm rounded-lg p-6 hover:bg-cream-light/90 transition-all duration-300 border border-primary-gold/20 shadow-lg hover:shadow-xl">
               <div className="flex items-center justify-between mb-4">
