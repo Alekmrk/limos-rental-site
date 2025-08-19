@@ -257,6 +257,11 @@
     @apply bg-black/10 backdrop-blur-md border border-black/20;
   }
 
+  /* Custom gradient utilities */
+  .bg-gradient-radial {
+    background: radial-gradient(circle, var(--tw-gradient-stops));
+  }
+
   /* Enhanced Button System */
   .btn-base {
     @apply transition-all duration-300 ease-out text-sm font-medium rounded-xl py-3 px-8 shadow-md transform;

@@ -153,17 +153,51 @@ const HourlyTransfer = ({ scrollUp }) => {
       <div className="relative">
         {/* Hero Section with Reservation Card */}
         <div className="banner-home relative w-full rounded-[1.5rem] text-center mt-16 pb-32 md:pb-0 overflow-visible min-h-[700px] lg:min-h-[800px]">
-          {/* Optimized Background Image - Full Width */}
+          {/* Background - Image on desktop, luxury pattern on mobile */}
           <div className="absolute inset-0 z-0">
-            <Image
-              src={hourlyTransferImage}
-              alt="Luxury hourly transfer service"
-              className="w-full h-full object-cover object-top"
-              imageType="banner"
-              priority={true}
-              sizes="100vw"
-            />
-            <div className="absolute inset-0 bg-gradient-to-br from-warm-gray/8 via-cream/5 to-soft-gray/8"></div>
+            {/* Desktop Background Image */}
+            <div className="hidden md:block w-full h-full">
+              <Image
+                src={hourlyTransferImage}
+                alt="Luxury hourly transfer service"
+                className="w-full h-full object-cover object-top"
+                imageType="banner"
+                priority={true}
+                sizes="100vw"
+              />
+              <div className="absolute inset-0 bg-gradient-to-br from-warm-gray/8 via-cream/5 to-soft-gray/8"></div>
+            </div>
+            
+            {/* Mobile Luxury Background */}
+            <div className="block md:hidden w-full h-full relative">
+              {/* Lighter luxury gradient base */}
+              <div className="absolute inset-0 bg-gradient-to-br from-gray-700 via-gray-600 to-slate-700"></div>
+              
+              {/* Elegant gold wash overlay */}
+              <div className="absolute inset-0 bg-gradient-to-tr from-primary-gold/20 via-gold/10 to-primary-gold/15"></div>
+              
+              {/* Subtle luxury texture */}
+              <div className="absolute inset-0 opacity-8" style={{
+                backgroundImage: `repeating-linear-gradient(
+                  30deg,
+                  rgba(212, 175, 55, 0.1) 0px,
+                  transparent 2px,
+                  transparent 40px
+                )`
+              }}></div>
+              
+              {/* Soft corner accents */}
+              <div className="absolute top-0 left-0 w-40 h-40 bg-gradient-to-br from-warm-white/30 to-transparent rounded-full blur-3xl"></div>
+              <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-cream/25 to-transparent rounded-full blur-2xl"></div>
+              <div className="absolute bottom-0 left-0 w-36 h-36 bg-gradient-to-tr from-primary-gold/25 to-transparent rounded-full blur-2xl"></div>
+              <div className="absolute bottom-0 right-0 w-44 h-44 bg-gradient-to-tl from-warm-gray/30 to-transparent rounded-full blur-3xl"></div>
+              
+              {/* Elegant center glow */}
+              <div className="absolute inset-0 bg-gradient-radial from-cream/15 via-transparent to-transparent"></div>
+              
+              {/* Subtle depth vignette */}
+              <div className="absolute inset-0 bg-gradient-to-t from-gray-800/30 via-transparent to-gray-700/20"></div>
+            </div>
           </div>
 
           {/* Softer Animated Background Elements */}
