@@ -46,13 +46,13 @@
   }
 
   .reservation input {
-    @apply block w-full py-3 px-4 mb-3 font-light placeholder:text-gray-500 rounded-xl bg-darker-cream/80 border border-royal-blue/20 text-gray-700 transition-all duration-200;
+    @apply block w-full py-3 px-4 mb-3 font-light placeholder:text-gray-500 rounded-xl bg-darker-cream/80 border border-primary-gold/20 text-gray-700 transition-all duration-200;
     &:focus {
       outline: none;
-      @apply border-royal-blue/50 shadow-[0_0_15px_rgba(65,105,225,0.2)];
+      @apply border-primary-gold/50 shadow-[0_0_15px_rgba(212,175,55,0.3)];
     }
     &:hover {
-      @apply border-royal-blue/30;
+      @apply border-primary-gold/30;
     }
   }
 
@@ -110,7 +110,7 @@
   }
   
   button.active {
-    @apply bg-royal-blue text-white shadow-[0_0_20px_rgba(65,105,225,0.3)];
+    @apply bg-primary-gold text-white shadow-[0_0_20px_rgba(212,175,55,0.4)];
   }
 
   .slider-card:hover .car {
@@ -222,7 +222,7 @@
 
   /* Enhanced Component Base Classes */
   .card-base {
-    @apply bg-cream-light/90 backdrop-blur-sm rounded-2xl border border-royal-blue/15 shadow-lg transition-all duration-300;
+    @apply bg-cream-light/90 backdrop-blur-sm rounded-2xl border border-primary-gold/15 shadow-lg transition-all duration-300;
   }
 
   .card-hover {
@@ -247,15 +247,15 @@
   }
 
   .btn-primary {
-    @apply btn-base btn-hover bg-gradient-to-r from-royal-blue to-royal-blue-light hover:from-royal-blue-light hover:to-royal-blue text-white;
+    @apply btn-base btn-hover bg-gradient-to-r from-gray-800 to-gray-900 hover:from-gray-700 hover:to-gray-800 text-primary-gold border border-primary-gold/20 hover:border-primary-gold/40;
   }
 
   .btn-secondary {
-    @apply btn-base btn-hover bg-cream-light/80 border-2 border-royal-blue/30 text-royal-blue hover:bg-royal-blue/10 hover:border-royal-blue/50;
+    @apply btn-base btn-hover bg-gray-800 border-2 border-primary-gold/50 text-primary-gold hover:bg-gray-700 hover:border-primary-gold;
   }
 
   .btn-luxury {
-    @apply btn-base btn-hover bg-gradient-to-r from-royal-blue via-royal-blue-dark to-gold hover:from-gold hover:via-royal-blue-dark hover:to-royal-blue text-white;
+    @apply btn-base btn-hover bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 hover:from-gray-800 hover:via-gray-700 hover:to-gray-800 text-primary-gold border border-primary-gold/30 hover:border-primary-gold/60;
   }
 
   /* Mobile Touch Targets */
@@ -458,12 +458,12 @@
 
   .booking-service-card:hover {
     transform: translateY(-2px);
-    box-shadow: 0 10px 30px rgba(65, 105, 225, 0.15);
+    box-shadow: 0 10px 30px rgba(212, 175, 55, 0.2);
   }
 
   .booking-service-card.active {
     transform: translateY(-2px) scale(1.02);
-    box-shadow: 0 15px 40px rgba(65, 105, 225, 0.2);
+    box-shadow: 0 15px 40px rgba(212, 175, 55, 0.25);
   }
 
   /* Enhanced button animations */
@@ -490,7 +490,7 @@
 
   .enhanced-button:hover {
     transform: translateY(-2px);
-    box-shadow: 0 15px 35px rgba(65, 105, 225, 0.3);
+    box-shadow: 0 15px 35px rgba(212, 175, 55, 0.4);
   }
 }
 

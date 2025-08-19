@@ -74,9 +74,9 @@ const DesignSystemShowcase = () => {
         <section className="card-base space-lg">
           <h2 className="text-section-title mb-8">Enhanced Color System</h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="space-sm bg-royal-blue text-white rounded-xl text-center">
-              <p className="text-card-title">Royal Blue</p>
-              <p className="text-micro">#4169E1</p>
+            <div className="space-sm bg-primary-gold text-white rounded-xl text-center">
+              <p className="text-card-title">Primary Gold</p>
+              <p className="text-micro">#D4AF37</p>
             </div>
             <div className="space-sm bg-gold text-white rounded-xl text-center">
               <p className="text-card-title">Gold</p>
@@ -148,7 +148,7 @@ const DesignSystemShowcase = () => {
             <div>
               <h3 className="text-card-title mb-4">Entrance Animations</h3>
               <div className="space-y-2">
-                <div className="p-4 bg-royal-blue/10 rounded-lg animate-fadeIn">Fade In Animation</div>
+                <div className="p-4 bg-primary-gold/10 rounded-lg animate-fadeIn">Fade In Animation</div>
                 <div className="p-4 bg-gold/10 rounded-lg animate-fadeInUp">Fade In Up Animation</div>
                 <div className="p-4 bg-success/10 rounded-lg animate-scaleIn">Scale In Animation</div>
               </div>
@@ -157,7 +157,7 @@ const DesignSystemShowcase = () => {
             <div>
               <h3 className="text-card-title mb-4">Interactive Animations</h3>
               <div className="space-y-2">
-                <div className="p-4 bg-royal-blue/10 rounded-lg hover:animate-float transition-all duration-300">Hover for Float Effect</div>
+                <div className="p-4 bg-primary-gold/10 rounded-lg hover:animate-float transition-all duration-300">Hover for Float Effect</div>
                 <div className="p-4 bg-gold/10 rounded-lg animate-blob">Blob Animation</div>
               </div>
             </div>

@@ -14,9 +14,9 @@ export default {
       colors: {
         gold: '#D4AF37',
         accent: '#D4AF37',
-        'royal-blue': '#4169E1',
-        'royal-blue-light': '#6495ED',
-        'royal-blue-dark': '#191970',
+        'primary-gold': '#D4AF37',
+        'primary-gold-light': '#F4D03F',
+        'primary-gold-dark': '#B7950B',
         'cream': '#E8E1D5',
         'cream-light': '#F2EDE3',
         'cream-dark': '#DDD4C7',
