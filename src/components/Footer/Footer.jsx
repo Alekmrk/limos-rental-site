@@ -77,21 +77,37 @@ const Footer = () => {
   // Basic footer for reservation flow pages - only on mobile
   if (isReservationFlow && isMobile) {
     return (
-      <footer className="container-big bg-neutral-800 text-white rounded-[1.5rem] mt-8 mb-[2.5vw] py-8 px-8">
+      <footer className="container-big bg-warm-white/90 backdrop-blur-sm border border-primary-gold/20 rounded-[1.5rem] mt-8 mb-[2.5vw] py-6 px-6 shadow-lg">
         <div className="max-w-6xl mx-auto">
           <div className="text-center">
             <Image
               src={logoFooter}
               alt="Elite Way Limo"
-              className="w-20 mx-auto mb-4"
+              className="w-16 mx-auto mb-3"
               imageType="logo"
-              sizes="80px"
+              sizes="64px"
             />
-            <p className="text-neutral-400 text-sm mb-4">
+            <p className="text-gray-600 text-sm mb-3">
               &copy; {currentYear} Elite Way Limo. All rights reserved.
             </p>
-            <p className="text-neutral-500 text-xs">
+            <p className="text-gray-500 text-xs mb-3">
               Professional chauffeur service in Switzerland
+            </p>
+            <p className="text-gray-500 text-xs leading-relaxed">
+              By using this site, you agree to our{' '}
+              <button
+                onClick={() => navigateWithUTMs('/terms-of-service')}
+                className="text-primary-gold hover:text-primary-gold-dark underline"
+              >
+                Terms of Service
+              </button>
+              {' '}and{' '}
+              <button
+                onClick={() => navigateWithUTMs('/privacy-policy')}
+                className="text-primary-gold hover:text-primary-gold-dark underline"
+              >
+                Privacy Policy
+              </button>
             </p>
           </div>
         </div>
