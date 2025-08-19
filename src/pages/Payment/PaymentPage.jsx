@@ -348,28 +348,6 @@ const PaymentPage = ({ scrollUp }) => {
               </div>
             </div>
 
-            {/* Subtle terms agreement notice */}
-            <div className="mb-6 text-center">
-              <p className="text-gray-500 text-xs">
-                By completing your payment, you agree to our{' '}
-                <button
-                  type="button"
-                  onClick={() => navigateWithUTMs('/terms-of-service')}
-                  className="text-royal-blue hover:underline"
-                >
-                  Terms of Service
-                </button>
-                {' '}and{' '}
-                <button
-                  type="button"
-                  onClick={() => navigateWithUTMs('/privacy-policy')}
-                  className="text-royal-blue hover:underline"
-                >
-                  Privacy Policy
-                </button>
-              </p>
-            </div>
-
             {/* Payment Method Selection */}
             <div className="space-y-4 bg-warm-white/90 backdrop-blur-md p-6 rounded-xl border border-royal-blue/20 shadow-lg" data-payment-methods>
               <h2 className="text-xl font-medium text-gray-700">Select Payment Method</h2>
