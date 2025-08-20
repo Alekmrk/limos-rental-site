@@ -202,7 +202,7 @@ const DavosForum = ({ scrollUp }) => {
           <div className="hidden md:block relative z-20 h-full">
             <div className="grid grid-cols-12 gap-8 px-4 md:px-6 lg:px-16 container-ultra-wide mx-auto h-full min-h-[700px] lg:min-h-[800px]">
               {/* Left Content Area - Takes up 7 columns */}
-              <div className="col-span-7 pt-32 md:pt-40 lg:pt-48">
+              <div className="col-span-7 flex flex-col justify-center">
                 {/* Main Title with glassy background */}
                 <div className="relative mb-8 md:mb-10 flex justify-center">
                   <div className="relative">
