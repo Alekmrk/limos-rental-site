@@ -252,7 +252,7 @@ const DavosForum = ({ scrollUp }) => {
                   <div className="absolute inset-0 bg-black/15 backdrop-blur-sm rounded-xl transform translate-x-1 translate-y-1"></div>
                   <div className="relative bg-white/20 backdrop-blur-md rounded-xl px-4 py-3 border border-white/30 shadow-2xl">
                     <h1 className="text-hero text-center drop-shadow-lg">
-                      <span className="text-royal-blue drop-shadow-lg">Davos</span>{" "}
+                      <span className="text-blue-300 drop-shadow-lg">Davos</span>{" "}
                       <span className="text-gold drop-shadow-lg">Forum</span>
                     </h1>
                   </div>
