@@ -79,7 +79,7 @@ const PrimaryNav = ({ navHidden, screenSize, setNavHidden }) => {
 
   return (
     <nav
-      className={`absolute z-10 rounded-2xl shadow-xl md:shadow-none top-20 left-[5%] md:h-full right-[5%] w-[90%] md:w-auto py-6 md:py-0 text-center bg-warm-white/95 backdrop-blur-md border border-royal-blue/20 md:bg-transparent md:border-0 md:static md:left-auto md:right-auto max-h-[calc(100vh-6rem)] md:max-h-none overflow-y-auto md:overflow-visible transition-all duration-300 ${
+      className={`absolute z-10 rounded-2xl shadow-xl md:shadow-none top-20 left-[5%] md:h-full right-[5%] w-[90%] md:w-auto py-6 pb-12 md:py-0 text-center bg-warm-white/95 backdrop-blur-md border border-royal-blue/20 md:bg-transparent md:border-0 md:static md:left-auto md:right-auto max-h-[calc(100vh-6rem)] md:max-h-none overflow-y-auto md:overflow-visible transition-all duration-300 ${
         navHidden ? "hidden opacity-0 transform translate-y-[-10px]" : "block opacity-100 transform translate-y-0"
       }`}
     >
@@ -127,7 +127,7 @@ const PrimaryNav = ({ navHidden, screenSize, setNavHidden }) => {
           <div
             className={`${
               servicesDropdownOpen ? "block" : "hidden"
-            } absolute top-full left-1/2 transform -translate-x-1/2 mt-2 w-72 bg-warm-white border border-royal-blue/30 rounded-lg shadow-xl py-2 z-20`}
+            } absolute top-full left-1/2 transform -translate-x-1/2 w-72 bg-warm-white border border-royal-blue/30 rounded-lg shadow-xl py-2 z-20 max-h-[calc(100vh-16rem)] overflow-y-auto`}
           >
             <UTMNavLink
               to="/airport-transfer"
@@ -174,7 +174,7 @@ const PrimaryNav = ({ navHidden, screenSize, setNavHidden }) => {
           <div
             className={`${
               eventsDropdownOpen ? "block" : "hidden"
-            } absolute top-full left-1/2 transform -translate-x-1/2 mt-2 w-72 bg-warm-white border border-royal-blue/30 rounded-lg shadow-xl py-2 z-20`}
+            } absolute top-full left-1/2 transform -translate-x-1/2 w-72 bg-warm-white border border-royal-blue/30 rounded-lg shadow-xl py-2 z-20 max-h-[calc(100vh-16rem)] overflow-y-auto`}
           >
             <div className="px-5 py-3 text-sm text-royal-blue uppercase tracking-wide font-medium font-sans">
               Premium Events
