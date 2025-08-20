@@ -66,13 +66,13 @@ const BannerSection = () => {
         <div className="hidden md:block relative z-20 h-full">
           <div className="grid grid-cols-12 gap-8 px-4 md:px-6 lg:px-16 container-ultra-wide mx-auto h-full min-h-[700px] lg:min-h-[800px]">
             {/* Left Content Area - Takes up 7 columns */}
-            <div className="col-span-7 pt-32 md:pt-40 lg:pt-48">
+            <div className="col-span-7 pt-24 md:pt-32 lg:pt-40">
               {/* Main Title with glassy background */}
               <div className="relative mb-8 md:mb-10 flex justify-center">
                 <div className="relative">
                   <div className="absolute inset-0 bg-black/15 backdrop-blur-sm rounded-2xl transform translate-x-1 translate-y-1"></div>
                   <div className="relative bg-white/20 backdrop-blur-md rounded-2xl px-6 py-4 border border-white/30 shadow-2xl">
-                    <h1 className="text-hero text-center drop-shadow-lg">
+                    <h1 className="text-2xl md:text-4xl lg:text-5xl font-bold tracking-tight leading-tight text-center drop-shadow-lg">
                       <span className="text-primary-gold drop-shadow-lg">Switzerland's Elite</span>{" "}
                       <span className="text-gold drop-shadow-lg">Chauffeur Service</span>
                     </h1>
@@ -106,8 +106,8 @@ const BannerSection = () => {
             </div>
 
             {/* Right Reservation Card Area - Takes up 5 columns */}
-            <div className="col-span-5 relative h-full flex items-end">
-              <div className="w-full pb-8">
+            <div className="col-span-5 relative h-full flex items-start">
+              <div className="w-full pt-12 md:pt-16 lg:pt-20">
                 <ReservationCard idPrefix="desktop-" />
               </div>
             </div>
@@ -122,7 +122,7 @@ const BannerSection = () => {
               <div className="relative">
                 <div className="absolute inset-0 bg-black/15 backdrop-blur-sm rounded-xl transform translate-x-1 translate-y-1"></div>
                 <div className="relative bg-white/20 backdrop-blur-md rounded-xl px-4 py-3 border border-white/30 shadow-2xl">
-                  <h1 className="text-hero text-center drop-shadow-lg">
+                  <h1 className="text-2xl md:text-4xl lg:text-5xl font-bold tracking-tight leading-tight text-center drop-shadow-lg">
                     <span className="text-primary-gold drop-shadow-lg">Switzerland's Elite</span>{" "}
                     <span className="text-gold drop-shadow-lg">Chauffeur Service</span>
                   </h1>

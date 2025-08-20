@@ -287,8 +287,8 @@ const SpecialRequest = ({ scrollUp }) => {
               </div>
 
               {/* Right Reservation Card Area - Takes up 5 columns */}
-              <div className="col-span-5 relative h-full flex items-end z-30">
-                <div className="w-full pb-8">
+              <div className="col-span-5 relative h-full flex items-start z-30">
+                <div className="w-full pt-12 md:pt-16 lg:pt-20">
                   <ReservationCard idPrefix="desktop-" />
                 </div>
               </div>
