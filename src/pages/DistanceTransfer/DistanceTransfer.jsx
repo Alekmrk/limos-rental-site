@@ -203,7 +203,6 @@ const DistanceTransfer = ({ scrollUp }) => {
           {/* Softer Animated Background Elements */}
           <div className="absolute inset-0 z-10" style={{ pointerEvents: 'none' }}>
             <div className="absolute top-20 left-10 w-20 h-20 bg-royal-blue/20 rounded-full animate-pulse"></div>
-            <div className="absolute top-40 right-20 w-16 h-16 bg-gold/25 rounded-full animate-bounce"></div>
             <div className="absolute bottom-40 left-20 w-12 h-12 bg-warm-gray/30 rounded-full animate-ping"></div>
             <div className="absolute bottom-20 right-10 w-24 h-24 bg-royal-blue/15 rounded-full animate-pulse"></div>
           </div>
