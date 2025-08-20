@@ -152,7 +152,7 @@ const AirportTransfer = ({ scrollUp }) => {
                     <div className="absolute inset-0 bg-black/15 backdrop-blur-sm rounded-2xl transform translate-x-1 translate-y-1"></div>
                     <div className="relative bg-white/20 backdrop-blur-md rounded-2xl px-6 py-4 border border-white/30 shadow-2xl">
                       <h1 className="text-3xl sm:text-4xl md:text-4xl lg:text-5xl xl:text-6xl font-semibold text-center drop-shadow-lg">
-                        <span className="text-white drop-shadow-lg">Airport</span>{" "}
+                        <span className="text-cream-dark drop-shadow-lg">Airport</span>{" "}
                         <span className="text-gold drop-shadow-lg">Transfer</span>
                       </h1>
                     </div>
