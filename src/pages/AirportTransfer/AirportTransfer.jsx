@@ -60,17 +60,78 @@ const AirportTransfer = ({ scrollUp }) => {
       <div className="relative">
         {/* Hero Section with Reservation Card */}
         <div className="banner-home relative w-full rounded-[1.5rem] text-center mt-16 pb-24 md:pb-0 overflow-visible min-h-[600px] md:min-h-[700px] lg:min-h-[800px]">
-          {/* Optimized Background Image - Full Width */}
+          {/* Background - Image on desktop, luxury pattern on mobile */}
           <div className="absolute inset-0 z-0">
-            <Image
-              src={airportTransferImage}
-              alt="Luxury airport transfer service"
-              className="w-full h-full object-cover object-top"
-              imageType="banner"
-              priority={true}
-              sizes="100vw"
-            />
-            <div className="absolute inset-0 bg-gradient-to-br from-warm-gray/8 via-cream/5 to-soft-gray/8"></div>
+            {/* Desktop Background Image */}
+            <div className="hidden md:block w-full h-full">
+              <Image
+                src={airportTransferImage}
+                alt="Luxury airport transfer service"
+                className="w-full h-full object-cover object-top"
+                imageType="banner"
+                priority={true}
+                sizes="100vw"
+              />
+              <div className="absolute inset-0 bg-gradient-to-br from-warm-gray/8 via-cream/5 to-soft-gray/8"></div>
+            </div>
+            
+            {/* Mobile Luxury Background - Airport Theme */}
+            <div className="block md:hidden w-full h-full relative">
+              {/* Dark luxury gradient base */}
+              <div className="absolute inset-0 bg-gradient-to-br from-slate-800 via-gray-700 to-slate-900"></div>
+              
+              {/* Aviation blue overlay */}
+              <div className="absolute inset-0 bg-gradient-to-tr from-blue-900/30 via-sky-800/20 to-blue-900/25"></div>
+              
+              {/* Airplane flight path graphics with traces - positioned at bottom */}
+              <div className="absolute inset-0 opacity-30">
+                {/* Main flight paths with trailing traces */}
+                <div className="absolute bottom-20 left-8 w-48 h-2 bg-gradient-to-r from-transparent via-sky-300 to-transparent transform rotate-8"></div>
+                {/* Trailing dotted path */}
+                <div className="absolute bottom-20 left-2 w-32 h-1 bg-gradient-to-r from-transparent via-sky-200/60 to-transparent transform rotate-8" style={{ backgroundImage: 'repeating-linear-gradient(90deg, transparent, transparent 3px, rgba(125, 211, 252, 0.4) 3px, rgba(125, 211, 252, 0.4) 6px)' }}></div>
+                
+                <div className="absolute bottom-32 right-12 w-40 h-2 bg-gradient-to-r from-transparent via-blue-300 to-transparent transform -rotate-6"></div>
+                {/* Trailing dotted path */}
+                <div className="absolute bottom-32 right-6 w-28 h-1 bg-gradient-to-r from-transparent via-blue-200/60 to-transparent transform -rotate-6" style={{ backgroundImage: 'repeating-linear-gradient(90deg, transparent, transparent 3px, rgba(147, 197, 253, 0.4) 3px, rgba(147, 197, 253, 0.4) 6px)' }}></div>
+                
+                <div className="absolute bottom-44 left-16 w-56 h-2 bg-gradient-to-r from-transparent via-sky-400 to-transparent transform rotate-4"></div>
+                {/* Trailing dotted path */}
+                <div className="absolute bottom-44 left-8 w-36 h-1 bg-gradient-to-r from-transparent via-sky-300/60 to-transparent transform rotate-4" style={{ backgroundImage: 'repeating-linear-gradient(90deg, transparent, transparent 3px, rgba(56, 189, 248, 0.4) 3px, rgba(56, 189, 248, 0.4) 6px)' }}></div>
+                
+                {/* Airplane icons following the paths */}
+                <div className="absolute bottom-24 left-32 text-sky-300 text-xl transform rotate-8">✈</div>
+                <div className="absolute bottom-36 right-28 text-blue-200 text-lg transform -rotate-6">✈</div>
+                <div className="absolute bottom-48 left-40 text-sky-400 text-xl transform rotate-4">✈</div>
+                
+                {/* Airport runway markers at very bottom */}
+                <div className="absolute bottom-8 left-24 w-6 h-6 bg-sky-300/60 rounded-full"></div>
+                <div className="absolute bottom-12 left-52 w-5 h-5 bg-blue-300/60 rounded-full"></div>
+                <div className="absolute bottom-6 right-36 w-6 h-6 bg-sky-400/60 rounded-full"></div>
+                <div className="absolute bottom-10 right-20 w-5 h-5 bg-blue-200/60 rounded-full"></div>
+              </div>
+              
+              {/* Subtle runway pattern */}
+              <div className="absolute inset-0 opacity-8" style={{
+                backgroundImage: `repeating-linear-gradient(
+                  45deg,
+                  rgba(59, 130, 246, 0.1) 0px,
+                  transparent 2px,
+                  transparent 30px
+                )`
+              }}></div>
+              
+              {/* Soft corner accents */}
+              <div className="absolute top-0 left-0 w-40 h-40 bg-gradient-to-br from-sky-300/20 to-transparent rounded-full blur-3xl"></div>
+              <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-blue-300/25 to-transparent rounded-full blur-2xl"></div>
+              <div className="absolute bottom-0 left-0 w-36 h-36 bg-gradient-to-tr from-primary-gold/20 to-transparent rounded-full blur-2xl"></div>
+              <div className="absolute bottom-0 right-0 w-44 h-44 bg-gradient-to-tl from-sky-400/20 to-transparent rounded-full blur-3xl"></div>
+              
+              {/* Elegant center glow */}
+              <div className="absolute inset-0 bg-gradient-radial from-blue-200/10 via-transparent to-transparent"></div>
+              
+              {/* Subtle depth vignette */}
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-900/40 via-transparent to-slate-800/30"></div>
+            </div>
           </div>
 
           {/* Softer Animated Background Elements */}

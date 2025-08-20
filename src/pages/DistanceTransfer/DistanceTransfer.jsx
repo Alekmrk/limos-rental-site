@@ -131,17 +131,73 @@ const DistanceTransfer = ({ scrollUp }) => {
       <div className="relative">
         {/* Hero Section with Reservation Card */}
         <div className="banner-home relative w-full rounded-[1.5rem] text-center mt-16 pb-32 md:pb-0 overflow-visible min-h-[700px] lg:min-h-[800px]">
-          {/* Optimized Background Image - Full Width */}
+          {/* Background - Image on desktop, luxury pattern on mobile */}
           <div className="absolute inset-0 z-0">
-            <Image
-              src={distanceTransferImage}
-              alt="Luxury distance transfer service"
-              className="w-full h-full object-cover object-top"
-              imageType="banner"
-              priority={true}
-              sizes="100vw"
-            />
-            <div className="absolute inset-0 bg-gradient-to-br from-warm-gray/8 via-cream/5 to-soft-gray/8"></div>
+            {/* Desktop Background Image */}
+            <div className="hidden md:block w-full h-full">
+              <Image
+                src={distanceTransferImage}
+                alt="Luxury distance transfer service"
+                className="w-full h-full object-cover object-top"
+                imageType="banner"
+                priority={true}
+                sizes="100vw"
+              />
+              <div className="absolute inset-0 bg-gradient-to-br from-warm-gray/8 via-cream/5 to-soft-gray/8"></div>
+            </div>
+            
+            {/* Mobile Luxury Background - Distance/Route Theme */}
+            <div className="block md:hidden w-full h-full relative">
+              {/* Deep luxury gradient base */}
+              <div className="absolute inset-0 bg-gradient-to-br from-gray-800 via-slate-700 to-gray-900"></div>
+              
+              {/* Road/route themed overlay */}
+              <div className="absolute inset-0 bg-gradient-to-tr from-emerald-900/25 via-teal-800/15 to-emerald-900/20"></div>
+              
+              {/* Highway route lines - positioned at bottom */}
+              <div className="absolute inset-0 opacity-25">
+                {/* Main highway at bottom */}
+                <div className="absolute bottom-16 left-0 right-0 h-4 bg-gradient-to-r from-transparent via-emerald-400/70 to-transparent"></div>
+                <div className="absolute bottom-17 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-white/60 to-transparent"></div>
+                
+                {/* Secondary road */}
+                <div className="absolute bottom-32 left-0 right-0 h-3 bg-gradient-to-r from-transparent via-teal-400/60 to-transparent"></div>
+                <div className="absolute bottom-32.5 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-white/50 to-transparent"></div>
+                
+                {/* Route markers */}
+                <div className="absolute bottom-12 left-24 w-6 h-6 bg-emerald-400/70 rounded-full"></div>
+                <div className="absolute bottom-12 right-28 w-6 h-6 bg-teal-400/70 rounded-full"></div>
+                <div className="absolute bottom-28 left-32 w-5 h-5 bg-emerald-300/70 rounded-full"></div>
+                <div className="absolute bottom-28 right-32 w-5 h-5 bg-teal-300/70 rounded-full"></div>
+                
+                {/* Mile markers */}
+                <div className="absolute bottom-8 left-1/3 w-3 h-8 bg-emerald-300/60"></div>
+                <div className="absolute bottom-8 right-1/3 w-3 h-8 bg-teal-300/60"></div>
+                <div className="absolute bottom-8 left-1/2 w-3 h-8 bg-emerald-400/60"></div>
+              </div>
+              
+              {/* Subtle geometric road pattern */}
+              <div className="absolute inset-0 opacity-6" style={{
+                backgroundImage: `repeating-linear-gradient(
+                  0deg,
+                  rgba(16, 185, 129, 0.1) 0px,
+                  transparent 3px,
+                  transparent 50px
+                )`
+              }}></div>
+              
+              {/* Soft corner accents */}
+              <div className="absolute top-0 left-0 w-40 h-40 bg-gradient-to-br from-emerald-300/20 to-transparent rounded-full blur-3xl"></div>
+              <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-teal-300/25 to-transparent rounded-full blur-2xl"></div>
+              <div className="absolute bottom-0 left-0 w-36 h-36 bg-gradient-to-tr from-primary-gold/20 to-transparent rounded-full blur-2xl"></div>
+              <div className="absolute bottom-0 right-0 w-44 h-44 bg-gradient-to-tl from-emerald-400/20 to-transparent rounded-full blur-3xl"></div>
+              
+              {/* Elegant center glow */}
+              <div className="absolute inset-0 bg-gradient-radial from-teal-200/10 via-transparent to-transparent"></div>
+              
+              {/* Subtle depth vignette */}
+              <div className="absolute inset-0 bg-gradient-to-t from-gray-900/40 via-transparent to-gray-800/30"></div>
+            </div>
           </div>
 
           {/* Softer Animated Background Elements */}

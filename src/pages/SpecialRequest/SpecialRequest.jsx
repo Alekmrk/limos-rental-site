@@ -176,17 +176,72 @@ const SpecialRequest = ({ scrollUp }) => {
       <div className="relative">
         {/* Hero Section with Reservation Card */}
         <div className="banner-home relative w-full rounded-[1.5rem] text-center mt-16 pb-32 md:pb-0 overflow-visible min-h-[700px] lg:min-h-[800px]">
-          {/* Optimized Background Image - Full Width */}
+          {/* Background - Image on desktop, luxury pattern on mobile */}
           <div className="absolute inset-0 z-0">
-            <Image
-              src={bannerImage}
-              alt="Luxury special request service"
-              className="w-full h-full object-cover object-top"
-              imageType="banner"
-              priority={true}
-              sizes="100vw"
-            />
-            <div className="absolute inset-0 bg-gradient-to-br from-warm-gray/8 via-cream/5 to-soft-gray/8"></div>
+            {/* Desktop Background Image */}
+            <div className="hidden md:block w-full h-full">
+              <Image
+                src={bannerImage}
+                alt="Luxury special request service"
+                className="w-full h-full object-cover object-top"
+                imageType="banner"
+                priority={true}
+                sizes="100vw"
+              />
+              <div className="absolute inset-0 bg-gradient-to-br from-warm-gray/8 via-cream/5 to-soft-gray/8"></div>
+            </div>
+            
+            {/* Mobile Luxury Background - Premium Special Theme */}
+            <div className="block md:hidden w-full h-full relative">
+              {/* Rich luxury gradient base */}
+              <div className="absolute inset-0 bg-gradient-to-br from-purple-900 via-indigo-800 to-purple-900"></div>
+              
+              {/* Premium gold overlay */}
+              <div className="absolute inset-0 bg-gradient-to-tr from-primary-gold/25 via-gold/15 to-primary-gold/30"></div>
+              
+              {/* Elegant decorative elements */}
+              <div className="absolute inset-0 opacity-12">
+                {/* Ornate corner flourishes */}
+                <div className="absolute top-12 left-8 w-16 h-16 border-2 border-primary-gold/40 rounded-full"></div>
+                <div className="absolute top-16 left-12 w-8 h-8 border border-gold/60 rounded-full"></div>
+                <div className="absolute top-12 right-8 w-20 h-20 border-2 border-primary-gold/30 rounded-full"></div>
+                <div className="absolute top-18 right-14 w-6 h-6 border border-gold/50 rounded-full"></div>
+                
+                <div className="absolute bottom-16 left-12 w-18 h-18 border-2 border-primary-gold/35 rounded-full"></div>
+                <div className="absolute bottom-20 left-16 w-10 h-10 border border-gold/45 rounded-full"></div>
+                <div className="absolute bottom-12 right-10 w-14 h-14 border-2 border-primary-gold/40 rounded-full"></div>
+                
+                {/* Elegant connecting lines */}
+                <div className="absolute top-32 left-16 w-32 h-0.5 bg-gradient-to-r from-transparent via-primary-gold/50 to-transparent transform rotate-12"></div>
+                <div className="absolute top-48 right-20 w-28 h-0.5 bg-gradient-to-r from-transparent via-gold/40 to-transparent transform -rotate-8"></div>
+                <div className="absolute bottom-40 left-24 w-36 h-0.5 bg-gradient-to-r from-transparent via-primary-gold/45 to-transparent transform rotate-6"></div>
+                
+                {/* Diamond accents */}
+                <div className="absolute top-28 left-32 w-2 h-2 bg-primary-gold/60 rotate-45"></div>
+                <div className="absolute top-52 right-28 w-2 h-2 bg-gold/50 rotate-45"></div>
+                <div className="absolute bottom-36 left-40 w-2 h-2 bg-primary-gold/55 rotate-45"></div>
+                <div className="absolute bottom-48 right-32 w-2 h-2 bg-gold/45 rotate-45"></div>
+              </div>
+              
+              {/* Luxury texture pattern */}
+              <div className="absolute inset-0 opacity-8" style={{
+                backgroundImage: `radial-gradient(circle at 25% 25%, rgba(212, 175, 55, 0.15) 2px, transparent 2px),
+                                 radial-gradient(circle at 75% 75%, rgba(212, 175, 55, 0.1) 1px, transparent 1px)`,
+                backgroundSize: '60px 60px'
+              }}></div>
+              
+              {/* Soft premium corner accents */}
+              <div className="absolute top-0 left-0 w-48 h-48 bg-gradient-to-br from-primary-gold/25 to-transparent rounded-full blur-3xl"></div>
+              <div className="absolute top-0 right-0 w-36 h-36 bg-gradient-to-bl from-gold/30 to-transparent rounded-full blur-2xl"></div>
+              <div className="absolute bottom-0 left-0 w-40 h-40 bg-gradient-to-tr from-purple-300/20 to-transparent rounded-full blur-2xl"></div>
+              <div className="absolute bottom-0 right-0 w-52 h-52 bg-gradient-to-tl from-primary-gold/20 to-transparent rounded-full blur-3xl"></div>
+              
+              {/* Elegant center glow */}
+              <div className="absolute inset-0 bg-gradient-radial from-gold/15 via-transparent to-transparent"></div>
+              
+              {/* Sophisticated depth vignette */}
+              <div className="absolute inset-0 bg-gradient-to-t from-purple-900/50 via-transparent to-indigo-800/30"></div>
+            </div>
           </div>
 
           {/* Softer Animated Background Elements */}

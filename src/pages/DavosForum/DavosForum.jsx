@@ -78,17 +78,117 @@ const DavosForum = ({ scrollUp }) => {
       <div className="relative">
         {/* Hero Section with Reservation Card */}
         <div className="banner-home relative w-full rounded-[1.5rem] text-center mt-16 pb-32 md:pb-0 overflow-visible min-h-[700px] lg:min-h-[800px]">
-          {/* Optimized Background Image - Full Width */}
+          {/* Background - Image on desktop, luxury pattern on mobile */}
           <div className="absolute inset-0 z-0">
-            <Image
-              src={davosForumImage}
-              alt="Davos Forum luxury transportation"
-              className="w-full h-full object-cover object-top"
-              imageType="banner"
-              priority={true}
-              sizes="100vw"
-            />
-            <div className="absolute inset-0 bg-gradient-to-br from-warm-gray/8 via-cream/5 to-soft-gray/8"></div>
+            {/* Desktop Background Image */}
+            <div className="hidden md:block w-full h-full">
+              <Image
+                src={davosForumImage}
+                alt="Davos Forum luxury transportation"
+                className="w-full h-full object-cover object-top"
+                imageType="banner"
+                priority={true}
+                sizes="100vw"
+              />
+              <div className="absolute inset-0 bg-gradient-to-br from-warm-gray/8 via-cream/5 to-soft-gray/8"></div>
+            </div>
+            
+            {/* Mobile Luxury Background - Alpine/Mountain Theme */}
+            <div className="block md:hidden w-full h-full relative">
+              {/* Alpine luxury gradient base */}
+              <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-blue-900 to-slate-800"></div>
+              
+              {/* Mountain-inspired overlay */}
+              <div className="absolute inset-0 bg-gradient-to-tr from-blue-800/30 via-slate-700/20 to-blue-900/25"></div>
+              
+              {/* Enhanced Alpine mountain silhouettes and snow graphics */}
+              <div className="absolute inset-0 opacity-30">
+                {/* Main mountain range layers at bottom */}
+                <div className="absolute bottom-16 left-0 w-full h-48">
+                  <svg viewBox="0 0 400 192" className="w-full h-full">
+                    {/* Back mountain layer - highest peaks */}
+                    <path d="M0,192 L0,120 L30,80 L60,100 L90,60 L120,85 L150,45 L180,70 L210,40 L240,65 L270,50 L300,75 L330,55 L360,80 L400,70 L400,192 Z" 
+                          fill="rgba(30, 64, 175, 0.4)" stroke="rgba(59, 130, 246, 0.3)" strokeWidth="1"/>
+                    
+                    {/* Middle mountain layer */}
+                    <path d="M0,192 L0,140 L25,110 L55,125 L85,95 L115,115 L145,85 L175,105 L205,75 L235,95 L265,85 L295,105 L325,95 L355,110 L400,105 L400,192 Z" 
+                          fill="rgba(51, 65, 85, 0.5)" stroke="rgba(100, 116, 139, 0.4)" strokeWidth="1"/>
+                    
+                    {/* Front mountain layer - closest */}
+                    <path d="M0,192 L0,160 L20,135 L50,150 L80,125 L110,145 L140,120 L170,140 L200,115 L230,135 L260,125 L290,145 L320,135 L350,150 L400,145 L400,192 Z" 
+                          fill="rgba(71, 85, 105, 0.6)" stroke="rgba(148, 163, 184, 0.5)" strokeWidth="1"/>
+                  </svg>
+                </div>
+                
+                {/* Snow-capped peaks with better visibility */}
+                <div className="absolute bottom-56 left-24 w-6 h-4 bg-white/60 rounded-t-full shadow-sm"></div>
+                <div className="absolute bottom-64 left-60 w-8 h-5 bg-white/55 rounded-t-full shadow-sm"></div>
+                <div className="absolute bottom-72 left-100 w-6 h-4 bg-white/60 rounded-t-full shadow-sm"></div>
+                <div className="absolute bottom-68 left-140 w-7 h-4 bg-white/50 rounded-t-full shadow-sm"></div>
+                <div className="absolute bottom-76 left-180 w-9 h-6 bg-white/65 rounded-t-full shadow-sm"></div>
+                <div className="absolute bottom-70 left-220 w-6 h-4 bg-white/55 rounded-t-full shadow-sm"></div>
+                <div className="absolute bottom-62 right-80 w-7 h-5 bg-white/60 rounded-t-full shadow-sm"></div>
+                <div className="absolute bottom-66 right-50 w-8 h-5 bg-white/55 rounded-t-full shadow-sm"></div>
+                <div className="absolute bottom-58 right-20 w-6 h-4 bg-white/50 rounded-t-full shadow-sm"></div>
+                
+                {/* Ski slope traces */}
+                <div className="absolute bottom-60 left-28 w-20 h-0.5 bg-white/40 transform rotate-12"></div>
+                <div className="absolute bottom-68 left-64 w-24 h-0.5 bg-white/35 transform rotate-8"></div>
+                <div className="absolute bottom-74 left-104 w-18 h-0.5 bg-white/40 transform rotate-15"></div>
+                <div className="absolute bottom-72 left-144 w-22 h-0.5 bg-white/30 transform rotate-10"></div>
+                <div className="absolute bottom-78 left-184 w-26 h-0.5 bg-white/45 transform rotate-12"></div>
+                
+                {/* Alpine trees/forest silhouettes */}
+                <div className="absolute bottom-32 left-8 w-2 h-8 bg-green-900/40 transform skew-y-3"></div>
+                <div className="absolute bottom-36 left-12 w-3 h-12 bg-green-800/35 transform -skew-y-2"></div>
+                <div className="absolute bottom-34 left-18 w-2 h-10 bg-green-900/40 transform skew-y-1"></div>
+                <div className="absolute bottom-38 left-24 w-3 h-14 bg-green-800/40"></div>
+                <div className="absolute bottom-32 right-32 w-2 h-9 bg-green-900/35 transform skew-y-2"></div>
+                <div className="absolute bottom-36 right-28 w-3 h-13 bg-green-800/40 transform -skew-y-1"></div>
+                <div className="absolute bottom-34 right-22 w-2 h-11 bg-green-900/35"></div>
+                
+                {/* Swiss crosses positioned on peaks */}
+                <div className="absolute bottom-58 left-26 text-white/50 text-sm font-bold">✚</div>
+                <div className="absolute bottom-66 left-62 text-white/45 text-sm font-bold">✚</div>
+                <div className="absolute bottom-74 left-102 text-white/50 text-sm font-bold">✚</div>
+                <div className="absolute bottom-78 left-182 text-white/55 text-lg font-bold">✚</div>
+                <div className="absolute bottom-64 right-78 text-white/45 text-sm font-bold">✚</div>
+                
+                {/* Alpine village lights */}
+                <div className="absolute bottom-28 left-40 w-1 h-1 bg-yellow-300/60 rounded-full"></div>
+                <div className="absolute bottom-30 left-45 w-1 h-1 bg-yellow-200/50 rounded-full"></div>
+                <div className="absolute bottom-26 left-52 w-1 h-1 bg-yellow-300/55 rounded-full"></div>
+                <div className="absolute bottom-32 right-60 w-1 h-1 bg-yellow-200/60 rounded-full"></div>
+                <div className="absolute bottom-28 right-55 w-1 h-1 bg-yellow-300/50 rounded-full"></div>
+                
+                {/* Mountain cable/gondola lines */}
+                <div className="absolute bottom-50 left-20 w-40 h-0.5 bg-gray-400/30 transform rotate-6"></div>
+                <div className="absolute bottom-45 left-70 w-35 h-0.5 bg-gray-300/25 transform rotate-3"></div>
+                <div className="absolute bottom-52 right-40 w-30 h-0.5 bg-gray-400/30 transform -rotate-4"></div>
+              </div>
+              
+              {/* Alpine geometric pattern */}
+              <div className="absolute inset-0 opacity-8" style={{
+                backgroundImage: `repeating-linear-gradient(
+                  60deg,
+                  rgba(59, 130, 246, 0.1) 0px,
+                  transparent 2px,
+                  transparent 40px
+                )`
+              }}></div>
+              
+              {/* Soft mountain-inspired corner accents */}
+              <div className="absolute top-0 left-0 w-44 h-44 bg-gradient-to-br from-blue-300/25 to-transparent rounded-full blur-3xl"></div>
+              <div className="absolute top-0 right-0 w-36 h-36 bg-gradient-to-bl from-slate-300/30 to-transparent rounded-full blur-2xl"></div>
+              <div className="absolute bottom-0 left-0 w-40 h-40 bg-gradient-to-tr from-primary-gold/20 to-transparent rounded-full blur-2xl"></div>
+              <div className="absolute bottom-0 right-0 w-48 h-48 bg-gradient-to-tl from-blue-400/20 to-transparent rounded-full blur-3xl"></div>
+              
+              {/* Elegant alpine center glow */}
+              <div className="absolute inset-0 bg-gradient-radial from-blue-200/12 via-transparent to-transparent"></div>
+              
+              {/* Mountain depth vignette */}
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-900/50 via-transparent to-blue-900/30"></div>
+            </div>
           </div>
 
           {/* Softer Animated Background Elements */}

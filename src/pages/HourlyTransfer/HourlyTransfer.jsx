@@ -176,6 +176,81 @@ const HourlyTransfer = ({ scrollUp }) => {
               {/* Elegant gold wash overlay */}
               <div className="absolute inset-0 bg-gradient-to-tr from-primary-gold/20 via-gold/10 to-primary-gold/15"></div>
               
+              {/* Precise luxury watch graphics - positioned at bottom */}
+              <div className="absolute inset-0 opacity-35">
+                {/* Main precision watch face */}
+                <div className="absolute bottom-20 left-1/2 transform -translate-x-1/2 w-40 h-40 border-4 border-primary-gold/80 rounded-full bg-gradient-to-br from-gray-800/30 to-gray-900/40 shadow-lg"></div>
+                <div className="absolute bottom-22 left-1/2 transform -translate-x-1/2 w-36 h-36 border-2 border-gold/70 rounded-full"></div>
+                <div className="absolute bottom-24 left-1/2 transform -translate-x-1/2 w-32 h-32 border border-primary-gold/60 rounded-full"></div>
+                
+                {/* Precision hour markers (12 positions like real watch) */}
+                <div className="absolute bottom-10 left-1/2 transform -translate-x-1/2 w-1.5 h-6 bg-primary-gold/90"></div>
+                <div className="absolute bottom-54 left-1/2 transform -translate-x-1/2 w-1.5 h-6 bg-primary-gold/90"></div>
+                <div className="absolute bottom-32 left-0 w-1.5 h-6 bg-primary-gold/90 transform rotate-90"></div>
+                <div className="absolute bottom-32 right-0 w-1.5 h-6 bg-primary-gold/90 transform rotate-90"></div>
+                
+                {/* Additional precise hour markers */}
+                <div className="absolute bottom-14 left-4 w-1 h-4 bg-gold/80 transform rotate-30"></div>
+                <div className="absolute bottom-18 left-6 w-1 h-4 bg-primary-gold/70 transform rotate-60"></div>
+                <div className="absolute bottom-46 left-6 w-1 h-4 bg-gold/70 transform rotate-120"></div>
+                <div className="absolute bottom-50 left-4 w-1 h-4 bg-primary-gold/70 transform rotate-150"></div>
+                <div className="absolute bottom-50 right-4 w-1 h-4 bg-gold/80 transform rotate-210"></div>
+                <div className="absolute bottom-46 right-6 w-1 h-4 bg-primary-gold/70 transform rotate-240"></div>
+                <div className="absolute bottom-18 right-6 w-1 h-4 bg-gold/70 transform rotate-300"></div>
+                <div className="absolute bottom-14 right-4 w-1 h-4 bg-primary-gold/70 transform rotate-330"></div>
+                
+                {/* Precise watch hands showing 10:10 (classic watch display time) */}
+                <div className="absolute bottom-32 left-1/2 transform -translate-x-1/2 w-14 h-1.5 bg-primary-gold/95 transform rotate-45 origin-left rounded-full"></div>
+                <div className="absolute bottom-32 left-1/2 transform -translate-x-1/2 w-16 h-1 bg-gold/90 transform rotate-315 origin-left rounded-full"></div>
+                <div className="absolute bottom-32 left-1/2 transform -translate-x-1/2 w-12 h-0.5 bg-primary-gold/80 transform rotate-90 origin-left"></div>
+                
+                {/* Watch center dot */}
+                <div className="absolute bottom-32 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-primary-gold/90 rounded-full"></div>
+                
+                {/* Minute markers (precise tiny lines) */}
+                <div className="absolute bottom-12 left-1/2 transform -translate-x-1/2 w-0.5 h-2 bg-gold/60 transform rotate-6"></div>
+                <div className="absolute bottom-12 left-1/2 transform -translate-x-1/2 w-0.5 h-2 bg-gold/60 transform rotate-12"></div>
+                <div className="absolute bottom-12 left-1/2 transform -translate-x-1/2 w-0.5 h-2 bg-gold/60 transform rotate-18"></div>
+                <div className="absolute bottom-12 left-1/2 transform -translate-x-1/2 w-0.5 h-2 bg-gold/60 transform rotate-24"></div>
+                
+                {/* Watch crown (right side) */}
+                <div className="absolute bottom-31 right-6 w-4 h-8 bg-primary-gold/70 rounded-sm"></div>
+                <div className="absolute bottom-30 right-5 w-2 h-6 bg-gold/80 rounded-sm"></div>
+                <div className="absolute bottom-29 right-4 w-1 h-4 bg-primary-gold/60"></div>
+                
+                {/* Chronograph sub-dials with hands */}
+                <div className="absolute bottom-26 left-8 w-8 h-8 border-2 border-primary-gold/60 rounded-full bg-gray-800/20"></div>
+                <div className="absolute bottom-38 left-8 w-8 h-8 border-2 border-gold/60 rounded-full bg-gray-800/20"></div>
+                <div className="absolute bottom-26 right-8 w-8 h-8 border-2 border-primary-gold/60 rounded-full bg-gray-800/20"></div>
+                
+                {/* Sub-dial hands */}
+                <div className="absolute bottom-28 left-10 w-2 h-0.5 bg-primary-gold/70 transform rotate-45"></div>
+                <div className="absolute bottom-40 left-10 w-2 h-0.5 bg-gold/70 transform rotate-90"></div>
+                <div className="absolute bottom-28 right-10 w-2 h-0.5 bg-primary-gold/70 transform rotate-30"></div>
+                
+                {/* Additional precision watches on sides */}
+                <div className="absolute bottom-42 left-20 w-20 h-20 border-3 border-primary-gold/50 rounded-full bg-gradient-to-br from-gray-700/20 to-gray-800/30"></div>
+                <div className="absolute bottom-42 right-20 w-20 h-20 border-3 border-gold/50 rounded-full bg-gradient-to-br from-gray-700/20 to-gray-800/30"></div>
+                
+                {/* Side watch details */}
+                <div className="absolute bottom-46 left-24 w-6 h-0.5 bg-primary-gold/70 transform rotate-45"></div>
+                <div className="absolute bottom-46 left-24 w-4 h-0.5 bg-gold/60 transform rotate-90"></div>
+                <div className="absolute bottom-46 right-24 w-6 h-0.5 bg-gold/70 transform rotate-30"></div>
+                <div className="absolute bottom-46 right-24 w-4 h-0.5 bg-primary-gold/60 transform rotate-120"></div>
+                
+                {/* Watch band/chain links */}
+                <div className="absolute bottom-16 left-28 w-1 h-12 bg-primary-gold/60 rounded-full"></div>
+                <div className="absolute bottom-16 left-30 w-1 h-10 bg-gold/60 rounded-full"></div>
+                <div className="absolute bottom-16 left-32 w-1 h-12 bg-primary-gold/50 rounded-full"></div>
+                <div className="absolute bottom-16 right-28 w-1 h-12 bg-gold/60 rounded-full"></div>
+                <div className="absolute bottom-16 right-30 w-1 h-10 bg-primary-gold/60 rounded-full"></div>
+                <div className="absolute bottom-16 right-32 w-1 h-12 bg-gold/50 rounded-full"></div>
+                
+                {/* Digital display elements */}
+                <div className="absolute bottom-22 left-12 w-12 h-3 bg-primary-gold/50 rounded border border-gold/60"></div>
+                <div className="absolute bottom-42 right-12 w-12 h-3 bg-gold/50 rounded border border-primary-gold/60"></div>
+              </div>
+              
               {/* Subtle luxury texture */}
               <div className="absolute inset-0 opacity-8" style={{
                 backgroundImage: `repeating-linear-gradient(
@@ -254,13 +329,13 @@ const HourlyTransfer = ({ scrollUp }) => {
 
           {/* Mobile Layout: Reservation Card and Badges in Same Container */}
           <div className="block md:hidden relative z-20 px-4">
-            <div className="pt-32 mb-8">
+            <div className="pt-12 mb-6">
               {/* Main Title with glassy background */}
-              <div className="relative mb-8 flex justify-center">
+              <div className="relative mb-6 flex justify-center">
                 <div className="relative">
-                  <div className="absolute inset-0 bg-black/15 backdrop-blur-sm rounded-2xl transform translate-x-1 translate-y-1"></div>
-                  <div className="relative bg-white/20 backdrop-blur-md rounded-2xl px-6 py-4 border border-white/30 shadow-2xl">
-                    <h1 className="text-3xl sm:text-4xl font-semibold text-center drop-shadow-lg">
+                  <div className="absolute inset-0 bg-black/15 backdrop-blur-sm rounded-xl transform translate-x-1 translate-y-1"></div>
+                  <div className="relative bg-white/20 backdrop-blur-md rounded-xl px-4 py-3 border border-white/30 shadow-2xl">
+                    <h1 className="text-hero text-center drop-shadow-lg">
                       <span className="text-royal-blue drop-shadow-lg">Hourly</span>{" "}
                       <span className="text-gold drop-shadow-lg">Transfer</span>
                     </h1>
@@ -269,23 +344,23 @@ const HourlyTransfer = ({ scrollUp }) => {
               </div>
             </div>
 
-            <div className="mb-8">
+            <div className="mb-6">
               <div className="relative z-50">
                 <ReservationCard idPrefix="mobile-" />
               </div>
               
               {/* Mobile Trust Indicators - After reservation card */}
-              <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center items-center text-gray-600 text-sm">
-                <div className="flex items-center gap-2 bg-cream-light/80 backdrop-blur-sm px-4 py-2 rounded-full border border-royal-blue/20 shadow-md">
-                  <FontAwesomeIcon icon={faClock} className="text-royal-blue" />
+              <div className="mt-6 flex flex-col sm:flex-row gap-3 justify-center items-center text-gray-600 text-xs">
+                <div className="flex items-center gap-2 bg-cream-light/80 backdrop-blur-sm px-3 py-1.5 rounded-full border border-royal-blue/20 shadow-md">
+                  <FontAwesomeIcon icon={faClock} className="text-royal-blue text-sm" />
                   <span className="text-gray-700 font-medium">3-24 Hours</span>
                 </div>
-                <div className="flex items-center gap-2 bg-cream-light/80 backdrop-blur-sm px-4 py-2 rounded-full border border-royal-blue/20 shadow-md">
-                  <FontAwesomeIcon icon={faRoute} className="text-royal-blue" />
+                <div className="flex items-center gap-2 bg-cream-light/80 backdrop-blur-sm px-3 py-1.5 rounded-full border border-royal-blue/20 shadow-md">
+                  <FontAwesomeIcon icon={faRoute} className="text-royal-blue text-sm" />
                   <span className="text-gray-700 font-medium">Multiple Stops</span>
                 </div>
-                <div className="flex items-center gap-2 bg-cream-light/80 backdrop-blur-sm px-4 py-2 rounded-full border border-royal-blue/20 shadow-md">
-                  <FontAwesomeIcon icon={faShieldAlt} className="text-emerald-500" />
+                <div className="flex items-center gap-2 bg-cream-light/80 backdrop-blur-sm px-3 py-1.5 rounded-full border border-royal-blue/20 shadow-md">
+                  <FontAwesomeIcon icon={faShieldAlt} className="text-emerald-500 text-sm" />
                   <span className="text-gray-700 font-medium">Personal Service</span>
                 </div>
               </div>
