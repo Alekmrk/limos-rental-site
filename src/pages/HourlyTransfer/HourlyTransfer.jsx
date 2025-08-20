@@ -373,7 +373,7 @@ const HourlyTransfer = ({ scrollUp }) => {
             <defs>
               <linearGradient id="softWaveGradient" x1="0%" y1="0%" x2="100%" y2="0%">
                 <stop offset="0%" stopColor="currentColor" stopOpacity="0.9"/>
-                <stop offset="50%" stopColor="#F8F7F4" stopOpacity="0.8"/>
+                <stop offset="50%" stopColor="#EBE5DD" stopOpacity="0.8"/>
                 <stop offset="100%" stopColor="currentColor" stopOpacity="0.9"/>
               </linearGradient>
             </defs>
