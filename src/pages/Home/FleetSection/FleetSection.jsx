@@ -14,16 +14,16 @@ const FleetSection = ({ setSelectedVehicle }) => {
 
         <div className="container-wide relative z-10">
           {/* Harmonious Header */}
-          <div className="text-center mb-6">
-            <div className="inline-flex items-center gap-2 bg-primary-gold/15 backdrop-blur-sm text-gray-700 px-4 py-2 rounded-2xl border border-primary-gold/30 shadow-lg mb-4">
+          <div className="text-center mb-2 md:mb-6">
+            <div className="inline-flex items-center gap-2 bg-primary-gold/15 backdrop-blur-sm text-gray-700 px-4 py-2 rounded-2xl border border-primary-gold/30 shadow-lg mb-1 md:mb-4">
               <FaCar className="text-xl md:text-2xl text-primary-gold" />
               <h2 className="text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold text-gray-700">
                 Our Luxury Fleet
               </h2>
             </div>
 
-            {/* Softer Fleet Features */}
-            <div className="flex flex-col sm:flex-row justify-center items-center gap-3 text-gray-700">
+            {/* Softer Fleet Features - Hidden on mobile */}
+            <div className="hidden sm:flex flex-col sm:flex-row justify-center items-center gap-3 text-gray-700">
               <div className="flex items-center gap-2 bg-cream-light/90 backdrop-blur-sm px-3 py-1 rounded-full border border-primary-gold/20 shadow-md">
                 <FaStar className="text-primary-gold text-sm md:text-lg" />
                 <span className="font-medium text-sm md:text-base">Premium Selection</span>
