@@ -457,26 +457,26 @@ const BookingPage = ({ scrollUp }) => {
           
           {/* Hero Section */}
           <div className="text-center mb-16">
-            <h1 className="text-5xl md:text-7xl font-bold mb-8 text-gray-700 mt-[50px]">
+            <h1 className="text-3xl md:text-5xl font-bold mb-6 text-gray-700 mt-[50px]">
               <span className="text-primary-gold">Book Your</span> 
               <br className="md:hidden" />
               <span className="text-gold"> Premium</span> Transfer
             </h1>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-12 leading-relaxed">
+            <p className="text-lg text-gray-600 max-w-3xl mx-auto mb-10 leading-relaxed">
               Experience Switzerland's finest luxury transportation service. Choose from our premium fleet 
               and enjoy professional chauffeur service tailored to your needs.
             </p>
             
             {/* Key Features */}
-            <div className="hidden md:grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+            <div className="hidden md:grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
               <div className="bg-warm-white/80 backdrop-blur-sm rounded-2xl p-6 border border-primary-gold/10 shadow-lg">
                 <div className="w-12 h-12 bg-primary-gold/10 rounded-full flex items-center justify-center mx-auto mb-4">
                   <svg className="w-6 h-6 text-primary-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
                 </div>
-                <h3 className="text-lg font-semibold text-gray-700 mb-2">24/7 Service</h3>
-                <p className="text-gray-600 text-sm">Professional chauffeurs available around the clock</p>
+                <h3 className="text-base font-semibold text-gray-700 mb-2">24/7 Service</h3>
+                <p className="text-gray-600 text-xs">Professional chauffeurs available around the clock</p>
               </div>
               <div className="bg-warm-white/80 backdrop-blur-sm rounded-2xl p-6 border border-primary-gold/10 shadow-lg">
                 <div className="w-12 h-12 bg-gold/10 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -484,8 +484,8 @@ const BookingPage = ({ scrollUp }) => {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
                 </div>
-                <h3 className="text-lg font-semibold text-gray-700 mb-2">Luxury Fleet</h3>
-                <p className="text-gray-600 text-sm">Premium vehicles maintained to highest standards</p>
+                <h3 className="text-base font-semibold text-gray-700 mb-2">Luxury Fleet</h3>
+                <p className="text-gray-600 text-xs">Premium vehicles maintained to highest standards</p>
               </div>
               <div className="bg-warm-white/80 backdrop-blur-sm rounded-2xl p-6 border border-primary-gold/10 shadow-lg">
                 <div className="w-12 h-12 bg-emerald-500/10 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -494,8 +494,8 @@ const BookingPage = ({ scrollUp }) => {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                   </svg>
                 </div>
-                <h3 className="text-lg font-semibold text-gray-700 mb-2">Switzerland Wide</h3>
-                <p className="text-gray-600 text-sm">Comprehensive coverage across all Swiss regions</p>
+                <h3 className="text-base font-semibold text-gray-700 mb-2">Switzerland Wide</h3>
+                <p className="text-gray-600 text-xs">Comprehensive coverage across all Swiss regions</p>
               </div>
             </div>
           </div>
@@ -514,10 +514,10 @@ const BookingPage = ({ scrollUp }) => {
             >
               
               {/* Service Type Selection */}
-              <div className="space-y-8">
+              <div className="space-y-6">
                 <div className="text-center">
-                  <h2 className="text-3xl font-bold text-gray-700 mb-4">Select Your Service</h2>
-                  <p className="text-gray-600 text-lg">Choose the type of transportation that best fits your needs</p>
+                  <h2 className="text-2xl font-bold text-gray-700 mb-3">Select Your Service</h2>
+                  <p className="text-gray-600 text-base">Choose the type of transportation that best fits your needs</p>
                 </div>
                 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -563,8 +563,8 @@ const BookingPage = ({ scrollUp }) => {
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                         </svg>
                       </div>
-                      <h3 className="text-xl font-semibold text-gray-700 mb-2 group-hover:text-primary-gold transition-colors duration-200">Distance Transfer</h3>
-                      <p className="text-gray-600 text-sm mb-4">Point-to-point transportation with fixed pricing</p>
+                      <h3 className="text-lg font-semibold text-gray-700 mb-2 group-hover:text-primary-gold transition-colors duration-200">Distance Transfer</h3>
+                      <p className="text-gray-600 text-xs mb-3">Point-to-point transportation with fixed pricing</p>
                       <ul className="text-xs text-gray-500 space-y-1">
                         <li>• Airport transfers</li>
                         <li>• City-to-city travel</li>
@@ -621,8 +621,8 @@ const BookingPage = ({ scrollUp }) => {
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
                       </div>
-                      <h3 className="text-xl font-semibold text-gray-700 mb-2 group-hover:text-primary-gold transition-colors duration-200">Hourly Service</h3>
-                      <p className="text-gray-600 text-sm mb-4">Vehicle at your disposal for multiple stops</p>
+                      <h3 className="text-lg font-semibold text-gray-700 mb-2 group-hover:text-primary-gold transition-colors duration-200">Hourly Service</h3>
+                      <p className="text-gray-600 text-xs mb-3">Vehicle at your disposal for multiple stops</p>
                       <ul className="text-xs text-gray-500 space-y-1">
                         <li>• Business meetings</li>
                         <li>• Shopping tours</li>
@@ -679,8 +679,8 @@ const BookingPage = ({ scrollUp }) => {
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
                         </svg>
                       </div>
-                      <h3 className="text-xl font-semibold text-gray-700 mb-2 group-hover:text-primary-gold transition-colors duration-200">Special Request</h3>
-                      <p className="text-gray-600 text-sm mb-4">Custom transportation solutions</p>
+                      <h3 className="text-lg font-semibold text-gray-700 mb-2 group-hover:text-primary-gold transition-colors duration-200">Special Request</h3>
+                      <p className="text-gray-600 text-xs mb-3">Custom transportation solutions</p>
                       <ul className="text-xs text-gray-500 space-y-1">
                         <li>• Multi-city tours</li>
                         <li>• Corporate events</li>
@@ -703,8 +703,8 @@ const BookingPage = ({ scrollUp }) => {
                 {!reservationInfo.isSpecialRequest ? (
                   <>
                     {/* Location Fields */}
-                    <div className="space-y-6">
-                      <h3 id="travel-details" className="text-2xl font-semibold text-gray-700 text-center">Travel Details</h3>
+                    <div className="space-y-4">
+                      <h3 id="travel-details" className="text-xl font-semibold text-gray-700 text-center">Travel Details</h3>
                       
                       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                         <div>
@@ -889,14 +889,14 @@ const BookingPage = ({ scrollUp }) => {
                     </div>
 
                     {/* Additional Info */}
-                    <div className="bg-primary-gold/5 border border-primary-gold/20 rounded-xl p-6">
+                    <div className="bg-primary-gold/5 border border-primary-gold/20 rounded-xl p-4">
                       <div className="flex items-start gap-3">
                         <svg className="w-5 h-5 text-primary-gold mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
                         <div>
-                          <h4 className="font-medium text-gray-700 mb-2">Service Information</h4>
-                          <ul className="text-sm text-gray-600 space-y-1">
+                          <h4 className="font-medium text-gray-700 mb-2 text-sm">Service Information</h4>
+                          <ul className="text-xs text-gray-600 space-y-1">
                             <li>• Minimum 3 hours advance booking required</li>
                             <li>• All prices include professional chauffeur service</li>
                             <li>• Complimentary flight monitoring for airport transfers</li>
@@ -909,26 +909,26 @@ const BookingPage = ({ scrollUp }) => {
                 ) : (
                   <>
                     {/* Special Request Information */}
-                    <div className="space-y-6">
-                      <h3 id="custom-request-details" className="text-2xl font-semibold text-gray-700 text-center">Custom Transportation Request</h3>
+                    <div className="space-y-4">
+                      <h3 id="custom-request-details" className="text-xl font-semibold text-gray-700 text-center">Custom Transportation Request</h3>
                       
-                      <div className="bg-gradient-to-br from-gold/10 to-royal-blue/5 border border-gold/30 rounded-2xl p-8">
-                        <div className="text-center mb-6">
+                      <div className="bg-gradient-to-br from-gold/10 to-royal-blue/5 border border-gold/30 rounded-2xl p-6">
+                        <div className="text-center mb-4">
                           <div className="w-16 h-16 bg-gold/20 rounded-full flex items-center justify-center mx-auto mb-4">
                             <svg className="w-8 h-8 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
                             </svg>
                           </div>
-                          <h4 className="text-xl font-semibold text-gray-700 mb-4">Premium Custom Services</h4>
-                          <p className="text-gray-600 text-lg">
+                          <h4 className="text-lg font-semibold text-gray-700 mb-3">Premium Custom Services</h4>
+                          <p className="text-gray-600 text-base">
                             Tell us about your unique transportation needs and we'll create a personalized experience just for you.
                           </p>
                         </div>
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                           <div>
-                            <h5 className="font-semibold text-gray-700 mb-3">Perfect for:</h5>
-                            <ul className="space-y-2 text-sm text-gray-600">
+                            <h5 className="font-semibold text-gray-700 mb-3 text-sm">Perfect for:</h5>
+                            <ul className="space-y-2 text-xs text-gray-600">
                               <li className="flex items-center gap-2">
                                 <span className="w-2 h-2 bg-gold rounded-full"></span>
                                 Multi-city tours & sightseeing
@@ -953,8 +953,8 @@ const BookingPage = ({ scrollUp }) => {
                           </div>
 
                           <div>
-                            <h5 className="font-semibold text-gray-700 mb-3">What You Get:</h5>
-                            <ul className="space-y-2 text-sm text-gray-600">
+                            <h5 className="font-semibold text-gray-700 mb-3 text-sm">What You Get:</h5>
+                            <ul className="space-y-2 text-xs text-gray-600">
                               <li className="flex items-center gap-2">
                                 <svg className="w-4 h-4 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
@@ -1010,7 +1010,7 @@ const BookingPage = ({ scrollUp }) => {
                   <Button 
                     type="submit" 
                     variant="secondary" 
-                    className="w-full md:w-auto min-w-[250px] py-4 px-10 text-lg font-semibold tracking-wide transition-all duration-300 hover:shadow-[0_0_25px_rgba(65,105,225,0.2)] hover:transform hover:scale-105"
+                    className="w-full md:w-auto min-w-[200px] py-3 px-8 text-base font-semibold tracking-wide transition-all duration-300 hover:shadow-[0_0_25px_rgba(65,105,225,0.2)] hover:transform hover:scale-105"
                   >
                     {reservationInfo.isSpecialRequest ? (
                       <span className="flex items-center gap-2">
@@ -1043,45 +1043,45 @@ const BookingPage = ({ scrollUp }) => {
           </div>
 
           {/* Additional Features Section */}
-          <div className="mt-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <div className="text-center p-6 bg-warm-white/60 backdrop-blur-sm rounded-xl border border-primary-gold/10">
+          <div className="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="text-center p-4 bg-warm-white/60 backdrop-blur-sm rounded-xl border border-primary-gold/10">
               <div className="w-12 h-12 bg-primary-gold/10 rounded-full flex items-center justify-center mx-auto mb-4">
                 <svg className="w-6 h-6 text-primary-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
               </div>
-              <h4 className="font-semibold text-gray-700 mb-2">Reliability</h4>
-              <p className="text-sm text-gray-600">On-time service guaranteed</p>
+              <h4 className="font-semibold text-gray-700 mb-2 text-sm">Reliability</h4>
+              <p className="text-xs text-gray-600">On-time service guaranteed</p>
             </div>
             
-            <div className="text-center p-6 bg-warm-white/60 backdrop-blur-sm rounded-xl border border-primary-gold/10">
+            <div className="text-center p-4 bg-warm-white/60 backdrop-blur-sm rounded-xl border border-primary-gold/10">
               <div className="w-12 h-12 bg-gold/10 rounded-full flex items-center justify-center mx-auto mb-4">
                 <svg className="w-6 h-6 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
                 </svg>
               </div>
-              <h4 className="font-semibold text-gray-700 mb-2">Fair Pricing</h4>
-              <p className="text-sm text-gray-600">Transparent rates, no hidden fees</p>
+              <h4 className="font-semibold text-gray-700 mb-2 text-sm">Fair Pricing</h4>
+              <p className="text-xs text-gray-600">Transparent rates, no hidden fees</p>
             </div>
             
-            <div className="text-center p-6 bg-warm-white/60 backdrop-blur-sm rounded-xl border border-primary-gold/10">
+            <div className="text-center p-4 bg-warm-white/60 backdrop-blur-sm rounded-xl border border-primary-gold/10">
               <div className="w-12 h-12 bg-emerald-500/10 rounded-full flex items-center justify-center mx-auto mb-4">
                 <svg className="w-6 h-6 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                 </svg>
               </div>
-              <h4 className="font-semibold text-gray-700 mb-2">Professional</h4>
-              <p className="text-sm text-gray-600">Trained, licensed chauffeurs</p>
+              <h4 className="font-semibold text-gray-700 mb-2 text-sm">Professional</h4>
+              <p className="text-xs text-gray-600">Trained, licensed chauffeurs</p>
             </div>
             
-            <div className="text-center p-6 bg-warm-white/60 backdrop-blur-sm rounded-xl border border-primary-gold/10">
+            <div className="text-center p-4 bg-warm-white/60 backdrop-blur-sm rounded-xl border border-primary-gold/10">
               <div className="w-12 h-12 bg-purple-500/10 rounded-full flex items-center justify-center mx-auto mb-4">
                 <svg className="w-6 h-6 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 4V2a1 1 0 011-1h8a1 1 0 011 1v2m4 0H3a2 2 0 000 4h.01M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8" />
                 </svg>
               </div>
-              <h4 className="font-semibold text-gray-700 mb-2">Comfort</h4>
-              <p className="text-sm text-gray-600">Luxury amenities included</p>
+              <h4 className="font-semibold text-gray-700 mb-2 text-sm">Comfort</h4>
+              <p className="text-xs text-gray-600">Luxury amenities included</p>
             </div>
           </div>
         </div>
