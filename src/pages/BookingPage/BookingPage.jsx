@@ -1034,7 +1034,7 @@ const BookingPage = ({ scrollUp }) => {
                 )}
 
                 {/* Submit Button */}
-                <div id="submit-section" className="text-center pt-8 relative">
+                <div id="submit-section" className="text-center pt-1 md:pt-8 relative">
                   {/* Global Switzerland Error - Positioned absolutely to not affect layout */}
                   {(errors.pickup === "At least one location must be in Switzerland" || errors.dropoff === "At least one location must be in Switzerland") && (
                     <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 bg-red-50 border border-red-200 rounded-lg p-3 shadow-lg z-10 min-w-[300px]">
