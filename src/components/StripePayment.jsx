@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import Button from './Button';
 import { getStoredUTMParameters, captureUTMParameters } from '../utils/utmTracking';
 
@@ -7,10 +7,10 @@ const API_BASE_URL = import.meta.env.PROD
   ? 'https://api.elitewaylimo.ch'
   : 'http://localhost:3001';
 
-const StripePayment = ({ amount, onSuccess, onError, reservationInfo }) => {
+const StripePayment = ({ amount, onSuccess, onError, reservationInfo, isButtonSticky, onPaymentHandler }) => {
   const [isProcessing, setIsProcessing] = useState(false);
 
-  const handlePayment = async () => {
+  const handlePayment = useCallback(async () => {
     if (isProcessing) return;
     setIsProcessing(true);
 
@@ -150,14 +150,23 @@ const StripePayment = ({ amount, onSuccess, onError, reservationInfo }) => {
     } finally {
       setIsProcessing(false);
     }
-  };
+  }, [amount, onSuccess, onError]);
+
+  // Expose the payment handler to parent component
+  useEffect(() => {
+    if (onPaymentHandler) {
+      onPaymentHandler(handlePayment, isProcessing);
+    }
+  }, [isProcessing]); // Only depend on isProcessing
 
   return (
-    <div>
+    <div id="stripe-payment-section">
       <Button
         onClick={handlePayment}
         disabled={isProcessing}
-        className="w-full py-2.5"
+        className={`w-full py-2.5 ${
+          isButtonSticky ? 'md:block hidden' : 'block'
+        }`}
       >
         {isProcessing ? 'Opening Payment Window...' : `Pay ${amount} CHF`}
       </Button>

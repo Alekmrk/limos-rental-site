@@ -19,6 +19,9 @@ const PaymentPage = ({ scrollUp }) => {
   const [usdtAddress, setUsdtAddress] = useState("");
   const [errorMessage, setErrorMessage] = useState('');
   const [retryCount, setRetryCount] = useState(0);
+  const [isButtonSticky, setIsButtonSticky] = useState(false);
+  const [paymentHandler, setPaymentHandler] = useState(null);
+  const [paymentProcessing, setPaymentProcessing] = useState(false);
   const maxRetries = 3;
 
   // Suppress cookie consent during payment flow
@@ -57,6 +60,54 @@ const PaymentPage = ({ scrollUp }) => {
     scrollUp();
   }, [scrollUp]);
 
+  // Sticky button behavior
+  useEffect(() => {
+    const handleScroll = () => {
+      // Only on mobile
+      if (window.innerWidth >= 768) {
+        setIsButtonSticky(false);
+        return;
+      }
+
+      // Find the stripe payment section (the actual button area)
+      const submitSection = document.getElementById('stripe-payment-section');
+      if (!submitSection) return;
+
+      const rect = submitSection.getBoundingClientRect();
+      const windowHeight = window.innerHeight;
+      
+      // Trigger 30px earlier (when bottom is 30px below viewport)
+      const triggerOffset = 30;
+      // Add buffer to prevent glitching at the boundary
+      const buffer = 30;
+      
+      // If the bottom of the payment section is 30px below the viewport (with buffer), make button sticky
+      if (rect.bottom > windowHeight - triggerOffset + buffer) {
+        setIsButtonSticky(true);
+      } else if (rect.bottom < windowHeight - triggerOffset - buffer) {
+        setIsButtonSticky(false);
+      }
+      // Don't change state when within the buffer zone to prevent flickering
+    };
+
+    // Add a small delay to ensure the component is fully rendered
+    const timeoutId = setTimeout(() => {
+      if (window.innerWidth < 768) {
+        window.addEventListener('scroll', handleScroll);
+        window.addEventListener('resize', handleScroll);
+        
+        // Initial check
+        handleScroll();
+      }
+    }, 200);
+
+    return () => {
+      clearTimeout(timeoutId);
+      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('resize', handleScroll);
+    };
+  }, [paymentMethod]); // Re-run when payment method changes
+
   useEffect(() => {
     if (!reservationInfo.selectedVehicle) return;
 
@@ -69,6 +120,7 @@ const PaymentPage = ({ scrollUp }) => {
       reservationInfo.isHourly ? parseInt(reservationInfo.hours) : 0
     );
       // TEMPORARY: Override price to 0.5 CHF for testing - REMOVE THIS LATER
+    setPaymentMethod("card");
     setPrice(calculatedPrice || 0);
   }, [reservationInfo]);
 
@@ -350,7 +402,7 @@ const PaymentPage = ({ scrollUp }) => {
 
             {/* Payment Method Selection */}
             <div className="space-y-4 bg-warm-white/90 backdrop-blur-md p-6 rounded-xl border border-royal-blue/20 shadow-lg" data-payment-methods>
-              <h2 className="text-xl font-medium text-gray-700">Select Payment Method</h2>
+              <h2 className="text-xl font-medium text-gray-700">Selected Payment Method</h2>
               
               <div className="grid grid-cols-1 gap-4">
                 <button
@@ -382,6 +434,11 @@ const PaymentPage = ({ scrollUp }) => {
                   onSuccess={handlePaymentSuccess}
                   onError={handlePaymentError}
                   reservationInfo={reservationInfo}
+                  isButtonSticky={isButtonSticky}
+                  onPaymentHandler={(handler, processing) => {
+                    setPaymentHandler(() => handler);
+                    setPaymentProcessing(processing);
+                  }}
                 />
                 
                 {/* Payment Information List */}
@@ -421,6 +478,29 @@ const PaymentPage = ({ scrollUp }) => {
             </div>
           </div>
         </div>
+
+        {/* Sticky Mobile Button - appears when scrolled past original button */}
+        {isButtonSticky && paymentMethod === 'card' && (
+          <div className="md:hidden fixed bottom-0 left-0 right-0 z-50 transform translate-y-0 transition-all duration-300 ease-out">
+            {/* Enhanced gradient background with brand colors */}
+            <div className="absolute inset-0 bg-gradient-to-t from-warm-white via-cream-light/95 to-warm-white/80 backdrop-blur-lg"></div>
+            <div className="absolute inset-0 bg-gradient-to-r from-primary-gold/5 via-transparent to-primary-gold/5"></div>
+            <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary-gold/30 to-transparent"></div>
+            <div className="absolute top-0 left-0 right-0 h-4 bg-gradient-to-b from-primary-gold/10 to-transparent"></div>
+            
+            <div className="relative container mx-auto px-4 py-4">
+              <div className="flex justify-center">
+                <Button
+                  onClick={paymentHandler}
+                  disabled={paymentProcessing}
+                  className="w-full max-w-sm py-3 px-8 text-base font-semibold tracking-wide transition-all duration-300 hover:shadow-[0_0_25px_rgba(65,105,225,0.2)] hover:transform hover:scale-105"
+                >
+                  {paymentProcessing ? 'Opening Payment Window...' : `Pay ${formatPrice(price)}`}
+                </Button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
