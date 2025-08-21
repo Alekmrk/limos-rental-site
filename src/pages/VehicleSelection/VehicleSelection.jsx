@@ -681,7 +681,7 @@ const VehicleSelection = ({ scrollUp }) => {
                       <div
                         key={vehicle.id}
                         onClick={() => handleVehicleSelect(vehicle)}
-                        className={`p-6 rounded-lg transition-all duration-300 ${
+                        className={`p-4 md:p-6 rounded-lg transition-all duration-300 ${
                           isLocked
                             ? "bg-gray-100/80 border border-gray-300/50 cursor-not-allowed opacity-60"
                             : isSelected
@@ -693,7 +693,7 @@ const VehicleSelection = ({ scrollUp }) => {
                           <VehicleImage
                             src={vehicle.image}
                             alt={vehicle.name}
-                            containerClassName="h-48 mb-4"
+                            containerClassName="h-32 md:h-48 mb-3 md:mb-4"
                           />
                           {isLocked && (
                             <div className="absolute inset-0 flex items-center justify-center bg-black/40 rounded-lg">
@@ -713,36 +713,86 @@ const VehicleSelection = ({ scrollUp }) => {
                           )}
                         </div>
                         
-                        <h3 className={`text-xl font-medium mb-2 ${isLocked ? 'text-gray-500' : 'text-gray-700'}`}>
-                          {vehicle.name}
-                        </h3>
-                        
-                        <div className={`text-sm mb-4 ${isLocked ? 'text-gray-400' : 'text-gray-600'}`}>
-                          <p className="flex items-center gap-1">
-                            Seats: {vehicle.seats}
-                            {vehicle.insufficientSeats && (
-                              <span className="text-red-500 text-xs">
-                                (you selected {reservationInfo.passengers})
-                              </span>
-                            )}
-                          </p>
-                          <p className="flex items-center gap-1">
-                            Luggage: {vehicle.luggage}
-                            {vehicle.insufficientLuggage && (
-                              <span className="text-red-500 text-xs">
-                                (you selected {reservationInfo.bags})
-                              </span>
-                            )}
-                          </p>
+                        {/* Mobile compact layout */}
+                        <div className="md:hidden">
+                          {/* Vehicle name and price on same line */}
+                          <div className="flex items-start justify-between mb-2">
+                            <h3 className={`text-lg font-medium ${isLocked ? 'text-gray-500' : 'text-gray-700'} flex-1 pr-2`}>
+                              {vehicle.name}
+                            </h3>
+                            <div className={`text-sm font-medium ${isLocked ? 'text-gray-400' : 'text-royal-blue'} text-right`}>
+                              {reservationInfo.isHourly ? (
+                                <>
+                                  <div>{formatPrice(prices[vehicle.id] || 0)}</div>
+                                  <div className="text-xs">for {reservationInfo.hours || 3}h</div>
+                                </>
+                              ) : (
+                                <div>{formatPrice(prices[vehicle.id] || 0)}</div>
+                              )}
+                            </div>
+                          </div>
+                          
+                          {/* Seats and luggage on same line */}
+                          <div className={`text-sm ${isLocked ? 'text-gray-400' : 'text-gray-600'} flex gap-4`}>
+                            <span className="flex items-center gap-1">
+                              Seats: {vehicle.seats}
+                              {vehicle.insufficientSeats && !vehicle.insufficientLuggage && (
+                                <span className="text-red-500 text-xs">
+                                  (you selected {reservationInfo.passengers})
+                                </span>
+                              )}
+                            </span>
+                            <span className="flex items-center gap-1">
+                              Luggage: {vehicle.luggage}
+                              {vehicle.insufficientLuggage && !vehicle.insufficientSeats && (
+                                <span className="text-red-500 text-xs">
+                                  (you selected {reservationInfo.bags})
+                                </span>
+                              )}
+                            </span>
+                          </div>
+                          
+                          {/* Unified error message for both seats and luggage */}
+                          {vehicle.insufficientSeats && vehicle.insufficientLuggage && (
+                            <div className="mt-1 text-xs text-red-500">
+                              Exceeds capacity ({reservationInfo.passengers} passengers, {reservationInfo.bags} bags)
+                            </div>
+                          )}
                         </div>
-                        
-                        <div className="mt-4 pt-4 border-t border-royal-blue/20">
-                          <div className={`text-sm font-medium ${isLocked ? 'text-gray-400' : 'text-royal-blue'}`}>
-                            {reservationInfo.isHourly ? (
-                              <p>{formatPrice(prices[vehicle.id] || 0)} for {reservationInfo.hours || 3} hours</p>
-                            ) : (
-                              <p>{formatPrice(prices[vehicle.id] || 0)}</p>
-                            )}
+
+                        {/* Desktop layout - unchanged */}
+                        <div className="hidden md:block">
+                          <h3 className={`text-xl font-medium mb-2 ${isLocked ? 'text-gray-500' : 'text-gray-700'}`}>
+                            {vehicle.name}
+                          </h3>
+                          
+                          <div className={`text-sm mb-4 ${isLocked ? 'text-gray-400' : 'text-gray-600'}`}>
+                            <p className="flex items-center gap-1">
+                              Seats: {vehicle.seats}
+                              {vehicle.insufficientSeats && (
+                                <span className="text-red-500 text-xs">
+                                  (you selected {reservationInfo.passengers})
+                                </span>
+                              )}
+                            </p>
+                            <p className="flex items-center gap-1">
+                              Luggage: {vehicle.luggage}
+                              {vehicle.insufficientLuggage && (
+                                <span className="text-red-500 text-xs">
+                                  (you selected {reservationInfo.bags})
+                                </span>
+                              )}
+                            </p>
+                          </div>
+                          
+                          <div className="mt-4 pt-4 border-t border-royal-blue/20">
+                            <div className={`text-sm font-medium ${isLocked ? 'text-gray-400' : 'text-royal-blue'}`}>
+                              {reservationInfo.isHourly ? (
+                                <p>{formatPrice(prices[vehicle.id] || 0)} for {reservationInfo.hours || 3} hours</p>
+                              ) : (
+                                <p>{formatPrice(prices[vehicle.id] || 0)}</p>
+                              )}
+                            </div>
                           </div>
                         </div>
                       </div>
