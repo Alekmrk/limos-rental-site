@@ -506,8 +506,8 @@ const BookingPage = ({ scrollUp }) => {
               and enjoy professional chauffeur service tailored to your needs.
             </p>
             
-            {/* Key Features */}
-            <div className="hidden md:grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+            {/* Key Features - Hidden */}
+            <div className="hidden">
               <div className="bg-warm-white/80 backdrop-blur-sm rounded-2xl p-6 border border-primary-gold/10 shadow-lg">
                 <div className="w-12 h-12 bg-primary-gold/10 rounded-full flex items-center justify-center mx-auto mb-4">
                   <svg className="w-6 h-6 text-primary-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
