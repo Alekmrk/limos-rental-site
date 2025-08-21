@@ -48,7 +48,7 @@ const BookingPage = ({ scrollUp }) => {
       // Trigger 30px earlier (when bottom is 30px below viewport)
       const triggerOffset = 30;
       // Add buffer to prevent glitching at the boundary
-      const buffer = 30;
+      const buffer = 50;
       
       // If the bottom of the submit section is 30px below the viewport (with buffer), make button sticky
       if (rect.bottom > windowHeight - triggerOffset + buffer) {
