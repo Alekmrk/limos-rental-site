@@ -66,9 +66,9 @@ const BannerSection = () => {
         <div className="hidden md:block relative z-20 h-full">
           <div className="grid grid-cols-12 gap-8 px-4 md:px-6 lg:px-16 container-ultra-wide mx-auto h-full min-h-[700px] lg:min-h-[800px]">
             {/* Left Content Area - Takes up 7 columns */}
-            <div className="col-span-7 pt-24 md:pt-32 lg:pt-40">
+            <div className="col-span-7 flex flex-col justify-center pt-24 md:pt-32 lg:pt-40">
               {/* Main Title with glassy background */}
-              <div className="relative mb-8 md:mb-10 flex justify-center">
+              <div className="relative mb-6 flex justify-center">
                 <div className="relative">
                   <div className="absolute inset-0 bg-black/15 backdrop-blur-sm rounded-2xl transform translate-x-1 translate-y-1"></div>
                   <div className="relative bg-white/20 backdrop-blur-md rounded-2xl px-6 py-4 border border-white/30 shadow-2xl">
@@ -80,28 +80,31 @@ const BannerSection = () => {
                 </div>
               </div>
 
-              {/* Desktop Trust Indicators */}
-              <div className="flex flex-col lg:flex-row justify-center items-center gap-4 lg:gap-6 mb-8 md:mb-12 text-gray-600 text-sm">
-                <div className="flex items-center gap-3 bg-warm-white/80 backdrop-blur-sm px-3 py-2 rounded-full border border-primary-gold/20 shadow-md">
-                  <FaShieldAlt className="text-emerald-500 text-base" />
-                  <span className="font-medium">Fully Insured</span>
+              {/* Desktop Trust Indicators with centered button layout */}
+              <div className="flex flex-col items-center">
+                <div className="flex flex-col lg:flex-row justify-center items-center gap-4 lg:gap-6 text-gray-600 text-sm mb-6">
+                  <div className="flex items-center gap-3 bg-warm-white/80 backdrop-blur-sm px-3 py-2 rounded-full border border-primary-gold/20 shadow-md">
+                    <FaShieldAlt className="text-emerald-500 text-base" />
+                    <span className="font-medium">Fully Insured</span>
+                  </div>
+                  <div className="flex items-center gap-3 bg-warm-white/80 backdrop-blur-sm px-3 py-2 rounded-full border border-primary-gold/20 shadow-md">
+                    <FaClock className="text-primary-gold text-base" />
+                    <span className="font-medium">24/7 Available</span>            
+                  </div>
+                  <div className="flex items-center gap-3 bg-warm-white/80 backdrop-blur-sm px-3 py-2 rounded-full border border-primary-gold/20 shadow-md">
+                    <FaPhone className="text-gold text-base" />
+                    <span className="font-medium">Instant Booking</span>
+                  </div>
                 </div>
-                <div className="flex items-center gap-3 bg-warm-white/80 backdrop-blur-sm px-3 py-2 rounded-full border border-primary-gold/20 shadow-md">
-                  <FaClock className="text-primary-gold text-base" />
-                  <span className="font-medium">24/7 Available</span>            
-                </div>
-                <div className="flex items-center gap-3 bg-warm-white/80 backdrop-blur-sm px-3 py-2 rounded-full border border-primary-gold/20 shadow-md">
-                  <FaPhone className="text-gold text-base" />
-                  <span className="font-medium">Instant Booking</span>
-                </div>
-              </div>
 
-              <div className="flex justify-center mb-12 md:mb-16">
-                <UTMLink to={"/vehicles"}>
-                  <Button variant="secondary" className="transform hover:scale-105 transition-all duration-300">
-                    Explore Our Fleet
-                  </Button>
-                </UTMLink>
+                {/* Button positioned below and centered with middle badge */}
+                <div className="flex justify-center lg:ml-[-1.35rem]">
+                  <UTMLink to={"/vehicles"}>
+                    <Button variant="secondary" className="transform hover:scale-105 transition-all duration-300">
+                      Explore Our Fleet
+                    </Button>
+                  </UTMLink>
+                </div>
               </div>
             </div>
 

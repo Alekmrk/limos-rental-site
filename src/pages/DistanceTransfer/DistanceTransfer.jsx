@@ -211,9 +211,9 @@ const DistanceTransfer = ({ scrollUp }) => {
           <div className="hidden md:block relative z-20 h-full">
             <div className="grid grid-cols-12 gap-8 px-4 md:px-6 lg:px-16 container-ultra-wide mx-auto h-full min-h-[700px] lg:min-h-[800px]">
               {/* Left Content Area - Takes up 7 columns */}
-              <div className="col-span-7 pt-32 md:pt-40 lg:pt-48">
+              <div className="col-span-7 flex flex-col justify-center pt-24 md:pt-32 lg:pt-40">
                 {/* Main Title with glassy background */}
-                <div className="relative mb-8 md:mb-10 flex justify-center">
+                <div className="relative mb-6 flex justify-center">
                   <div className="relative">
                     <div className="absolute inset-0 bg-black/15 backdrop-blur-sm rounded-2xl transform translate-x-1 translate-y-1"></div>
                     <div className="relative bg-white/20 backdrop-blur-md rounded-2xl px-6 py-4 border border-white/30 shadow-2xl">
@@ -226,7 +226,7 @@ const DistanceTransfer = ({ scrollUp }) => {
                 </div>
 
                 {/* Desktop Trust Indicators */}
-                <div className="flex flex-col lg:flex-row justify-center items-center gap-4 lg:gap-6 mb-8 md:mb-12 text-gray-600 text-sm">
+                <div className="flex flex-col lg:flex-row justify-center items-center gap-4 lg:gap-6 text-gray-600 text-sm">
                   <div className="flex items-center gap-2 bg-cream-light/80 backdrop-blur-sm px-4 py-2 rounded-full border border-royal-blue/20 shadow-md">
                     <FontAwesomeIcon icon={faRoute} className="text-royal-blue" />
                     <span className="text-gray-700 font-medium">Direct Routes</span>
