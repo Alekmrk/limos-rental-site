@@ -13,6 +13,7 @@ const CustomerDetails = ({ scrollUp }) => {
   const { reservationInfo, handleInput } = useContext(ReservationContext);
   const [errors, setErrors] = useState({});
   const [showAdditionalDetails, setShowAdditionalDetails] = useState(false); // Start closed
+  const [navbarStyle, setNavbarStyle] = useState('fixed');
 
   // Check if we have the required data from previous steps
   useEffect(() => {
@@ -176,6 +177,39 @@ const CustomerDetails = ({ scrollUp }) => {
     return () => {
       clearTimeout(timeoutId);
       clearTimeout(animationTimeout);
+    };
+  }, []);
+
+  // Footer detection effect for mobile navigation positioning
+  useEffect(() => {
+    const handleScroll = () => {
+      // Only run on mobile devices
+      if (window.innerWidth >= 768) return;
+      
+      const footer = document.querySelector('footer');
+      if (!footer) return;
+      
+      const footerRect = footer.getBoundingClientRect();
+      const windowHeight = window.innerHeight;
+      
+      // If footer is visible in viewport (top of footer is above bottom of screen)
+      if (footerRect.top < windowHeight) {
+        setNavbarStyle('absolute');
+      } else {
+        setNavbarStyle('fixed');
+      }
+    };
+
+    // Add scroll listener
+    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('resize', handleScroll);
+    
+    // Run once on mount
+    handleScroll();
+    
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('resize', handleScroll);
     };
   }, []);
 
@@ -554,7 +588,8 @@ const CustomerDetails = ({ scrollUp }) => {
               </p>
             </div>
 
-            <div className="flex justify-between">
+            {/* Desktop Navigation Buttons */}
+            <div className="hidden md:flex justify-between">
               <Button
                 type="button"
                 variant="secondary"
@@ -571,6 +606,42 @@ const CustomerDetails = ({ scrollUp }) => {
                 {reservationInfo.isSpecialRequest ? "Submit Request" : "Pay Now"}
               </Button>
             </div>
+
+            {/* Mobile Fixed/Absolute Bottom Navigation */}
+            <div className={`md:hidden ${navbarStyle} bottom-0 left-0 right-0 z-50 transform translate-y-0 transition-all duration-300 ease-out`}>
+              {/* Enhanced gradient background with brand colors - only when fixed */}
+              {navbarStyle === 'fixed' && (
+                <>
+                  <div className="absolute inset-0 bg-gradient-to-t from-warm-white via-cream-light/95 to-warm-white/80 backdrop-blur-lg"></div>
+                  <div className="absolute inset-0 bg-gradient-to-r from-primary-gold/5 via-transparent to-primary-gold/5"></div>
+                  <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary-gold/30 to-transparent"></div>
+                  <div className="absolute top-0 left-0 right-0 h-4 bg-gradient-to-b from-primary-gold/10 to-transparent"></div>
+                </>
+              )}
+              
+              <div className="relative container mx-auto px-4 py-4">
+                <div className="flex justify-between items-center gap-4">
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    onClick={handleBack}
+                    className="flex-1 bg-warm-white/80 backdrop-blur-sm border-royal-blue/30 text-gray-700 hover:bg-royal-blue/10 py-3"
+                  >
+                    Back
+                  </Button>
+                  <Button 
+                    type="submit" 
+                    variant="secondary"
+                    className="flex-1 bg-gradient-to-r from-royal-blue to-royal-blue-light hover:from-royal-blue-light hover:to-royal-blue text-white shadow-lg hover:shadow-xl transition-all duration-300 py-3"
+                  >
+                    {reservationInfo.isSpecialRequest ? "Submit Request" : "Pay Now"}
+                  </Button>
+                </div>
+              </div>
+            </div>
+
+            {/* Mobile bottom padding to prevent content from being hidden behind fixed navbar */}
+            <div className="md:hidden h-20"></div>
           </form>
         </div>
       </div>

@@ -24,11 +24,45 @@ const VehicleSelection = ({ scrollUp }) => {
   const [hasAttemptedSubmit, setHasAttemptedSubmit] = useState(false);
   const latestStopsRef = useRef(reservationInfo.extraStops);
   const [prices, setPrices] = useState({});
+  const [navbarStyle, setNavbarStyle] = useState('fixed');
 
   // Scroll to top immediately when component mounts - run this first
   useEffect(() => {
     scrollUp && scrollUp();
   }, [scrollUp]);
+
+  // Footer detection effect for mobile navigation positioning
+  useEffect(() => {
+    const handleScroll = () => {
+      // Only run on mobile devices
+      if (window.innerWidth >= 768) return;
+      
+      const footer = document.querySelector('footer');
+      if (!footer) return;
+      
+      const footerRect = footer.getBoundingClientRect();
+      const windowHeight = window.innerHeight;
+      
+      // If footer is visible in viewport (top of footer is above bottom of screen)
+      if (footerRect.top < windowHeight) {
+        setNavbarStyle('absolute');
+      } else {
+        setNavbarStyle('fixed');
+      }
+    };
+
+    // Add scroll listener
+    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('resize', handleScroll);
+    
+    // Run once on mount
+    handleScroll();
+    
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('resize', handleScroll);
+    };
+  }, []);
 
   useEffect(() => {
     latestStopsRef.current = reservationInfo.extraStops;
@@ -718,7 +752,8 @@ const VehicleSelection = ({ scrollUp }) => {
               )}
             </div>
 
-            <div className="flex flex-col gap-4">
+            {/* Desktop Navigation Buttons */}
+            <div className="hidden md:flex flex-col gap-4">
               <div className="flex justify-between items-start">
                 <Button
                   type="button"
@@ -747,6 +782,50 @@ const VehicleSelection = ({ scrollUp }) => {
                 </div>
               </div>
             </div>
+
+            {/* Mobile Fixed/Absolute Bottom Navigation */}
+            <div className={`md:hidden ${navbarStyle} bottom-0 left-0 right-0 z-50 transform translate-y-0 transition-all duration-300 ease-out`}>
+              {/* Enhanced gradient background with brand colors - only when fixed */}
+              {navbarStyle === 'fixed' && (
+                <>
+                  <div className="absolute inset-0 bg-gradient-to-t from-warm-white via-cream-light/95 to-warm-white/80 backdrop-blur-lg"></div>
+                  <div className="absolute inset-0 bg-gradient-to-r from-primary-gold/5 via-transparent to-primary-gold/5"></div>
+                  <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary-gold/30 to-transparent"></div>
+                  <div className="absolute top-0 left-0 right-0 h-4 bg-gradient-to-b from-primary-gold/10 to-transparent"></div>
+                </>
+              )}
+              
+              <div className="relative container mx-auto px-4 py-4">
+                <div className="flex justify-between items-center gap-4">
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    onClick={handleBack}
+                    className="flex-1 bg-warm-white/80 backdrop-blur-sm border-royal-blue/30 text-gray-700 hover:bg-royal-blue/10 py-3"
+                  >
+                    Back
+                  </Button>
+                  <Button 
+                    type="submit" 
+                    variant="secondary"
+                    className={`flex-1 bg-gradient-to-r from-royal-blue to-royal-blue-light hover:from-royal-blue-light hover:to-royal-blue text-white shadow-lg hover:shadow-xl transition-all duration-300 py-3 ${hasAttemptedSubmit && (errors.vehicle || errors.extraStops || errors.passengers || errors.bags) ? 'border-red-500 ring-1 ring-red-500/50' : ''}`}
+                  >
+                    Continue
+                  </Button>
+                </div>
+                {hasAttemptedSubmit && errors.extraStops && (
+                  <div className="text-red-500 text-sm bg-red-500/10 px-3 py-2 mt-2 rounded-lg border border-red-500/20 text-center backdrop-blur-sm">
+                    <svg className="w-4 h-4 inline-block mr-1" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
+                    </svg>
+                    {"Please fill in or remove empty stops"}
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Mobile bottom padding to prevent content from being hidden behind fixed navbar */}
+            <div className="md:hidden h-20"></div>
           </form>
         </div>
       </div>

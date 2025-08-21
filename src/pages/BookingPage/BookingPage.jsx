@@ -22,6 +22,7 @@ const BookingPage = ({ scrollUp }) => {
   const [errors, setErrors] = useState({});
   const [showRouteErrorModal, setShowRouteErrorModal] = useState(false);
   const [routeErrorType, setRouteErrorType] = useState(null);
+  const [isButtonSticky, setIsButtonSticky] = useState(false);
 
   // Debug logging refs
   const debugRef = useRef({
@@ -34,6 +35,44 @@ const BookingPage = ({ scrollUp }) => {
   useEffect(() => {
     scrollUp && scrollUp();
   }, [scrollUp]);
+
+  // Sticky button behavior
+  useEffect(() => {
+    const handleScroll = () => {
+      const submitSection = document.getElementById('submit-section');
+      if (!submitSection) return;
+
+      const rect = submitSection.getBoundingClientRect();
+      const windowHeight = window.innerHeight;
+      
+      // Trigger 30px earlier (when bottom is 30px below viewport)
+      const triggerOffset = 30;
+      // Add buffer to prevent glitching at the boundary
+      const buffer = 30;
+      
+      // If the bottom of the submit section is 30px below the viewport (with buffer), make button sticky
+      if (rect.bottom > windowHeight - triggerOffset + buffer) {
+        setIsButtonSticky(true);
+      } else if (rect.bottom < windowHeight - triggerOffset - buffer) {
+        setIsButtonSticky(false);
+      }
+      // Don't change state when within the buffer zone to prevent flickering
+    };
+
+    // Only enable sticky behavior on mobile
+    if (window.innerWidth < 768) {
+      window.addEventListener('scroll', handleScroll);
+      window.addEventListener('resize', handleScroll);
+      
+      // Initial check
+      handleScroll();
+    }
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('resize', handleScroll);
+    };
+  }, []);
 
   const handleInput = (e) => {
     console.log('📝 Input change:', {
@@ -503,6 +542,7 @@ const BookingPage = ({ scrollUp }) => {
           {/* Main Booking Form */}
           <div className="bg-cream-light/95 backdrop-blur-md border border-primary-gold/30 rounded-3xl shadow-2xl p-8 md:p-12 max-w-5xl mx-auto">
             <form 
+              id="booking-form"
               onSubmit={handleSubmit} 
               onKeyDown={(e) => {
                 // Only prevent form submission for regular inputs, allow new lines in textareas
@@ -1007,20 +1047,23 @@ const BookingPage = ({ scrollUp }) => {
                     </div>
                   )}
                   
+                  {/* Submit Button - Desktop and Mobile (in normal position) */}
                   <Button 
                     type="submit" 
                     variant="secondary" 
-                    className="w-full md:w-auto min-w-[200px] py-3 px-8 text-base font-semibold tracking-wide transition-all duration-300 hover:shadow-[0_0_25px_rgba(65,105,225,0.2)] hover:transform hover:scale-105"
+                    className={`w-full md:w-auto min-w-[200px] py-3 px-8 text-base font-semibold tracking-wide transition-all duration-300 hover:shadow-[0_0_25px_rgba(65,105,225,0.2)] hover:transform hover:scale-105 ${
+                      isButtonSticky ? 'md:block hidden' : 'block'
+                    }`}
                   >
                     {reservationInfo.isSpecialRequest ? (
-                      <span className="flex items-center gap-2">
+                      <span className="flex items-center justify-center gap-2">
                         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
                         </svg>
                         Continue to Request Details
                       </span>
                     ) : (
-                      <span className="flex items-center gap-2">
+                      <span className="flex items-center justify-center gap-2">
                         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
                         </svg>
@@ -1041,6 +1084,44 @@ const BookingPage = ({ scrollUp }) => {
               onSwitchToSpecial={handleSwitchToSpecial}
             />
           </div>
+
+          {/* Sticky Mobile Button - appears when scrolled past original button */}
+          {isButtonSticky && (
+            <div className="md:hidden fixed bottom-0 left-0 right-0 z-50 transform translate-y-0 transition-all duration-300 ease-out">
+              {/* Enhanced gradient background with brand colors */}
+              <div className="absolute inset-0 bg-gradient-to-t from-warm-white via-cream-light/95 to-warm-white/80 backdrop-blur-lg"></div>
+              <div className="absolute inset-0 bg-gradient-to-r from-primary-gold/5 via-transparent to-primary-gold/5"></div>
+              <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary-gold/30 to-transparent"></div>
+              <div className="absolute top-0 left-0 right-0 h-4 bg-gradient-to-b from-primary-gold/10 to-transparent"></div>
+              
+              <div className="relative container mx-auto px-4 py-4">
+                <div className="flex justify-center">
+                  <Button 
+                    type="submit" 
+                    form="booking-form"
+                    variant="secondary" 
+                    className="w-full max-w-sm py-3 px-8 text-base font-semibold tracking-wide transition-all duration-300 hover:shadow-[0_0_25px_rgba(65,105,225,0.2)] hover:transform hover:scale-105"
+                  >
+                    {reservationInfo.isSpecialRequest ? (
+                      <span className="flex items-center justify-center gap-2">
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                        </svg>
+                        Continue to Request Details
+                      </span>
+                    ) : (
+                      <span className="flex items-center justify-center gap-2">
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                        </svg>
+                        Continue to Vehicle Selection
+                      </span>
+                    )}
+                  </Button>
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* Additional Features Section */}
           <div className="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
