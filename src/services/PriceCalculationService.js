@@ -5,12 +5,28 @@
 
 // Vehicle rates (in CHF)
 const VEHICLE_RATES = {
-  // Base per km rates for point-to-point transfers
-  BASE_KM_RATE: {
-    'First Class': 5.5,
-    'First Class Van': 4.5,
-    'Business Class Van': 4.0,
-    'Business Class': 3.8
+  // Fixed price for first 12km
+  FIXED_12KM_PRICE: {
+    'First Class': 106,
+    'First Class Van': 98,
+    'Business Class Van': 85,
+    'Business Class': 85
+  },
+  
+  // Starting rates for distance beyond 12km (CHF per km)
+  START_KM_RATE: {
+    'First Class': 4.56,
+    'First Class Van': 3.76,
+    'Business Class Van': 3.48,
+    'Business Class': 3.20
+  },
+  
+  // End rates at 190km and beyond (CHF per km) - 10% lower than start rates
+  END_KM_RATE: {
+    'First Class': 4.10,
+    'First Class Van': 3.38,
+    'Business Class Van': 3.13,
+    'Business Class': 2.88
   },
   
   // Hourly rates (CHF per hour)
@@ -21,13 +37,9 @@ const VEHICLE_RATES = {
     'Business Class': 90
   },
   
-  // Minimum charges (in CHF) for point-to-point transfers
-  MINIMUM_TRANSFER_CHARGE: {
-    'First Class': 130,
-    'First Class Van': 110,
-    'Business Class Van': 95,
-    'Business Class': 95
-  },
+  // Distance thresholds
+  FIXED_DISTANCE_KM: 12,
+  SCALING_END_KM: 190,
   
   // Minimum hours for hourly bookings
   MINIMUM_HOURS: 3
@@ -58,6 +70,27 @@ const MINIMUM_CHARGES = {
 };
 
 /**
+ * Calculate per-km rate for distances beyond 12km with linear scaling
+ * @param {number} distance - Total distance in km
+ * @param {string} vehicleType - Type of vehicle
+ * @returns {number} - Per-km rate for the excess distance
+ */
+const getScaledKmRate = (distance, vehicleType) => {
+  const startRate = VEHICLE_RATES.START_KM_RATE[vehicleType];
+  const endRate = VEHICLE_RATES.END_KM_RATE[vehicleType];
+  
+  if (distance <= VEHICLE_RATES.SCALING_END_KM) {
+    // Linear interpolation between start and end rates
+    const scalingDistance = VEHICLE_RATES.SCALING_END_KM - VEHICLE_RATES.FIXED_DISTANCE_KM;
+    const progressRatio = (distance - VEHICLE_RATES.FIXED_DISTANCE_KM) / scalingDistance;
+    return startRate - (startRate - endRate) * progressRatio;
+  } else {
+    // Beyond 190km, use the end rate
+    return endRate;
+  }
+};
+
+/**
  * Simplified price calculation function for both transfer and hourly bookings
  * 
  * @param {number} distance - Distance in kilometers for point-to-point transfers
@@ -70,28 +103,28 @@ const MINIMUM_CHARGES = {
  */
 export const calculatePrice = (distance = 0, duration = 0, vehicleType = 'First Class Van', extraStops = 0, isHourly = false, hours = 0) => {
   try {
-    // Get rates for selected vehicle, fallback to highest rates if vehicle not found
-    const kmRate = VEHICLE_RATES.BASE_KM_RATE[vehicleType] || 
-      Math.max(...Object.values(VEHICLE_RATES.BASE_KM_RATE));
-    
-    const hourlyRate = VEHICLE_RATES.HOURLY_RATE[vehicleType] || 
-      Math.max(...Object.values(VEHICLE_RATES.HOURLY_RATE));
-    
-    const minimumCharge = VEHICLE_RATES.MINIMUM_TRANSFER_CHARGE[vehicleType] || 
-      Math.max(...Object.values(VEHICLE_RATES.MINIMUM_TRANSFER_CHARGE));
-    
     let totalPrice = 0;
     
     if (isHourly) {
       // Hourly booking - ensure minimum hours
+      const hourlyRate = VEHICLE_RATES.HOURLY_RATE[vehicleType] || 
+        Math.max(...Object.values(VEHICLE_RATES.HOURLY_RATE));
       const validHours = Math.max(VEHICLE_RATES.MINIMUM_HOURS, hours);
       totalPrice = validHours * hourlyRate;
     } else {
-      // Point-to-point transfer - distance-based only
-      totalPrice = Math.max(
-        distance * kmRate, // Distance-based price
-        minimumCharge // Minimum charge
-      );
+      // Point-to-point transfer with new tiered pricing
+      const fixedPrice = VEHICLE_RATES.FIXED_12KM_PRICE[vehicleType] || 
+        Math.max(...Object.values(VEHICLE_RATES.FIXED_12KM_PRICE));
+      
+      if (distance <= VEHICLE_RATES.FIXED_DISTANCE_KM) {
+        // Distance 0-12km: fixed price
+        totalPrice = fixedPrice;
+      } else {
+        // Distance >12km: fixed price + scaled rate for excess distance
+        const excessDistance = distance - VEHICLE_RATES.FIXED_DISTANCE_KM;
+        const scaledRate = getScaledKmRate(distance, vehicleType);
+        totalPrice = fixedPrice + (excessDistance * scaledRate);
+      }
     }
     
     // Round to nearest CHF
@@ -160,12 +193,12 @@ export const formatPrice = (price) => {
 export const getEstimatedPriceRange = (vehicleType) => {
   try {
     const hourlyRate = VEHICLE_RATES.HOURLY_RATE[vehicleType];
-    const minimumCharge = VEHICLE_RATES.MINIMUM_TRANSFER_CHARGE[vehicleType];
+    const fixedPrice = VEHICLE_RATES.FIXED_12KM_PRICE[vehicleType];
     
     return {
-      minPrice: minimumCharge,
+      minPrice: fixedPrice,
       hourlyRate: hourlyRate,
-      formattedMinPrice: formatPrice(minimumCharge),
+      formattedMinPrice: formatPrice(fixedPrice),
       formattedHourlyRate: formatPrice(hourlyRate)
     };
   } catch (error) {
