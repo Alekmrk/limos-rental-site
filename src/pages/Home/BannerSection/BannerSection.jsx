@@ -38,28 +38,70 @@ const BannerSection = () => {
             <div className="absolute inset-0 bg-gradient-to-br from-warm-gray/8 via-cream/5 to-soft-gray/8"></div>
           </div>
           
-          {/* Mobile Luxury Background */}
-          <div className="block md:hidden w-full h-full bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 relative">
-            {/* Luxury overlay pattern */}
-            <div className="absolute inset-0 bg-gradient-to-br from-primary-gold/10 via-transparent to-primary-gold/5"></div>
-            {/* Subtle geometric pattern */}
-            <div className="absolute inset-0 opacity-10" style={{
-              backgroundImage: `radial-gradient(circle at 25% 25%, #D4AF37 2px, transparent 2px),
-                               radial-gradient(circle at 75% 75%, #D4AF37 1px, transparent 1px)`,
-              backgroundSize: '50px 50px'
+          {/* Mobile Luxury Background - Similar tone to Airport Transfer */}
+          <div className="block md:hidden w-full h-full relative">
+            {/* Dark luxury gradient base - similar to airport transfer */}
+            <div className="absolute inset-0 bg-gradient-to-br from-slate-800 via-gray-700 to-slate-900"></div>
+            
+            {/* Luxury gold overlay instead of aviation blue */}
+            <div className="absolute inset-0 bg-gradient-to-tr from-primary-gold/20 via-gold/10 to-primary-gold/15"></div>
+            
+            {/* Luxury service path graphics - positioned at bottom */}
+            <div className="absolute inset-0 opacity-30">
+              {/* Elegant curved paths with trailing traces */}
+              <div className="absolute bottom-20 left-8 w-48 h-2 bg-gradient-to-r from-transparent via-primary-gold/60 to-transparent transform rotate-8"></div>
+              {/* Trailing dotted path */}
+              <div className="absolute bottom-20 left-2 w-32 h-1 bg-gradient-to-r from-transparent via-gold/40 to-transparent transform rotate-8" style={{ backgroundImage: 'repeating-linear-gradient(90deg, transparent, transparent 3px, rgba(212, 175, 55, 0.4) 3px, rgba(212, 175, 55, 0.4) 6px)' }}></div>
+              
+              <div className="absolute bottom-32 right-12 w-40 h-2 bg-gradient-to-r from-transparent via-gold/60 to-transparent transform -rotate-6"></div>
+              {/* Trailing dotted path */}
+              <div className="absolute bottom-32 right-6 w-28 h-1 bg-gradient-to-r from-transparent via-primary-gold/40 to-transparent transform -rotate-6" style={{ backgroundImage: 'repeating-linear-gradient(90deg, transparent, transparent 3px, rgba(218, 165, 32, 0.4) 3px, rgba(218, 165, 32, 0.4) 6px)' }}></div>
+              
+              <div className="absolute bottom-44 left-16 w-56 h-2 bg-gradient-to-r from-transparent via-gold/70 to-transparent transform rotate-4"></div>
+              {/* Trailing dotted path */}
+              <div className="absolute bottom-44 left-8 w-36 h-1 bg-gradient-to-r from-transparent via-primary-gold/50 to-transparent transform rotate-4" style={{ backgroundImage: 'repeating-linear-gradient(90deg, transparent, transparent 3px, rgba(212, 175, 55, 0.5) 3px, rgba(212, 175, 55, 0.5) 6px)' }}></div>
+              
+              {/* Elegant luxury elements following the paths */}
+              <div className="absolute bottom-24 left-32 text-primary-gold/70 text-xl transform rotate-8">◆</div>
+              <div className="absolute bottom-36 right-28 text-gold/60 text-lg transform -rotate-6">✦</div>
+              <div className="absolute bottom-48 left-40 text-primary-gold/80 text-xl transform rotate-4">◈</div>
+              
+              {/* Luxury service markers at very bottom */}
+              <div className="absolute bottom-8 left-24 w-6 h-6 bg-primary-gold/60 rounded-full"></div>
+              <div className="absolute bottom-12 left-52 w-5 h-5 bg-gold/60 rounded-full"></div>
+              <div className="absolute bottom-6 right-36 w-6 h-6 bg-primary-gold/70 rounded-full"></div>
+              <div className="absolute bottom-10 right-20 w-5 h-5 bg-gold/50 rounded-full"></div>
+            </div>
+            
+            {/* Subtle luxury pattern */}
+            <div className="absolute inset-0 opacity-8" style={{
+              backgroundImage: `repeating-linear-gradient(
+                45deg,
+                rgba(212, 175, 55, 0.1) 0px,
+                transparent 2px,
+                transparent 30px
+              )`
             }}></div>
-            {/* Elegant top-to-bottom fade */}
-            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-gray-800/50 to-gray-900/80"></div>
+            
+            {/* Soft corner accents */}
+            <div className="absolute top-0 left-0 w-40 h-40 bg-gradient-to-br from-primary-gold/20 to-transparent rounded-full blur-3xl"></div>
+            <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-gold/25 to-transparent rounded-full blur-2xl"></div>
+            <div className="absolute bottom-0 left-0 w-36 h-36 bg-gradient-to-tr from-primary-gold/20 to-transparent rounded-full blur-2xl"></div>
+            <div className="absolute bottom-0 right-0 w-44 h-44 bg-gradient-to-tl from-gold/20 to-transparent rounded-full blur-3xl"></div>
+            
+            {/* Elegant center glow */}
+            <div className="absolute inset-0 bg-gradient-radial from-primary-gold/10 via-transparent to-transparent"></div>
+            
+            {/* Subtle depth vignette */}
+            <div className="absolute inset-0 bg-gradient-to-t from-slate-900/40 via-transparent to-slate-800/30"></div>
           </div>
         </div>
 
-        {/* Softer Animated Background Elements with Harmonious Colors */}
+        {/* Softer Animated Background Elements with Harmonious Colors - Similar to Airport Transfer */}
         <div className="absolute inset-0 z-10" style={{ pointerEvents: 'none' }}>
           <div className="absolute top-20 left-10 w-20 h-20 bg-primary-gold/20 rounded-full animate-pulse"></div>
-          <div className="absolute top-40 right-20 w-16 h-16 bg-gold/25 rounded-full animate-bounce"></div>
           <div className="absolute bottom-40 left-20 w-12 h-12 bg-warm-gray/30 rounded-full animate-ping"></div>
           <div className="absolute bottom-20 right-10 w-24 h-24 bg-primary-gold/15 rounded-full animate-pulse"></div>
-          <div className="absolute top-1/2 left-1/3 w-32 h-32 bg-gradient-to-br from-cream/20 to-gold/15 rounded-full blur-xl animate-float"></div>
         </div>
 
         {/* Desktop Layout - Split Container */}
