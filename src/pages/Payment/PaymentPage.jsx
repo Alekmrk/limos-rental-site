@@ -282,114 +282,168 @@ const PaymentPage = ({ scrollUp }) => {
             <div className="bg-warm-white/90 backdrop-blur-md p-6 rounded-xl border border-royal-blue/20 shadow-lg">
               <h2 className="text-xl font-medium mb-6 text-gray-700">Order Summary</h2>
               
-              {/* Basic Info */}
-              <div className="grid md:grid-cols-3 gap-6 mb-6">
-                <div>
-                  <p className="text-gray-600 text-sm mb-1">Vehicle</p>
-                  <p className="font-medium break-words text-gray-700">{reservationInfo.selectedVehicle?.name}</p>
-                </div>
-                <div>
-                  <p className="text-gray-600 text-sm mb-1">Date</p>
-                  <p className="font-medium break-words text-gray-700">{formatDate(reservationInfo.date)}</p>
-                </div>
-                <div>
-                  <p className="text-gray-600 text-sm mb-1">Time</p>
-                  <p className="font-medium break-words text-gray-700">{reservationInfo.time} (Swiss time)</p>
+              {/* Service & Schedule */}
+              <div className="mb-8">
+                <h3 className="text-lg font-medium mb-4 text-gray-700">Service & Schedule</h3>
+                <div className="grid md:grid-cols-3 gap-6">
+                  <div>
+                    <p className="text-gray-600 text-sm mb-1">Vehicle</p>
+                    <p className="text-base font-medium break-words text-gray-700">{reservationInfo.selectedVehicle?.name}</p>
+                  </div>
+                  <div>
+                    <p className="text-gray-600 text-sm mb-1">Date</p>
+                    <p className="text-base font-medium break-words text-gray-700">{formatDate(reservationInfo.date)}</p>
+                  </div>
+                  <div>
+                    <p className="text-gray-600 text-sm mb-1">Time</p>
+                    <p className="text-base font-medium break-words text-gray-700">{reservationInfo.time} (Swiss time)</p>
+                  </div>
                 </div>
               </div>
 
-              {/* Transfer Details */}
-              <div className="border-t border-royal-blue/20 pt-6 mb-6">
-                <h3 className="text-lg font-medium mb-4 text-gray-700">Transfer Details</h3>
+              {/* Customer Information */}
+              <div className="border-t border-royal-blue/20 pt-6 mb-8">
+                <h3 className="text-lg font-medium mb-4 text-gray-700">Customer Information</h3>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  {reservationInfo.firstName && (
+                    <div>
+                      <p className="text-gray-600 text-sm mb-1">Name</p>
+                      <p className="text-base font-medium break-words text-gray-700">{reservationInfo.firstName}</p>
+                    </div>
+                  )}
+                  <div>
+                    <p className="text-gray-600 text-sm mb-1">Email</p>
+                    <p className="text-base font-medium break-words text-gray-700">{reservationInfo.email}</p>
+                  </div>
+                  <div>
+                    <p className="text-gray-600 text-sm mb-1">Phone</p>
+                    <p className="text-base font-medium break-words text-gray-700">{reservationInfo.phone}</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Trip Details */}
+              <div className="border-t border-royal-blue/20 pt-6 mb-8">
+                <h3 className="text-lg font-medium mb-4 text-gray-700">Trip Details</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
-                    <p className="text-gray-600 text-sm mb-1">Pick Up</p>
-                    <p className="font-medium break-words text-gray-700">{reservationInfo.pickup}</p>
+                    <p className="text-gray-600 text-sm mb-1">Pick Up Location</p>
+                    <p className="text-base font-medium break-words text-gray-700">{reservationInfo.pickup}</p>
                   </div>
                   {!reservationInfo.isHourly ? (
                     <>
-                      {/* Extra stops */}
-                      {reservationInfo.extraStops.map((stop, index) => (
-                        stop && (
-                          <div key={index} className="col-span-1 md:col-span-2 pl-4">
-                            <p className="font-medium break-words text-gray-700">• {stop}</p>
-                          </div>
-                        )
-                      ))}
                       <div>
-                        <p className="text-gray-600 text-sm mb-1">Drop Off</p>
-                        <p className="font-medium break-words text-gray-700">{reservationInfo.dropoff}</p>
+                        <p className="text-gray-600 text-sm mb-1">Drop Off Location</p>
+                        <p className="text-base font-medium break-words text-gray-700">{reservationInfo.dropoff}</p>
                       </div>
+                      {/* Extra stops */}
+                      {reservationInfo.extraStops.some(stop => stop) && (
+                        <div className="col-span-1 md:col-span-2">
+                          <p className="text-gray-600 text-sm mb-2">Additional Stops</p>
+                          <div className="space-y-1">
+                            {reservationInfo.extraStops.map((stop, index) => (
+                              stop && (
+                                <p key={index} className="text-base font-medium break-words text-gray-700 pl-4">• {stop}</p>
+                              )
+                            ))}
+                          </div>
+                        </div>
+                      )}
                       {/* Route Information */}
                       {reservationInfo.routeInfo && (
-                        <div className="col-span-1 md:col-span-2 mt-4">
+                        <div className="col-span-1 md:col-span-2">
                           <p className="text-gray-600 text-sm mb-2">Route Information</p>
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-royal-blue/5 p-3 rounded-lg">
-                            <p className="text-sm break-words text-gray-700">Distance: {reservationInfo.routeInfo.distance}</p>
-                            <p className="text-sm break-words text-gray-700">Duration: {reservationInfo.routeInfo.duration}</p>
+                            <p className="text-base break-words text-gray-700">Distance: {reservationInfo.routeInfo.distance}</p>
+                            <p className="text-base break-words text-gray-700">Duration: {reservationInfo.routeInfo.duration}</p>
                           </div>
                         </div>
                       )}
                     </>
                   ) : (
                     <div>
-                      <p className="text-gray-600 text-sm mb-1">Duration</p>
-                      <p className="font-medium break-words text-gray-700">{reservationInfo.hours} hours</p>
+                      <p className="text-gray-600 text-sm mb-1">Service Duration</p>
+                      <p className="text-base font-medium break-words text-gray-700">{reservationInfo.hours} hours</p>
                     </div>
                   )}
-                  {/* Passenger Details */}
-                  <div className="col-span-1 md:col-span-2 mt-4">
-                    <p className="text-gray-600 text-sm mb-2">Passenger Details</p>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-royal-blue/5 p-3 rounded-lg">
-                      <p className="text-sm break-words text-gray-700">Passengers: {reservationInfo.passengers}</p>
-                      <p className="text-sm break-words text-gray-700">Bags: {reservationInfo.bags}</p>
-                      {reservationInfo.boosterSeats > 0 && (
-                        <p className="text-sm break-words text-gray-700">Booster Seats (4-7): {reservationInfo.boosterSeats}</p>
-                      )}
-                      {reservationInfo.childSeats > 0 && (
-                        <p className="text-sm break-words text-gray-700">Child Seats (0-3): {reservationInfo.childSeats}</p>
-                      )}
-                      {reservationInfo.skiEquipment > 0 && (
-                        <p className="text-sm break-words text-gray-700">Ski Equipment: {reservationInfo.skiEquipment}</p>
-                      )}
-                    </div>
+                </div>
+                
+                {reservationInfo.isHourly && reservationInfo.plannedActivities && (
+                  <div className="mt-6">
+                    <p className="text-gray-600 text-sm mb-2">Planned Activities</p>
+                    <p className="text-base bg-royal-blue/5 p-3 rounded-lg break-words text-gray-700">{reservationInfo.plannedActivities}</p>
                   </div>
+                )}
+              </div>
+
+              {/* Passenger & Requirements */}
+              <div className="border-t border-royal-blue/20 pt-6 mb-8">
+                <h3 className="text-lg font-medium mb-4 text-gray-700">Passenger & Requirements</h3>
+                
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+                  <div>
+                    <p className="text-gray-600 text-sm mb-1">Passengers</p>
+                    <p className="text-base font-medium break-words text-gray-700">{reservationInfo.passengers}</p>
+                  </div>
+                  <div>
+                    <p className="text-gray-600 text-sm mb-1">Bags</p>
+                    <p className="text-base font-medium break-words text-gray-700">{reservationInfo.bags}</p>
+                  </div>
+                  {reservationInfo.childSeats > 0 && (
+                    <div>
+                      <p className="text-gray-600 text-sm mb-1">Child Seats (0-3)</p>
+                      <p className="text-base font-medium break-words text-gray-700">{reservationInfo.childSeats}</p>
+                    </div>
+                  )}
+                  {reservationInfo.boosterSeats > 0 && (
+                    <div>
+                      <p className="text-gray-600 text-sm mb-1">Booster Seats (4-7)</p>
+                      <p className="text-base font-medium break-words text-gray-700">{reservationInfo.boosterSeats}</p>
+                    </div>
+                  )}
+                  {reservationInfo.skiEquipment > 0 && (
+                    <div>
+                      <p className="text-gray-600 text-sm mb-1">Ski Equipment</p>
+                      <p className="text-base font-medium break-words text-gray-700">{reservationInfo.skiEquipment}</p>
+                    </div>
+                  )}
                   {reservationInfo.flightNumber && (
                     <div>
                       <p className="text-gray-600 text-sm mb-1">Flight Number</p>
-                      <p className="font-medium break-words text-gray-700">{reservationInfo.flightNumber}</p>
+                      <p className="text-base font-medium break-words text-gray-700">{reservationInfo.flightNumber}</p>
                     </div>
                   )}
                   {reservationInfo.meetingBoard && (
                     <div>
                       <p className="text-gray-600 text-sm mb-1">Meeting Board Name</p>
-                      <p className="font-medium break-words text-gray-700">{reservationInfo.meetingBoard}</p>
+                      <p className="text-base font-medium break-words text-gray-700">{reservationInfo.meetingBoard}</p>
                     </div>
                   )}
                 </div>
-                {reservationInfo.isHourly && reservationInfo.plannedActivities && (
-                  <div className="mt-6">
-                    <p className="text-gray-600 text-sm mb-2">Planned Activities</p>
-                    <p className="text-sm bg-royal-blue/5 p-3 rounded-lg break-words text-gray-700">{reservationInfo.plannedActivities}</p>
-                  </div>
-                )}
-                {reservationInfo.additionalRequests && (
-                  <div className="mt-6">
-                    <p className="text-gray-600 text-sm mb-2">{reservationInfo.isSpecialRequest ? 'Special Request Details' : 'Additional Requests'}</p>
-                    <p className="text-sm bg-royal-blue/5 p-3 rounded-lg break-words text-gray-700">{reservationInfo.additionalRequests}</p>
-                  </div>
-                )}
-                {(reservationInfo.referenceNumber) && (
-                  <div className="mt-6">
-                    <p className="text-gray-600 text-sm mb-2">Reference Information</p>
-                    <div className="text-sm bg-royal-blue/5 p-3 rounded-lg text-gray-700 space-y-2">
-                      {reservationInfo.referenceNumber && (
-                        <p><span className="font-medium">Reference:</span> {reservationInfo.referenceNumber}</p>
-                      )}
-                    </div>
-                  </div>
-                )}
               </div>
+
+              {/* Additional Information */}
+              {(reservationInfo.additionalRequests || reservationInfo.referenceNumber) && (
+                <div className="border-t border-royal-blue/20 pt-6 mb-8">
+                  <h3 className="text-lg font-medium mb-4 text-gray-700">Additional Information</h3>
+                  
+                  {reservationInfo.additionalRequests && (
+                    <div className="mb-4">
+                      <p className="text-gray-600 text-sm mb-2">{reservationInfo.isSpecialRequest ? 'Special Request Details' : 'Additional Requests'}</p>
+                      <p className="text-base bg-royal-blue/5 p-3 rounded-lg break-words text-gray-700">{reservationInfo.additionalRequests}</p>
+                    </div>
+                  )}
+                  
+                  {reservationInfo.referenceNumber && (
+                    <div>
+                      <p className="text-gray-600 text-sm mb-2">Reference Information</p>
+                      <div className="text-base bg-royal-blue/5 p-3 rounded-lg text-gray-700">
+                        <p><span className="font-medium">Reference:</span> {reservationInfo.referenceNumber}</p>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
 
               {/* Price Summary */}
               <div className="border-t border-royal-blue/20 pt-6">
