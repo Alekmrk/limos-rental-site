@@ -36,6 +36,18 @@ const BookingPage = ({ scrollUp }) => {
     scrollUp && scrollUp();
   }, [scrollUp]);
 
+  // Clear payment cancel flag when user starts a new booking
+  useEffect(() => {
+    if (reservationInfo?.hasVisitedPaymentCancel) {
+      originalHandleInput({
+        target: {
+          name: 'hasVisitedPaymentCancel',
+          value: false
+        }
+      });
+    }
+  }, [reservationInfo?.hasVisitedPaymentCancel, originalHandleInput]);
+
   // Sticky button behavior
   useEffect(() => {
     const handleScroll = () => {

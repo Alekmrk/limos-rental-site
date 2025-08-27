@@ -1,6 +1,5 @@
-// Test deployment - Frontend workflow update - May 2, 2025 - v2
 import { Route, Routes, useLocation } from "react-router-dom";
-import { useEffect } from "react";
+import { useEffect, useContext } from "react";
 import Footer from "./components/Footer/Footer";
 import Header from "./components/Header/Header";
 import Home from "./pages/Home/Home";
@@ -27,11 +26,12 @@ import ContactChannels from "./components/ContactChannels";
 import DesignSystemShowcase from "./components/DesignSystemShowcase";
 import { useState } from "react";
 import cars from "./data/cars";
-import { ReservationContextProvider } from "./contexts/ReservationContext";
+import { ReservationContextProvider, ReservationContext } from "./contexts/ReservationContext";
 import { useGoogleMapsApi } from "./hooks/useGoogleMapsApi";
 import TermsOfService from "./pages/TermsOfService/TermsOfService";
 import LegalNotice from "./pages/LegalNotice/LegalNotice";
 import { captureUTMParameters, debugUTMState, getStoredUTMParameters, extractAndStoreUTMFromURL, initUTMTracking, trackConversion, enableCrossTabSync, captureUTMWithConsent, validateUTM, getUTMDebugInfo, initUTMTrackingWithURLPreservation, preserveUTMsOnNavigation, preserveUTMsInURL } from "./utils/utmTracking";
+import { useNavigate } from "react-router-dom";
 
 // Protected Design System Component
 const ProtectedDesignSystem = ({ children }) => {
@@ -54,6 +54,28 @@ const ProtectedDesignSystem = ({ children }) => {
   }
   
   return children;
+};
+
+// Protected Payment Cancel Component - prevents return to payment cancel after leaving
+const ProtectedPaymentCancel = () => {
+  const { reservationInfo } = useContext(ReservationContext);
+  const navigate = useNavigate();
+  
+  useEffect(() => {
+    // If user has already visited payment cancel and tries to access it again, redirect to home
+    if (reservationInfo?.hasVisitedPaymentCancel) {
+      console.log('🚫 Preventing access to payment cancel page, redirecting to home');
+      navigate('/', { replace: true });
+      return;
+    }
+  }, [reservationInfo?.hasVisitedPaymentCancel, navigate]);
+  
+  // Only render PaymentCancel if user hasn't visited it before
+  if (reservationInfo?.hasVisitedPaymentCancel) {
+    return null; // Don't render anything while redirecting
+  }
+  
+  return <PaymentCancel />;
 };
 
 function App() {
@@ -146,7 +168,7 @@ function App() {
           />
           <Route 
             path="/payment-cancel" 
-            element={<PaymentCancel />} 
+            element={<ProtectedPaymentCancel />} 
           />
           <Route path="/thankyou" element={<ThankYou scrollUp={scrollUp} />} />
           <Route path="/thank-you-special" element={<ThankYouSpecial scrollUp={scrollUp} />} />
