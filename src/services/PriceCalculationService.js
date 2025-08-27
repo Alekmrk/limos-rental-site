@@ -7,7 +7,7 @@
 const VEHICLE_RATES = {
   // Fixed price for first 12km
   FIXED_12KM_PRICE: {
-    'First Class': 106,
+    'First Class': 120,
     'First Class Van': 98,
     'Business Class Van': 85,
     'Business Class': 85
