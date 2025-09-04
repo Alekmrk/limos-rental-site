@@ -121,7 +121,7 @@ const PaymentPage = ({ scrollUp }) => {
     );
       // TEMPORARY: Override price to 0.5 CHF for testing - REMOVE THIS LATER
     setPaymentMethod("card");
-    setPrice(calculatedPrice - calculatedPrice + 0.5 || 0);
+    setPrice(calculatedPrice || 0);
   }, [reservationInfo]);
 
   const handlePaymentMethodSelect = (method) => {
