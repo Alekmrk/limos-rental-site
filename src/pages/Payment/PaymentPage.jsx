@@ -282,27 +282,8 @@ const PaymentPage = ({ scrollUp }) => {
             <div className="bg-warm-white/90 backdrop-blur-md p-6 rounded-xl border border-royal-blue/20 shadow-lg">
               <h2 className="text-xl font-medium mb-6 text-gray-700">Order Summary</h2>
               
-              {/* Service & Schedule */}
-              <div className="mb-8">
-                <h3 className="text-lg font-medium mb-4 text-gray-700">Service & Schedule</h3>
-                <div className="grid md:grid-cols-3 gap-6">
-                  <div>
-                    <p className="text-gray-600 text-sm mb-1">Vehicle</p>
-                    <p className="text-base font-medium break-words text-gray-700">{reservationInfo.selectedVehicle?.name}</p>
-                  </div>
-                  <div>
-                    <p className="text-gray-600 text-sm mb-1">Date</p>
-                    <p className="text-base font-medium break-words text-gray-700">{formatDate(reservationInfo.date)}</p>
-                  </div>
-                  <div>
-                    <p className="text-gray-600 text-sm mb-1">Time</p>
-                    <p className="text-base font-medium break-words text-gray-700">{reservationInfo.time} (Swiss time)</p>
-                  </div>
-                </div>
-              </div>
-
               {/* Customer Information */}
-              <div className="border-t border-royal-blue/20 pt-6 mb-8">
+              <div className="mb-8">
                 <h3 className="text-lg font-medium mb-4 text-gray-700">Customer Information</h3>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   {reservationInfo.firstName && (
@@ -318,6 +299,25 @@ const PaymentPage = ({ scrollUp }) => {
                   <div>
                     <p className="text-gray-600 text-sm mb-1">Phone</p>
                     <p className="text-base font-medium break-words text-gray-700">{reservationInfo.phone}</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Service & Schedule */}
+              <div className="border-t border-royal-blue/20 pt-6 mb-8">
+                <h3 className="text-lg font-medium mb-4 text-gray-700">Service & Schedule</h3>
+                <div className="grid md:grid-cols-3 gap-6">
+                  <div>
+                    <p className="text-gray-600 text-sm mb-1">Vehicle</p>
+                    <p className="text-base font-medium break-words text-gray-700">{reservationInfo.selectedVehicle?.name}</p>
+                  </div>
+                  <div>
+                    <p className="text-gray-600 text-sm mb-1">Date</p>
+                    <p className="text-base font-medium break-words text-gray-700">{formatDate(reservationInfo.date)}</p>
+                  </div>
+                  <div>
+                    <p className="text-gray-600 text-sm mb-1">Time</p>
+                    <p className="text-base font-medium break-words text-gray-700">{reservationInfo.time} (Swiss time)</p>
                   </div>
                 </div>
               </div>

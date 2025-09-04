@@ -99,6 +99,11 @@ const CustomerDetails = ({ scrollUp }) => {
       newErrors.phone = "Phone number is required";
     }
 
+    // Meet & Greet Sign validation (required for non-special requests)
+    if (!reservationInfo.isSpecialRequest && !reservationInfo.meetingBoard?.trim()) {
+      newErrors.meetingBoard = "Meet & Greet sign name is required";
+    }
+
     if (reservationInfo.isSpecialRequest) {
       if (!reservationInfo.additionalRequests?.trim()) {
         newErrors.additionalRequests = "Please provide any relevant details about your request";
@@ -265,8 +270,13 @@ const CustomerDetails = ({ scrollUp }) => {
             {reservationInfo.isSpecialRequest && (
               <div className="mb-8">
                 <div className="p-4 mb-6 bg-gradient-to-br from-gold/15 to-royal-blue/5 rounded-lg border border-gold/30 backdrop-blur-sm">
-                  <h3 className="text-lg font-medium text-gold mb-2">Special Request Details</h3>
-                  <p className="text-gray-600 mb-4">Please specify your preferred date and time for your custom transportation request.</p>
+                  <h3 className="text-lg font-medium text-gold mb-2">Your Special Request</h3>
+                  {reservationInfo.date && reservationInfo.time && (
+                    <div className="mt-3 text-sm text-gray-600">
+                      <p>Date: {formatDate(reservationInfo.date)}</p>
+                      <p>Preferred Time: {reservationInfo.time} (Swiss time)</p>
+                    </div>
+                  )}
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
@@ -431,7 +441,8 @@ const CustomerDetails = ({ scrollUp }) => {
                       }`}
                       style={{ transitionDuration: showAdditionalDetails ? '1s' : '0.4s' }}
                     >
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="space-y-6">
+                        {/* First row: Flight Number - Full width */}
                         <div>
                           <label className="block text-sm font-medium mb-2 text-gray-700" htmlFor="flightNumber">
                             Flight Number
@@ -447,22 +458,26 @@ const CustomerDetails = ({ scrollUp }) => {
                           />
                         </div>
                         
+                        {/* Second row: Additional Requests - Full width on desktop */}
                         <div>
-                          <label className="block text-sm font-medium mb-2 text-gray-700" htmlFor="meetingBoard">
-                            Meet & Greet Sign <span className="text-xs text-gray-500 font-normal">(Name for pickup sign)</span>
+                          <label className="block text-sm font-medium mb-2 text-gray-700" htmlFor="additionalRequests">
+                            Additional Requests
                           </label>
-                          <input
-                            type="text"
-                            id="meetingBoard"
-                            name="meetingBoard"
-                            value={reservationInfo.meetingBoard}
+                          <textarea
+                            id="additionalRequests"
+                            name="additionalRequests"
+                            value={reservationInfo.additionalRequests}
                             onChange={handleInputChange}
-                            className="bg-warm-white/80 backdrop-blur-sm rounded-lg py-2 px-4 w-full border border-royal-blue/20 text-gray-700 focus:border-royal-blue/40 focus:outline-none focus:ring-1 focus:ring-royal-blue/20 transition-all duration-200"
-                            placeholder="e.g., Mr. Smith, ABC Company"
-                          />
+                            rows="4"
+                            wrap="soft"
+                            className="bg-warm-white/80 backdrop-blur-sm rounded-lg py-2 px-4 w-full border border-royal-blue/20 text-gray-700 whitespace-pre-wrap focus:border-royal-blue/40 focus:outline-none focus:ring-1 focus:ring-royal-blue/20 transition-all duration-200"
+                            placeholder="Any special requirements or requests..."
+                            style={{ resize: 'vertical', minHeight: '100px' }}
+                          ></textarea>
                         </div>
                       </div>
 
+                      {/* Third row: Child Seats */}
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
                         <div>
                           <NumberDropdown
@@ -514,15 +529,6 @@ const CustomerDetails = ({ scrollUp }) => {
               </>
             ) : (
               <div className="mb-8">
-                <div className="p-4 mb-6 bg-gradient-to-br from-gold/15 to-royal-blue/5 rounded-lg border border-gold/30 backdrop-blur-sm">
-                  <h3 className="text-lg font-medium text-gold mb-2">Your Special Request</h3>
-                  <p className="text-gray-600">{reservationInfo.specialRequestDetails}</p>
-                  <div className="mt-3 text-sm text-gray-600">
-                    <p>Date: {formatDate(reservationInfo.date)}</p>
-                    <p>Preferred Time: {reservationInfo.time} (Swiss time)</p>
-                  </div>
-                </div>
-                
                 <label className="block text-sm font-medium mb-2 text-gray-700" htmlFor="additionalRequests">
                   Additional Information *
                 </label>
@@ -547,20 +553,23 @@ const CustomerDetails = ({ scrollUp }) => {
 
             {!reservationInfo.isSpecialRequest && (
               <div className="mb-8">
-                <label className="block text-sm font-medium mb-2 text-gray-700" htmlFor="additionalRequests">
-                  Additional Requests
+                <label className="block text-sm font-medium mb-2 text-gray-700" htmlFor="meetingBoard">
+                  Meet & Greet Sign * <span className="text-xs text-gray-500 font-normal">(Name for pickup sign)</span>
                 </label>
-                <textarea
-                  id="additionalRequests"
-                  name="additionalRequests"
-                  value={reservationInfo.additionalRequests}
+                <input
+                  type="text"
+                  id="meetingBoard"
+                  name="meetingBoard"
+                  value={reservationInfo.meetingBoard}
                   onChange={handleInputChange}
-                  rows="4"
-                  wrap="soft"
-                  className="bg-warm-white/80 backdrop-blur-sm rounded-lg py-2 px-4 w-full border border-royal-blue/20 text-gray-700 whitespace-pre-wrap focus:border-royal-blue/40 focus:outline-none focus:ring-1 focus:ring-royal-blue/20 transition-all duration-200"
-                  placeholder="Any special requirements or requests..."
-                  style={{ resize: 'vertical', minHeight: '100px' }}
-                ></textarea>
+                  className={`bg-warm-white/80 backdrop-blur-sm rounded-lg py-2 px-4 w-full border text-gray-700 focus:border-royal-blue/40 focus:outline-none focus:ring-1 focus:ring-royal-blue/20 transition-all duration-200 ${
+                    errors.meetingBoard ? 'border-red-500 focus:border-red-500' : 'border-royal-blue/20'
+                  }`}
+                  placeholder="e.g., Mr. Smith, ABC Company"
+                />
+                {errors.meetingBoard && (
+                  <span className="text-red-500 text-sm">{errors.meetingBoard}</span>
+                )}
               </div>
             )}
 
