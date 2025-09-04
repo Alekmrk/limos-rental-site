@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useRef } from "react";
 import { useUTMPreservation } from "../../hooks/useUTMPreservation";
-import { useSearchParams, useNavigate } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import Button from "../../components/Button";
 import ReservationContext from "../../contexts/ReservationContext";
 import usePaymentFlowCookieSuppression from "../../hooks/usePaymentFlowCookieSuppression";
@@ -12,7 +12,6 @@ const API_BASE_URL = import.meta.env.PROD
 
 const PaymentCancel = () => {
   const { navigateWithUTMs } = useUTMPreservation();
-  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { reservationInfo, handleInput } = useContext(ReservationContext);
   const hasSetRetryFlag = useRef(false);
@@ -21,45 +20,6 @@ const PaymentCancel = () => {
   
   // Suppress cookie consent during payment cancel flow
   const { clearSuppression } = usePaymentFlowCookieSuppression(true, 30000); // 30 seconds
-
-  // Check if user has already visited payment cancel and redirect if so
-  useEffect(() => {
-    if (reservationInfo?.hasVisitedPaymentCancel) {
-      console.log('🚫 User already visited payment cancel page, redirecting to home');
-      navigateWithUTMs('/', { replace: true });
-      return;
-    }
-    
-    // Mark that user has visited payment cancel page
-    handleInput({
-      target: {
-        name: 'hasVisitedPaymentCancel',
-        value: true
-      }
-    });
-    
-    // Replace current entry in history to prevent back navigation
-    window.history.replaceState(null, '', window.location.href);
-    
-  }, [reservationInfo?.hasVisitedPaymentCancel, navigateWithUTMs, handleInput]);
-
-  // Prevent users from navigating back to this page using browser controls
-  useEffect(() => {
-    const handlePopState = (event) => {
-      // If they try to navigate back to payment cancel, redirect to home
-      if (window.location.pathname === '/payment-cancel' && reservationInfo?.hasVisitedPaymentCancel) {
-        console.log('🚫 Prevented back navigation to payment cancel, redirecting to home');
-        navigateWithUTMs('/', { replace: true });
-      }
-    };
-
-    // Add event listener for browser back/forward navigation
-    window.addEventListener('popstate', handlePopState);
-    
-    return () => {
-      window.removeEventListener('popstate', handlePopState);
-    };
-  }, [reservationInfo?.hasVisitedPaymentCancel, navigateWithUTMs]);
 
   // Send cancellation notification to admin
   const sendCancellationNotification = async (reservationData) => {
@@ -189,28 +149,7 @@ const PaymentCancel = () => {
         value: null
       }
     });
-    
-    // Reset the payment cancel visit flag to allow retry
-    handleInput({
-      target: {
-        name: 'hasVisitedPaymentCancel',
-        value: false
-      }
-    });
-    
     navigateWithUTMs('/payment');
-  };
-
-  const handleGoHome = () => {
-    // Clear the payment cancel flag when user chooses to go home
-    handleInput({
-      target: {
-        name: 'hasVisitedPaymentCancel',
-        value: false
-      }
-    });
-    
-    navigateWithUTMs('/');
   };
 
   const handleContact = () => {
@@ -298,7 +237,7 @@ const PaymentCancel = () => {
                 </Button>
                 
                 <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-                  <Button variant="secondary" onClick={handleGoHome}>
+                  <Button variant="secondary" onClick={() => navigateWithUTMs('/')}>
                     Return to Home
                   </Button>
                 </div>

@@ -61,7 +61,6 @@ const loadReservationFromStorage = () => {
     optimizedWaypoints: null,
     totalDistance: 0,
     totalDuration: 0,
-    hasVisitedPaymentCancel: false,
   };
 };
 

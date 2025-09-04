@@ -99,14 +99,6 @@ const PaymentSuccess = () => {
           });
         }
 
-        // Clear the payment cancel flag since payment was successful
-        await handleInput({
-          target: {
-            name: 'hasVisitedPaymentCancel',
-            value: false
-          }
-        });
-
 
         // Navigate to thank you page with UTMs preserved
         navigateWithUTMs('/thankyou', { replace: true });
