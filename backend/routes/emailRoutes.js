@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const emailService = require('../services/emailService');
 const graphMailService = require('../services/graphMailService');
+const twilioService = require('../services/twilioService');
 
 // Helper function for Swiss timezone
 const getSwissDateTime = () => {
@@ -275,11 +276,33 @@ router.post('/send-confirmation', async (req, res) => {
       timestamp: new Date().toISOString()
     });
 
+    // Send Twilio voice call notification if admin email was successful
+    let twilioResults = { voice: { success: false } };
+    if (adminEmailResult.success) {
+      console.log(`[${requestId}] Starting Twilio voice call...`);
+      try {
+        twilioResults = await twilioService.sendNotificationsToAdmin(reservationInfo);
+        console.log(`[${requestId}] Twilio voice call completed:`, {
+          voiceSuccess: twilioResults.voice.success,
+          callSid: twilioResults.voice.callSid,
+          timestamp: twilioResults.timestamp
+        });
+      } catch (error) {
+        console.error(`[${requestId}] Twilio voice call failed:`, error);
+        twilioResults = {
+          voice: { success: false, error: error.message }
+        };
+      }
+    } else {
+      console.warn(`[${requestId}] Skipping Twilio voice call due to email failure`);
+    }
+
     res.status(200).json({
       success: true,
       requestId,
       adminEmail: adminEmailResult,
-      customerEmail: customerEmailResult
+      customerEmail: customerEmailResult,
+      twilioNotifications: twilioResults
     });
   } catch (error) {
     console.error(`[${requestId}] Error sending confirmation email:`, {

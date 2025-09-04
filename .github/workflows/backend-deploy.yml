@@ -54,6 +54,12 @@ jobs:
           CLIENT_SECRET="${{ secrets.CLIENT_SECRET }}" \
           STRIPE_SECRET_KEY="${{ secrets.STRIPE_SECRET_KEY }}" \
           STRIPE_WEBHOOK_SECRET="${{ secrets.STRIPE_WEBHOOK_SECRET }}" \
+          TWILIO_ACCOUNT_SID="${{ secrets.TWILIO_ACCOUNT_SID }}" \
+          TWILIO_AUTH_TOKEN="${{ secrets.TWILIO_AUTH_TOKEN }}" \
+          TWILIO_PHONE_NUMBER="${{ secrets.TWILIO_PHONE_NUMBER }}" \
+          ADMIN_PHONE="${{ secrets.ADMIN_PHONE }}" \
+          TWILIO_VOICE_ENABLED="${{ secrets.TWILIO_VOICE_ENABLED }}" \
+          BACKEND_URL="${{ secrets.BACKEND_URL }}" \
           WEBSITE_NODE_DEFAULT_VERSION="~18" \
           FRONTEND_URL="https://www.elitewaylimo.ch"
           echo "App settings configured successfully"

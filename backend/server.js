@@ -6,6 +6,7 @@ require('dotenv').config();
 // Import routes
 const emailRoutes = require('./routes/emailRoutes');
 const stripeRoutes = require('./routes/stripeRoutes');
+const twilioRoutes = require('./routes/twilioRoutes');
 
 // Deployment tracking with Swiss timezone
 const getSwissTime = () => {
@@ -49,6 +50,7 @@ app.use(express.urlencoded({ limit: '50mb', extended: true }));
 // Define routes
 app.use('/api/email', emailRoutes);
 app.use('/api/stripe', stripeRoutes);
+app.use('/api/twilio', twilioRoutes);
 
 // Basic route for testing
 app.get('/', (req, res) => {

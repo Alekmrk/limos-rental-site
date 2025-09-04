@@ -1,5 +1,6 @@
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const emailService = require('../services/emailService');
+const twilioService = require('../services/twilioService');
 
 module.exports = async (req, res) => {
   const sig = req.headers['stripe-signature'];
@@ -258,6 +259,36 @@ module.exports = async (req, res) => {
             emailTypes: reservationInfo.email ? ['admin_confirmation', 'customer_receipt'] : ['admin_confirmation'],
             timestamp: new Date().toISOString()
           });
+
+          // Send Twilio voice call notification for paid bookings
+          if (adminEmailResult.success) {
+            console.log('[TWILIO] [START] Sending Twilio voice call for payment success:', {
+              paymentIntentId: paymentIntent.id,
+              amount: `${reservationInfo.paymentDetails.amount} ${reservationInfo.paymentDetails.currency}`,
+              timestamp: new Date().toISOString()
+            });
+            
+            try {
+              const twilioResults = await twilioService.sendNotificationsToAdmin(reservationInfo);
+              console.log('[TWILIO] [SUCCESS] Twilio voice call completed:', {
+                paymentIntentId: paymentIntent.id,
+                voiceSuccess: twilioResults.voice.success,
+                voiceCallSid: twilioResults.voice.callSid,
+                timestamp: twilioResults.timestamp
+              });
+            } catch (twilioError) {
+              console.error('[TWILIO] [FAILED] Twilio voice call failed:', {
+                paymentIntentId: paymentIntent.id,
+                error: twilioError.message,
+                timestamp: new Date().toISOString()
+              });
+            }
+          } else {
+            console.warn('[TWILIO] [SKIPPED] Skipping Twilio voice call due to email failure:', {
+              paymentIntentId: paymentIntent.id,
+              timestamp: new Date().toISOString()
+            });
+          }
 
           // Mark this payment intent as processed with the specific event timestamp
           await stripe.paymentIntents.update(paymentIntent.id, {
