@@ -1,5 +1,8 @@
 import { useState, useEffect, useCallback } from 'react';
 
+// TEMPORARY DISABLE FLAG - Set to true to disable cookie consent popup
+const DISABLE_COOKIE_CONSENT = true;
+
 // Cookie utility functions
 const CookieManager = {
   set: (name, value, days = 365) => {
@@ -51,6 +54,11 @@ const CookieManager = {
 };
 
 const CookieConsent = () => {
+  // Early return if cookie consent is disabled
+  if (DISABLE_COOKIE_CONSENT) {
+    return null;
+  }
+
   const [showBanner, setShowBanner] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const [animateIn, setAnimateIn] = useState(false);
